@@ -3,7 +3,7 @@
 #' @param select A regex term for the name of the table you want
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
 #' @param rootids Character vector specifying one or more BANC rootids.
-#' For some functions, if rootids is \code{NULL}, then logical is trturned,
+#' For some functions if rootids is \code{NULL}, a logical is returned,
 #' e.g \code{banc_neck_connective_neurons} will let you know if the query is in the
 #' neck connective or not.
 #' As a convenience for flywire_partner_summary this argument is passed to \code{fafbseg::flywire_ids} allowing you to pass in data.frames,
@@ -15,7 +15,7 @@
 #'   \code{fafbseg::\link{flywire_cave_query}}
 #'
 #' @return A \code{data.frame} describing a CAVE-table related to the BANC project.
-#' In the case of \code{banc_cave_tables}, a vector is returned containng the names of
+#' In the case of \code{banc_cave_tables}, a vector is returned containing the names of
 #' all queryable cave tables.
 #'
 #' @seealso \code{fafbseg::\link{flywire_cave_query}}
@@ -28,11 +28,11 @@
 #' }
 #'
 banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"), select = NULL){
-  fac = flywire_cave_client(datastack_name = datastack_name)
-  dsinfo = fac$info$get_datastack_info()
+  fac <- flywire_cave_client(datastack_name = datastack_name)
+  dsinfo <- fac$info$get_datastack_info()
   if (!is.null(dsinfo$soma_table))
     return(dsinfo$soma_table)
-  tt = fac$annotation$get_tables()
+  tt <- fac$annotation$get_tables()
   if(!is.null(select)){
     chosen_tables <- grep(select, tt)
     if (length(chosen_tables) == 0)
@@ -40,7 +40,7 @@ banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_
            datastack_name, "\nPlease ask for help on #annotation_infrastructure https://flywire-forum.slack.com/archives/C01M4LP2Y2D")
     if (length(chosen_tables) == 1)
       return(tt[chosen_tables])
-    chosen = tt[rev(chosen_tables)[1]]
+    chosen <- tt[rev(chosen_tables)[1]]
     warning(sprintf("Multiple candidate '%s' tables. Choosing: ", select),
             chosen)
     return(chosen)
@@ -55,16 +55,16 @@ banc_nuclei <- function (rootids = NULL,
                          table = c("somas_v1b","somas_v1a"),
                          rawcoords = FALSE,
                          ...) {
-  table = match.arg(table)
+  table <- match.arg(table)
   if (!is.null(rootids) & !is.null(nucleus_ids))
     stop("You must supply only one of rootids or nucleus_ids!")
   res <- if (is.null(rootids) && is.null(nucleus_ids))
     flywire_cave_query(table =  table , ...)
   else if (!is.null(rootids)) {
-    rootids = flywire_ids(rootids)
+    rootids <- flywire_ids(rootids)
     nuclei <- if (length(rootids) < 200) {
-      rid = paste(rootids, collapse = ",")
-      ridq = reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
+      rid <- paste(rootids, collapse = ",")
+      ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
                                          rid), convert = F)
       flywire_cave_query(table =  table,
                          filter_in_dict = ridq, ...)
@@ -85,10 +85,10 @@ banc_nuclei <- function (rootids = NULL,
                                                        svids = .data$pt_supervoxel_id))
     }
   }else {
-    nid = paste(nucleus_ids, collapse = ",")
-    nidq = reticulate::py_eval(sprintf("{\"id\": [%s]}",
+    nid <- paste(nucleus_ids, collapse = ",")
+    nidq <- reticulate::py_eval(sprintf("{\"id\": [%s]}",
                                        nid), convert = F)
-    nuclei = flywire_cave_query(table = nucleus_table_name(),
+    nuclei <- flywire_cave_query(table = nucleus_table_name(),
                                 filter_in_dict = nidq, ...)
     nuclei %>% right_join(data.frame(id = nucleus_ids), by = "id") %>%
       select(colnames(nuclei))
@@ -118,29 +118,29 @@ banc_cell_ids <- function(rootids = NULL){
 #' @export
 banc_neck_connective_neurons <- function(rootids = NULL,
                                          table = c("neck_connective_y92500", "neck_connective_y121000")){
-  table = match.arg(table)
+  table <- match.arg(table)
   get_cave_table_data(table)
 }
 
 #' @export
 banc_peripheral_nerves <- function(rootids = NULL){
-  table = "peripheral_nerves"
+  table <- "peripheral_nerves"
   get_cave_table_data(table)
 }
 
 #' @export
 banc_backbone_proofread <- function(rootids = NULL){
-  table = "backbone_proofread"
+  table <- "backbone_proofread"
   get_cave_table_data(table)
 }
 
 # hidden
-get_cave_table_data <- function(table){
+get_cave_table_data <- function(table, rootids = NULL, ...){
   if (!is.null(rootids)) {
-    rootids = flywire_ids(rootids)
+    rootids <- flywire_ids(rootids)
     df <- if (length(rootids) < 200) {
-      rid = paste(rootids, collapse = ",")
-      ridq = reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
+      rid <- paste(rootids, collapse = ",")
+      ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
                                          rid), convert = F)
       fafbseg::flywire_cave_query(table =  table,
                          filter_in_dict = ridq, ...)
@@ -153,7 +153,3 @@ get_cave_table_data <- function(table){
   }
   df
 }
-
-
-
-

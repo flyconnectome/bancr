@@ -2,7 +2,7 @@
 #'
 #' @details Downloads all automatic Zetta.ai synapse detections for the BANC and saves them as
 #' a \code{banc_data.sqlite} file. Once this is done, in the future the function will read from this file
-#' lazilty so as not to throw the whole thing into system memory.
+#' lazily so as not to throw the whole thing into system memory.
 #'
 #' @param path The google storage path to the desired synapses file. Read using \code{readr::read_csv}.
 #' @param overwrite Logical, whether or not to overwrite an extant \code{banc_data.sqlite} file.
@@ -10,6 +10,7 @@
 #' a taster of the file.
 #'
 #' @return a data.frame
+#'
 #' @seealso \code{\link{banc_partner_summary}}, \code{\link{banc_partners}}
 #' @export
 #'
@@ -66,6 +67,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
   # Are we just sampling or going for the full thing?
   if(!is.null(nrows)){
     syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
+    return(syns)
   }else if (!table_exists|overwrite){
     # Get all synapses
     syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE)
