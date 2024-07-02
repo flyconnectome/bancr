@@ -1,0 +1,80 @@
+# For help debugging build failures open an issue on the RStudio community with the 'github-actions' tag.
+# https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ubuntu-latest
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CHUNKEDGRAPH_SECRET: ${{ secrets.CHUNKEDGRAPH_SECRET }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      FLYTABLE_TOKEN: ${{ secrets.FLYTABLE_TOKEN }}
+      RETICULATE_MINICONDA_PYTHON_VERSION: 3.8
+      RGL_USE_NULL: TRUE
+      _R_CHECK_DONTTEST_EXAMPLES_: FALSE
+      _R_CHECK_TESTS_NLINES_: 0
+      _R_CHECK_CRAN_INCOMING_REMOTE_: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck, any::pkgdown, catmaid=natverse/rcatmaid
+          needs: check
+
+      - name: Fix Conda permissions on macOS
+        if: runner.os == 'macOS'
+        run: sudo chown -R $UID $CONDA
+
+      - name: Install fafbseg + python
+        run: |
+          pak::local_install()
+          library(fafbseg)
+          simple_python()
+          dr_fafbseg()
+        shell: Rscript {0}
+
+      - name: writetoken
+        run: fafbseg::flywire_set_token(token=Sys.getenv("CHUNKEDGRAPH_SECRET"))
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/check-r-package@v2
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
+
+      - name: Upload check log results
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.config.tag }}-results
+          path: ${{ github.event.repository.name }}.Rcheck/00check.log
+
+      - name: Test coverage
+        # if: runner.os == 'macOS'
+        if: ${{ runner.os == 'Linux' && matrix.config.r == 'release'}}
+        run: covr::codecov(errorsAreFatal=FALSE)
+        shell: Rscript {0}
