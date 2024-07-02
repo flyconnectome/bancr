@@ -65,7 +65,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
   )
 
   # Are we just sampling or going for the full thing?
-  if(!is.null(nrows)){
+  if(!is.null(n_max)){
     syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
     return(syns)
   }else if (!table_exists|overwrite){
@@ -81,7 +81,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
     # If the table already exists, it will be overwritten
     DBI::dbWriteTable(con, "synapses", df, overwrite = TRUE)
     DBI::dbDisconnect(con)
-    message("Added tab synapses, nrows: ", nrow(syns))
+    message("Added tab synapses, no. rows: ", nrow(syns))
   }
 
   # Read

@@ -75,23 +75,23 @@ banc_nuclei <- function (rootids = NULL,
     }
     if (nrow(nuclei) == 0)
       return(nuclei)
-    nuclei <- nuclei %>% right_join(data.frame(pt_root_id = as.integer64(rootids)),
+    nuclei <- nuclei %>% dplyr::right_join(data.frame(pt_root_id = as.integer64(rootids)),
                                     by = "pt_root_id") %>% select(colnames(nuclei))
     if (length(rootids) < 200) {
       nuclei
     }
     else {
-      nuclei %>% mutate(pt_root_id = flywire_updateids(.data$pt_root_id,
+      nuclei %>% dplyr::mutate(pt_root_id = flywire_updateids(.data$pt_root_id,
                                                        svids = .data$pt_supervoxel_id))
     }
   }else {
     nid <- paste(nucleus_ids, collapse = ",")
     nidq <- reticulate::py_eval(sprintf("{\"id\": [%s]}",
                                        nid), convert = F)
-    nuclei <- flywire_cave_query(table = nucleus_table_name(),
+    nuclei <- flywire_cave_query(table = table,
                                 filter_in_dict = nidq, ...)
-    nuclei %>% right_join(data.frame(id = nucleus_ids), by = "id") %>%
-      select(colnames(nuclei))
+    nuclei %>% dplyr::right_join(data.frame(id = nucleus_ids), by = "id") %>%
+      dplyr::select(colnames(nuclei))
   }
   res
   #  apply coordinate transform
@@ -99,7 +99,7 @@ banc_nuclei <- function (rootids = NULL,
   if (isFALSE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(across(ends_with("position"), function(x) xyzmatrix2str(flywire_nm2raw(x))))
+    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x) nat::xyzmatrix2str(flywire_nm2raw(x))))
   }
 }
 

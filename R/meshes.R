@@ -45,7 +45,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 
 #' Subset points to be in the brain or in the VNC
 #'
-#' @param x an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \cpode{neuronlist} or a \code{mesh3d} object.
+#' @param x an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 #' Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.
 #' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
 #'
@@ -67,17 +67,17 @@ banc_decapitate <- function(x, invert = FALSE, reference = "BANC"){
   v2 <- c(1e10,y.cut,0)
   v3 <- c(0,y.cut,1e10)
   if (reference!="BANC"){
-    v1 <- xform_brain(v1, sample = "BANC", reference = reference)
-    v2 <- xform_brain(v2, sample = "BANC", reference = reference)
-    v3 <- xform_brain(v3, sample = "BANC", reference = reference)
+    v1 <- nat.templatebrains::xform_brain(v1, sample = "BANC", reference = reference)
+    v2 <- nat.templatebrains::xform_brain(v2, sample = "BANC", reference = reference)
+    v3 <- nat.templatebrains::xform_brain(v3, sample = "BANC", reference = reference)
     y.cut <- v1[,2]
   }
   ismesh <- any(class(x[[1]]), class(x)) %in% "mesh3d"
   if(!ismesh & any(class(x)%in%c("neuron","neuronlist","mesh3d"))){
     if (invert){
-      z <- subset(x,y<y.cut)
+      z <- subset(x,x$y<y.cut)
     }else{
-      z <- subset(x,y>y.cut)
+      z <- subset(x,x$y>y.cut)
     }
   }else if (ismesh){
     if (any(class(x)=="mesh3d")){
