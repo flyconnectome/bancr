@@ -7,7 +7,7 @@
 banc_decapitate(x, invert = FALSE, reference = "BANC")
 }
 \arguments{
-\item{x}{an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \cpode{neuronlist} or a \code{mesh3d} object.
+\item{x}{an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.}
 
 \item{invert}{if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.}
