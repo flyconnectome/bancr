@@ -1,8 +1,10 @@
+# hidden
 banc_cloudvolume <- function(...) {
   cv<-fafbseg::flywire_cloudvolume(cloudvolume.url = banc_cloudvolume_url(), ...)
   cv
 }
 
+# hidden
 banc_cloudvolume_url <- function(set=TRUE) {
   if(set){
     with_banc(getOption("fafbseg.cloudvolume.url"))
@@ -20,7 +22,6 @@ banc_api_url <- function(endpoint="") {
   fafbseg:::flywire_api_url(endpoint=endpoint,
                             cloudvolume.url = banc_cloudvolume_url())
 }
-
 
 #' Set the token to be used to authenticate to banc autosegmentation resources
 #'

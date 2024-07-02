@@ -27,7 +27,7 @@ Download all of the BANC synapses as a .sqlite file that you can read lazily fro
 \details{
 Downloads all automatic Zetta.ai synapse detections for the BANC and saves them as
 a \code{banc_data.sqlite} file. Once this is done, in the future the function will read from this file
-lazilty so as not to throw the whole thing into system memory.
+lazily so as not to throw the whole thing into system memory.
 }
 \examples{
 \dontrun{
