@@ -43,7 +43,6 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
   svids
 }
 
-
 #' Convert xyz locations to root or supervoxel ids
 #'
 #' @details This used to be very slow because we do not have a supervoxel
@@ -64,8 +63,11 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' @examples
 #' # a point from neuroglancer, should map to 648518346498932033
 #' banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE)
-banc_xyz2id <- function(xyz, rawcoords=FALSE, voxdims=c(4.3, 4.3, 45),
-                        root=TRUE, ...){
+banc_xyz2id <- function(xyz,
+                        rawcoords=FALSE,
+                        voxdims=c(4, 4, 45),
+                        root=TRUE,
+                        ...){
   if(is.numeric(xyz) && !is.matrix(xyz) && length(xyz)==3)
     xyz=matrix(xyz, ncol=3)
   if(rawcoords)
@@ -76,7 +78,7 @@ banc_xyz2id <- function(xyz, rawcoords=FALSE, voxdims=c(4.3, 4.3, 45),
 
 # rawxyz=cbind(34496, 82782, 1954)
 # nmxyz=cbind(34496, 82782, 1954)*c(4.3,4.3,45)
-banc_supervoxels <- function(x, voxdims=c(4.3,4.3,45)) {
+banc_supervoxels <- function(x, voxdims=c(4,4,45)) {
   pts=scale(xyzmatrix(x), center = F, scale = voxdims)
   nas=rowSums(is.na(pts))>0
   if(any(nas)) {
@@ -84,7 +86,8 @@ banc_supervoxels <- function(x, voxdims=c(4.3,4.3,45)) {
     svids[!nas]=banc_supervoxels(pts[!nas,,drop=F], voxdims = c(1,1,1))
     return(svids)
   }
-  u="https://services.itanna.io/app/transform-service/query/dataset/banc_v4/s/2/values_array_string_response"
+  # URL is wrong
+  u="https://services.itanna.io/app/transform-service/query/dataset/banc_v1/s/2/values_array_string_response"
   body=jsonlite::toJSON(list(x=pts[,1], y=pts[,2], z=pts[,3]))
   res=httr::POST(u, body = body)
   httr::stop_for_status(res)
@@ -92,8 +95,6 @@ banc_supervoxels <- function(x, voxdims=c(4.3,4.3,45)) {
   svids=unlist(jsonlite::fromJSON(j, simplifyVector = T), use.names = F)
   svids
 }
-
-
 
 #' Check if a banc root id is up to date
 #'
@@ -122,7 +123,7 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' banc_latestid("648518346473954669")
 #' }
 banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FALSE, ...) {
-  with_banc(flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
+  with_banc(fafbseg::flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
 }
 
 
@@ -158,7 +159,7 @@ banc_ids <- function(x, integer64=NA) {
 
 #' Convert between banc cell ids and root ids
 #'
-#' @description Converts between banc cell ids (should survive most edits) and
+#' @description Converts between BANC cell ids (should survive most edits) and
 #'   root ids (guaranteed to match just one edit state). See details.
 #'
 #' @details CAVE/PyChunkedGraph assigns a 64 bit integer root id to all bodies
@@ -203,7 +204,7 @@ banc_ids <- function(x, integer64=NA) {
 #'
 #' @examples
 #' \donttest{
-#' banc_cellid_from_segid(banc_latestid("648518346486614449"))
+#' banc_cellid_from_segid(banc_latestid("720575941480769421"))
 #' }
 banc_cellid_from_segid <- function(rootids=NULL, timestamp=NULL, version=NULL, cellid_table = NULL, rval=c("ids", 'data.frame')) {
   rval=match.arg(rval)
@@ -230,13 +231,12 @@ banc_cellid_from_segid <- function(rootids=NULL, timestamp=NULL, version=NULL, c
   } else res
 }
 
-
 #' @rdname banc_cellid_from_segid
 #' @export
 #'
 #' @examples
 #' \donttest{
-#' banc_cellid_from_segid(banc_latestid("648518346486614449"))
+#' banc_cellid_from_segid(banc_latestid("720575941480769421"))
 #' }
 banc_segid_from_cellid <- function(cellids=NULL, timestamp=NULL, version=NULL, rval=c("ids", 'data.frame'), integer64=FALSE, cellid_table = NULL) {
   rval=match.arg(rval)
