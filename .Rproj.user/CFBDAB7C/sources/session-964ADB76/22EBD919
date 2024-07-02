@@ -1,0 +1,26 @@
+{
+    "id": "22EBD919",
+    "path": "~/projects/flyconnectome/bancr/R/zetta-api.R",
+    "project_path": "R/zetta-api.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1719274005013.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "24,32",
+        "scrollLine": "21"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1719273721,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1719273721,
+    "read_only": false,
+    "read_only_alternatives": []
+}

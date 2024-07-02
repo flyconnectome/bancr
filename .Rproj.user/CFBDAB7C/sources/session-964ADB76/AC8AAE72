@@ -1,0 +1,26 @@
+{
+    "id": "AC8AAE72",
+    "path": "~/projects/flyconnectome/bancr/R/l2.R",
+    "project_path": "R/l2.R",
+    "type": "r_source",
+    "hash": "297419684",
+    "contents": "",
+    "dirty": false,
+    "created": 1719542321767.0,
+    "source_on_save": false,
+    "relative_order": 15,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "76,18",
+        "scrollLine": "52"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1719542545,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1719542545168,
+    "read_only": false,
+    "read_only_alternatives": []
+}

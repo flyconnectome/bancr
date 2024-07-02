@@ -1,0 +1,8 @@
+build-last-errors="[]"
+build-last-errors-base-dir=""
+build-last-outputs="[]"
+compile_pdf_state="{\"tab_visible\":false,\"running\":false,\"target_file\":\"\",\"output\":\"\",\"errors\":[]}"
+files.monitored-path=""
+find-in-files-state="{\"handle\":\"d7d83eba511648b0881b951fbda0566a\",\"input\":\"with_banc <- \",\"path\":\"~/projects/flyconnectome/bancr\",\"regex\":false,\"ignoreCase\":true,\"results\":{\"file\":[\"/Users/abates/projects/flyconnectome/bancr/R/urls.R\"],\"line\":[94],\"lineValue\":[\"with_banc <- function(expr) {\"],\"matchOn\":[[0]],\"matchOff\":[[13]],\"replaceMatchOn\":[[]],\"replaceMatchOff\":[[]]},\"running\":false,\"replace\":false,\"preview\":false,\"gitFlag\":true,\"replacePattern\":\"\"}"
+imageDirtyState="1"
+saveActionState="-1"
