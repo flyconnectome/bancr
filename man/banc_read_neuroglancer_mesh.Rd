@@ -28,5 +28,5 @@ banc.mesh  <- banc_read_neuroglancer_mesh()
 }
 }
 \seealso{
-\code{\link{read_banc_meshes}}
+\code{\link{banc_read_neuron_meshes}}
 }
