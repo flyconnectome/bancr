@@ -20,7 +20,7 @@ Subset points to be in the brain or in the VNC
 }
 \examples{
 \donttest{
-m = read_banc_meshes("720575941650432785")
+m = banc_read_neuron_meshes("720575941650432785")
 m.brain = banc_decapitate(m)
 m.vnc = banc_decapitate(m, invert = TRUE)
 plot3d(m.brain, col = "red")

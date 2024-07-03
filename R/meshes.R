@@ -18,12 +18,12 @@
 #' @seealso \code{fafbseg::\link{read_cloudvolume_meshes}}
 #' @examples
 #' \donttest{
-#' neuron.mesh <- read_banc_meshes("720575941650432785")
+#' neuron.mesh <- banc_read_neuron_meshes("720575941650432785")
 #' plot3d(neuron.mesh, alpha = 0.1)
-#' nucleus.mesh <- read_banc_meshes("72903876004544795")
+#' nucleus.mesh <- banc_read_neuron_meshes("72903876004544795")
 #' plot3d(nucleus.mesh, col = "black")
 #' }
-read_banc_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), ...) {
+banc_read_neuron_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), ...) {
   format=match.arg(format)
   read_cloudvolume_meshes(ids, savedir = savedir, cloudvolume.url = banc_cloudvolume_url(set=FALSE), format=format, ...)
 }
@@ -54,7 +54,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' @export
 #' @examples
 #' \donttest{
-#' m = read_banc_meshes("720575941650432785")
+#' m = banc_read_neuron_meshes("720575941650432785")
 #' m.brain = banc_decapitate(m)
 #' m.vnc = banc_decapitate(m, invert = TRUE)
 #' plot3d(m.brain, col = "red")
@@ -110,7 +110,7 @@ banc_decapitate <- function(x, invert = FALSE, reference = "BANC"){
 #' @param url the URL that directs \code{bancr} to where BANC meshes are stored.
 #' @return a mesh3d object for the specified mesh.
 #' @export
-#' @seealso \code{\link{read_banc_meshes}}
+#' @seealso \code{\link{banc_read_neuron_meshes}}
 #' @examples
 #' \dontrun{
 #' banc.mesh  <- banc_read_neuroglancer_mesh()
@@ -122,12 +122,13 @@ banc_read_neuroglancer_mesh <- function(x = 1,
   res <- httr::GET(completed_url, ...)
   httr::stop_for_status(res)
   bytes <- httr::content(res, as = "raw")
-  decode_neuroglancer_mesh(bytes)
+  malevnc:::decode_neuroglancer_mesh(bytes)
 }
 
 # convert cloudvolume python mesh to an R mesh3d object
 # method vf just uses the vertex and face arrays
 # ply writes out to Stanford ply format and reads back in again
+# from hemibrainr
 cvmesh2mesh <- function(x, method=c('vf', 'ply'), ...) {
   method=match.arg(method)
   if(method=='vf') {
@@ -147,26 +148,4 @@ cvmesh2mesh <- function(x, method=c('vf', 'ply'), ...) {
   }
   m
 }
-
-# from package: malevnc
-decode_neuroglancer_mesh <- function (bytes, format = c("mesh3d", "raw")) {
-  format = match.arg(format)
-  con = rawConnection(bytes)
-  on.exit(close(con))
-  nverts = readBin(con, what = "int", size = 4, n = 1)
-  verts = readBin(con, what = "numeric", n = nverts * 3, size = 4)
-  nidxs = length(bytes)/4 - 1L - length(verts)
-  idx = readBin(con, what = "int", n = nidxs, size = 4)
-  if (format == "raw") {
-    structure(list(v = matrix(verts, ncol = 3, byrow = T),
-                   i = matrix(idx, ncol = 3, byrow = T)), class = "ngmesh")
-  }
-  else {
-    rgl::tmesh3d(matrix(verts, nrow = 3, byrow = F), matrix(idx +
-                                                              1L, nrow = 3, byrow = F), homogeneous = F)
-  }
-}
-
-
-
 

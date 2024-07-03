@@ -8,6 +8,8 @@
 #' @param overwrite Logical, whether or not to overwrite an extant \code{banc_data.sqlite} file.
 #' @param n_max Numeric, the maximum number of rows ot read from \code{path} if you just want to see
 #' a taster of the file.
+#' @param Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
+#' \code{FALSE} in order to read only the essential presynapse position data.
 #'
 #' @return a data.frame
 #'
@@ -20,7 +22,8 @@
 #' }
 banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df",
                               overwrite = FALSE,
-                              n_max = 2000){
+                              n_max = 2000,
+                              details = FALSE){
 
   # Correct path to de-authenticate it, use https
   path <- gsub("^gs\\:\\/","https://storage.googleapis.com",path)
@@ -66,11 +69,21 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
 
   # Are we just sampling or going for the full thing?
   if(!is.null(n_max)){
-    syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
+    if(details){
+      syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
+    }else{
+      syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max,
+                              select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+    }
     return(syns)
   }else if (!table_exists|overwrite){
     # Get all synapses
-    syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE)
+    if (details){
+      syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE)
+    }else{
+      syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE,
+                              select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+    }
 
     # Process
 

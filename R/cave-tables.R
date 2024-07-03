@@ -27,7 +27,8 @@
 #' points3d(nat::xyzmatrix(all_banc_soma_positions))
 #' }
 #'
-banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"), select = NULL){
+banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"),
+                             select = NULL){
   fac <- flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
   if (!is.null(dsinfo$soma_table))
@@ -52,7 +53,7 @@ banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_
 #' @export
 banc_nuclei <- function (rootids = NULL,
                          nucleus_ids = NULL,
-                         table = c("somas_v1b","somas_v1a"),
+                         table = c("somas_v1a","somas_v1b"),
                          rawcoords = FALSE,
                          ...) {
   table <- match.arg(table)
@@ -84,7 +85,7 @@ banc_nuclei <- function (rootids = NULL,
       nuclei %>% dplyr::mutate(pt_root_id = flywire_updateids(.data$pt_root_id,
                                                        svids = .data$pt_supervoxel_id))
     }
-  }else {
+  }else{
     nid <- paste(nucleus_ids, collapse = ",")
     nidq <- reticulate::py_eval(sprintf("{\"id\": [%s]}",
                                        nid), convert = F)
@@ -96,17 +97,24 @@ banc_nuclei <- function (rootids = NULL,
   res
   #  apply coordinate transform
   # res <- standard_nuclei(res)
-  if (isFALSE(rawcoords))
+  if (isTRUE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x) nat::xyzmatrix2str(flywire_nm2raw(x))))
+    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
+      nat::xyzmatrix2str(fancr::banc_raw2nm(x))))
   }
 }
 
 #' @export
-banc_cell_info <- function(rootids = NULL){
+banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   table <- "cell_info"
-  get_cave_table_data(table)
+  res <- get_cave_table_data(table)
+  if (isTRUE(rawcoords))
+    res
+  else {
+    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
+      nat::xyzmatrix2str(fancr::banc_raw2nm(x))))
+  }
 }
 
 #' @export
