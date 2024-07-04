@@ -61,47 +61,54 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' plot3d(m.brain, col = "cyan")
 #' plot3d(banc.surf, col = "grey", alpha = 0.1)
 #' }
-banc_decapitate <- function(x, invert = FALSE, reference = "BANC"){
-  y.cut <- 5e+05
+banc_decapitate<-function(x, y.cut = 5e+05, invert = FALSE, ...) UseMethod('banc_decapitate')
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.neuron <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+  z <- as.data.frame(nat::xyzmatrix(x))
+  rownames(z) <- x$d$PointNo
+  z <- subset(z,z$Y<y.cut)
+  nat::prune_vertices(x, verticestoprune = rownames(z), invert = invert, ...)
+}
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.neuronlist <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+  nat::nlapply(x, banc_decapitate, y.cut = y.cut, invert = invert, ...)
+}
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.matrix <- function(x, y.cut = 5e+05, invert = FALSE){
+  z <- nat::xyzmatrix(x)
+  if(invert){
+    z[z[,2]<y.cut,]
+  }else{
+    z[z[,2]>y.cut,]
+  }
+}
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.data.frame <- function(x, y.cut = 5e+05, invert = FALSE){
+  z <- nat::xyzmatrix(x)
+  if(invert){
+    x[z[,2]<y.cut,]
+  }else{
+    x[z[,2]>y.cut,]
+  }
+}
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.mesh3d <- function(x, y.cut = 5e+05, invert = FALSE, ...){
   v1 <- c(0,y.cut,0)
   v2 <- c(1e10,y.cut,0)
   v3 <- c(0,y.cut,1e10)
-  if (reference!="BANC"){
-    v1 <- nat.templatebrains::xform_brain(v1, sample = "BANC", reference = reference)
-    v2 <- nat.templatebrains::xform_brain(v2, sample = "BANC", reference = reference)
-    v3 <- nat.templatebrains::xform_brain(v3, sample = "BANC", reference = reference)
-    y.cut <- v1[,2]
-  }
-  ismesh <- any( c(class(x[[1]]), class(x)) %in% "mesh3d")
-  if(!ismesh & any(class(x)%in%c("neuron","neuronlist","mesh3d"))){
-    if (invert){
-      z <- subset(x,x$y<y.cut)
-    }else{
-      z <- subset(x,x$y>y.cut)
-    }
-  }else if (ismesh){
-    if (any(class(x)=="mesh3d")){
-      z <- Morpho::cutMeshPlane(x,
-                                v1=v1, v2=v2, v3=v3,
-                                normal = NULL, keep.upper = invert)
-    }else if (any(class(x)=="neuronlist")){
-      z <- nat::nlapply(x, Morpho::cutMeshPlane,
-                        v1=v1, v2=v2, v3=v3,
-                        normal = NULL, keep.upper = invert)
-    }else{
-      z <- lapply(x, Morpho::cutMeshPlane,
-                  v1=v1, v2=v2, v3=v3,
-                  normal = NULL, keep.upper = invert)
-    }
-  }else{
-    ydim <- intersect(colnames(x),c("Y","y"))[[1]]
-    if (invert){
-      z <- x[x[,ydim]<y.cut,]
-    }else{
-      z <- x[x[,ydim]>y.cut,]
-    }
-  }
-  z
+  Morpho::cutMeshPlane(x,
+                      v1=v1, v2=v2, v3=v3,
+                      normal = NULL, keep.upper = invert)
 }
 
 #' Read BANC euroglancer meshes, e.g., ROI meshes

@@ -54,7 +54,7 @@ character vector or an \code{bit64::integer64} vector depending on the
 \code{integer64} argument.
 }
 \description{
-Converts between banc cell ids (should survive most edits) and
+Converts between BANC cell ids (should survive most edits) and
 root ids (guaranteed to match just one edit state). See details.
 }
 \details{
@@ -77,10 +77,10 @@ wiki}.
 }
 \examples{
 \donttest{
-banc_cellid_from_segid(banc_latestid("648518346486614449"))
+banc_cellid_from_segid(banc_latestid("720575941480769421"))
 }
 \donttest{
-banc_cellid_from_segid(banc_latestid("648518346486614449"))
+banc_cellid_from_segid(banc_latestid("720575941480769421"))
 }
 }
 \seealso{

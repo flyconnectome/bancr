@@ -3,12 +3,32 @@
 \docType{data}
 \name{banc.surf}
 \alias{banc.surf}
+\alias{banc_neuropil.surf}
+\alias{banc_brain_neuropil.surf}
+\alias{banc_vnc_neuropil.surf}
+\alias{banc_neck_connective.surf}
 \title{Simplified tissue surface of BANC}
 \format{
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 }
 \usage{
 banc.surf
+
+banc_neuropil.surf
+
+banc_brain_neuropil.surf
+
+banc_vnc_neuropil.surf
+
+banc_neck_connective.surf
 }
 \description{
 This is unsymmetrical and not a normalised version of the mesh.
