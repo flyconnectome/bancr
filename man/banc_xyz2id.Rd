@@ -4,13 +4,7 @@
 \alias{banc_xyz2id}
 \title{Convert xyz locations to root or supervoxel ids}
 \usage{
-banc_xyz2id(
-  xyz,
-  rawcoords = FALSE,
-  voxdims = c(4.3, 4.3, 45),
-  root = TRUE,
-  ...
-)
+banc_xyz2id(xyz, rawcoords = FALSE, voxdims = c(4, 4, 45), root = TRUE, ...)
 }
 \arguments{
 \item{xyz}{One or more xyz locations as an Nx3 matrix or in any form
