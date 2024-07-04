@@ -72,7 +72,7 @@ banc_decapitate <- function(x, invert = FALSE, reference = "BANC"){
     v3 <- nat.templatebrains::xform_brain(v3, sample = "BANC", reference = reference)
     y.cut <- v1[,2]
   }
-  ismesh <- any(class(x[[1]]), class(x)) %in% "mesh3d"
+  ismesh <- any( c(class(x[[1]]), class(x)) %in% "mesh3d")
   if(!ismesh & any(class(x)%in%c("neuron","neuronlist","mesh3d"))){
     if (invert){
       z <- subset(x,x$y<y.cut)

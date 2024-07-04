@@ -8,7 +8,7 @@
 #' @param overwrite Logical, whether or not to overwrite an extant \code{banc_data.sqlite} file.
 #' @param n_max Numeric, the maximum number of rows ot read from \code{path} if you just want to see
 #' a taster of the file.
-#' @param Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
+#' @param details Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
 #' \code{FALSE} in order to read only the essential presynapse position data.
 #'
 #' @return a data.frame
@@ -20,10 +20,13 @@
 #' \dontrun{
 #' syns <- banc_all_synapses()
 #' }
+#' Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df",
                               overwrite = FALSE,
                               n_max = 2000,
-                              details = FALSE){
+                              details = FALSE,
+                              min_size = 10,
+                              rawcoords = FALSE){
 
   # Correct path to de-authenticate it, use https
   path <- gsub("^gs\\:\\/","https://storage.googleapis.com",path)
@@ -63,8 +66,8 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
     postsyn_y = readr::col_integer(),
     postsyn_z = readr::col_integer(),
     clefthash = readr::col_number(),
-    partnerhash= readr::col_integer(),
-    size = readr::col_integer()
+    partnerhash = readr::col_integer(),
+    size = readr::col_number()
   )
 
   # Are we just sampling or going for the full thing?
@@ -73,7 +76,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
     }else{
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max,
-                              select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+                              col_select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
     }
     return(syns)
   }else if (!table_exists|overwrite){
@@ -82,23 +85,30 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE)
     }else{
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE,
-                              select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+                              col_select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
     }
 
-    # Process
+    # # Process
+    # if(!is.null(min_size)){
+    #   syns <- syns %>%
+    #     dplyr::filter(size>=min_size)
+    # }
+    # if(!rawcoords){
+    #   syns[,c("presyn_x", "presyn_y", "presyn_z")] <- bancr::banc_raw2nm(syns[,c("presyn_x", "presyn_y", "presyn_z")])
+    # }
 
     # Connect to the SQLite database
     con <- DBI::dbConnect(RSQLite::SQLite(), file_path)
 
     # Write the data frame to the 'synapses' table
     # If the table already exists, it will be overwritten
-    DBI::dbWriteTable(con, "synapses", df, overwrite = TRUE)
+    DBI::dbWriteTable(con, "synapses", syns, overwrite = TRUE)
     DBI::dbDisconnect(con)
     message("Added tab synapses, no. rows: ", nrow(syns))
   }
 
   # Read
-  DBI::dbReadTable(con, "synapses")
+  dplyr::tbl(src = con, from = "synapses")
 
 }
 
