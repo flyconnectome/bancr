@@ -4,13 +4,72 @@
 \alias{ggplot2_neuron_path}
 \alias{ggplot2_neuron_path.neuron}
 \alias{ggplot2_neuron_path.neuronlist}
-\title{Convert Neuron Objects to ggplot2-Compatible Path Data}
+\alias{ggplot2_neuron_path.mesh3d}
+\alias{geom_neuron}
+\alias{geom_neuron.neuron}
+\alias{geom_neuron.neuronlist}
+\alias{geom_neuron.mesh3d}
+\title{Convert neuron objects to ggplot2-compatible data}
 \usage{
 ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
 
-\method{ggplot2_neuron_path}{neuron}(x, rotation_matrix = NULL)
+\method{ggplot2_neuron_path}{neuron}(x, rotation_matrix = NULL, ...)
 
-\method{ggplot2_neuron_path}{neuronlist}(x, rotation_matrix = NULL)
+\method{ggplot2_neuron_path}{neuronlist}(x, rotation_matrix = NULL, ...)
+
+\method{ggplot2_neuron_path}{mesh3d}(mesh, rotation_matrix = NULL)
+
+geom_neuron(
+  x,
+  rotation_matrix = NULL,
+  low = "cyan",
+  high = "navy",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{neuron}(
+  x = NULL,
+  rotation_matrix = NULL,
+  low = "cyan",
+  high = "navy",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{neuronlist}(
+  x = NULL,
+  rotation_matrix = NULL,
+  low = "cyan",
+  high = "navy",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{neuronlist}(
+  x = NULL,
+  rotation_matrix = NULL,
+  low = "cyan",
+  high = "navy",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{A 'neuron' or 'neuronlist' object to be converted.}
@@ -24,7 +83,7 @@ A data frame with columns X, Y, Z, and group, where each group
 represents a continuous path in the neuron.
 }
 \description{
-This function converts 'neuron' or 'neuronlist' objects, which represent 3D
+This function converts 'neuron', 'mesh3d' or 'neuronlist' objects, which represent 3D
 points linked by lines in space, into data frames that describe paths
-compatible with ggplot2's geom_path.
+compatible with ggplot2's geom_path, or geom_polygon for mesh3d objects.
 }
