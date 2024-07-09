@@ -9,7 +9,7 @@ navis_elastix_xform(x, transform_path)
 \arguments{
 \item{x}{Matrix or data frame of 3D points.}
 
-\item{transform_path}{Path to the Elastix transform file.}
+\item{transform_path}{Path to the Elastix transform file, usually a \code{.txt} file.}
 }
 \value{
 A matrix of transformed 3D points.

@@ -78,7 +78,7 @@ banc_rotation_matrices <- list(
 #' This function applies an Elastix spatial transform to a set of 3D points.
 #'
 #' @param points A matrix with 3 columns or a data frame with x, y, z columns representing 3D points.
-#' @param transform_file Path to the Elastix transform file.
+#' @param transform_file Path to the Elastix transform file, usually a `.txt` file, usually a `.txt` file.
 #' @param copy_files Vector of additional file paths to copy to the temporary directory.
 #' @param return_logs Logical, if TRUE, returns the Elastix log instead of transformed points.
 #'
@@ -124,6 +124,8 @@ elastix_xform <- function(points, transform_file, copy_files = c(), return_logs 
     elastix_path <- "/opt/elastix-5.1.0-mac/bin/transformix"
     #stop("Could not find elastix binary. Make sure it's in your PATH.")
   }
+
+  # Construct system command
   command <- paste(
     elastix_path,
     "-out", temp_dir,
@@ -216,6 +218,7 @@ read_elastix_output_file <- function(filepath) {
   # Convert the list of points to a matrix
   points_matrix <- do.call(rbind, points)
 
+  # Return
   return(points_matrix)
 }
 
@@ -224,7 +227,7 @@ read_elastix_output_file <- function(filepath) {
 #' Applies an Elastix transform to 3D points using the Navis Python library.
 #'
 #' @param x Matrix or data frame of 3D points.
-#' @param transform_path Path to the Elastix transform file.
+#' @param transform_path Path to the Elastix transform file, usually a `.txt` file.
 #'
 #' @return A matrix of transformed 3D points.
 #'
@@ -254,6 +257,7 @@ navis_elastix_xform <- function(x, transform_path){
 
 # Jasper's elastix transform
 # transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt"
+
 # Transforms, note: elastix transforms cannot be inverted
 banc_to_JRC2018F <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
 JRC2018F_to_banc <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")

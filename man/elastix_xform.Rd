@@ -9,7 +9,7 @@ elastix_xform(points, transform_file, copy_files = c(), return_logs = FALSE)
 \arguments{
 \item{points}{A matrix with 3 columns or a data frame with x, y, z columns representing 3D points.}
 
-\item{transform_file}{Path to the Elastix transform file.}
+\item{transform_file}{Path to the Elastix transform file, usually a \code{.txt} file, usually a \code{.txt} file.}
 
 \item{copy_files}{Vector of additional file paths to copy to the temporary directory.}
 
