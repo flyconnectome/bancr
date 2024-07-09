@@ -15,7 +15,7 @@
 banc_voxdims <- memoise::memoise(function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']]) {
   fafbseg::flywire_voxdims(url)
 })
-
+# 4  4 40
 
 #' @param x 3D coordinates in any form compatible with \code{\link{xyzmatrix}}
 #'
@@ -33,7 +33,7 @@ banc_voxdims <- memoise::memoise(function(url=choose_banc(set=FALSE)[['fafbseg.s
 #' banc_nm2raw(clipr::read_clip())
 #' }
 banc_nm2raw <- function(x, vd=banc_voxdims()) {
-  xyz=xyzmatrix(x)
+  xyz<-nat::xyzmatrix(x)
   xyz[,1]=xyz[,1]/vd[1]
   xyz[,2]=xyz[,2]/vd[2]
   xyz[,3]=xyz[,3]/vd[3]
@@ -43,7 +43,7 @@ banc_nm2raw <- function(x, vd=banc_voxdims()) {
 #' @export
 #' @rdname banc_voxdims
 banc_raw2nm <- function(x, vd=banc_voxdims()) {
-  xyz=xyzmatrix(x)
+  xyz<-nat::xyzmatrix(x)
   xyz[,1]=xyz[,1]*vd[1]
   xyz[,2]=xyz[,2]*vd[2]
   xyz[,3]=xyz[,3]*vd[3]

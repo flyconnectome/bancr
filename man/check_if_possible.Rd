@@ -2,7 +2,7 @@
 % Please edit documentation in R/xform.R
 \name{check_if_possible}
 \alias{check_if_possible}
-\title{Check if Elastix Transform is Possible}
+\title{Check if Elastix Transform is possible}
 \usage{
 check_if_possible(file, on_error = "raise")
 }
