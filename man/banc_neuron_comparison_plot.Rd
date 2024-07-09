@@ -6,7 +6,11 @@
 \usage{
 banc_neuron_comparison_plot(
   neuron1,
-  neuron2,
+  neuron2 = NULL,
+  neuron3 = NULL,
+  neuron1.info = NULL,
+  neuron2.info = NULL,
+  neuron3.info = NULL,
   banc_brain_neuropil = banc_brain_neuropil.surf,
   banc_vnc_neuropil = banc_vnc_neuropil.surf,
   banc_neuropil = banc_neuropil.surf,
@@ -49,7 +53,7 @@ The function generates four views of the neurons:
 }
 
 Each view applies appropriate rotations and uses different neuropil meshes as backgrounds.
-The two neurons are plotted in different colors (navy/cyan for neuron1, red/darkred for neuron2) for easy comparison.
+The two neurons are plotted in different colors (navy/turquoise for neuron1, red/darkred for neuron2) for easy comparison.
 }
 \examples{
 \dontrun{

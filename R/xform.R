@@ -73,5 +73,187 @@ banc_rotation_matrices <- list(
                                  -0.923228204250336, 0, 169877.109375, 8134.845703125, -597.831604003906,
                                  1), dim = c(4L, 4L)))
 
+#' Perform Elastix Transform on 3D Points
+#'
+#' This function applies an Elastix spatial transform to a set of 3D points.
+#'
+#' @param points A matrix with 3 columns or a data frame with x, y, z columns representing 3D points.
+#' @param transform_file Path to the Elastix transform file.
+#' @param copy_files Vector of additional file paths to copy to the temporary directory.
+#' @param return_logs Logical, if TRUE, returns the Elastix log instead of transformed points.
+#'
+#' @return A matrix of transformed 3D points, or Elastix logs if return_logs is TRUE.
+#'
+#' @details
+#' This function requires Elastix to be installed and added to the system PATH.
+#' It creates a temporary directory for processing, applies the Elastix transform,
+#' and cleans up afterwards.
+#'
+#' @examples
+#' \dontrun{
+#' points <- matrix(rnorm(30), ncol = 3)
+#' transformed_points <- elastix_xform(points, "path/to/transform.txt")
+#' }
+#'
+#' @export
+elastix_xform <- function(points, transform_file, copy_files = c(), return_logs = FALSE) {
+  check_if_possible(transform_file)
 
+  # Do we have valid points
+  points <- nat::xyzmatrix(points)
+  if (ncol(points) != 3) {
+    stop("points must be a matrix with 3 columns or a data frame with x/y/z columns")
+  }
 
+  # Create a temporary directory
+  temp_dir <- tempdir()
+
+  # Copy additional files if required
+  if (length(copy_files) > 0) {
+    file.copy(copy_files, temp_dir)
+  }
+
+  # Write points to file
+  in_file <- file.path(temp_dir, "inputpoints.txt")
+  write_elastix_input_file(points, in_file)
+  out_file <- file.path(temp_dir, "outputpoints.txt")
+
+  # Prepare the command
+  elastix_path <- Sys.which("transformix")
+  if (elastix_path == "") {
+    elastix_path <- "/opt/elastix-5.1.0-mac/bin/transformix"
+    #stop("Could not find elastix binary. Make sure it's in your PATH.")
+  }
+  command <- paste(
+    elastix_path,
+    "-out", temp_dir,
+    "-tp", transform_file,
+    "-def", in_file
+  )
+
+  # Run the transform
+  sys.run <- system(command, intern = TRUE)
+  if (return_logs) {
+    log_file <- file.path(temp_dir, "transformix.log")
+    if (!file.exists(log_file)) {
+      warning("No log file found.")
+      stop(sys.run)
+    }
+    return(readLines(log_file))
+  }
+  if (!file.exists(out_file)) {
+    warning("Elastix transform did not produce any output.")
+    stop(sys.run)
+  }
+
+  # Parse points
+  points_xf <- read_elastix_output_file(out_file)
+
+  # Clean up
+  unlink(temp_dir, recursive = TRUE)
+
+  # Return
+  return(points_xf)
+}
+
+#' Check if Elastix Transform is Possible
+#'
+#' Verifies if the specified transform file exists.
+#'
+#' @param file Path to the Elastix transform file.
+#' @param on_error Action to take on error: "raise" to stop execution, or any other value to return an error message.
+#'
+#' @return NULL if file exists, or an error message if the file doesn't exist and on_error is not "raise".
+#'
+#' @keywords internal
+check_if_possible <- function(file, on_error = "raise") {
+  if (!file.exists(file)) {
+    msg <- paste("Transformation file", file, "not found.")
+    if (on_error == "raise") {
+      stop(msg)
+    }
+    return(msg)
+  }
+}
+
+#' Write Elastix Input File
+#'
+#' Writes 3D points to a file in the format required by Elastix.
+#'
+#' @param points Matrix of 3D points.
+#' @param filepath Path where the input file should be written.
+#'
+#' @keywords internal
+write_elastix_input_file <- function(points, filepath) {
+  cat("point\n", nrow(points), "\n", file = filepath)
+  write.table(points, filepath, append = TRUE, col.names = FALSE,
+              row.names = FALSE, sep = " ")
+}
+
+#' Read Elastix Output File
+#'
+#' Reads and parses the output file produced by Elastix transform.
+#'
+#' @param filepath Path to the Elastix output file.
+#'
+#' @return A matrix of transformed 3D points.
+#'
+#' @keywords internal
+read_elastix_output_file <- function(filepath) {
+
+  # Read all lines from the file
+  lines <- readLines(filepath)
+
+  # Process each line
+  points <- lapply(lines, function(line) {
+    # Extract the part between 'OutputPoint = [' and ']'
+    output <- strsplit(strsplit(line, "OutputPoint = \\[ ")[[1]][2], " \\]")[[1]][1]
+
+    # Split the string into numeric values
+    as.numeric(strsplit(output, " ")[[1]])
+  })
+
+  # Convert the list of points to a matrix
+  points_matrix <- do.call(rbind, points)
+
+  return(points_matrix)
+}
+
+#' Apply Elastix Transform using Navis
+#'
+#' Applies an Elastix transform to 3D points using the Navis Python library.
+#'
+#' @param x Matrix or data frame of 3D points.
+#' @param transform_path Path to the Elastix transform file.
+#'
+#' @return A matrix of transformed 3D points.
+#'
+#' @details
+#' This function requires the reticulate R package and the Navis Python library.
+#'
+#' @examples
+#' \dontrun{
+#' points <- matrix(rnorm(30), ncol = 3)
+#' transformed_points <- navis_elastix_xform(points, "path/to/transform.txt")
+#' }
+#'
+#' @export
+navis_elastix_xform <- function(x, transform_path){
+  x <- nat::xyzmatrix(x)
+  if (ncol(x) != 3) {
+    stop("Input 'x' must have exactly 3 columns representing x, y, and z coordinates.")
+  }
+  reticulate::py_run_string("from navis import transforms")
+  reticulate::py_run_string(sprintf("tr = transforms.ElastixTransform('%s')",
+                                    transform_path))
+  reticulate::py_run_string("xform = tr.xform")
+  result <- reticulate::py$xform(r_matrix)
+  colnames(result) <- colnmes(x)
+  result
+}
+
+# Jasper's elastix transform
+# transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt"
+# Transforms, note: elastix transforms cannot be inverted
+banc_to_JRC2018F <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+JRC2018F_to_banc <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")

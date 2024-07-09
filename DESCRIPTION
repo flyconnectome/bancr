@@ -31,7 +31,8 @@ Imports:
     DBI,
     RSQLite,
     readr,
-    checkmate
+    checkmate,
+    stringr
 Suggests: 
     testthat (>= 3.0.0),
     reticulate,
@@ -41,7 +42,8 @@ Suggests:
     usethis,
     rmarkdown,
     spelling,
-    arrow
+    arrow,
+    ggplot2
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
