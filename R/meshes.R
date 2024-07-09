@@ -61,18 +61,18 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' plot3d(m.brain, col = "cyan")
 #' plot3d(banc.surf, col = "grey", alpha = 0.1)
 #' }
-banc_decapitate<-function(x, y.cut = 5e+05, invert = FALSE, ...) UseMethod('banc_decapitate')
+banc_decapitate<-function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.NULL <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+banc_decapitate.NULL <- function(x, y.cut = 325000, invert = FALSE, ...){
   #warning("banc_decapitate given a NULL object, returning NULL")
   NULL
 }
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.neuron <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+banc_decapitate.neuron <- function(x, y.cut = 325000, invert = FALSE, ...){
   z <- as.data.frame(nat::xyzmatrix(x))
   rownames(z) <- x$d$PointNo
   z <- subset(z,z$Y<y.cut)
@@ -81,13 +81,13 @@ banc_decapitate.neuron <- function(x, y.cut = 5e+05, invert = FALSE, ...){
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.neuronlist <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+banc_decapitate.neuronlist <- function(x, y.cut = 325000, invert = FALSE, ...){
   nat::nlapply(x, banc_decapitate, y.cut = y.cut, invert = invert, ...)
 }
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.matrix <- function(x, y.cut = 5e+05, invert = FALSE){
+banc_decapitate.matrix <- function(x, y.cut = 325000, invert = FALSE){
   z <- nat::xyzmatrix(x)
   if(invert){
     z[z[,2]<y.cut,]
@@ -98,7 +98,7 @@ banc_decapitate.matrix <- function(x, y.cut = 5e+05, invert = FALSE){
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.data.frame <- function(x, y.cut = 5e+05, invert = FALSE){
+banc_decapitate.data.frame <- function(x, y.cut = 325000, invert = FALSE){
   z <- nat::xyzmatrix(x)
   if(invert){
     x[z[,2]<y.cut,]
@@ -109,7 +109,7 @@ banc_decapitate.data.frame <- function(x, y.cut = 5e+05, invert = FALSE){
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.mesh3d <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+banc_decapitate.mesh3d <- function(x, y.cut = 325000, invert = FALSE, ...){
   v1 <- c(0,y.cut,0)
   v2 <- c(1e10,y.cut,0)
   v3 <- c(0,y.cut,1e10)
