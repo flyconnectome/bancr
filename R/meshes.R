@@ -65,6 +65,13 @@ banc_decapitate<-function(x, y.cut = 5e+05, invert = FALSE, ...) UseMethod('banc
 
 #' @export
 #' @rdname banc_decapitate
+banc_decapitate.NULL <- function(x, y.cut = 5e+05, invert = FALSE, ...){
+  #warning("banc_decapitate given a NULL object, returning NULL")
+  NULL
+}
+
+#' @export
+#' @rdname banc_decapitate
 banc_decapitate.neuron <- function(x, y.cut = 5e+05, invert = FALSE, ...){
   z <- as.data.frame(nat::xyzmatrix(x))
   rownames(z) <- x$d$PointNo
