@@ -23,7 +23,7 @@
 #' 4. VNC (Ventral Nerve Cord) view
 #'
 #' Each view applies appropriate rotations and uses different neuropil meshes as backgrounds.
-#' The two neurons are plotted in different colors (navy/cyan for neuron1, red/darkred for neuron2) for easy comparison.
+#' The two neurons are plotted in different colors (navy/turquoise for neuron1, red/darkred for neuron2) for easy comparison.
 #'
 #' @importFrom ggplot2 ggplot geom_point scale_color_gradient coord_fixed theme_void theme element_blank margin
 #' @importFrom ggnewscale new_scale_colour new_scale_fill
@@ -37,9 +37,12 @@
 #' }
 #'
 #' @export
-banc_neuron_comparison_plot <- function(neuron1, neuron2,
+banc_neuron_comparison_plot <- function(neuron1,
+                                        neuron2 = NULL,
+                                        neuron3 = NULL,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
+                                        neuron3.info = NULL,
                                         banc_brain_neuropil = banc_brain_neuropil.surf,
                                         banc_vnc_neuropil = banc_vnc_neuropil.surf,
                                         banc_neuropil = banc_neuropil.surf,
@@ -84,28 +87,28 @@ banc_neuron_comparison_plot <- function(neuron1, neuron2,
     if(decaptitate=="brain"){
       neuron_pruned1 <- banc_decapitate(neuron1, invert = TRUE)
       neuron_pruned2 <- banc_decapitate(neuron2, invert = TRUE)
+      neuron_pruned3 <- banc_decapitate(neuron3, invert = TRUE)
     }else if(decaptitate=="vnc"){
       neuron_pruned1 <- banc_decapitate(neuron1, invert = FALSE)
       neuron_pruned2 <- banc_decapitate(neuron2, invert = FALSE)
+      neuron_pruned3 <- banc_decapitate(neuron3, invert = FALSE)
     }else{
       neuron_pruned1 <- neuron1
       neuron_pruned2 <- neuron2
+      neuron_pruned3 <- neuron3
     }
 
     # Create the plot
     p <- ggplot2::ggplot() +
       geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05) +
-      ggnewscale::new_scale_colour() +
-      ggnewscale::new_scale_fill() +
-      geom_neuron(x=neuron_pruned1[[1]], rotation_matrix = rotation_matrix, low = "cyan", high = "navy", alpha = 0.5, linewidth = 0.3) +
-      ggnewscale::new_scale_colour() +
-      ggnewscale::new_scale_fill() +
+      geom_neuron(x=neuron_pruned1[[1]], rotation_matrix = rotation_matrix, low = "turquoise", high = "navy", alpha = 0.5, linewidth = 0.3) +
       geom_neuron(x=neuron_pruned2[[1]], rotation_matrix = rotation_matrix, low = "red", high = "darkred", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3[[1]], rotation_matrix = rotation_matrix, low = "chartreuse", high = "darkgreen", alpha = 0.5, linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
       ggplot2::theme(legend.position = "none",
-            plot.title = element_text(hjust = 0, size = 8, face = "bold", colour = title.col),
+            plot.title = ggplot2::element_text(hjust = 0, size = 8, face = "bold", colour = title.col),
             axis.title.x=ggplot2::element_blank(),
             axis.text.x=ggplot2::element_blank(),
             axis.ticks.x=ggplot2::element_blank(),
@@ -148,7 +151,7 @@ banc_neuron_comparison_plot <- function(neuron1, neuron2,
 
   # Save
   if(!is.null(filename)){
-    ggplot2::ggsave(filename, plot = ga, width = width, height = height, bg = "#FAF9F6")
+    ggplot2::ggsave(filename, plot = ga, width = width, height = height, bg = "#fcfcfa")
     message("saved as:  ", filename)
     invisible()
   }else{
@@ -254,14 +257,14 @@ ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL) {
 
 #' @rdname ggplot2_neuron_path
 #' @export
-geom_neuron <-function(x, rotation_matrix = NULL, low = "cyan", high = "navy",
+geom_neuron <-function(x, rotation_matrix = NULL, low = "turquoise", high = "navy",
                        stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = FALSE, ...) UseMethod('geom_neuron')
 
 #' @rdname ggplot2_neuron_path
 #' @method geom_neuron neuron
 #' @export
-geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "cyan", high = "navy",
+geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   soma <- catmaid::soma(x)
@@ -277,14 +280,15 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "cyan", h
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
     ggplot2::geom_point(mapping = ggplot2::aes(x = X, y = Y), data = soma,
                          color = high, alpha = 0.5, size = 3),
-    ggplot2::scale_color_gradient(low = low, high = high)
+    ggplot2::scale_color_gradient(low = low, high = high),
+    ggnewscale::new_scale_colour()
   )
 }
 
 #' @rdname ggplot2_neuron_path
 #' @method geom_neuron neuronlist
 #' @export
-geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "cyan", high = "navy",
+geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   x <- ggplot2_neuron_path.neuronlist(x, rotation_matrix = rotation_matrix)
@@ -298,7 +302,7 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "cyan
 #' @rdname ggplot2_neuron_path
 #' @method geom_neuron neuronlist
 #' @export
-geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "pink", high = "purple",
+geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
@@ -307,7 +311,19 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "pink", h
                     color = NA,
                     stat = stat, position = position, na.rm = na.rm,
                     show.legend = show.legend, inherit.aes = inherit.aes, ...),
-    ggplot2::scale_fill_gradient(low = low, high = high)
+    ggplot2::scale_fill_gradient(low = low, high = high),
+    ggnewscale::new_scale_fill()
+  )
+}
+
+#' @rdname ggplot2_neuron_path
+#' @method geom_neuron neuronlist
+#' @export
+geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
+                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                               inherit.aes = FALSE, ...) {
+  list(
+    ggplot2::geom_polygon(...)
   )
 }
 
