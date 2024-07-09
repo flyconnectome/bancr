@@ -2,6 +2,7 @@
 % Please edit documentation in R/meshes.R
 \name{banc_decapitate}
 \alias{banc_decapitate}
+\alias{banc_decapitate.NULL}
 \alias{banc_decapitate.neuron}
 \alias{banc_decapitate.neuronlist}
 \alias{banc_decapitate.matrix}
@@ -10,6 +11,8 @@
 \title{Subset points to be in the brain or in the VNC}
 \usage{
 banc_decapitate(x, y.cut = 5e+05, invert = FALSE, ...)
+
+\method{banc_decapitate}{`NULL`}(x, y.cut = 5e+05, invert = FALSE, ...)
 
 \method{banc_decapitate}{neuron}(x, y.cut = 5e+05, invert = FALSE, ...)
 
