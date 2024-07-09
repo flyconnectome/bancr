@@ -96,7 +96,12 @@ banc_rotation_matrices <- list(
 #' }
 #'
 #' @export
-elastix_xform <- function(points, transform_file, copy_files = c(), return_logs = FALSE) {
+elastix_xform <- function(points,
+                          transform_file,
+                          copy_files = c(),
+                          return_logs = FALSE) {
+
+  # Does transform file exist
   check_if_possible(transform_file)
 
   # Do we have valid points
@@ -106,7 +111,7 @@ elastix_xform <- function(points, transform_file, copy_files = c(), return_logs 
   }
 
   # Create a temporary directory
-  temp_dir <- tempdir()
+  temp_dir <- tempdir(check = TRUE)
 
   # Copy additional files if required
   if (length(copy_files) > 0) {
@@ -158,7 +163,7 @@ elastix_xform <- function(points, transform_file, copy_files = c(), return_logs 
   return(points_xf)
 }
 
-#' Check if Elastix Transform is Possible
+#' Check if Elastix Transform is possible
 #'
 #' Verifies if the specified transform file exists.
 #'
@@ -227,7 +232,7 @@ read_elastix_output_file <- function(filepath) {
 #' Applies an Elastix transform to 3D points using the Navis Python library.
 #'
 #' @param x Matrix or data frame of 3D points.
-#' @param transform_path Path to the Elastix transform file, usually a `.txt` file.
+#' @param transform_file Path to the Elastix transform file, usually a `.txt` file.
 #'
 #' @return A matrix of transformed 3D points.
 #'
@@ -236,28 +241,234 @@ read_elastix_output_file <- function(filepath) {
 #'
 #' @examples
 #' \dontrun{
-#' points <- matrix(rnorm(30), ncol = 3)
-#' transformed_points <- navis_elastix_xform(points, "path/to/transform.txt")
+#' neuron.mesh <- banc_read_neuron_meshes("720575941650432785")
+#' points <- nat::xyzmatrix(neuron.mesh)
+#' transformed_points <- navis_elastix_xform(points, transform_file = "the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt")
+#' points3d(points)
+#' plot3d(nat.flybrains::JRC2018F)
 #' }
 #'
 #' @export
-navis_elastix_xform <- function(x, transform_path){
-  x <- nat::xyzmatrix(x)
-  if (ncol(x) != 3) {
-    stop("Input 'x' must have exactly 3 columns representing x, y, and z coordinates.")
+navis_elastix_xform <- function(x, transform_file){
+  xyz <- nat::xyzmatrix(x)
+  if (ncol(xyz) != 3) {
+    stop("Input 'x' must have exactly 3 columns representing x, y and z coordinates.")
   }
   reticulate::py_run_string("from navis import transforms")
   reticulate::py_run_string(sprintf("tr = transforms.ElastixTransform('%s')",
-                                    transform_path))
+                                    transform_file))
   reticulate::py_run_string("xform = tr.xform")
-  result <- reticulate::py$xform(r_matrix)
-  colnames(result) <- colnmes(x)
-  result
+  result <- reticulate::py$xform(x)
+  colnames(result) <- colnames(xyz)
+  nat::xyzmatrix(x) <- result
+  x
 }
 
-# Jasper's elastix transform
+#' Transform Points between BANC Connectome and JRC2018F Template Brain
+#'
+#' @description
+#' This function transforms 3D points between the BANC (Buhmann et al. Adult Neural Connectome)
+#' coordinate system and the D. melanogaster template brain JRC2018F coordinate system.
+#'
+#' @param x An object containing 3D points (must be compatible with nat::xyzmatrix).
+#' @param units Character string specifying the units of the input points.
+#'   Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw units). Default is "nm".
+#' @param subset Optional. A logical vector or expression to subset the input object.
+#' @param inverse Logical. If TRUE, performs the inverse transformation (JRC2018F to BANC).
+#'   Default is FALSE.
+#' @param transform_file Optional. Path to a custom transform file. If NULL, uses default files.
+#' @param method Character string specifying the transformation method.
+#'   Must be either "elastix" or "tpsreg". Default is "elastix".
+#'
+#' @return The input object with transformed 3D points.
+#'
+#' @details
+#' This function applies either an Elastix transform or a thin-plate spline registration to convert
+#' points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
+#'
+#' The default transformation files are included with the package and are located in the
+#' 'extdata/brain_240707' directory.
+#'
+#' @examples
+#' \dontrun{
+#' # Transform points from BANC to JRC2018F
+#' transformed_points <- banc_to_JRC2018F(points, units = "nm")
+#'
+#' # Perform inverse transformation (JRC2018F to BANC)
+#' inverse_transformed_points <- banc_to_JRC2018F(points, units = "microns", inverse = TRUE)
+#'
+#' # Use a custom transform file
+#' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
+#'
+#' # Where the default transform files are located:
+#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+#' }
+#'
+#' @seealso
+#' \code{\link{elastix_xform}} for the underlying Elastix transformation function.
+#' \code{\link{banc_raw2nm}} and \code{\link{banc_nm2raw}} for unit conversion functions.
+#'
+#' @export
+banc_to_JRC2018F <- function(x,
+                             units = c("nm", "microns", "raw"),
+                             subset = NULL,
+                             inverse = FALSE,
+                             transform_file = NULL,
+                             method = c("elastix","tpsreg")){
+
+  # manage arguments
+  units <- match.arg(units)
+  method <- match.arg(method)
+
+  # find transform
+  if(is.null(transform_file)){
+    if(inverse){
+      transform_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+    }else{
+      transform_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+    }
+  }
+
+  # apply subset
+  if(!is.null(subset)) {
+    xs <- x[subset]
+    xst <- banc_to_JRC2018F(xs, units = units, inverse=inverse, transform_file=transform_file, method=method)
+    x[subset] <- xst
+    return(x)
+  }
+
+  # convert to um if necessary
+  xyz <- nat::xyzmatrix(x)
+  if(isFALSE(inverse)){
+    if(units=='nm'){
+      xyz <- xyz/1e3
+    }else if(units=='raw'){
+      xyz <- banc_raw2nm(xyz)/1e3
+    }
+  }
+
+  # # Decapitate
+  # if(isFALSE(inverse)){
+  #   xyz <- banc_decapitate(xyz*100)/1000
+  # }
+
+  # do transformation
+  if(method=="elastix"){
+    xyzf2 <- elastix_xform(xyz, transform_file = transform_file)
+  }else{
+    xyzf2 <- nat::xform(xyzf, reg = banc_to_jrc2018f_tpsreg, inverse = inverse)
+  }
+
+  # # Decapitate
+  # if(isTRUE(inverse)){
+  #   xyzf2 <- banc_decapitate(xyzf2*100)/1000
+  # }
+
+  # convert from um to original units if necessary
+  if(isTRUE(inverse)){
+    if(units=='nm'){
+      xyzf2 <- xyzf2*1e3
+    }else if(units=='raw'){
+      xyzf2 <- banc_nm2raw(xyzf2*1e3)
+    }
+  }
+
+  # put points back
+  nat::xyzmatrix(x) <- xyzf2
+
+  # return object
+  return(x)
+}
+# Jasper's Elastix transform
 # transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt"
 
-# Transforms, note: elastix transforms cannot be inverted
-banc_to_JRC2018F <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
-JRC2018F_to_banc <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+#' Mirror BANC Connectome Points
+#'
+#' @description
+#' This function mirrors 3D points in the BANC (Buhmann et al. Adult Neural Connectome)
+#' coordinate system by transforming to JRC2018F, mirroring, and transforming back.
+#'
+#' @param x An object containing 3D points (must be compatible with nat::xyzmatrix).
+#' @param units Character string specifying the units of the input points.
+#'   Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw units). Default is "nm".
+#' @param subset Optional. A logical vector or expression to subset the input object.
+#' @param inverse Logical. Not used in this function, kept for compatibility with banc_to_JRC2018F.
+#' @param transform_files Optional. A vector of two file paths for custom transform files.
+#'   If NULL, uses default files.
+#' @param method Character string specifying the transformation method.
+#'   Must be either "elastix" or "tpsreg". Default is "elastix".
+#' @param ... Additional arguments passed to nat.templatebrains::mirror_brain.
+#'
+#' @return The input object with mirrored 3D points.
+#'
+#' @details
+#' This function performs mirroring of BANC points by first transforming them to the JRC2018F
+#' coordinate system, applying the mirroring operation, and then transforming them back to BANC.
+#' It can use either Elastix transforms or thin-plate spline registration for the coordinate
+#' system transformations.
+#'
+#' @examples
+#' \dontrun{
+#' # Mirror BANC points
+#' mirrored_points <- banc_mirror(points, units = "nm")
+#'
+#' # Mirror using custom transform files
+#' custom_mirrored <- banc_mirror(points, transform_files = c("path/to/BANC_to_JRC.txt", "path/to/JRC_to_BANC.txt"))
+#' }
+#'
+#' @seealso
+#' \code{\link{banc_to_JRC2018F}} for the underlying transformation function.
+#' \code{\link{nat.templatebrains::mirror_brain}} for the mirroring operation in JRC2018F space.
+#'
+#' @export
+banc_mirror <- function(x,
+                        units = c("nm", "microns", "raw"),
+                        subset = NULL,
+                        inverse = FALSE,
+                        transform_files = NULL,
+                        method = c("elastix","tpsreg"),
+                        ...){
+
+  # Manage arguments
+  units <- match.arg(units)
+  method <- match.arg(method)
+
+  # convert to um if necessary
+  xyz <- nat::xyzmatrix(x)
+  if(units=='nm'){
+    xyz <- xyz/1e3
+  }else if(units=='raw'){
+    xyz <- banc_raw2nm(xyz)/1e3
+  }
+
+  # Use elastix transform
+  if(method=="elastix"){
+
+    # Convert to JRC2018F
+    x.jrc2018f <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=FALSE, transform_file = transform_files[1])
+
+    # Mirror
+    x.jrc2018f.m <- nat.templatebrains::mirror_brain(x.jrc2018f, brain = "JRC2018F", ... )
+
+    # Back to BANC
+    x.banc.m <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=TRUE , transform_file = transform_files[2])
+
+  }else{
+
+    # Use pre-calculated tps reg
+    x.banc.m <- nat::xform(xyzf, reg = banc_miror_tpsreg)
+
+  }
+
+  # convert from um to original units if necessary
+  if(units=='nm'){
+    xyzf2 <- xyzf2*1e3
+  }else if(units=='raw'){
+    xyzf2 <- banc_nm2raw(xyzf2*1e3)
+  }
+
+  # Return
+  return(x.banc.m)
+
+}

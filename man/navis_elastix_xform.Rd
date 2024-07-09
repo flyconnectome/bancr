@@ -4,12 +4,12 @@
 \alias{navis_elastix_xform}
 \title{Apply Elastix Transform using Navis}
 \usage{
-navis_elastix_xform(x, transform_path)
+navis_elastix_xform(x, transform_file)
 }
 \arguments{
 \item{x}{Matrix or data frame of 3D points.}
 
-\item{transform_path}{Path to the Elastix transform file, usually a \code{.txt} file.}
+\item{transform_file}{Path to the Elastix transform file, usually a \code{.txt} file.}
 }
 \value{
 A matrix of transformed 3D points.
@@ -22,8 +22,11 @@ This function requires the reticulate R package and the Navis Python library.
 }
 \examples{
 \dontrun{
-points <- matrix(rnorm(30), ncol = 3)
-transformed_points <- navis_elastix_xform(points, "path/to/transform.txt")
+neuron.mesh <- banc_read_neuron_meshes("720575941650432785")
+points <- nat::xyzmatrix(neuron.mesh)
+transformed_points <- navis_elastix_xform(points, transform_file = "the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt")
+points3d(points)
+plot3d(nat.flybrains::JRC2018F)
 }
 
 }
