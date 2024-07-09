@@ -315,7 +315,7 @@ banc_to_JRC2018F <- function(x,
                              subset = NULL,
                              inverse = FALSE,
                              transform_file = NULL,
-                             method = c("elastix","tpsreg")){
+                             method = c("elastix","tpsreg","navis_elastix_xform")){
 
   # manage arguments
   units <- match.arg(units)
@@ -356,6 +356,8 @@ banc_to_JRC2018F <- function(x,
   # do transformation
   if(method=="elastix"){
     xyzf2 <- elastix_xform(xyz, transform_file = transform_file)
+  }else if(method=="navis_elastix_xform"){
+    xyzf2 <- navis_elastix_xform(xyz, transform_file = transform_file)
   }else{
     xyzf2 <- nat::xform(xyzf, reg = banc_to_jrc2018f_tpsreg, inverse = inverse)
   }
@@ -427,7 +429,7 @@ banc_mirror <- function(x,
                         subset = NULL,
                         inverse = FALSE,
                         transform_files = NULL,
-                        method = c("elastix","tpsreg"),
+                        method = c("elastix","tpsreg","navis_elastix_xform"),
                         ...){
 
   # Manage arguments
@@ -446,13 +448,13 @@ banc_mirror <- function(x,
   if(method=="elastix"){
 
     # Convert to JRC2018F
-    x.jrc2018f <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=FALSE, transform_file = transform_files[1])
+    x.jrc2018f <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=FALSE, transform_file = transform_files[1], method = method)
 
     # Mirror
     x.jrc2018f.m <- nat.templatebrains::mirror_brain(x.jrc2018f, brain = "JRC2018F", ... )
 
     # Back to BANC
-    x.banc.m <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=TRUE , transform_file = transform_files[2])
+    x.banc.m <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=TRUE , transform_file = transform_files[2], method = method)
 
   }else{
 
