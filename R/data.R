@@ -13,19 +13,15 @@
 #' }
 "banc.surf"
 
-#' @export
 #' @rdname banc.surf
 "banc_neuropil.surf"
 
-#' @export
 #' @rdname banc.surf
 "banc_brain_neuropil.surf"
 
-#' @export
 #' @rdname banc.surf
 "banc_vnc_neuropil.surf"
 
-#' @export
 #' @rdname banc.surf
 "banc_neck_connective.surf"
 
@@ -87,8 +83,7 @@
 #' @docType data
 "banc_to_jrc2018f_tpsreg"
 
-#' @name banc_to_jrc2018f_tpsreg
-#' @docType data
+#' @rdname banc_to_jrc2018f_tpsreg
 "jrc2018f_to_banc_tpsreg"
 
 #' Thin-Plate Spline Registration for Mirroring in BANC Space
