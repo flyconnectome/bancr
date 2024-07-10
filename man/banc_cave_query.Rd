@@ -15,7 +15,7 @@ sensible default is chosen.}
 \item{live}{Whether to use live query mode, which updates any root ids to
 their current value.}
 
-\item{...}{Additional arguments passed to
+\item{...}{Additional arguments passed to \code{\link{flywire_cave_query}}
 \code{\link[fafbseg]{flywire_cave_query}}}
 }
 \value{

@@ -18,9 +18,9 @@ banc_decapitate(x, y.cut = 325000, invert = FALSE, ...)
 
 \method{banc_decapitate}{neuronlist}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{matrix}(x, y.cut = 325000, invert = FALSE)
+\method{banc_decapitate}{matrix}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{data.frame}(x, y.cut = 325000, invert = FALSE)
+\method{banc_decapitate}{data.frame}(x, y.cut = 325000, invert = FALSE, ...)
 
 \method{banc_decapitate}{mesh3d}(x, y.cut = 325000, invert = FALSE, ...)
 }
@@ -29,6 +29,8 @@ banc_decapitate(x, y.cut = 325000, invert = FALSE, ...)
 Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.}
 
 \item{invert}{if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.}
+
+\item{...}{Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}}
 }
 \value{
 Remove points above or below the midsection of the neck connective of BANC.

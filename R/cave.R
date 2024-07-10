@@ -1,6 +1,6 @@
 #' Query banc tables in the CAVE annotation system
 #'
-#' @param ... Additional arguments passed to
+#' @param ... Additional arguments passed to \code{\link{flywire_cave_query}}
 #'   \code{\link[fafbseg]{flywire_cave_query}}
 #' @inheritParams banc_partner_summary
 #' @inheritParams fafbseg::flywire_cave_query
