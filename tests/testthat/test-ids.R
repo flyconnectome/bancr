@@ -1,4 +1,6 @@
 test_that("banc_xyz2id works", {
+
+  skip('Skipping banc_xyz2id test due to missing supervoxel infrastructure!')
   expect_equal(banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE),
                "648518346499897667")
 
@@ -26,6 +28,7 @@ test_that("banc_ids works", {
 })
 
 test_that("banc_cellid_from_segid", {
+  skip("Skipping banc_cellid_from_segid as BANC doesn't yet have a proper cell_id table")
   rid=banc_latestid("720575941480769421")
   expect_equal(banc_cellid_from_segid(rid),12967L)
 
