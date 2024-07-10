@@ -13,19 +13,19 @@
 #' }
 "banc.surf"
 
-#' @export
+#' @docType data
 #' @rdname banc.surf
 "banc_neuropil.surf"
 
-#' @export
+#' @docType data
 #' @rdname banc.surf
 "banc_brain_neuropil.surf"
 
-#' @export
+#' @docType data
 #' @rdname banc.surf
 "banc_vnc_neuropil.surf"
 
-#' @export
+#' @docType data
 #' @rdname banc.surf
 "banc_neck_connective.surf"
 
