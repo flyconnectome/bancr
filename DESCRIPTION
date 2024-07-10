@@ -3,11 +3,16 @@ Package: bancr
 Title: Support Access to the Brain And Nerve Cord (BANC) Dataset
 Version: 0.1.0
 Authors@R: 
-    person(given = "Alexnder",
+    c(person(given = "Alexnder",
            family = "Bates",
            role = c("aut", "cre"),
            email = "alexander.shakeel.bates@gmail.com",
-           comment = c(ORCID = "0000-0002-1195-0445"))
+           comment = c(ORCID = "0000-0002-1195-0445")),
+      person(given = "Gregory",
+           family = "Jefferis",
+           role = c("aut", "cre"),
+           email = "jefferis@gmail.com",
+           comment = c(ORCID = "0000-0002-0587-9355")))
 Description: Access to the BANC 'righty' EM dataset, focussing on support for
     BANC autosegmentation. Organised as a wrapper around the fafbseg
     package.

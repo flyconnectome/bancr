@@ -6,7 +6,7 @@
 \usage{
 banc_to_JRC2018F(
   x,
-  banc.units = c("nm", "microns", "raw"),
+  banc.units = c("nm", "um", "raw"),
   subset = NULL,
   inverse = FALSE,
   transform_file = NULL,
@@ -17,7 +17,7 @@ banc_to_JRC2018F(
 \item{x}{An object containing 3D points (must be compatible with nat::xyzmatrix).}
 
 \item{banc.units}{Character string specifying the units of the BANC space data (input or output, depending on the inverse argument).
-Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw banc.units). Default is "nm".}
+Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".}
 
 \item{subset}{Optional. A logical vector or expression to subset the input object.}
 
@@ -49,7 +49,7 @@ The default transformation files are included with the package and are located i
 transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 
 # Perform inverse transformation (JRC2018F to BANC)
-inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "microns", inverse = TRUE)
+inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", inverse = TRUE)
 
 # Use a custom transform file
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")

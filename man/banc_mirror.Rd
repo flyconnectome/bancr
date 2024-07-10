@@ -6,7 +6,7 @@
 \usage{
 banc_mirror(
   x,
-  banc.units = c("nm", "microns", "raw"),
+  banc.units = c("nm", "um", "raw"),
   subset = NULL,
   inverse = FALSE,
   transform_files = NULL,
@@ -18,7 +18,7 @@ banc_mirror(
 \item{x}{An object containing 3D points (must be compatible with nat::xyzmatrix).}
 
 \item{banc.units}{Character string specifying the banc.units of the input points.
-Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw banc.units). Default is "nm".}
+Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".}
 
 \item{subset}{Optional. A logical vector or expression to subset the input object.}
 
