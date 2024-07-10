@@ -315,7 +315,7 @@ banc_to_JRC2018F <- function(x,
                              subset = NULL,
                              inverse = FALSE,
                              transform_file = NULL,
-                             method = c("elastix","tpsreg","navis_elastix_xform")){
+                             method = c("tpsreg","elastix","navis_elastix_xform")){
 
   # manage arguments
   banc.units <- match.arg(banc.units)
@@ -361,8 +361,13 @@ banc_to_JRC2018F <- function(x,
     # Result is in um
     xyz2 <- navis_elastix_xform(xyz, transform_file = transform_file)
   }else{
-    # Result is in nm
-    xyz2 <- Morpho::applyTransform(xyz, trafo = banc_to_jrc2018f_tpsreg, inverse = inverse)
+    if(inverse){
+      # Result is in um
+      xyz2 <- Morpho::applyTransform(xyz, trafo = jrc2018f_to_banc_tpsreg, inverse = FALSE)
+    }else{
+      # Result is in nm
+      xyz2 <- Morpho::applyTransform(xyz, trafo = banc_to_jrc2018f_tpsreg, inverse = FALSE)
+    }
   }
 
   ## Decapitate
@@ -421,6 +426,13 @@ banc_to_JRC2018F <- function(x,
 #'
 #' @examples
 #' \dontrun{
+#' # Example using saved tpsreg
+#' banc_neuropil.surf.m <- banc_mirror(banc_neuropil.surf, method = "tpsreg")
+#' clear3d()
+#' banc_view()
+#' plot3d(banc_neuropil.surf, alpha = 0.5, col = "lightgrey")
+#' plot3d(banc_neuropil.surf.m, alpha = 0.5, col = "green")
+#'
 #' # Example using custom Elastix transforms
 #' choose_banc()
 #' rootid <- "720575941626035769"
@@ -451,7 +463,7 @@ banc_mirror <- function(x,
                         subset = NULL,
                         inverse = FALSE,
                         transform_files = NULL,
-                        method = c("elastix","tpsreg","navis_elastix_xform"),
+                        method = c("tpsreg","elastix","navis_elastix_xform"),
                         ...){
 
   # Manage arguments
@@ -483,7 +495,7 @@ banc_mirror <- function(x,
     }
 
     # use pre-calculated tps reg
-    x.banc.m <- nat::xform(xyz, reg = banc_mirror_tpsreg)
+    x.banc.m <- Morpho::applyTransform(xyz, trafo = banc_mirror_tpsreg)
 
     # convert from um to original banc.units if necessary
     if(banc.units=='microns'){
