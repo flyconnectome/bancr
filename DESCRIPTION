@@ -15,7 +15,7 @@ License: GPL-3
 URL: https://github.com/flyconnectome/bancr
 BugReports: https://github.com/flyconnectome/bancr/issues
 Depends: 
-    R (>= 2.10),
+    R (>= 3.5.0),
     fafbseg (>= 0.13.0.9100),
     fancr,
     nat.flybrains
@@ -44,13 +44,15 @@ Suggests:
     spelling,
     arrow,
     ggplot2,
-    ggnewscale
+    ggnewscale,
+    ggpubr
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
     natverse/nat.flybrains,
     natverse/nat.templatebrains,
-    flyconnectome/fancr
+    flyconnectome/fancr,
+    kassambara/ggpubr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
