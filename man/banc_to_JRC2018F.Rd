@@ -10,7 +10,7 @@ banc_to_JRC2018F(
   subset = NULL,
   inverse = FALSE,
   transform_file = NULL,
-  method = c("elastix", "tpsreg")
+  method = c("elastix", "tpsreg", "navis_elastix_xform")
 )
 }
 \arguments{

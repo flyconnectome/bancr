@@ -451,7 +451,7 @@ banc_mirror <- function(x,
     x.jrc2018f <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=FALSE, transform_file = transform_files[1], method = method)
 
     # Mirror
-    x.jrc2018f.m <- nat.templatebrains::mirror_brain(x.jrc2018f, brain = "JRC2018F", ... )
+    x.jrc2018f.m <-  nat.templatebrains::mirror_brain(x.jrc2018f, brain = nat.flybrains::JRC2018F, transform = "flip")
 
     # Back to BANC
     x.banc.m <- banc_to_JRC2018F(x=x, units="um", subset=NULL, inverse=TRUE , transform_file = transform_files[2], method = method)
@@ -459,7 +459,7 @@ banc_mirror <- function(x,
   }else{
 
     # Use pre-calculated tps reg
-    x.banc.m <- nat::xform(xyzf, reg = banc_miror_tpsreg)
+    x.banc.m <- nat::xform(xyzf, reg = banc_mirror_tpsreg)
 
   }
 

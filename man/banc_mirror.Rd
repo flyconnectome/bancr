@@ -10,7 +10,7 @@ banc_mirror(
   subset = NULL,
   inverse = FALSE,
   transform_files = NULL,
-  method = c("elastix", "tpsreg"),
+  method = c("elastix", "tpsreg", "navis_elastix_xform"),
   ...
 )
 }
