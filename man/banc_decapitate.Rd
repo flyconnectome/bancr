@@ -10,19 +10,19 @@
 \alias{banc_decapitate.mesh3d}
 \title{Subset points to be in the brain or in the VNC}
 \usage{
-banc_decapitate(x, y.cut = 5e+05, invert = FALSE, ...)
+banc_decapitate(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{`NULL`}(x, y.cut = 5e+05, invert = FALSE, ...)
+\method{banc_decapitate}{`NULL`}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{neuron}(x, y.cut = 5e+05, invert = FALSE, ...)
+\method{banc_decapitate}{neuron}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{neuronlist}(x, y.cut = 5e+05, invert = FALSE, ...)
+\method{banc_decapitate}{neuronlist}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{matrix}(x, y.cut = 5e+05, invert = FALSE)
+\method{banc_decapitate}{matrix}(x, y.cut = 325000, invert = FALSE)
 
-\method{banc_decapitate}{data.frame}(x, y.cut = 5e+05, invert = FALSE)
+\method{banc_decapitate}{data.frame}(x, y.cut = 325000, invert = FALSE)
 
-\method{banc_decapitate}{mesh3d}(x, y.cut = 5e+05, invert = FALSE, ...)
+\method{banc_decapitate}{mesh3d}(x, y.cut = 325000, invert = FALSE, ...)
 }
 \arguments{
 \item{x}{an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
