@@ -48,7 +48,7 @@ Remotes:
     natverse/nat,
     natverse/fafbseg,
     natverse/nat.flybrains,
-    natverse/nat.templatebrains
+    natverse/nat.templatebrains,
     flyconnectome/fancr
 Config/testthat/edition: 3
 Encoding: UTF-8
