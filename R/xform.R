@@ -272,7 +272,7 @@ navis_elastix_xform <- function(x, transform_file){
 #'
 #' @param x An object containing 3D points (must be compatible with nat::xyzmatrix).
 #' @param banc.units Character string specifying the units of the BANC space data (input or output, depending on the inverse argument).
-#'   Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw banc.units). Default is "nm".
+#'   Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".
 #' @param subset Optional. A logical vector or expression to subset the input object.
 #' @param inverse Logical. If TRUE, performs the inverse transformation (JRC2018F to BANC).
 #'   Default is FALSE.
@@ -295,7 +295,7 @@ navis_elastix_xform <- function(x, transform_file){
 #' transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 #'
 #' # Perform inverse transformation (JRC2018F to BANC)
-#' inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "microns", inverse = TRUE)
+#' inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", inverse = TRUE)
 #'
 #' # Use a custom transform file
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
@@ -311,7 +311,7 @@ navis_elastix_xform <- function(x, transform_file){
 #'
 #' @export
 banc_to_JRC2018F <- function(x,
-                             banc.units = c("nm", "microns", "raw"),
+                             banc.units = c("nm", "um", "raw"),
                              subset = NULL,
                              inverse = FALSE,
                              transform_file = NULL,
@@ -407,7 +407,7 @@ banc_to_JRC2018F <- function(x,
 #'
 #' @param x An object containing 3D points (must be compatible with nat::xyzmatrix).
 #' @param banc.units Character string specifying the banc.units of the input points.
-#'   Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw banc.units). Default is "nm".
+#'   Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".
 #' @param subset Optional. A logical vector or expression to subset the input object.
 #' @param inverse Logical. Not used in this function, kept for compatibility with banc_to_JRC2018F.
 #' @param transform_files Optional. A vector of two file paths for custom transform files.
@@ -459,7 +459,7 @@ banc_to_JRC2018F <- function(x,
 #'
 #' @export
 banc_mirror <- function(x,
-                        banc.units = c("nm", "microns", "raw"),
+                        banc.units = c("nm", "um", "raw"),
                         subset = NULL,
                         inverse = FALSE,
                         transform_files = NULL,
