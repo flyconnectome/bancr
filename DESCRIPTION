@@ -10,7 +10,7 @@ Authors@R:
            comment = c(ORCID = "0000-0002-1195-0445")),
       person(given = "Gregory",
            family = "Jefferis",
-           role = c("aut", "cre"),
+           role = c("aut"),
            email = "jefferis@gmail.com",
            comment = c(ORCID = "0000-0002-0587-9355")))
 Description: Access to the BANC 'righty' EM dataset, focussing on support for
