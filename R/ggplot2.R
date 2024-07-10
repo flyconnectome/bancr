@@ -215,10 +215,10 @@ ggplot2_neuron_path.neuronlist <- function(x, rotation_matrix = NULL, ...){
 #' @rdname ggplot2_neuron_path
 #' @method ggplot2_neuron_path mesh3d
 #' @export
-ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL) {
+ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
 
   # Extract vertices
-  vertices <- as.data.frame(t(mesh$vb[-4,]))
+  vertices <- as.data.frame(t(x$vb[-4,]))
   if(!nrow(vertices)){
     warning("ggplot2_neuron_path.mesh3d given an invalid mesh3d object")
     return(data.frame(X=NA,Y=NA,Z=0,group=NA))
@@ -236,7 +236,7 @@ ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL) {
   }
 
   # Extract faces
-  faces.matrix <- t(mesh$it)
+  faces.matrix <- t(x$it)
   faces <- as.vector(t(faces.matrix))
 
   # Create a data frame of triangles

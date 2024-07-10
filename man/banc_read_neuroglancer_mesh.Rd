@@ -15,6 +15,8 @@ banc_read_neuroglancer_mesh(
 \item{x}{the numeric identifier that specifies the mesh to read, defaults to \code{1} the BANC outline mesh.}
 
 \item{url}{the URL that directs \code{bancr} to where BANC meshes are stored.}
+
+\item{...}{additional arguments to \code{\link{GET}}}
 }
 \value{
 a mesh3d object for the specified mesh.

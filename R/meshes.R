@@ -48,6 +48,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' @param x an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 #' Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.
 #' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
+#' @param ... Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}
 #'
 #' @return Remove points above or below the midsection of the neck connective of BANC.
 #' @seealso \code{\link{banc.surf}}
@@ -87,7 +88,7 @@ banc_decapitate.neuronlist <- function(x, y.cut = 325000, invert = FALSE, ...){
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.matrix <- function(x, y.cut = 325000, invert = FALSE){
+banc_decapitate.matrix <- function(x, y.cut = 325000, invert = FALSE, ...){
   z <- nat::xyzmatrix(x)
   if(invert){
     z[z[,2]<y.cut,]
@@ -98,7 +99,7 @@ banc_decapitate.matrix <- function(x, y.cut = 325000, invert = FALSE){
 
 #' @export
 #' @rdname banc_decapitate
-banc_decapitate.data.frame <- function(x, y.cut = 325000, invert = FALSE){
+banc_decapitate.data.frame <- function(x, y.cut = 325000, invert = FALSE, ...){
   z <- nat::xyzmatrix(x)
   if(invert){
     x[z[,2]<y.cut,]
@@ -122,6 +123,7 @@ banc_decapitate.mesh3d <- function(x, y.cut = 325000, invert = FALSE, ...){
 #'
 #' @param x the numeric identifier that specifies the mesh to read, defaults to \code{1} the BANC outline mesh.
 #' @param url the URL that directs \code{bancr} to where BANC meshes are stored.
+#' @param ... additional arguments to \code{\link{GET}}
 #' @return a mesh3d object for the specified mesh.
 #' @export
 #' @seealso \code{\link{banc_read_neuron_meshes}}
