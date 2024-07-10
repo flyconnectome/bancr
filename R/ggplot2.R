@@ -25,9 +25,6 @@
 #' Each view applies appropriate rotations and uses different neuropil meshes as backgrounds.
 #' The two neurons are plotted in different colors (navy/turquoise for neuron1, red/darkred for neuron2) for easy comparison.
 #'
-#' @importFrom ggplot2 ggplot geom_point scale_color_gradient coord_fixed theme_void theme element_blank margin
-#' @importFrom ggnewscale new_scale_colour new_scale_fill
-#' @importFrom ggpubr ggarrange
 #' @importFrom nat xyzmatrix
 #'
 #' @examples
@@ -51,6 +48,8 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         height = 16) {
 
   # Get 3D spatial points
+  check_package_available('ggplot2')
+  check_package_available('ggpubr')
   glist <- list()
   title.col <- "black"
   if(!"mesh3d"%in%class(banc_brain_neuropil)){
@@ -267,6 +266,8 @@ geom_neuron <-function(x, rotation_matrix = NULL, low = "turquoise", high = "nav
 geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
+
+  check_package_available('ggnewscale')
   soma <- catmaid::soma(x)
   if(!is.null(rotation_matrix)){
     soma <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(soma))))
@@ -305,6 +306,7 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turq
 geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
+  check_package_available('ggnewscale')
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
   list(
     ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = X, y = Y, fill = Z, group = group),
