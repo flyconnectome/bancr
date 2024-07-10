@@ -43,7 +43,9 @@ Suggests:
     rmarkdown,
     spelling,
     arrow,
-    ggplot2
+    ggplot2,
+    ggnewscale,
+    ggpubr
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
