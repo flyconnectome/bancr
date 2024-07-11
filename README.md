@@ -69,6 +69,15 @@ You can install full set of recommended libraries including `fafbseg-py`:
 simple_python("full")
 ```
 
+Note that this package is designed to play nicely with `fafbseg`, which has
+been used mainly for the FAFB-FlyWire project, but could be used to work with
+data from many neuroglancer/CAVE based projects.
+
+Use `with_banc()` to wrap many additional fafbseg::flywire_* functions 
+for use with the BANC. Alternatively `choose_banc()` to set all 
+`flywire_*` functions from `fafbseg` to target the BANC. Not all functions
+will work.
+
 ### Updating
 
 You can just repeat the install instructions, but this ensures
@@ -94,12 +103,11 @@ First we need to load the package, and direct ourselves to the BANC data set.
 
 ```r
 library(bancr)
-choose_banc()
 ```
 
 ### Identify the neurons we care about
 
-Next, let's query a BANC CAVE table in order to get the neurons users have 
+Next, let us query a BANC CAVE table in order to get the neurons users have 
 annotated as 'ascending' neurons, i.e. neurons that have their cell bodies
 and dendrites in the ventral nerve cord, and their axons in the brain.
 
@@ -232,7 +240,7 @@ plot(g)
 
 ### Left-right mirror BANC neurons
 
-Using a bridge to the symmetric templatebrain (see below), 
+Using a bridge to the symmetric 'template brain' (see below), 
 we can 'mirror' neurons in BANC even though it is an unsymmetric space.
 
 ```r
@@ -273,16 +281,110 @@ a thinplate-spine registration that is based on the Elastix transform,
 made and applied using the R package `Morpho` (implemented as `method="tpsreg"`)
 . The end result of the two methods can be very slightly different.
 
-```r
-```
+Firstly, let's just take the brain part of the ANs we have, as `JRC2018F` only
+include the brain.
 
 ```r
+# Show only the portion in the brain
+an1.mesh.simp <- neuronlist(an1.right.mesh.simp, an1.left.mesh.simp)
+an1.mesh.simp.brain  <- banc_decapitate(an1.mesh.simp, invert = TRUE)
+
+# Convert to JRC2018F space
+an1.mesh.simp.brain.jrc2018f <- banc_to_JRC2018F(an1.mesh.simp.brain,
+                                                  method = "tpsreg",
+                                                  banc.units = "nm")
+
+# Plot in JRC2018 space
+nopen3d()
+plot3d(JRC2018F.surf, col = "lightgrey", alpha = 0.1)
+plot3d(an1.mesh.simp.brain.jrc2018f, col = c("turquoise", "navy"), alpha = 0.75, add = TRUE)
 ```
+
+We can now read a neuron from FAFB-Flywire. I already know the ID of the 
+comparable FAFB-FlyWire neurons to fetch.
+
+We need to load a new R package first.
+
+```r
+if (!requireNamespace("remotes")) install.packages("remotes")
+remotes::install_github('natverse/nat.jrcbrains')
+
+library(nat.jrcbrains)
+
+## You may need to download the relevant registration, if you have not already:
+# download_saalfeldlab_registrations()
+```
+And then get known FAFB-FlyWire neurons.
+
+```r
+## if you previously ran choose_banc()
+## now run: 
+# choose_segmentation("flywire31")
+# Which directs you towards the active FAFB-FlyWire segmentation
+
+# Define the IDs we wish to fetch
+fw.an1.ids <- c("720575940626768442", "720575940636821616")
+
+# Get neuron meshes
+fw.an1.meshes <- read_cloudvolume_meshes(fw.an1.ids)
+
+# Convert to JRC2018F
+fw.an1.meshes.jrc2018f <- xform_brain(fw.an1.meshes. sample = "FAFB14",
+reference = "JRC2018F")
+
+# Add to plot
+plot3d(fw.an1.meshes.jrc2018f, col = c("red","orange"), alpha = 1, add = TRUE)
+```
+
+We can do the same with the hemibrain.
+
+We need to load a new R package first.
+
+```r
+if (!requireNamespace("remotes")) install.packages("remotes")
+remotes::install_github('flyconnectome/hemibrainr')
+
+library(hemibrainr)
+``` 
+
+And now we can get the equivalent hemibrain neuron.
+
+```r
+# Read hemibrain neuron
+hb.an1 <- "706176085"
+
+# Read mesh, divide by 1000 to reach microns
+hb.an1.mesh <- hemibrain_neuron_meshes(hb.an1)
+
+# Transforms to JRC2018F, divide by 1000 to reach microns for JRCFIB2018F
+hb.an1.mesh.jrc2018f <- xform_brain(hb.an1.mesh/1000, sample = "JRCFIB2018F", reference = "JRC2018F")
+
+# Add to plot
+plot3d(hb.an1.mesh.jrc2018f , col = c("chartreuse"), alpha = 1, add = TRUE)
+```
+
+Now we see all related neurons from three data sets in one space. Awesome!
 
 We can also see the difference between the Elastix registration and the `Morpho`
 based on.
 
+You will first need to download and install Elastix. To do so, you can follow
+the instructions here. Remember that the Elastix binaries must be on your
+`PATH` and your system must be able to see its libraries. On MacOSX it is tricky
+to just install and use the Elastix binaries, you need instead to compile 
+ITK then Elastix yourself.
+
 ```r
+# Transform with Elastix
+an1.mesh.simp.brain.jrc2018f.elastix <- banc_to_JRC2018F(an1.mesh.simp.brain,
+                                                  method = "elastix",
+                                                  banc.units = "nm")
+
+# Plot in JRC2018 space
+nopen3d()
+plot3d(JRC2018F.surf, col = "lightgrey", alpha = 0.1)
+plot3d(an1.mesh.simp.brain.jrc2018f, col = "blue", alpha = 0.75, add = TRUE)
+plot3d(an1.mesh.simp.brain.jrc2018f.elastix, col = "green", alpha = 0.75, add = TRUE)
 ```
 
 
