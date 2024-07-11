@@ -317,9 +317,6 @@ navis_elastix_xform <- function(x, transform_file){
 #' # Transform points from BANC to JRC2018F
 #' transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 #'
-#' # Perform inverse transformation (JRC2018F to BANC)
-#' inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", inverse = TRUE)
-#'
 #' # Use a custom transform file
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 #'
@@ -366,7 +363,7 @@ banc_to_JRC2018F <- function(x,
 
   # convert to um if necessary
   xyz <- nat::xyzmatrix(x)
-  if(isFALSE(inverse)){
+  if(isFALSE(inverse) && grepl("elastix",method)){
     if(banc.units=='nm'){
       xyz <- xyz/1e3
     }else if(banc.units=='raw'){
@@ -388,14 +385,16 @@ banc_to_JRC2018F <- function(x,
     xyz2 <- navis_elastix_xform(xyz, transform_file = transform_file)
   }else{
     if(inverse){
-      # Result is in um
+      # Result is in nm
+      utils::data("jrc2018f_to_banc_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = utils::data("jrc2018f_to_banc_tpsreg", envir = environment()),
+                                     trafo = jrc2018f_to_banc_tpsreg,
                                      inverse = FALSE)
     }else{
-      # Result is in nm
+      # Result is in um
+      utils::data("banc_to_jrc2018f_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = utils::data("banc_to_jrc2018f_tpsreg", envir = environment()),
+                                     trafo = banc_to_jrc2018f_tpsreg,
                                      inverse = FALSE)
     }
   }
