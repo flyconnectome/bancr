@@ -71,12 +71,12 @@ banc_scene <- function(ids=NULL, open=FALSE) {
 #' options()[grep("^fafbseg.*url", names(options()))]
 #' }
 choose_banc <- function(set=TRUE) {
-  fafbseg::choose_segmentation(banc_scene(), set=set,
-                               moreoptions=list(fafbseg.cave.datastack_name=banc_datastack_name()))
-  fafbseg.cloudvolume.url <- getOption("fafbseg.cloudvolume.url")
-  fafbseg.cloudvolume.url <- gsub("middleauth\\+","",fafbseg.cloudvolume.url)
-  options(fafbseg.cloudvolume.url=fafbseg.cloudvolume.url)
-  invisible()
+  fafbseg::choose_segmentation(
+    banc_scene(),
+    set=set,
+    moreoptions=list(
+      fafbseg.cave.datastack_name=banc_datastack_name()
+      ))
 }
 
 #' @param expr An expression to evaluate while banc is the default
