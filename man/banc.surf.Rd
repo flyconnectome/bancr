@@ -7,6 +7,8 @@
 \alias{banc_brain_neuropil.surf}
 \alias{banc_vnc_neuropil.surf}
 \alias{banc_neck_connective.surf}
+\alias{banc_neuropils.surf}
+\alias{banc_al.surf}
 \title{Simplified tissue surface of BANC}
 \format{
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
@@ -18,6 +20,10 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} of length 4.
 }
 \usage{
 banc.surf
@@ -29,10 +35,17 @@ banc_brain_neuropil.surf
 banc_vnc_neuropil.surf
 
 banc_neck_connective.surf
+
+banc_neuropils.surf
+
+banc_al.surf
 }
 \description{
-This is unsymmetrical and not a normalised version of the mesh.
-It is the outline of the dataset in native voxel space.
+\code{banc.surf} is unsymmetrical and not a normalised version of the mesh.
+It is the outline of the dataset in nanometers.\code{banc_neuropil.surf} represents the synaptic neuropil.
+Built from the BANC synapse coud, but not optimised to inlude 100\% of bone fide presynapses.
+\code{banc_neuropils.surf} contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
+\code{banc_al.surf} contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
 }
 \examples{
 \dontrun{
