@@ -9,7 +9,7 @@ banc_read_neuron_meshes(ids, savedir = NULL, format = c("ply", "obj"), ...)
 
 banc_read_nuclei_mesh(
   ids,
-  lod = 1L,
+  lod = 0L,
   savedir = NULL,
   method = c("vf", "ply"),
   ...

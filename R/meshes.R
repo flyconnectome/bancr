@@ -30,7 +30,7 @@ banc_read_neuron_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), .
 
 #' @export
 #' @rdname banc_read_neuron_meshes
-banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', 'ply'), ...) {
+banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', 'ply'), ...) {
   cvu <- "precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/nuclei/seg_v1"
   cv <- fafbseg::flywire_cloudvolume(cloudvolume.url = cvu)
   li <- reticulate::py_eval(ids, convert = F)
