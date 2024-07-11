@@ -14,11 +14,11 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # NB id must be up to date
 #' sample_id=banc_latestid("720575941480769421")
 #' head(banc_partner_summary(sample_id))
 #' head(banc_partner_summary(sample_id, partners='inputs'))
-#' \dontrun{
 #' # get the latest id for an outdate
 #' banc_partner_summary(banc_latestid("720575941480769421"))
 #'
