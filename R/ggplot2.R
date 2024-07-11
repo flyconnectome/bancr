@@ -98,9 +98,9 @@ banc_neuron_comparison_plot <- function(neuron1,
     # Create the plot
     p <- ggplot2::ggplot() +
       geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, low = "grey95", high = "grey50") +
-      geom_neuron(x=neuron_pruned1[[1]], rotation_matrix = rotation_matrix, low = "turquoise", high = "navy", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned2[[1]], rotation_matrix = rotation_matrix, low = "red", high = "darkred", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned3[[1]], rotation_matrix = rotation_matrix, low = "chartreuse", high = "darkgreen", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, low = "turquoise", high = "navy", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, low = "red", high = "darkred", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, low = "chartreuse", high = "darkgreen", alpha = 0.5, linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
