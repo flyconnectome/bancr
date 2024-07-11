@@ -35,11 +35,11 @@ banc_rootid <- function(x, integer64 = FALSE, ...) {
 #'
 #' @examples
 #' \dontrun{
-#' svids=banc_leaves("720575941650432785")
+#' svids=banc_leaves("720575941478275714")
 #' head(svids)
 #' }
 banc_leaves <- function(x, integer64=TRUE, ...) {
-  svids=flywire_leaves(x=x, integer64 = integer64, cloudvolume.url = banc_cloudvolume_url(), ...)
+  svids=with_banc(flywire_leaves(x=x, integer64 = integer64, ...))
   svids
 }
 

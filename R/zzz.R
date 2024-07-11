@@ -7,7 +7,8 @@
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
-    'Do `choose_banc()` to use many fafbseg::flywire_* functions!\n',
+    'Use `with_banc()` to wrap many additional fafbseg::flywire_* functions for use with the BANC\n',
+    'Alternatively `choose_banc()` to set all flywire_* functions to target the BANC!\n',
     'Use dr_banc() to get a report on your installation.\n',
     'Trouble? Visit https://flyconnectome.github.io/bancr/SUPPORT.html or #code on banc Slack')
 }

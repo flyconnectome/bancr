@@ -10,10 +10,7 @@
 \alias{banc_backbone_proofread}
 \title{Read BANC CAVE-tables, good sources of metadata}
 \usage{
-banc_cave_tables(
-  datastack_name = getOption("fafbseg.cave.datastack_name"),
-  select = NULL
-)
+banc_cave_tables(datastack_name = NULL, select = NULL)
 
 banc_nuclei(
   rootids = NULL,
@@ -63,10 +60,8 @@ all queryable cave tables.
 Read BANC CAVE-tables, good sources of metadata
 }
 \examples{
-\donttest{
-all_banc_soma_positions <- banc_nuclei()
-}
 \dontrun{
+all_banc_soma_positions <- banc_nuclei()
 points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 }
 }

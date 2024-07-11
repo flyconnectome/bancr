@@ -136,7 +136,7 @@ banc_neuron_comparison_plot <- function(neuron1,
   ga <- ggpubr::ggarrange(glist[["main"]], glist[["side"]], glist[["front"]], glist[["vnc"]],
             heights = c(1, 1, 1, 1), widths = c(1, 1, 1, 1),
             ncol = 2, nrow = 2) +
-    ggplot2::theme(plot.margin = margin(0,0,0,0, "cm"))
+    ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
 
   # # Annotate with some more information
   # if(!is.null(neuron1.info)&!is.null(neuron2.info)){

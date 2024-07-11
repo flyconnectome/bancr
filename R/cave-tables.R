@@ -24,8 +24,10 @@
 #' points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 #' }
 #' @importFrom magrittr "%>%"
-banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"),
+banc_cave_tables <- function(datastack_name = NULL,
                              select = NULL){
+  if(is.null(datastack_name))
+    datastack_name=banc_datastack_name()
   fac <- flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
   if (!is.null(dsinfo$soma_table))
@@ -58,40 +60,35 @@ banc_nuclei <- function (rootids = NULL,
   if (!is.null(rootids) & !is.null(nucleus_ids))
     stop("You must supply only one of rootids or nucleus_ids!")
   res <- if (is.null(rootids) && is.null(nucleus_ids))
-    banc_cave_query(table =  table , ...)
+    banc_cave_query(table = table, ...)
   else if (!is.null(rootids)) {
     rootids <- banc_ids(rootids)
-    nuclei <- if (length(rootids) < 200) {
-      rid <- paste(rootids, collapse = ",")
-      ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
-                                         rid), convert = F)
-      banc_cave_query(table =  table,
-                         filter_in_dict = ridq, ...)
-    }
-    else {
-      banc_cave_query(table =  table,
-                         live = F, ...)
-    }
+    nuclei <- if (length(rootids) < 200)
+      banc_cave_query(table =  table, filter_in_dict = list(pt_root_id=rootids),
+                      ...)
+    else
+      banc_cave_query(table =  table, live = F, ...)
     if (nrow(nuclei) == 0)
       return(nuclei)
     nuclei <- nuclei %>%
       dplyr::right_join(data.frame(pt_root_id = as.integer64(rootids)),
-                                    by = "pt_root_id") %>%
+                        by = "pt_root_id") %>%
       dplyr::select(colnames(nuclei))
     if (length(rootids) < 200) {
       nuclei
     }
     else {
-      nuclei %>% dplyr::mutate(pt_root_id = with_banc(flywire_updateids(.data$pt_root_id,
-                                                       svids = .data$pt_supervoxel_id)))
+      nuclei %>%
+        dplyr::mutate(
+          pt_root_id = with_banc(flywire_updateids(
+            .data$pt_root_id,
+            svids = .data$pt_supervoxel_id)))
     }
-  }else{
-    nid <- paste(nucleus_ids, collapse = ",")
-    nidq <- reticulate::py_eval(sprintf("{\"id\": [%s]}",
-                                       nid), convert = F)
+  } else {
     nuclei <- banc_cave_query(table = table,
-                                filter_in_dict = nidq, ...)
-    nuclei %>% dplyr::right_join(data.frame(id = nucleus_ids), by = "id") %>%
+                                filter_in_dict = list(id=nucleus_ids), ...)
+    nuclei %>%
+      dplyr::right_join(data.frame(id = as.integer64(nucleus_ids)), by = "id") %>%
       dplyr::select(colnames(nuclei))
   }
   res
@@ -107,22 +104,23 @@ banc_nuclei <- function (rootids = NULL,
 
 #' @rdname banc_cave_tables
 #' @export
+#' @importFrom dplyr mutate ends_with across
+#' @importFrom nat xyzmatrix2str
 banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   table <- "cell_info"
   res <- get_cave_table_data(table)
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
-      nat::xyzmatrix2str(fancr::banc_raw2nm(x))))
+    res %>% mutate(across(ends_with("position"),
+                          function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_cell_ids <- function(rootids = NULL){
-  table <- "cell_ids"
-  get_cave_table_data(table)
+  get_cave_table_data('cell_ids', rootids)
 }
 
 #' @rdname banc_cave_tables
@@ -130,21 +128,19 @@ banc_cell_ids <- function(rootids = NULL){
 banc_neck_connective_neurons <- function(rootids = NULL,
                                          table = c("neck_connective_y92500", "neck_connective_y121000")){
   table <- match.arg(table)
-  get_cave_table_data(table)
+  get_cave_table_data(table, rootids)
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_peripheral_nerves <- function(rootids = NULL){
-  table <- "peripheral_nerves"
-  get_cave_table_data(table)
+  get_cave_table_data("peripheral_nerves", rootids)
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_backbone_proofread <- function(rootids = NULL){
-  table <- "backbone_proofread"
-  get_cave_table_data(table)
+  get_cave_table_data("backbone_proofread", rootids)
 }
 
 # hidden
@@ -152,16 +148,12 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
   if (!is.null(rootids)) {
     rootids <- flywire_ids(rootids)
     df <- if (length(rootids) < 200) {
-      rid <- paste(rootids, collapse = ",")
-      ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
-                                         rid), convert = F)
       fafbseg::flywire_cave_query(table =  table,
-                         filter_in_dict = ridq, ...)
+                         filter_in_dict = list(pt_root_id=rootids), ...)
     } else {
-      fafbseg::flywire_cave_query(table =  table,
-                         live = F, ...)
+      fafbseg::flywire_cave_query(table =  table, live = F, ...)
     }
-  }else{
+  } else {
     df <- fafbseg::flywire_cave_query(table =  table , ...)
   }
   df
