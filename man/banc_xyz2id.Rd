@@ -36,8 +36,10 @@ clearly shows voxel coordinates of 4.3x4.3x45. But in this function, the
 voxel coordinates must be set to 4.25 in x-y to give the correct answers.
 }
 \examples{
+\dontrun{
 # a point from neuroglancer, should map to 648518346498932033
 banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE)
+}
 }
 \seealso{
 \code{\link{flywire_xyz2id}}
