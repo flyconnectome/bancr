@@ -268,6 +268,7 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquois
                                inherit.aes = FALSE, ...) {
 
   check_package_available('ggnewscale')
+  check_package_available('catmaid')
   soma <- catmaid::soma(x)
   if(!is.null(rotation_matrix)){
     soma <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(soma))))

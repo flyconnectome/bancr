@@ -191,6 +191,7 @@ check_if_possible <- function(file, on_error = "raise") {
 #' @param filepath Path where the input file should be written.
 #'
 #' @keywords internal
+#' @importFrom utils write.table
 write_elastix_input_file <- function(points, filepath) {
   cat("point\n", nrow(points), "\n", file = filepath)
   write.table(points, filepath, append = TRUE, col.names = FALSE,
