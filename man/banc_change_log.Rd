@@ -39,6 +39,6 @@ private \code{bancr:::banc_change_log_zetta} function.
 }
 \examples{
 \donttest{
-banc_change_log("648518346473954669")
+banc_change_log("720575941477428704")
 }
 }

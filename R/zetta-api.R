@@ -14,7 +14,7 @@
 #' @inheritParams fafbseg::flywire_change_log
 #' @examples
 #' \donttest{
-#' banc_change_log("648518346473954669")
+#' banc_change_log("720575941477428704")
 #' }
 banc_change_log <- function(x, tz="UTC", filtered=TRUE, OmitFailures=TRUE, ...) {
   x=banc_ids(x)
