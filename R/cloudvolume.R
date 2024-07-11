@@ -6,7 +6,7 @@ banc_cloudvolume <- function(...) {
 
 # hidden
 banc_cloudvolume_url <- function() {
-  rr=with_banc(getOption("fafbseg.cloudvolume.url"), force = FALSE)
+  rr=with_banc(getOption("fafbseg.cloudvolume.url"))
   sub("graphene://middleauth+", "graphene://", rr, fixed = TRUE)
 }
 
