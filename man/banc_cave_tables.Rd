@@ -2,30 +2,46 @@
 % Please edit documentation in R/cave-tables.R
 \name{banc_cave_tables}
 \alias{banc_cave_tables}
+\alias{banc_nuclei}
+\alias{banc_cell_info}
+\alias{banc_cell_ids}
+\alias{banc_neck_connective_neurons}
+\alias{banc_peripheral_nerves}
+\alias{banc_backbone_proofread}
 \title{Read BANC CAVE-tables, good sources of metadata}
 \usage{
 banc_cave_tables(
   datastack_name = getOption("fafbseg.cave.datastack_name"),
   select = NULL
 )
+
+banc_nuclei(
+  rootids = NULL,
+  nucleus_ids = NULL,
+  table = c("somas_v1a", "somas_v1b"),
+  rawcoords = FALSE,
+  ...
+)
+
+banc_cell_info(rootids = NULL, rawcoords = FALSE)
+
+banc_cell_ids(rootids = NULL)
+
+banc_neck_connective_neurons(
+  rootids = NULL,
+  table = c("neck_connective_y92500", "neck_connective_y121000")
+)
+
+banc_peripheral_nerves(rootids = NULL)
+
+banc_backbone_proofread(rootids = NULL)
 }
 \arguments{
 \item{datastack_name}{Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.}
 
 \item{select}{A regex term for the name of the table you want}
 
-\item{rootids}{Character vector specifying one or more BANC rootids.
-For some functions if rootids is \code{NULL}, a logical is returned,
-e.g \code{banc_neck_connective_neurons} will let you know if the query is in the
-neck connective or not.
-As a convenience for flywire_partner_summary this argument is passed to \code{fafbseg::flywire_ids} allowing you to pass in data.frames,
-flywire URLs or cell type queries.}
-
-\item{flywire_nuclei}{Ids from the nucleus table to return (optional, NB only one of rootids and nucleus_ids can be provided).}
-
 \item{table}{Possible alternative tables for the sort of data frame the function returns. One must be chosen.}
-
-\item{rawcoords}{Whether to return coordinates in raw form rather than nm (default \code{FALSE}).}
 
 \item{...}{Additional arguments passed to
 \code{fafbseg::\link{flywire_cave_query}}}
@@ -43,7 +59,6 @@ Read BANC CAVE-tables, good sources of metadata
 all_banc_soma_positions <- banc_nuclei()
 points3d(nat::xyzmatrix(all_banc_soma_positions))
 }
-
 }
 \seealso{
 \code{fafbseg::\link{flywire_cave_query}}

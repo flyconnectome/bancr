@@ -2,9 +2,18 @@
 % Please edit documentation in R/meshes.R
 \name{banc_read_neuron_meshes}
 \alias{banc_read_neuron_meshes}
+\alias{banc_read_nuclei_mesh}
 \title{Read one or more BANC neuron and nuclei meshes}
 \usage{
 banc_read_neuron_meshes(ids, savedir = NULL, format = c("ply", "obj"), ...)
+
+banc_read_nuclei_mesh(
+  ids,
+  lod = 1L,
+  savedir = NULL,
+  method = c("vf", "ply"),
+  ...
+)
 }
 \arguments{
 \item{ids}{One or more root ids}

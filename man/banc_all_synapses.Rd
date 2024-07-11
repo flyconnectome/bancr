@@ -23,6 +23,10 @@ a taster of the file.}
 
 \item{details}{Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
 \code{FALSE} in order to read only the essential presynapse position data.}
+
+\item{min_size}{Numeric, filter parameter, the minimum size (in nm) of the detected synapse.}
+
+\item{rawcoords}{Logical, whether or not yto convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 }
 \value{
 a data.frame
@@ -39,7 +43,6 @@ lazily so as not to throw the whole thing into system memory.
 \dontrun{
 syns <- banc_all_synapses()
 }
-Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 }
 \seealso{
 \code{\link{banc_partner_summary}}, \code{\link{banc_partners}}

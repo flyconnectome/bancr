@@ -77,5 +77,5 @@ plot3d(neuron.mesh.mirror, col = "cyan")
 }
 \seealso{
 \code{\link{banc_to_JRC2018F}} for the underlying transformation function.
-\code{\link{nat.templatebrains::mirror_brain}} for the mirroring operation in JRC2018F space.
+\code{nat.templatebrains::\link{mirror_brain}} for the mirroring operation in JRC2018F space.
 }
