@@ -13,7 +13,7 @@ A reticulate R object wrapping the python CAVEclient.
 Low level access to banc's CAVE annotation infrastructure
 }
 \examples{
-\donttest{
+\dontrun{
 fcc=banc_cave_client()
 tables=fcc$annotation$get_tables()
 fcc$materialize$get_table_metadata(tables[1])

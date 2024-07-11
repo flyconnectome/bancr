@@ -69,8 +69,8 @@ neuron.mesh.brain <- banc_decapitate(neuron.mesh, invert = TRUE)
 
 # Mirror in BANC space
 neuron.mesh.mirror <- banc_mirror(neuron.mesh.brain,
-                                 transform_files = c("/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt",
-                                                      "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/template_to_BANC.txt"))
+transform_files = c("brain_240707/BANC_to_template.txt",
+ "brain_240707/template_to_BANC.txt"))
 plot3d(neuron.mesh.mirror, col = "cyan")
 }
 

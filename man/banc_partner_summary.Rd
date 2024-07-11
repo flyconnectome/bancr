@@ -18,9 +18,9 @@ banc_partner_summary(
 banc_partners(rootids, partners = c("input", "output"), ...)
 }
 \arguments{
-\item{rootids}{Character vector specifying one or more flywire rootids. As a
+\item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
-to pass in data.frames, flywire URLs or simple ids.}
+to pass in data.frames, BANC URLs or simple ids.}
 
 \item{partners}{Whether to fetch input or output synapses or both.}
 
@@ -50,20 +50,6 @@ connection (including its xyz location).
 note that the rootids you pass in must be up to date. See example.
 }
 \examples{
-# NB id must be up to date
-sample_id=banc_latestid("720575941480769421")
-head(banc_partner_summary(sample_id))
-head(banc_partner_summary(sample_id, partners='inputs'))
-\dontrun{
-# get the latest id for an outdate
-banc_partner_summary(banc_latestid("720575941480769421"))
-
-## open banc/flywire scene containing top partners
-library(dplyr)
-banc_partner_summary(banc_latestid("720575941480769421"), partners='inputs') \%>\%
-  slice_max(weight, n = 20) \%>\%
-  banc_scene(open=TRUE)
-}
 \dontrun{
 # plot input and output synapses of a neuron
 nclear3d()

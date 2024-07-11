@@ -47,9 +47,9 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
                                         neuron3.info = NULL,
-                                        banc_brain_neuropil = banc_brain_neuropil.surf,
-                                        banc_vnc_neuropil = banc_vnc_neuropil.surf,
-                                        banc_neuropil = banc_neuropil.surf,
+                                        banc_brain_neuropil = NULL,
+                                        banc_vnc_neuropil = NULL,
+                                        banc_neuropil = NULL,
                                         filename = NULL,
                                         width = 16,
                                         height = 16) {
@@ -57,6 +57,9 @@ banc_neuron_comparison_plot <- function(neuron1,
   # Get 3D spatial points
   glist <- list()
   title.col <- "black"
+  if(is.null(banc_brain_neuropil)) banc_brain_neuropil <- utils::data("banc_brain_neuropil.surf", envir = environment())
+  if(is.null(banc_vnc_neuropil)) banc_vnc_neuropil <- utils::data("banc_vnc_neuropil.surf", envir = environment())
+  if(is.null(banc_neuropil)) banc_neuropil <- utils::data("banc_neuropil.surf", envir = environment())
   for(view in names(banc_rotation_matrices)){
 
     # Choose mesh
@@ -224,10 +227,10 @@ ggplot2_neuron_path.neuronlist <- function(x, rotation_matrix = NULL, ...){
 #' @rdname ggplot2_neuron_path
 #' @method ggplot2_neuron_path mesh3d
 #' @export
-ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL, ...) {
+ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
 
   # Extract vertices
-  vertices <- as.data.frame(t(mesh$vb[-4,]))
+  vertices <- as.data.frame(t(x$vb[-4,]))
   if(!nrow(vertices)){
     warning("ggplot2_neuron_path.mesh3d given an invalid mesh3d object")
     return(data.frame(X=NA,Y=NA,Z=0,group=NA))
@@ -245,7 +248,7 @@ ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL, ...) {
   }
 
   # Extract faces
-  faces.matrix <- t(mesh$it)
+  faces.matrix <- t(x$it)
   faces <- as.vector(t(faces.matrix))
 
   # Create a data frame of triangles
@@ -256,7 +259,7 @@ ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL, ...) {
     group = rep(1:nrow(faces.matrix), each = 3)
   )
   triangles <- triangles %>%
-    dplyr::arrange(dplyr::desc(Z))
+    dplyr::arrange(dplyr::desc(.data$Z))
 
   # return: triangles
   triangles
@@ -289,6 +292,7 @@ ggplot2_neuron_path.mesh3d <- function(mesh, rotation_matrix = NULL, ...) {
 #' ggplot() + geom_neuron(my_mesh)
 #' }
 #'
+#' @importFrom rlang .data
 #' @export
 geom_neuron <-function(x, rotation_matrix = NULL, low = "turquoise", high = "navy",
                        stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
@@ -308,10 +312,11 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquois
   }
   x <- ggplot2_neuron_path.neuron(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = X, y = Y, color = Z, group = group), data = x,
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z, group = .data$group),
+                       data = x,
               stat = stat, position = position, na.rm = na.rm,
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
-    ggplot2::geom_point(mapping = ggplot2::aes(x = X, y = Y), data = soma,
+    ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y), data = soma,
                          color = high, alpha = 0.5, size = 3),
     ggplot2::scale_color_gradient(low = low, high = high),
     ggnewscale::new_scale_colour()
@@ -326,7 +331,7 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turq
                                inherit.aes = FALSE, ...) {
   x <- ggplot2_neuron_path.neuronlist(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = X, y = Y, color = id, group = group), data = x,
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$id, group = .data$group), data = x,
                        stat = stat, position = position, na.rm = na.rm,
                        show.legend = show.legend, inherit.aes = inherit.aes, ...)
   )
@@ -340,7 +345,7 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "turquois
                                    inherit.aes = FALSE, ...) {
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = X, y = Y, fill = Z, group = group),
+    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, fill = .data$Z, group = .data$group),
                     color = NA,
                     stat = stat, position = position, na.rm = na.rm,
                     show.legend = show.legend, inherit.aes = inherit.aes, ...),

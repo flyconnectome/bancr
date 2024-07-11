@@ -22,22 +22,27 @@ BugReports: https://github.com/flyconnectome/bancr/issues
 Depends: 
     R (>= 3.5.0),
     fafbseg (>= 0.13.0.9100),
-    fancr,
     nat.flybrains
 Imports: 
+    fancr,
     nat,
     nat.templatebrains,
+    catmaid,
+    malevnc,
+    rlang,
+    rgl,
     bit64,
     httr,
     jsonlite,
     pbapply,
     dplyr,
+    magrittr,
     glue,
     DBI,
     RSQLite,
     readr,
     checkmate,
-    stringr,
+    utils,
     ggplot2,
     ggnewscale,
     ggpubr
@@ -56,6 +61,8 @@ Remotes:
     natverse/fafbseg,
     natverse/nat.flybrains,
     natverse/nat.templatebrains,
+    natverse/rcatmat,
+    natverse/malevnc,
     flyconnectome/fancr,
     kassambara/ggpubr
 Config/testthat/edition: 3
