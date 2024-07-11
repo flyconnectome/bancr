@@ -126,7 +126,6 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
   with_banc(fafbseg::flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
 }
 
-
 #' Return a vector of banc root ids from diverse inputs
 #'
 #' @param x A data.frame, URL or vector of ids
@@ -157,7 +156,7 @@ banc_ids <- function(x, integer64=NA) {
   else x
 }
 
-#' Convert between banc cell ids and root ids
+#' Convert between BANC cell ids and root ids
 #'
 #' @description Converts between BANC cell ids (should survive most edits) and
 #'   root ids (guaranteed to match just one edit state). See details.

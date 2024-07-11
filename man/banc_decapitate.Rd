@@ -19,9 +19,9 @@ banc_decapitate(x, y.cut = 325000, invert = FALSE, ...)
 
 \method{banc_decapitate}{neuronlist}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{matrix}(x, y.cut = 325000, invert = FALSE)
+\method{banc_decapitate}{matrix}(x, y.cut = 325000, invert = FALSE, ...)
 
-\method{banc_decapitate}{data.frame}(x, y.cut = 325000, invert = FALSE)
+\method{banc_decapitate}{data.frame}(x, y.cut = 325000, invert = FALSE, ...)
 
 \method{banc_decapitate}{mesh3d}(x, y.cut = 325000, invert = FALSE, ...)
 
@@ -30,6 +30,9 @@ banc_decapitate(x, y.cut = 325000, invert = FALSE, ...)
 \arguments{
 \item{x}{an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.}
+
+\item{y.cut}{Numeric, the Y-axis cut point, in nanometers, in BANC space,
+that separates the head from the neck and ventral nerve cord.}
 
 \item{invert}{if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.}
 }

@@ -37,7 +37,10 @@ Imports:
     RSQLite,
     readr,
     checkmate,
-    stringr
+    stringr,
+    ggplot2,
+    ggnewscale,
+    ggpubr
 Suggests: 
     testthat (>= 3.0.0),
     reticulate,
@@ -47,10 +50,7 @@ Suggests:
     usethis,
     rmarkdown,
     spelling,
-    arrow,
-    ggplot2,
-    ggnewscale,
-    ggpubr
+    arrow
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
@@ -59,8 +59,10 @@ Remotes:
     flyconnectome/fancr,
     kassambara/ggpubr
 Config/testthat/edition: 3
+LazyDataCompression:xz
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+

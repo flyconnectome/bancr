@@ -10,6 +10,8 @@
 #' a taster of the file.
 #' @param details Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
 #' \code{FALSE} in order to read only the essential presynapse position data.
+#' @param min_size Numeric, filter parameter, the minimum size (in nm) of the detected synapse.
+#' @param rawcoords Logical, whether or not yto convert from raw coordinates into nanometers. Default is `FALSE`.
 #'
 #' @return a data.frame
 #'
@@ -20,14 +22,12 @@
 #' \dontrun{
 #' syns <- banc_all_synapses()
 #' }
-#' Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df",
                               overwrite = FALSE,
                               n_max = 2000,
                               details = FALSE,
                               min_size = 10,
                               rawcoords = FALSE){
-
   # Correct path to de-authenticate it, use https
   path <- gsub("^gs\\:\\/","https://storage.googleapis.com",path)
 
@@ -111,6 +111,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
   dplyr::tbl(src = con, from = "synapses")
 
 }
+# Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 
 # # googleCloudStorageR
 # banc_gcs_read <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df"){
