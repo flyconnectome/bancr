@@ -65,6 +65,8 @@ Read BANC CAVE-tables, good sources of metadata
 \examples{
 \donttest{
 all_banc_soma_positions <- banc_nuclei()
+}
+\dontrun{
 points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 }
 }
