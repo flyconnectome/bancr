@@ -24,8 +24,10 @@
 #' points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 #' }
 #' @importFrom magrittr "%>%"
-banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"),
+banc_cave_tables <- function(datastack_name = NULL,
                              select = NULL){
+  if(is.null(datastack_name))
+    datastack_name=banc_datastack_name()
   fac <- flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
   if (!is.null(dsinfo$soma_table))
