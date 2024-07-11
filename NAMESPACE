@@ -2,6 +2,7 @@
 
 S3method(banc_decapitate,"NULL")
 S3method(banc_decapitate,data.frame)
+S3method(banc_decapitate,hxsurf)
 S3method(banc_decapitate,matrix)
 S3method(banc_decapitate,mesh3d)
 S3method(banc_decapitate,neuron)

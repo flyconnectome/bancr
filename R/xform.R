@@ -383,7 +383,7 @@ banc_to_JRC2018F <- function(x,
       xyz2 <- banc_nm2raw(xyz2*1e3)
     }
   }else if(isTRUE(inverse)){
-    if(banc.units=='microns'){
+    if(banc.units=='um'){
       xyz2 <- xyz2/1e3
     }else if(banc.units=='raw'){
       xyz2 <- banc_nm2raw(xyz2)
@@ -488,7 +488,7 @@ banc_mirror <- function(x,
   }else{
 
     # convert to um if necessary
-    if(banc.units=='microns'){
+    if(banc.units=='um'){
       xyz <- xyz*1e3
     }else if(banc.units=='raw'){
       xyz <- banc_raw2nm(xyz)
@@ -498,7 +498,7 @@ banc_mirror <- function(x,
     x.banc.m <- Morpho::applyTransform(xyz, trafo = banc_mirror_tpsreg)
 
     # convert from um to original banc.units if necessary
-    if(banc.units=='microns'){
+    if(banc.units=='um'){
       x.banc.m <- x.banc.m/1e3
     }else if(banc.units=='raw'){
       x.banc.m <- banc_nm2raw(x.banc.m)
