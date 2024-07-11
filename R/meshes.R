@@ -25,7 +25,7 @@
 #' }
 banc_read_neuron_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), ...) {
   format=match.arg(format)
-  read_cloudvolume_meshes(ids, savedir = savedir, cloudvolume.url = banc_cloudvolume_url(set=FALSE), format=format, ...)
+  with_banc(read_cloudvolume_meshes(ids, savedir = savedir, format=format, ...))
 }
 
 #' @export
