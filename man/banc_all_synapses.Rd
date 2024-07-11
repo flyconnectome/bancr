@@ -39,7 +39,7 @@ lazily so as not to throw the whole thing into system memory.
 \dontrun{
 syns <- banc_all_synapses()
 }
-Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
+# Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 }
 \seealso{
 \code{\link{banc_partner_summary}}, \code{\link{banc_partners}}

@@ -26,13 +26,11 @@ Query banc tables in the CAVE annotation system
 }
 \examples{
 \donttest{
-nuclei_aug2021ver2=banc_cave_query(table = "nuclei_aug2021ver2")
-head(neuron_somas_dec2022)
-hist(neuron_somas_dec2022$volume)
-hist(neuron_somas_dec2022$volume^(1/3))
-}
-\dontrun{
-points3d(xyzmatrix(nuclei_aug2021ver2$pt_position))
+library(dplyr)
+cell_info=banc_cave_query('cell_info')
+cell_info \%>\%
+  filter(tag2=='anterior-posterior projection pattern') \%>\%
+  count(tag)
 }
 }
 \seealso{
