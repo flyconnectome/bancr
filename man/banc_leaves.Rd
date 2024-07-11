@@ -22,7 +22,7 @@ Find the supervoxel identifiers of a banc neuron
 }
 \examples{
 \dontrun{
-svids=banc_leaves("720575941650432785")
+svids=banc_leaves("720575941478275714")
 head(svids)
 }
 }
