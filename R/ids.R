@@ -39,7 +39,7 @@ banc_rootid <- function(x, integer64 = FALSE, ...) {
 #' head(svids)
 #' }
 banc_leaves <- function(x, integer64=TRUE, ...) {
-  svids=flywire_leaves(x=x, integer64 = integer64, cloudvolume.url = banc_cloudvolume_url(), ...)
+  svids=with_banc(flywire_leaves(x=x, integer64 = integer64, ...))
   svids
 }
 
