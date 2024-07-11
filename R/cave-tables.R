@@ -60,18 +60,18 @@ banc_nuclei <- function (rootids = NULL,
   if (!is.null(rootids) & !is.null(nucleus_ids))
     stop("You must supply only one of rootids or nucleus_ids!")
   res <- if (is.null(rootids) && is.null(nucleus_ids))
-    flywire_cave_query(table =  table , ...)
+    banc_cave_query(table =  table , ...)
   else if (!is.null(rootids)) {
-    rootids <- flywire_ids(rootids)
+    rootids <- banc_ids(rootids)
     nuclei <- if (length(rootids) < 200) {
       rid <- paste(rootids, collapse = ",")
       ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
                                          rid), convert = F)
-      flywire_cave_query(table =  table,
+      banc_cave_query(table =  table,
                          filter_in_dict = ridq, ...)
     }
     else {
-      flywire_cave_query(table =  table,
+      banc_cave_query(table =  table,
                          live = F, ...)
     }
     if (nrow(nuclei) == 0)
@@ -84,14 +84,14 @@ banc_nuclei <- function (rootids = NULL,
       nuclei
     }
     else {
-      nuclei %>% dplyr::mutate(pt_root_id = flywire_updateids(.data$pt_root_id,
-                                                       svids = .data$pt_supervoxel_id))
+      nuclei %>% dplyr::mutate(pt_root_id = with_banc(flywire_updateids(.data$pt_root_id,
+                                                       svids = .data$pt_supervoxel_id)))
     }
   }else{
     nid <- paste(nucleus_ids, collapse = ",")
     nidq <- reticulate::py_eval(sprintf("{\"id\": [%s]}",
                                        nid), convert = F)
-    nuclei <- flywire_cave_query(table = table,
+    nuclei <- banc_cave_query(table = table,
                                 filter_in_dict = nidq, ...)
     nuclei %>% dplyr::right_join(data.frame(id = nucleus_ids), by = "id") %>%
       dplyr::select(colnames(nuclei))
@@ -103,7 +103,7 @@ banc_nuclei <- function (rootids = NULL,
     res
   else {
     res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
-      nat::xyzmatrix2str(fancr::banc_raw2nm(x))))
+      nat::xyzmatrix2str(banc_raw2nm(x))))
   }
 }
 
