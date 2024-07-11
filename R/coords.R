@@ -32,20 +32,8 @@ banc_voxdims <- memoise::memoise(function(url=choose_banc(set=FALSE)[['fafbseg.s
 #' \dontrun{
 #' banc_nm2raw(clipr::read_clip())
 #' }
-banc_nm2raw <- function(x, vd=banc_voxdims()) {
-  xyz<-nat::xyzmatrix(x)
-  xyz[,1]=xyz[,1]/vd[1]
-  xyz[,2]=xyz[,2]/vd[2]
-  xyz[,3]=xyz[,3]/vd[3]
-  xyz
-}
+banc_nm2raw <- function(x, vd=banc_voxdims()) fancr::fanc_nm2raw(x, vd=vd)
 
 #' @export
 #' @rdname banc_voxdims
-banc_raw2nm <- function(x, vd=banc_voxdims()) {
-  xyz<-nat::xyzmatrix(x)
-  xyz[,1]=xyz[,1]*vd[1]
-  xyz[,2]=xyz[,2]*vd[2]
-  xyz[,3]=xyz[,3]*vd[3]
-  xyz
-}
+banc_raw2nm <- function(x, vd=banc_voxdims()) fancr::fanc_raw2nm(x, vd=vd)
