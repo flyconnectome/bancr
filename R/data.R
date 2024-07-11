@@ -2,8 +2,11 @@
 #'
 #' @name banc.surf
 #' @docType data
-#' @description This is unsymmetrical and not a normalised version of the mesh.
-#' It is the outline of the dataset in native voxel space.
+#' @description `banc.surf` is unsymmetrical and not a normalised version of the mesh.
+#' It is the outline of the dataset in nanometers.`banc_neuropil.surf` represents the synaptic neuropil.
+#' Built from the BANC synapse coud, but not optimised to inlude 100% of bone fide presynapses.
+#' `banc_neuropils.surf` contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
+#' `banc_al.surf` contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
 #'
 #' @examples
 #' \dontrun{
@@ -24,6 +27,12 @@
 
 #' @rdname banc.surf
 "banc_neck_connective.surf"
+
+#' @rdname banc.surf
+"banc_neuropils.surf"
+
+#' @rdname banc.surf
+"banc_al.surf"
 
 ## How it was obtained:
 # res <- httr::GET("https://www.googleapis.com/storage/v1/b/zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2Fvolume_meshes%2Fmeshes%2F1%3A0.drc?alt=media&neuroglancer=610000b05b6497edcf20b78f29516970")
