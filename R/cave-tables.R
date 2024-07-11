@@ -118,8 +118,7 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
 #' @rdname banc_cave_tables
 #' @export
 banc_cell_ids <- function(rootids = NULL){
-  table <- "cell_ids"
-  get_cave_table_data(table)
+  get_cave_table_data('cell_ids', rootids)
 }
 
 #' @rdname banc_cave_tables
@@ -127,21 +126,19 @@ banc_cell_ids <- function(rootids = NULL){
 banc_neck_connective_neurons <- function(rootids = NULL,
                                          table = c("neck_connective_y92500", "neck_connective_y121000")){
   table <- match.arg(table)
-  get_cave_table_data(table)
+  get_cave_table_data(table, rootids)
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_peripheral_nerves <- function(rootids = NULL){
-  table <- "peripheral_nerves"
-  get_cave_table_data(table)
+  get_cave_table_data("peripheral_nerves", rootids)
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_backbone_proofread <- function(rootids = NULL){
-  table <- "backbone_proofread"
-  get_cave_table_data(table)
+  get_cave_table_data("backbone_proofread", rootids)
 }
 
 # hidden
