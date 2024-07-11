@@ -9,6 +9,7 @@
 \alias{geom_neuron.neuron}
 \alias{geom_neuron.neuronlist}
 \alias{geom_neuron.mesh3d}
+\alias{geom_neuron.hxsurf}
 \alias{geom_neuron.NULL}
 \title{Convert neuron objects to ggplot2-compatible data}
 \usage{
@@ -60,6 +61,19 @@ geom_neuron(
 )
 
 \method{geom_neuron}{neuronlist}(
+  x = NULL,
+  rotation_matrix = NULL,
+  low = "grey90",
+  high = "grey50",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{hxsurf}(
   x = NULL,
   rotation_matrix = NULL,
   low = "grey90",

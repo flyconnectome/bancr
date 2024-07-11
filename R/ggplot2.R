@@ -53,15 +53,6 @@ banc_neuron_comparison_plot <- function(neuron1,
   # Get 3D spatial points
   glist <- list()
   title.col <- "black"
-  if(!"mesh3d"%in%class(banc_brain_neuropil)){
-    banc_brain_neuropil <- rgl::as.mesh3d(banc_brain_neuropil)
-  }
-  if(!"mesh3d"%in%class(banc_vnc_neuropil)){
-    banc_vnc_neuropil <- rgl::as.mesh3d(banc_vnc_neuropil)
-  }
-  if(!"mesh3d"%in%class(banc_neuropil)){
-    banc_neuropil <- rgl::as.mesh3d(banc_neuropil)
-  }
   for(view in names(banc_rotation_matrices)){
 
     # Choose mesh
@@ -314,6 +305,18 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "grey90",
     ggplot2::scale_fill_gradient(low = low, high = high),
     ggnewscale::new_scale_fill()
   )
+}
+
+#' @rdname ggplot2_neuron_path
+#' @method geom_neuron hxsurf
+#' @export
+geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
+                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                               inherit.aes = FALSE, ...) {
+  x <- rgl::as.mesh3d(x)
+  geom_neuron.mesh3d(x=x, rotation_matrix=rotation_matrix, low=low, high=high,
+                     stat=stat, position=postion, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
+                     ...)
 }
 
 #' @rdname ggplot2_neuron_path

@@ -1,4 +1,4 @@
-#' Simplified tissue surface of BANC
+#' Simplified tissue and neuropil surfaces for BANC
 #'
 #' @name banc.surf
 #' @docType data
