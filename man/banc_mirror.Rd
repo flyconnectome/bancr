@@ -6,19 +6,19 @@
 \usage{
 banc_mirror(
   x,
-  units = c("nm", "microns", "raw"),
+  banc.units = c("nm", "um", "raw"),
   subset = NULL,
   inverse = FALSE,
   transform_files = NULL,
-  method = c("elastix", "tpsreg", "navis_elastix_xform"),
+  method = c("tpsreg", "elastix", "navis_elastix_xform"),
   ...
 )
 }
 \arguments{
 \item{x}{An object containing 3D points (must be compatible with nat::xyzmatrix).}
 
-\item{units}{Character string specifying the units of the input points.
-Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw units). Default is "nm".}
+\item{banc.units}{Character string specifying the banc.units of the input points.
+Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".}
 
 \item{subset}{Optional. A logical vector or expression to subset the input object.}
 
@@ -47,15 +47,35 @@ system transformations.
 }
 \examples{
 \dontrun{
-# Mirror BANC points
-mirrored_points <- banc_mirror(points, units = "nm")
+# Example using saved tpsreg
+banc_neuropil.surf.m <- banc_mirror(banc_neuropil.surf, method = "tpsreg")
+clear3d()
+banc_view()
+plot3d(banc_neuropil.surf, alpha = 0.5, col = "lightgrey")
+plot3d(banc_neuropil.surf.m, alpha = 0.5, col = "green")
 
-# Mirror using custom transform files
-custom_mirrored <- banc_mirror(points, transform_files = c("path/to/BANC_to_JRC.txt", "path/to/JRC_to_BANC.txt"))
+# Example using custom Elastix transforms
+choose_banc()
+rootid <- "720575941626035769"
+neuron.mesh <- banc_read_neuron_meshes(rootid)
+
+# Show neuron in BANC neuropil
+banc_view()
+plot3d(neuron.mesh, col = "red")
+plot3d(banc_neuropil.surf, alpha = 0.1, col = "lightgrey")
+
+# Show only the portion in the brain
+neuron.mesh.brain <- banc_decapitate(neuron.mesh, invert = TRUE)
+
+# Mirror in BANC space
+neuron.mesh.mirror <- banc_mirror(neuron.mesh.brain,
+transform_files = c("brain_240707/BANC_to_template.txt",
+ "brain_240707/template_to_BANC.txt"))
+plot3d(neuron.mesh.mirror, col = "cyan")
 }
 
 }
 \seealso{
 \code{\link{banc_to_JRC2018F}} for the underlying transformation function.
-\code{\link{nat.templatebrains::mirror_brain}} for the mirroring operation in JRC2018F space.
+\code{nat.templatebrains::\link{mirror_brain}} for the mirroring operation in JRC2018F space.
 }

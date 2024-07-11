@@ -128,7 +128,6 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
   with_banc(fafbseg::flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
 }
 
-
 #' Return a vector of banc root ids from diverse inputs
 #'
 #' @param x A data.frame, URL or vector of ids
@@ -159,7 +158,7 @@ banc_ids <- function(x, integer64=NA) {
   else x
 }
 
-#' Convert between banc cell ids and root ids
+#' Convert between BANC cell ids and root ids
 #'
 #' @description Converts between BANC cell ids (should survive most edits) and
 #'   root ids (guaranteed to match just one edit state). See details.
@@ -206,7 +205,7 @@ banc_ids <- function(x, integer64=NA) {
 #'
 #' @examples
 #' \donttest{
-#' banc_cellid_from_segid(banc_latestid("720575941480769421"))
+#' banc_cellid_from_segid(banc_latestid("720575941626035769"))
 #' }
 banc_cellid_from_segid <- function(rootids=NULL, timestamp=NULL, version=NULL, cellid_table = NULL, rval=c("ids", 'data.frame')) {
   rval=match.arg(rval)
@@ -269,6 +268,6 @@ banc_segid_from_cellid <- function(cellids=NULL, timestamp=NULL, version=NULL, r
 banc_cellid_table <- memoise::memoise(function(fac=banc_cave_client()) {
   tables=fac$materialize$tables
   tablenames=names(tables)
-  seltable=rev(sort(grep("cell_ids", tablenames, value = T)))[1]
+  seltable=rev(sort(grep("^cell_info", tablenames, value = T)))[1]
   return(seltable)
 })

@@ -29,6 +29,7 @@ banc_read_neuron_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), .
 }
 
 #' @export
+#' @rdname banc_read_neuron_meshes
 banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', 'ply'), ...) {
   cvu <- "precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/nuclei/seg_v1"
   cv <- fafbseg::flywire_cloudvolume(cloudvolume.url = cvu)
@@ -47,6 +48,8 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #'
 #' @param x an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 #' Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.
+#' @param y.cut Numeric, the Y-axis cut point, in nanometers, in BANC space,
+#'  that separates the head from the neck and ventral nerve cord.
 #' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
 #' @param ... Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}
 #'
@@ -62,7 +65,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' plot3d(m.brain, col = "cyan")
 #' plot3d(banc.surf, col = "grey", alpha = 0.1)
 #' }
-banc_decapitate<-function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')
+banc_decapitate <- function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')
 
 #' @export
 #' @rdname banc_decapitate
@@ -119,6 +122,14 @@ banc_decapitate.mesh3d <- function(x, y.cut = 325000, invert = FALSE, ...){
                       normal = NULL, keep.upper = invert)
 }
 
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.hxsurf <- function(x, y.cut = 325000, invert = FALSE, ...){
+  x <- rgl::as.mesh3d(x)
+  m <- banc_decapitate.mesh3d(x=x, y.cut=y.cut, invert=invert, ...)
+  nat::as.hxsurf(m)
+}
+
 #' Read BANC euroglancer meshes, e.g., ROI meshes
 #'
 #' @param x the numeric identifier that specifies the mesh to read, defaults to \code{1} the BANC outline mesh.
@@ -132,7 +143,12 @@ banc_decapitate.mesh3d <- function(x, y.cut = 325000, invert = FALSE, ...){
 #' banc.mesh  <- banc_read_neuroglancer_mesh()
 #' }
 banc_read_neuroglancer_mesh <- function(x = 1,
-                                        url="https://www.googleapis.com/storage/v1/b/zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2Fvolume_meshes%2Fmeshes%2F{x}%3A0.drc?alt=media&neuroglancer=610000b05b6497edcf20b78f29516970",
+                                        url = paste0(
+                                          "https://www.googleapis.com/storage/v1/b/",
+                                          "zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2F",
+                                          "volume_meshes%2Fmeshes%2F{x}%3A0.drc?alt=media",
+                                          "&neuroglancer=610000b05b6497edcf20b78f29516970"
+                                        ),
                                         ...){
   completed_url <- glue::glue(url, x=x)
   res <- httr::GET(completed_url, ...)

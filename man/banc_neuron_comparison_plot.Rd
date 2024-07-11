@@ -11,9 +11,9 @@ banc_neuron_comparison_plot(
   neuron1.info = NULL,
   neuron2.info = NULL,
   neuron3.info = NULL,
-  banc_brain_neuropil = banc_brain_neuropil.surf,
-  banc_vnc_neuropil = banc_vnc_neuropil.surf,
-  banc_neuropil = banc_neuropil.surf,
+  banc_brain_neuropil = NULL,
+  banc_vnc_neuropil = NULL,
+  banc_neuropil = NULL,
   filename = NULL,
   width = 16,
   height = 16
@@ -23,6 +23,14 @@ banc_neuron_comparison_plot(
 \item{neuron1}{A neuronlist object representing the first neuron to be compared.}
 
 \item{neuron2}{A neuronlist object representing the second neuron to be compared.}
+
+\item{neuron3}{A neuronlist object representing the third neuron to be compared.}
+
+\item{neuron1.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron1.}
+
+\item{neuron2.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron2.}
+
+\item{neuron3.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron3.}
 
 \item{banc_brain_neuropil}{A mesh object representing the brain neuropil. Default is banc_brain_neuropil.surf.}
 

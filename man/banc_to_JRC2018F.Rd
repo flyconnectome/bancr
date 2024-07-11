@@ -6,18 +6,18 @@
 \usage{
 banc_to_JRC2018F(
   x,
-  units = c("nm", "microns", "raw"),
+  banc.units = c("nm", "um", "raw"),
   subset = NULL,
   inverse = FALSE,
   transform_file = NULL,
-  method = c("elastix", "tpsreg", "navis_elastix_xform")
+  method = c("tpsreg", "elastix", "navis_elastix_xform")
 )
 }
 \arguments{
 \item{x}{An object containing 3D points (must be compatible with nat::xyzmatrix).}
 
-\item{units}{Character string specifying the units of the input points.
-Must be one of "nm" (nanometers), "microns", or "raw" (BANC raw units). Default is "nm".}
+\item{banc.units}{Character string specifying the units of the BANC space data (input or output, depending on the inverse argument).
+Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".}
 
 \item{subset}{Optional. A logical vector or expression to subset the input object.}
 
@@ -41,22 +41,24 @@ This function applies either an Elastix transform or a thin-plate spline registr
 points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 
 The default transformation files are included with the package and are located in the
-'extdata/brain_240707' directory.
+'inst/extdata/brain_240707' directory.
 }
 \examples{
 \dontrun{
 # Transform points from BANC to JRC2018F
-transformed_points <- banc_to_JRC2018F(points, units = "nm")
+transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 
 # Perform inverse transformation (JRC2018F to BANC)
-inverse_transformed_points <- banc_to_JRC2018F(points, units = "microns", inverse = TRUE)
+inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", inverse = TRUE)
 
 # Use a custom transform file
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 
 # Where the default transform files are located:
-banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
-JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+banc_to_JRC2018F_file <- system.file(file.path("inst","extdata","brain_240707"),
+"BANC_to_template.txt", package="bancr")
+JRC2018F_to_banc_file <- system.file(file.path("inst","extdata","brain_240707"),
+"template_to_BANC.txt", package="bancr")
 }
 
 }

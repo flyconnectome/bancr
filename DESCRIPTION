@@ -3,11 +3,16 @@ Package: bancr
 Title: Support Access to the Brain And Nerve Cord (BANC) Dataset
 Version: 0.1.0
 Authors@R: 
-    person(given = "Alexnder",
+    c(person(given = "Alexnder",
            family = "Bates",
            role = c("aut", "cre"),
            email = "alexander.shakeel.bates@gmail.com",
-           comment = c(ORCID = "0000-0002-1195-0445"))
+           comment = c(ORCID = "0000-0002-1195-0445")),
+      person(given = "Gregory",
+           family = "Jefferis",
+           role = c("aut"),
+           email = "jefferis@gmail.com",
+           comment = c(ORCID = "0000-0002-0587-9355")))
 Description: Access to the BANC 'righty' EM dataset, focussing on support for
     BANC autosegmentation. Organised as a wrapper around the fafbseg
     package.
@@ -15,18 +20,22 @@ License: GPL-3
 URL: https://github.com/flyconnectome/bancr
 BugReports: https://github.com/flyconnectome/bancr/issues
 Depends: 
-    R (>= 2.10),
+    R (>= 3.5.0),
     fafbseg (>= 0.14.1.9100),
-    fancr,
     nat.flybrains
 Imports: 
+    fancr,
     nat,
     nat.templatebrains,
+    malevnc,
+    rlang,
+    rgl,
     bit64,
     httr,
     jsonlite,
     pbapply,
     dplyr,
+    magrittr,
     glue,
     DBI,
     RSQLite,
@@ -53,11 +62,15 @@ Remotes:
     natverse/fafbseg,
     natverse/nat.flybrains,
     natverse/nat.templatebrains,
-    flyconnectome/fancr,
     catmaid=natverse/rcatmaid,
+    natverse/malevnc,
+    flyconnectome/fancr,
+    kassambara/ggpubr
 Config/testthat/edition: 3
+LazyDataCompression:xz
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+

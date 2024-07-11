@@ -31,9 +31,4 @@ test_that("banc_cellid_from_segid", {
   skip("Skipping banc_cellid_from_segid as BANC doesn't yet have a proper cell_id table")
   rid=banc_latestid("720575941480769421")
   expect_equal(banc_cellid_from_segid(rid),12967L)
-
-  # skip this test because we can't be sure it will work
-  # expect_equal(
-  #   banc_cellid_from_segid("648518346486614449", "2023-07-29 06:04:28 UTC"),
-  #   12967L)
 })

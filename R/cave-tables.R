@@ -1,16 +1,13 @@
 #' Read BANC CAVE-tables, good sources of metadata
 #'
+#' @param rootids #' @param rootids Character vector specifying one or more BANC rootids. As a
+#'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
+#'   to pass in data.frames, BANC URLs or simple ids.
+#' @param nucleus_ids Character vector specifying one or more BANC nucleus ids.
+#' @param rawcoords Logical, whether or not yto convert from raw coordinates into nanometers. Default is `FALSE`.
 #' @param select A regex term for the name of the table you want
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
-#' @param rootids Character vector specifying one or more BANC rootids.
-#' For some functions if rootids is \code{NULL}, a logical is returned,
-#' e.g \code{banc_neck_connective_neurons} will let you know if the query is in the
-#' neck connective or not.
-#' As a convenience for flywire_partner_summary this argument is passed to \code{fafbseg::flywire_ids} allowing you to pass in data.frames,
-#' flywire URLs or cell type queries.
-#' @param flywire_nuclei Ids from the nucleus table to return (optional, NB only one of rootids and nucleus_ids can be provided).
 #' @param table Possible alternative tables for the sort of data frame the function returns. One must be chosen.
-#' @param rawcoords Whether to return coordinates in raw form rather than nm (default \code{FALSE}).
 #' @param ... Additional arguments passed to
 #'   \code{fafbseg::\link{flywire_cave_query}}
 #'
@@ -26,7 +23,7 @@
 #' all_banc_soma_positions <- banc_nuclei()
 #' points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 #' }
-#'
+#' @importFrom magrittr "%>%"
 banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"),
                              select = NULL){
   fac <- flywire_cave_client(datastack_name = datastack_name)
@@ -50,6 +47,7 @@ banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_
   }
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_nuclei <- function (rootids = NULL,
                          nucleus_ids = NULL,
@@ -76,8 +74,10 @@ banc_nuclei <- function (rootids = NULL,
     }
     if (nrow(nuclei) == 0)
       return(nuclei)
-    nuclei <- nuclei %>% dplyr::right_join(data.frame(pt_root_id = as.integer64(rootids)),
-                                    by = "pt_root_id") %>% select(colnames(nuclei))
+    nuclei <- nuclei %>%
+      dplyr::right_join(data.frame(pt_root_id = as.integer64(rootids)),
+                                    by = "pt_root_id") %>%
+      dplyr::select(colnames(nuclei))
     if (length(rootids) < 200) {
       nuclei
     }
@@ -105,6 +105,7 @@ banc_nuclei <- function (rootids = NULL,
   }
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   table <- "cell_info"
@@ -117,12 +118,14 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   }
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_cell_ids <- function(rootids = NULL){
   table <- "cell_ids"
   get_cave_table_data(table)
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_neck_connective_neurons <- function(rootids = NULL,
                                          table = c("neck_connective_y92500", "neck_connective_y121000")){
@@ -130,12 +133,14 @@ banc_neck_connective_neurons <- function(rootids = NULL,
   get_cave_table_data(table)
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_peripheral_nerves <- function(rootids = NULL){
   table <- "peripheral_nerves"
   get_cave_table_data(table)
 }
 
+#' @rdname banc_cave_tables
 #' @export
 banc_backbone_proofread <- function(rootids = NULL){
   table <- "backbone_proofread"

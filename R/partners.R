@@ -2,9 +2,9 @@
 #'
 #' @details note that the rootids you pass in must be up to date. See example.
 #'
-#' @param rootids Character vector specifying one or more flywire rootids. As a
+#' @param rootids Character vector specifying one or more BANC rootids. As a
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
-#'   to pass in data.frames, flywire URLs or simple ids.
+#'   to pass in data.frames, BANC URLs or simple ids.
 #' @param datastack_name An optional CAVE \code{datastack_name}. If unset a
 #'   sensible default is chosen.
 #' @inheritParams fafbseg::flywire_partner_summary
@@ -76,7 +76,6 @@ banc_datastack_name <- memoise::memoise(function() {
 #' @description \code{banc_partners} returns details of each unitary synaptic
 #' connection (including its xyz location).
 #'
-#' @export
 #'
 #' @rdname banc_partner_summary
 #' @examples

@@ -5,12 +5,7 @@
 \alias{ggplot2_neuron_path.neuron}
 \alias{ggplot2_neuron_path.neuronlist}
 \alias{ggplot2_neuron_path.mesh3d}
-\alias{geom_neuron}
-\alias{geom_neuron.neuron}
-\alias{geom_neuron.neuronlist}
-\alias{geom_neuron.mesh3d}
-\alias{geom_neuron.NULL}
-\title{Convert neuron objects to ggplot2-compatible data}
+\title{Convert Neuron Objects to ggplot2-Compatible Data}
 \usage{
 ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
 
@@ -19,74 +14,9 @@ ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
 \method{ggplot2_neuron_path}{neuronlist}(x, rotation_matrix = NULL, ...)
 
 \method{ggplot2_neuron_path}{mesh3d}(x, rotation_matrix = NULL, ...)
-
-geom_neuron(
-  x,
-  rotation_matrix = NULL,
-  low = "turquoise",
-  high = "navy",
-  stat = "identity",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = FALSE,
-  ...
-)
-
-\method{geom_neuron}{neuron}(
-  x = NULL,
-  rotation_matrix = NULL,
-  low = "turquoise",
-  high = "navy",
-  stat = "identity",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = FALSE,
-  ...
-)
-
-\method{geom_neuron}{neuronlist}(
-  x = NULL,
-  rotation_matrix = NULL,
-  low = "turquoise",
-  high = "navy",
-  stat = "identity",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = FALSE,
-  ...
-)
-
-\method{geom_neuron}{neuronlist}(
-  x = NULL,
-  rotation_matrix = NULL,
-  low = "grey90",
-  high = "grey50",
-  stat = "identity",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = FALSE,
-  ...
-)
-
-\method{geom_neuron}{neuronlist}(
-  x = NULL,
-  rotation_matrix = NULL,
-  low = "grey90",
-  high = "grey50",
-  stat = "identity",
-  position = "identity",
-  na.rm = FALSE,
-  show.legend = NA,
-  inherit.aes = FALSE,
-  ...
-)
 }
 \arguments{
-\item{x}{A 'neuron' or 'neuronlist' object to be converted.}
+\item{x}{A 'neuron', 'neuronlist', or 'mesh3d' object to be converted.}
 
 \item{rotation_matrix}{An optional 4x4 rotation matrix to apply to the neuron coordinates.}
 
@@ -94,10 +24,24 @@ geom_neuron(
 }
 \value{
 A data frame with columns X, Y, Z, and group, where each group
-represents a continuous path in the neuron.
+represents a continuous path in the neuron or a polygon in the mesh.
 }
 \description{
-This function converts 'neuron', 'mesh3d' or 'neuronlist' objects, which represent 3D
-points linked by lines in space, into data frames that describe paths
-compatible with ggplot2's geom_path, or geom_polygon for mesh3d objects.
+This function converts 'neuron', 'mesh3d', or 'neuronlist' objects,
+which represent 3D points linked by lines in space, into data frames
+that describe paths compatible with ggplot2's geom_path, or geom_polygon
+for mesh3d objects.
+}
+\examples{
+\dontrun{
+# Convert a neuron object
+neuron_data <- ggplot2_neuron_path(my_neuron)
+
+# Convert a neuronlist object
+neuronlist_data <- ggplot2_neuron_path(my_neuronlist)
+
+# Convert a mesh3d object
+mesh_data <- ggplot2_neuron_path(my_mesh)
+}
+
 }

@@ -3,6 +3,7 @@
 \docType{data}
 \name{banc_to_jrc2018f_tpsreg}
 \alias{banc_to_jrc2018f_tpsreg}
+\alias{jrc2018f_to_banc_tpsreg}
 \title{Thin-Plate Spline Registration from BANC to JRC2018F templatebrain}
 \format{
 An object of class \code{tpsCoeff} created using \code{Morpho::computeTransform}.
@@ -16,6 +17,8 @@ It contains the following components:
 \item{scale}{Logical indicating whether scaling was used}
 \item{reflection}{Logical indicating whether reflection was allowed}
 }
+
+An object of class \code{tpsCoeff} of length 4.
 }
 \source{
 Derived from Elastix registration results using the \code{banc_to_JRC2018F}
@@ -23,6 +26,8 @@ function and landmark correspondences extracted from that registration.
 }
 \usage{
 data(banc_to_jrc2018f_tpsreg)
+
+jrc2018f_to_banc_tpsreg
 }
 \description{
 A thin-plate spline (TPS) registration object that transforms 3D points
