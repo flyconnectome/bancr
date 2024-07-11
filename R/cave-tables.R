@@ -104,14 +104,16 @@ banc_nuclei <- function (rootids = NULL,
 
 #' @rdname banc_cave_tables
 #' @export
+#' @importFrom dplyr mutate ends_with across
+#' @importFrom nat xyzmatrix2str
 banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   table <- "cell_info"
   res <- get_cave_table_data(table)
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
-      nat::xyzmatrix2str(banc_raw2nm(x))))
+    res %>% mutate(across(ends_with("position"),
+                          function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
 }
 
@@ -146,16 +148,12 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
   if (!is.null(rootids)) {
     rootids <- flywire_ids(rootids)
     df <- if (length(rootids) < 200) {
-      rid <- paste(rootids, collapse = ",")
-      ridq <- reticulate::py_eval(sprintf("{\"pt_root_id\": [%s]}",
-                                         rid), convert = F)
       fafbseg::flywire_cave_query(table =  table,
-                         filter_in_dict = ridq, ...)
+                         filter_in_dict = list(pt_root_id=rootids), ...)
     } else {
-      fafbseg::flywire_cave_query(table =  table,
-                         live = F, ...)
+      fafbseg::flywire_cave_query(table =  table, live = F, ...)
     }
-  }else{
+  } else {
     df <- fafbseg::flywire_cave_query(table =  table , ...)
   }
   df
