@@ -11,9 +11,9 @@ banc_neuron_comparison_plot(
   neuron1.info = NULL,
   neuron2.info = NULL,
   neuron3.info = NULL,
-  banc_brain_neuropil = banc_brain_neuropil.surf,
-  banc_vnc_neuropil = banc_vnc_neuropil.surf,
-  banc_neuropil = banc_neuropil.surf,
+  banc_brain_neuropil = NULL,
+  banc_vnc_neuropil = NULL,
+  banc_neuropil = NULL,
   filename = NULL,
   width = 16,
   height = 16

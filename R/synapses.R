@@ -76,7 +76,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max)
     }else{
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE, n_max = n_max,
-                              col_select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+                              col_select = c("presyn_segid", "presyn_x", "presyn_y", "presyn_z", "size"))
     }
     return(syns)
   }else if (!table_exists|overwrite){
@@ -85,7 +85,7 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE)
     }else{
       syns <- readr::read_csv(file=path, col_types = col.types, lazy = TRUE,
-                              col_select = c(presyn_segid, presyn_x, presyn_y, presyn_z, size))
+                              col_select = c("presyn_segid", "presyn_x", "presyn_y", "presyn_z", "size"))
     }
 
     # # Process

@@ -10,16 +10,6 @@
 #' @family banc-cave
 #' @export
 #' @seealso \code{\link[fafbseg]{flywire_cave_query}}
-#' @examples
-#' \donttest{
-#' nuclei_aug2021ver2=banc_cave_query(table = "nuclei_aug2021ver2")
-#' head(neuron_somas_dec2022)
-#' hist(neuron_somas_dec2022$volume)
-#' hist(neuron_somas_dec2022$volume^(1/3))
-#' }
-#' \dontrun{
-#' points3d(xyzmatrix(nuclei_aug2021ver2$pt_position))
-#' }
 banc_cave_query <- function(table, datastack_name = NULL, live=TRUE, ...) {
   if(is.null(datastack_name)) datastack_name=banc_datastack_name()
   fafbseg::flywire_cave_query(table = table, datastack_name = datastack_name, live=live, ...)
@@ -31,7 +21,7 @@ banc_cave_query <- function(table, datastack_name = NULL, live=TRUE, ...) {
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' fcc=banc_cave_client()
 #' tables=fcc$annotation$get_tables()
 #' fcc$materialize$get_table_metadata(tables[1])

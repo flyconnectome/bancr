@@ -51,6 +51,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' @param y.cut Numeric, the Y-axis cut point, in nanometers, in BANC space,
 #'  that separates the head from the neck and ventral nerve cord.
 #' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
+#' @param ... methods passed to `nat::nlapply`.
 #'
 #' @return Remove points above or below the midsection of the neck connective of BANC.
 #' @seealso \code{\link{banc.surf}}
@@ -142,7 +143,12 @@ banc_decapitate.hxsurf <- function(x, y.cut = 325000, invert = FALSE, ...){
 #' banc.mesh  <- banc_read_neuroglancer_mesh()
 #' }
 banc_read_neuroglancer_mesh <- function(x = 1,
-                                        url="https://www.googleapis.com/storage/v1/b/zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2Fvolume_meshes%2Fmeshes%2F{x}%3A0.drc?alt=media&neuroglancer=610000b05b6497edcf20b78f29516970",
+                                        url = paste0(
+                                          "https://www.googleapis.com/storage/v1/b/",
+                                          "zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2F",
+                                          "volume_meshes%2Fmeshes%2F{x}%3A0.drc?alt=media",
+                                          "&neuroglancer=610000b05b6497edcf20b78f29516970"
+                                        ),
                                         ...){
   completed_url <- glue::glue(url, x=x)
   res <- httr::GET(completed_url, ...)

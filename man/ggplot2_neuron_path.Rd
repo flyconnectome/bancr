@@ -13,7 +13,7 @@ ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
 
 \method{ggplot2_neuron_path}{neuronlist}(x, rotation_matrix = NULL, ...)
 
-\method{ggplot2_neuron_path}{mesh3d}(mesh, rotation_matrix = NULL, ...)
+\method{ggplot2_neuron_path}{mesh3d}(x, rotation_matrix = NULL, ...)
 }
 \arguments{
 \item{x}{A 'neuron', 'neuronlist', or 'mesh3d' object to be converted.}

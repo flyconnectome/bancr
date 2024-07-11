@@ -41,7 +41,7 @@ This function applies either an Elastix transform or a thin-plate spline registr
 points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 
 The default transformation files are included with the package and are located in the
-'extdata/brain_240707' directory.
+'inst/extdata/brain_240707' directory.
 }
 \examples{
 \dontrun{
@@ -55,8 +55,10 @@ inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", invers
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 
 # Where the default transform files are located:
-banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
-JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+banc_to_JRC2018F_file <- system.file(file.path("inst","extdata","brain_240707"),
+"BANC_to_template.txt", package="bancr")
+JRC2018F_to_banc_file <- system.file(file.path("inst","extdata","brain_240707"),
+"template_to_BANC.txt", package="bancr")
 }
 
 }

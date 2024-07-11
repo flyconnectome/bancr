@@ -41,7 +41,15 @@ banc_backbone_proofread(rootids = NULL)
 
 \item{select}{A regex term for the name of the table you want}
 
+\item{rootids}{#' @param rootids Character vector specifying one or more BANC rootids. As a
+convenience this argument is passed to \code{\link{banc_ids}} allowing you
+to pass in data.frames, BANC URLs or simple ids.}
+
+\item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
+
 \item{table}{Possible alternative tables for the sort of data frame the function returns. One must be chosen.}
+
+\item{rawcoords}{Logical, whether or not yto convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 
 \item{...}{Additional arguments passed to
 \code{fafbseg::\link{flywire_cave_query}}}

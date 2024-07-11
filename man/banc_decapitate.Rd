@@ -35,6 +35,8 @@ Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.}
 that separates the head from the neck and ventral nerve cord.}
 
 \item{invert}{if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.}
+
+\item{...}{methods passed to \code{nat::nlapply}.}
 }
 \value{
 Remove points above or below the midsection of the neck connective of BANC.

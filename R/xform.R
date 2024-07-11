@@ -193,7 +193,7 @@ check_if_possible <- function(file, on_error = "raise") {
 #' @keywords internal
 write_elastix_input_file <- function(points, filepath) {
   cat("point\n", nrow(points), "\n", file = filepath)
-  write.table(points, filepath, append = TRUE, col.names = FALSE,
+  utils::write.table(points, filepath, append = TRUE, col.names = FALSE,
               row.names = FALSE, sep = " ")
 }
 
@@ -227,6 +227,27 @@ read_elastix_output_file <- function(filepath) {
   return(points_matrix)
 }
 
+# hidden
+update_elastix_transforms_locations <- function(transform_file,
+                                file_path = NULL){
+   # Read the file content
+  lines <- readLines(transform_file)
+
+  # Define the target pattern and replacement
+  target_pattern <- '(InitialTransformParametersFileName\\s*")(.+1_elastix_affine\\.txt)(")'
+
+  # Function to replace the target pattern
+  replace_path <- function(line) {
+    gsub(target_pattern, paste0("\\1", file_path, "\\3"), line)
+  }
+
+  # Apply the replacement to each line
+  updated_lines <- sapply(lines, replace_path)
+
+  # Write the updated content back to the file
+  writeLines(updated_lines, transform_file)
+}
+
 #' Apply Elastix Transform using Navis
 #'
 #' Applies an Elastix transform to 3D points using the Navis Python library.
@@ -243,7 +264,8 @@ read_elastix_output_file <- function(filepath) {
 #' \dontrun{
 #' neuron.mesh <- banc_read_neuron_meshes("720575941650432785")
 #' points <- nat::xyzmatrix(neuron.mesh)
-#' transformed_points <- navis_elastix_xform(points, transform_file = "the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt")
+#' transformed_points <- navis_elastix_xform(points,
+#' transform_file = "brain_240707/BANC_to_template.txt")
 #' points3d(points)
 #' plot3d(nat.flybrains::JRC2018F)
 #' }
@@ -287,7 +309,7 @@ navis_elastix_xform <- function(x, transform_file){
 #' points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 #'
 #' The default transformation files are included with the package and are located in the
-#' 'extdata/brain_240707' directory.
+#' 'inst/extdata/brain_240707' directory.
 #'
 #' @examples
 #' \dontrun{
@@ -301,8 +323,10 @@ navis_elastix_xform <- function(x, transform_file){
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 #'
 #' # Where the default transform files are located:
-#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
-#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+#' banc_to_JRC2018F_file <- system.file(file.path("inst","extdata","brain_240707"),
+#' "BANC_to_template.txt", package="bancr")
+#' JRC2018F_to_banc_file <- system.file(file.path("inst","extdata","brain_240707"),
+#' "template_to_BANC.txt", package="bancr")
 #' }
 #'
 #' @seealso
@@ -324,9 +348,10 @@ banc_to_JRC2018F <- function(x,
   # find transform
   if(is.null(transform_file)){
     if(inverse){
-      transform_file <- system.file(file.path("extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+      transform_file <- system.file(file.path("inst","extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
+      update_elastix_transforms_locations(transform_file, file_path = system.file(file.path("inst","extdata","brain_240707"), package="bancr"))
     }else{
-      transform_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+      transform_file <- system.file(file.path("inst","extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
     }
   }
 
@@ -363,10 +388,14 @@ banc_to_JRC2018F <- function(x,
   }else{
     if(inverse){
       # Result is in um
-      xyz2 <- Morpho::applyTransform(xyz, trafo = jrc2018f_to_banc_tpsreg, inverse = FALSE)
+      xyz2 <- Morpho::applyTransform(xyz,
+                                     trafo = utils::data("jrc2018f_to_banc_tpsreg", envir = environment()),
+                                     inverse = FALSE)
     }else{
       # Result is in nm
-      xyz2 <- Morpho::applyTransform(xyz, trafo = banc_to_jrc2018f_tpsreg, inverse = FALSE)
+      xyz2 <- Morpho::applyTransform(xyz,
+                                     trafo = utils::data("banc_to_jrc2018f_tpsreg", envir = environment()),
+                                     inverse = FALSE)
     }
   }
 
@@ -448,8 +477,8 @@ banc_to_JRC2018F <- function(x,
 #'
 #' # Mirror in BANC space
 #' neuron.mesh.mirror <- banc_mirror(neuron.mesh.brain,
-#'                                  transform_files = c("/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt",
-#'                                                       "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/template_to_BANC.txt"))
+#' transform_files = c("brain_240707/BANC_to_template.txt",
+#'  "brain_240707/template_to_BANC.txt"))
 #' plot3d(neuron.mesh.mirror, col = "cyan")
 #' }
 #'
@@ -495,7 +524,8 @@ banc_mirror <- function(x,
     }
 
     # use pre-calculated tps reg
-    x.banc.m <- Morpho::applyTransform(xyz, trafo = banc_mirror_tpsreg)
+    x.banc.m <- Morpho::applyTransform(xyz,
+                                       trafo = utils::data("banc_mirror_tpsreg", envir = environment()))
 
     # convert from um to original banc.units if necessary
     if(banc.units=='um'){
