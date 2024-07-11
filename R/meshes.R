@@ -18,19 +18,19 @@
 #' @seealso \code{fafbseg::\link{read_cloudvolume_meshes}}
 #' @examples
 #' \donttest{
-#' neuron.mesh <- banc_read_neuron_meshes("720575941650432785")
+#' neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 #' plot3d(neuron.mesh, alpha = 0.1)
-#' nucleus.mesh <- banc_read_neuron_meshes("72903876004544795")
+#' nucleus.mesh <- banc_read_nuclei_mesh("72903876004544795")
 #' plot3d(nucleus.mesh, col = "black")
 #' }
 banc_read_neuron_meshes <- function(ids, savedir=NULL, format=c("ply", "obj"), ...) {
   format=match.arg(format)
-  read_cloudvolume_meshes(ids, savedir = savedir, cloudvolume.url = banc_cloudvolume_url(set=FALSE), format=format, ...)
+  with_banc(read_cloudvolume_meshes(ids, savedir = savedir, format=format, ...))
 }
 
 #' @export
 #' @rdname banc_read_neuron_meshes
-banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', 'ply'), ...) {
+banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', 'ply'), ...) {
   cvu <- "precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/nuclei/seg_v1"
   cv <- fafbseg::flywire_cloudvolume(cloudvolume.url = cvu)
   li <- reticulate::py_eval(ids, convert = F)
@@ -58,11 +58,14 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' @export
 #' @examples
 #' \donttest{
-#' m = banc_read_neuron_meshes("720575941650432785")
+#' # DNa02
+#' m = banc_read_neuron_meshes("720575941478275714")
 #' m.brain = banc_decapitate(m)
 #' m.vnc = banc_decapitate(m, invert = TRUE)
+#' }
+#' \dontrun{
 #' plot3d(m.brain, col = "red")
-#' plot3d(m.brain, col = "cyan")
+#' plot3d(m.vnc, col = "cyan")
 #' plot3d(banc.surf, col = "grey", alpha = 0.1)
 #' }
 banc_decapitate <- function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')

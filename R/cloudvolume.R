@@ -5,17 +5,11 @@ banc_cloudvolume <- function(...) {
 }
 
 # hidden
-banc_cloudvolume_url <- function(set=TRUE) {
-  if(set){
-    with_banc(getOption("fafbseg.cloudvolume.url"))
-  }else{
-    fafbseg::choose_segmentation(banc_scene(),
-                                 set=FALSE,
-                                 moreoptions=list(fafbseg.cave.datastack_name=banc_datastack_name()))
-    fafbseg.cloudvolume.url <- getOption("fafbseg.cloudvolume.url")
-    gsub("middleauth\\+","",fafbseg.cloudvolume.url)
-  }
+banc_cloudvolume_url <- function() {
+  rr=with_banc(getOption("fafbseg.cloudvolume.url"))
+  sub("graphene://middleauth+", "graphene://", rr, fixed = TRUE)
 }
+
 
 # hidden
 banc_api_url <- function(endpoint="") {
