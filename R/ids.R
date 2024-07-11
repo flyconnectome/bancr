@@ -61,8 +61,10 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' @export
 #' @importFrom nat xyzmatrix
 #' @examples
+#' \dontrun{
 #' # a point from neuroglancer, should map to 648518346498932033
 #' banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE)
+#' }
 banc_xyz2id <- function(xyz,
                         rawcoords=FALSE,
                         voxdims=c(4, 4, 45),
