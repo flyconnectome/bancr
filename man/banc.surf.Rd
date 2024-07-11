@@ -9,7 +9,7 @@
 \alias{banc_neck_connective.surf}
 \alias{banc_neuropils.surf}
 \alias{banc_al.surf}
-\title{Simplified tissue surface of BANC}
+\title{Simplified tissue and neuropil surfaces for BANC}
 \format{
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 

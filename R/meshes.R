@@ -61,7 +61,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 1L, savedir=NULL,  method=c('vf', '
 #' plot3d(m.brain, col = "cyan")
 #' plot3d(banc.surf, col = "grey", alpha = 0.1)
 #' }
-banc_decapitate<-function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')
+banc_decapitate <- function(x, y.cut = 325000, invert = FALSE, ...) UseMethod('banc_decapitate')
 
 #' @export
 #' @rdname banc_decapitate
@@ -116,6 +116,14 @@ banc_decapitate.mesh3d <- function(x, y.cut = 325000, invert = FALSE, ...){
   Morpho::cutMeshPlane(x,
                       v1=v1, v2=v2, v3=v3,
                       normal = NULL, keep.upper = invert)
+}
+
+#' @export
+#' @rdname banc_decapitate
+banc_decapitate.hxsurf <- function(x, y.cut = 325000, invert = FALSE, ...){
+  x <- rgl::as.mesh3d(x)
+  m <- banc_decapitate.mesh3d(x=x, y.cut=y.cut, invert=invert, ...)
+  nat::as.hxsurf(m)
 }
 
 #' Read BANC euroglancer meshes, e.g., ROI meshes
