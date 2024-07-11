@@ -24,7 +24,7 @@
 #' @examples
 #' \donttest{
 #' all_banc_soma_positions <- banc_nuclei()
-#' points3d(nat::xyzmatrix(all_banc_soma_positions))
+#' points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 #' }
 #'
 banc_cave_tables <- function(datastack_name = getOption("fafbseg.cave.datastack_name"),
