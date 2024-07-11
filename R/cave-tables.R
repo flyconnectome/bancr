@@ -13,7 +13,7 @@
 #'
 #' @return A \code{data.frame} describing a CAVE-table related to the BANC project.
 #' In the case of \code{banc_cave_tables}, a vector is returned containing the names of
-#' all queryable cave tables.
+#' all query-able cave tables.
 #'
 #' @seealso \code{fafbseg::\link{flywire_cave_query}}
 #'
@@ -30,8 +30,6 @@ banc_cave_tables <- function(datastack_name = NULL,
     datastack_name=banc_datastack_name()
   fac <- flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
-  if (!is.null(dsinfo$soma_table))
-    return(dsinfo$soma_table)
   tt <- fac$annotation$get_tables()
   if(!is.null(select)){
     chosen_tables <- grep(select, tt)

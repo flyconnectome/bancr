@@ -217,7 +217,7 @@ banc_vnc_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_vnc_neuropil.surf), percent
 an1.right.mesh.simp <- Rvcg::vcgQEdecim(an1.right.mesh[[1]], percent = 0.1)
 an1.left.mesh.simp <- Rvcg::vcgQEdecim(an1.left.mesh[[1]], percent = 0.1)
 
-# Pot!
+# Plot!
 g <- banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
                                  neuron2 = an1.left.mesh.simp,
                                  neuron1.info = "AN1_right",
