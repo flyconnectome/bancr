@@ -7,4 +7,5 @@
 ^pkgdown$
 ^spare$
 ^vignettes/articles$
-^exdata$
+^extdata$
+^data-raw$

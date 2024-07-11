@@ -18,9 +18,9 @@ banc_partner_summary(
 banc_partners(rootids, partners = c("input", "output"), ...)
 }
 \arguments{
-\item{rootids}{Character vector specifying one or more flywire rootids. As a
+\item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
-to pass in data.frames, flywire URLs or simple ids.}
+to pass in data.frames, BANC URLs or simple ids.}
 
 \item{partners}{Whether to fetch input or output synapses or both.}
 

@@ -6,6 +6,10 @@
 #'
 #' @param neuron1 A neuronlist object representing the first neuron to be compared.
 #' @param neuron2 A neuronlist object representing the second neuron to be compared.
+#' @param neuron3 A neuronlist object representing the third neuron to be compared.
+#' @param neuron1.info Character, a vector to be printed on the outputted ggplot in reference to neuron1.
+#' @param neuron2.info Character, a vector to be printed on the outputted ggplot in reference to neuron2.
+#' @param neuron3.info Character, a vector to be printed on the outputted ggplot in reference to neuron3.
 #' @param banc_brain_neuropil A mesh object representing the brain neuropil. Default is banc_brain_neuropil.surf.
 #' @param banc_vnc_neuropil A mesh object representing the ventral nerve cord (VNC) neuropil. Default is banc_vnc_neuropil.surf.
 #' @param banc_neuropil A mesh object representing the entire neuropil. Default is banc_neuropil.surf.
@@ -40,9 +44,9 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
                                         neuron3.info = NULL,
-                                        banc_brain_neuropil = banc_brain_neuropil.surf,
-                                        banc_vnc_neuropil = banc_vnc_neuropil.surf,
-                                        banc_neuropil = banc_neuropil.surf,
+                                        banc_brain_neuropil = NULL,
+                                        banc_vnc_neuropil = NULL,
+                                        banc_neuropil = NULL,
                                         filename = NULL,
                                         width = 16,
                                         height = 16) {
@@ -52,15 +56,9 @@ banc_neuron_comparison_plot <- function(neuron1,
   check_package_available('ggpubr')
   glist <- list()
   title.col <- "black"
-  if(!"mesh3d"%in%class(banc_brain_neuropil)){
-    banc_brain_neuropil <- rgl::as.mesh3d(banc_brain_neuropil)
-  }
-  if(!"mesh3d"%in%class(banc_vnc_neuropil)){
-    banc_vnc_neuropil <- rgl::as.mesh3d(banc_vnc_neuropil)
-  }
-  if(!"mesh3d"%in%class(banc_neuropil)){
-    banc_neuropil <- rgl::as.mesh3d(banc_neuropil)
-  }
+  if(is.null(banc_brain_neuropil)) banc_brain_neuropil <- utils::data("banc_brain_neuropil.surf", envir = environment())
+  if(is.null(banc_vnc_neuropil)) banc_vnc_neuropil <- utils::data("banc_vnc_neuropil.surf", envir = environment())
+  if(is.null(banc_neuropil)) banc_neuropil <- utils::data("banc_neuropil.surf", envir = environment())
   for(view in names(banc_rotation_matrices)){
 
     # Choose mesh
@@ -99,7 +97,7 @@ banc_neuron_comparison_plot <- function(neuron1,
 
     # Create the plot
     p <- ggplot2::ggplot() +
-      geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05) +
+      geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, low = "grey95", high = "grey50") +
       geom_neuron(x=neuron_pruned1[[1]], rotation_matrix = rotation_matrix, low = "turquoise", high = "navy", alpha = 0.5, linewidth = 0.3) +
       geom_neuron(x=neuron_pruned2[[1]], rotation_matrix = rotation_matrix, low = "red", high = "darkred", alpha = 0.5, linewidth = 0.3) +
       geom_neuron(x=neuron_pruned3[[1]], rotation_matrix = rotation_matrix, low = "chartreuse", high = "darkgreen", alpha = 0.5, linewidth = 0.3) +
@@ -158,19 +156,32 @@ banc_neuron_comparison_plot <- function(neuron1,
   }
 }
 
-#' Convert neuron objects to ggplot2-compatible data
+#' Convert Neuron Objects to ggplot2-Compatible Data
 #'
 #' @description
-#' This function converts 'neuron', 'mesh3d' or 'neuronlist' objects, which represent 3D
-#' points linked by lines in space, into data frames that describe paths
-#' compatible with ggplot2's geom_path, or geom_polygon for mesh3d objects.
+#' This function converts 'neuron', 'mesh3d', or 'neuronlist' objects,
+#' which represent 3D points linked by lines in space, into data frames
+#' that describe paths compatible with ggplot2's geom_path, or geom_polygon
+#' for mesh3d objects.
 #'
-#' @param x A 'neuron' or 'neuronlist' object to be converted.
+#' @param x A 'neuron', 'neuronlist', or 'mesh3d' object to be converted.
 #' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
 #' @param ... Additional arguments passed to methods.
 #'
 #' @return A data frame with columns X, Y, Z, and group, where each group
-#' represents a continuous path in the neuron.
+#' represents a continuous path in the neuron or a polygon in the mesh.
+#'
+#' @examples
+#' \dontrun{
+#' # Convert a neuron object
+#' neuron_data <- ggplot2_neuron_path(my_neuron)
+#'
+#' # Convert a neuronlist object
+#' neuronlist_data <- ggplot2_neuron_path(my_neuronlist)
+#'
+#' # Convert a mesh3d object
+#' mesh_data <- ggplot2_neuron_path(my_mesh)
+#' }
 #'
 #' @export
 ggplot2_neuron_path <- function(x, rotation_matrix = NULL, ...) UseMethod('ggplot2_neuron_path')
@@ -247,20 +258,46 @@ ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
     group = rep(1:nrow(faces.matrix), each = 3)
   )
   triangles <- triangles %>%
-    dplyr::arrange(dplyr::desc(Z))
+    dplyr::arrange(dplyr::desc(.data$Z))
 
   # return: triangles
   triangles
 }
 
-
-#' @rdname ggplot2_neuron_path
+#' Create ggplot2 Geom Layer for Neuron Visualization
+#'
+#' @description
+#' This function creates a ggplot2 geom layer for visualizing neuron objects.
+#' It supports 'neuron', 'neuronlist', and 'mesh3d' objects.
+#'
+#' @param x A 'neuron', 'neuronlist', or 'mesh3d' object to be visualized.
+#' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
+#' @param low Color for the lowest Z values. The 'Z' axis is the axis perpendicular to the viewing plane.
+#' @param high Color for the highest Z values.
+#' @param stat The statistical transformation to use on the data for this layer.
+#' @param position Position adjustment, either as a string, or the result of a call to a position adjustment function.
+#' @param na.rm If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed.
+#' @param show.legend logical. Should this layer be included in the legends? NA, the default, includes if any aesthetics are mapped.
+#' @param inherit.aes If FALSE, overrides the default aesthetics, rather than combining with them.
+#' @param ... Other arguments passed on to layer().
+#'
+#' @return A list of ggplot2 geom layers for visualizing the neuron.
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)
+#' ggplot() + geom_neuron(my_neuron)
+#' ggplot() + geom_neuron(my_neuronlist)
+#' ggplot() + geom_neuron(my_mesh)
+#' }
+#'
+#' @importFrom rlang .data
 #' @export
 geom_neuron <-function(x, rotation_matrix = NULL, low = "turquoise", high = "navy",
                        stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = FALSE, ...) UseMethod('geom_neuron')
 
-#' @rdname ggplot2_neuron_path
+#' @rdname geom_neuron
 #' @method geom_neuron neuron
 #' @export
 geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
@@ -277,17 +314,18 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquois
   }
   x <- ggplot2_neuron_path.neuron(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = X, y = Y, color = Z, group = group), data = x,
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z, group = .data$group),
+                       data = x,
               stat = stat, position = position, na.rm = na.rm,
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
-    ggplot2::geom_point(mapping = ggplot2::aes(x = X, y = Y), data = soma,
+    ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y), data = soma,
                          color = high, alpha = 0.5, size = 3),
     ggplot2::scale_color_gradient(low = low, high = high),
     ggnewscale::new_scale_colour()
   )
 }
 
-#' @rdname ggplot2_neuron_path
+#' @rdname geom_neuron
 #' @method geom_neuron neuronlist
 #' @export
 geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
@@ -295,22 +333,22 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turq
                                inherit.aes = FALSE, ...) {
   x <- ggplot2_neuron_path.neuronlist(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = X, y = Y, color = id, group = group), data = x,
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$id, group = .data$group), data = x,
                        stat = stat, position = position, na.rm = na.rm,
                        show.legend = show.legend, inherit.aes = inherit.aes, ...)
   )
 }
 
-#' @rdname ggplot2_neuron_path
-#' @method geom_neuron neuronlist
+#' @rdname geom_neuron
+#' @method geom_neuron mesh3d
 #' @export
-geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
+geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
   check_package_available('ggnewscale')
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = X, y = Y, fill = Z, group = group),
+    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, fill = .data$Z, group = .data$group),
                     color = NA,
                     stat = stat, position = position, na.rm = na.rm,
                     show.legend = show.legend, inherit.aes = inherit.aes, ...),
@@ -319,10 +357,22 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "grey90",
   )
 }
 
-#' @rdname ggplot2_neuron_path
-#' @method geom_neuron neuronlist
+#' @rdname geom_neuron
+#' @method geom_neuron hxsurf
 #' @export
-geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "grey90", high = "grey50",
+geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                               inherit.aes = FALSE, ...) {
+  x <- rgl::as.mesh3d(x)
+  geom_neuron.mesh3d(x=x, rotation_matrix=rotation_matrix, low=low, high=high,
+                     stat=stat, position=position, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
+                     ...)
+}
+
+#' @rdname geom_neuron
+#' @method geom_neuron NULL
+#' @export
+geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   list(

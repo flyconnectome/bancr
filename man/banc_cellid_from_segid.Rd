@@ -3,7 +3,7 @@
 \name{banc_cellid_from_segid}
 \alias{banc_cellid_from_segid}
 \alias{banc_segid_from_cellid}
-\title{Convert between banc cell ids and root ids}
+\title{Convert between BANC cell ids and root ids}
 \usage{
 banc_cellid_from_segid(
   rootids = NULL,
@@ -77,7 +77,7 @@ wiki}.
 }
 \examples{
 \donttest{
-banc_cellid_from_segid(banc_latestid("720575941480769421"))
+banc_cellid_from_segid(banc_latestid("720575941626035769"))
 }
 \donttest{
 banc_cellid_from_segid(banc_latestid("720575941480769421"))

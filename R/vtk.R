@@ -23,11 +23,11 @@ write_mesh3d_to_vtk <- function(mesh, filename) {
   writeLines("DATASET POLYDATA", con)
 
   writeLines(sprintf("POINTS %d float", nrow(vertices)), con)
-  write.table(format(vertices, scientific = FALSE), con, row.names = FALSE, col.names = FALSE, quote = FALSE)
+  utils::write.table(format(vertices, scientific = FALSE), con, row.names = FALSE, col.names = FALSE, quote = FALSE)
 
   writeLines(sprintf("POLYGONS %d %d", nrow(faces), nrow(faces) * 4), con)
   face_data <- cbind(3, faces - 1)
-  write.table(face_data, con, row.names = FALSE, col.names = FALSE, quote = FALSE)
+  utils::write.table(face_data, con, row.names = FALSE, col.names = FALSE, quote = FALSE)
 
   cat("Mesh successfully written to", filename, "\n")
 
