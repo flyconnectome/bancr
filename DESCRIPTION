@@ -32,7 +32,8 @@ Imports:
     RSQLite,
     readr,
     checkmate,
-    stringr
+    stringr,
+    utils
 Suggests: 
     testthat (>= 3.0.0),
     reticulate,
@@ -45,13 +46,15 @@ Suggests:
     arrow,
     ggplot2,
     ggnewscale,
-    ggpubr
+    ggpubr,
+    catmaid
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
     natverse/nat.flybrains,
-    natverse/nat.templatebrains
-    flyconnectome/fancr
+    natverse/nat.templatebrains,
+    flyconnectome/fancr,
+    catmaid=natverse/rcatmaid,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
