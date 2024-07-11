@@ -111,7 +111,7 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
     res
   else {
     res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
-      nat::xyzmatrix2str(fancr::banc_raw2nm(x))))
+      nat::xyzmatrix2str(banc_raw2nm(x))))
   }
 }
 
