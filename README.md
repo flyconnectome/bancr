@@ -62,9 +62,7 @@ To check that everything is set up properly, try:
 dr_banc()
 
 # confirm functionality
-banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE)
-svids=banc_leaves("720575941650432785")
-head(svids)
+banc_islatest("720575941562355975")
 ```
 
 Some functions rely on underlying Python code by 
@@ -127,8 +125,8 @@ plot two of them. They are both members of the same cell type. They are
 identified by a 16-bit `root_id`.
 
 ```
-an1.right <- "720575941566983162"
-an1.left <- "720575941562355975"
+an1.left <- "720575941566983162"
+an1.right <- "720575941562355975"
 ```
 
 This ID changes each time a neuron is edited, so while the *BANC* is an 
@@ -138,9 +136,9 @@ have changed a little, although they describe the same cells.
 Therefore, let us make sure we have the most up to date IDs.
 
 ```
-an1.right <- banc_latestid(an1.right)
 an1.left <- banc_latestid(an1.left)
-an1.ids <- c(an1.right, an1.left)
+an1.right <- banc_latestid(an1.right)
+an1.ids <- c(an1.left, an1.right)
 an1.ids
 ```
 
@@ -162,8 +160,8 @@ banc.nuclei.an1
 Great. Next, we want to read the mesh objects of our neurons.
 
 ```r
-an1.right.mesh <- banc_read_neuron_meshes(an1.right)
 an1.left.mesh <- banc_read_neuron_meshes(an1.left)
+an1.right.mesh <- banc_read_neuron_meshes(an1.right)
 ```
 
 These neurons will be in '*BANC* coordinates', in nanometers. They are read as 
@@ -176,15 +174,15 @@ These functions depend on Philipp Schlegel's `fafbseg-py` library.
 You can install this using `fafbseg::simple_python`. See above.
 
 ```r
-an1.right.skel <- banc_read_l2skel(an1.right)
 an1.left.skel <- banc_read_l2skel(an1.left)
+an1.right.skel <- banc_read_l2skel(an1.right)
 ```
 
 We can also get `mesh3d` objects for our nuclei.
 
 ```r
-an1.right.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[1])
-an1.left.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[2])
+an1.left.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[1])
+an1.right.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[2])
 ```
 
 ### Plot our *BANC* neurons
@@ -209,16 +207,16 @@ And now our neurons, their skeletons and their nuclei.
 
 ```r
 # Plot neuron meshes
-plot3d(an1.right.mesh, col = "coral", alpha = 0.75)
-plot3d(an1.left.mesh, col = "chartreuse", alpha = 0.75)
+plot3d(an1.left.mesh, col = "coral", alpha = 0.75)
+plot3d(an1.right.mesh, col = "chartreuse", alpha = 0.75)
 
 # Plot neuron skeletons
-plot3d(an1.right.skel, col = "darkred", alpha = 1)
-plot3d(an1.left.skel, col = "darkgreen", alpha = 1)
+plot3d(an1.left.skel, col = "darkred", alpha = 1)
+plot3d(an1.right.skel, col = "darkgreen", alpha = 1)
 
 # Plot nuclei meshes
-plot3d(an1.right.nucleus, col = "black", alpha = 1, add = TRUE)
 plot3d(an1.left.nucleus, col = "black", alpha = 1, add = TRUE)
+plot3d(an1.right.nucleus, col = "black", alpha = 1, add = TRUE)
 ```
 ![banc_an1](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_an1.png?raw=true)
 
@@ -229,12 +227,12 @@ We can also make a 2D image of multiple views using `ggplot2`.
 banc_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_neuropil.surf), percent = 0.1)
 banc_brain_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_brain_neuropil.surf), percent = 0.1)
 banc_vnc_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_vnc_neuropil.surf), percent = 0.1)
-an1.right.mesh.simp <- Rvcg::vcgQEdecim(an1.right.mesh[[1]], percent = 0.1)
 an1.left.mesh.simp <- Rvcg::vcgQEdecim(an1.left.mesh[[1]], percent = 0.1)
+an1.right.mesh.simp <- Rvcg::vcgQEdecim(an1.right.mesh[[1]], percent = 0.1)
 
 # Plot! Saves as a PNG file
-banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
-                           neuron2 = an1.left.mesh.simp,
+banc_neuron_comparison_plot(neuron1 = an1.left.mesh.simp,
+                           neuron2 = an1.right.mesh.simp,
                            neuron1.info = "AN1_right",
                            neuron2.info = "AN1_left",
                            banc_neuropil = banc_neuropil,
@@ -258,8 +256,8 @@ this works less well in the VNC than the brain.
 ![banc_neuropil_mirrored](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_neuropil_mirrored.png?raw=true)
 
 ```r
-an1.right.skel.m <- banc_mirror(an1.right.skel, method = "tpsreg")
-an1.left.skel.m <- banc_mirror(an1.left.skel, , method = "tpsreg")
+an1.left.skel.m <- banc_mirror(an1.left.skel, method = "tpsreg")
+an1.right.skel.m <- banc_mirror(an1.right.skel, , method = "tpsreg")
 ```
 
 And now plot the mirrored skeletons, and the non-mirrored meshes for
@@ -272,12 +270,12 @@ banc_view()
 plot3d(banc_neuropil.surf, col = "lightgrey", alpha = 0.1)
 
 # Plot native neuron meshes
-plot3d(an1.right.mesh, col = "coral", alpha = 0.5)
-plot3d(an1.left.mesh, col = "chartreuse", alpha = 0.5)
+plot3d(an1.left.mesh, col = "coral", alpha = 0.5)
+plot3d(an1.right.mesh, col = "chartreuse", alpha = 0.5)
 
 # Plot mirrored neuron skeletons
-plot3d(an1.right.skel.m, col = "darkred", alpha = 1)
-plot3d(an1.left.skel.m, col = "darkgreen", alpha = 1)
+plot3d(an1.left.skel.m, col = "darkred", alpha = 1)
+plot3d(an1.right.skel.m, col = "darkgreen", alpha = 1)
 ```
 ![banc_ans_mirrored](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_ans_mirrored.png?raw=true)
 
@@ -318,7 +316,7 @@ include the brain.
 
 ```r
 # Show only the portion in the brain
-an1.mesh.simp <- neuronlist(an1.right.mesh.simp, an1.left.mesh.simp)
+an1.mesh.simp <- neuronlist(an1.left.mesh.simp, an1.right.mesh.simp)
 an1.mesh.simp.brain  <- banc_decapitate(an1.mesh.simp, invert = TRUE)
 
 # Convert to JRC2018F space
@@ -448,6 +446,8 @@ The segmentation and synapse prediction was built by [Zetta.ai](https://zetta.ai
 The neuron reconstruction effort has been hosted and support by [FlyWire](https://flywire.ai/).
 This R package was built from principles developed
 by Greg Jefferis at the Laboratory of Molecular Biology.
+Alex Bates developed with R package while in the laboratory of Rachel Wilson
+at Harvard Medical School.
 
 References
 ----------
