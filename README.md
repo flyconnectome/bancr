@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/flyconnectome/banc/workflows/R-CMD-check/badge.svg)](https://github.com/flyconnectome/banc/actions)
 [![R-CMD-check](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-
+c
 bancr
 ===========
 
@@ -12,7 +12,7 @@ The goal of **bancr** is to support analysis of the Brain And
 Nerve Cord dataset aka (*BANC*), especially autosegmentation data. 
 Those data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
-Anyon can request access to the data [here](https://flywire.ai/banc_access).
+Anyone can request access to the data [here](https://flywire.ai/banc_access).
 Learn more on the [BANC wiki](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/).
 
 To access banc resources, you must have permissions to access the [banc
@@ -356,6 +356,7 @@ And then get known *FAFB-FlyWire* neurons.
 # Which directs you towards the active FAFB-FlyWire segmentation
 
 # Define the IDs we wish to fetch
+# these are from the 783 materialisation (i.e.) published version
 fw.an1.ids <- c("720575940626768442", "720575940636821616")
 
 # Get neuron meshes
@@ -443,7 +444,7 @@ Acknowledgements
 ----------------
 
 The BANC data set was collected at Harvard Medical School in he laboratory of Wei-Chung Allen Lee, by Minsu Kim and Jasper Phelps.
-The segmentation and synapse prediction was built by [Zett.ai](https://zetta.ai/). 
+The segmentation and synapse prediction was built by [Zetta.ai](https://zetta.ai/). 
 The neuron reconstruction effort has been hosted and support by [FlyWire](https://flywire.ai/).
 This R package was built from principles developed
 by Greg Jefferis at the Laboratory of Molecular Biology.
