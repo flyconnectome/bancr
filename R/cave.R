@@ -18,9 +18,8 @@
 #'   filter(tag2=='anterior-posterior projection pattern') %>%
 #'   count(tag)
 #' }
-banc_cave_query <- function(table, datastack_name = NULL, live=TRUE, ...) {
-  if(is.null(datastack_name)) datastack_name=banc_datastack_name()
-  fafbseg::flywire_cave_query(table = table, datastack_name = datastack_name, live=live, ...)
+banc_cave_query <- function(table, live=TRUE, ...) {
+  with_banc(fafbseg::flywire_cave_query(table = table, live=live, ...))
 }
 
 #' Low level access to banc's CAVE annotation infrastructure
@@ -35,6 +34,6 @@ banc_cave_query <- function(table, datastack_name = NULL, live=TRUE, ...) {
 #' fcc$materialize$get_table_metadata(tables[1])
 #' }
 banc_cave_client <- function() {
-  with_banc(flywire_cave_client())
+  with_banc(fafbseg::flywire_cave_client())
 }
 

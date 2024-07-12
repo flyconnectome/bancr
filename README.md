@@ -61,7 +61,7 @@ To check that everything is set up properly, try:
 # diagnose issues
 dr_banc()
 
-# confirm functionality
+# confirm functionality, should return FALSE
 banc_islatest("720575941562355975")
 ```
 
@@ -71,14 +71,21 @@ called using the `reticulate` package.
 You can install full set of recommended libraries including `fafbseg-py`:
 
 ```
-simple_python("full")
+fafbseg::simple_python("full")
 ```
 
 Note that this package is designed to play nicely with `fafbseg`, which has
 been used mainly for the *FAFB-FlyWire* project, but could be used to work with
 data from many neuroglancer/CAVE based projects.
 
-Use `with_banc()` to wrap many additional fafbseg::flywire_* functions 
+If you get an error related to not finding cloud-volume or the 
+cloud-volume version, the solution may be to update cloud-volume, as so:
+
+```r
+fafbseg::simple_python('none', pkgs='cloud-volume~=8.32.1')
+```
+
+Use `with_banc()` to wrap many additional `fafbseg::flywire_*` functions 
 for use with the *BANC*. Alternatively `choose_banc()` to set all 
 `flywire_*` functions from `fafbseg` to target the *BANC*. Not all functions
 will work.
@@ -95,7 +102,7 @@ remotes::install_github('flyconnectome/bancr')
 If you need to update a specific Python library dependent, you can do:
 
 ```r
-reticulate::py_install("fafbseg", upgrade = TRUE)
+fafbseg::simple_python(pkgs='fafbseg')
 ```
 
 Ascending Neuron Vignette
@@ -107,6 +114,7 @@ First we need to load the package, and direct ourselves to the *BANC* data set.
 
 ```r
 library(bancr)
+# choose_banc()
 ```
 
 ### Identify the neurons we care about
