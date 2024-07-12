@@ -220,7 +220,7 @@ plot3d(an1.left.skel, col = "darkgreen", alpha = 1)
 plot3d(an1.right.nucleus, col = "black", alpha = 1, add = TRUE)
 plot3d(an1.left.nucleus, col = "black", alpha = 1, add = TRUE)
 ```
-![banc_an1](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_an1.png)
+![banc_an1](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_an1.png?raw=true)
 
 We can also make a 2D image of multiple views using `ggplot2`.
 
@@ -232,7 +232,7 @@ banc_vnc_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_vnc_neuropil.surf), percent
 an1.right.mesh.simp <- Rvcg::vcgQEdecim(an1.right.mesh[[1]], percent = 0.1)
 an1.left.mesh.simp <- Rvcg::vcgQEdecim(an1.left.mesh[[1]], percent = 0.1)
 
-# Plot!
+# Plot! Saves as a PNG file
 banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
                            neuron2 = an1.left.mesh.simp,
                            neuron1.info = "AN1_right",
@@ -240,12 +240,12 @@ banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
                            banc_neuropil = banc_neuropil,
                            banc_brain_neuropil = banc_brain_neuropil,
                            banc_vnc_neuropil = banc_vnc_neuropil,
-                           filename = "banc_an_comparison_ggplot2.png")
+                           filename = "banc_an_comparison_ggplot2.png?raw=true")
 
 # Tip: You may need to hit 'zoom' on the RStudio plot pane, to see finer meshes,
 # when filename = NULL.
 ```
-![banc_an_comparison_ggplot2](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_an_comparison_ggplot2.png)
+![banc_an_comparison_ggplot2](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_an_comparison_ggplot2.png?raw=true)
 
 ### Left-right mirror *BANC* neurons
 
@@ -255,7 +255,7 @@ we can 'mirror' neurons in *BANC* even though it is an asymmetric space.
 Here we can see the normal (grey) and mirrored mesh (green). At the moment, 
 this works less well in the VNC than the brain.
 
-![banc_neuropil_mirrored](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_neuropil_mirrored.png)
+![banc_neuropil_mirrored](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_neuropil_mirrored.png?raw=true)
 
 ```r
 an1.right.skel.m <- banc_mirror(an1.right.skel, method = "tpsreg")
@@ -279,21 +279,21 @@ plot3d(an1.left.mesh, col = "chartreuse", alpha = 0.5)
 plot3d(an1.right.skel.m, col = "darkred", alpha = 1)
 plot3d(an1.left.skel.m, col = "darkgreen", alpha = 1)
 ```
-![banc_ans_mirrored](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_ans_mirrored.png)
+![banc_ans_mirrored](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_ans_mirrored.png?raw=true)
 
 We can also change the view to see, for example, the brain more clearly.
 
 ```r
 banc_front_view()
 ```
-![banc_ans_mirrored_brain](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_ans_mirrored_brain.png)
+![banc_ans_mirrored_brain](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_ans_mirrored_brain.png?raw=true)
 
 Or the ventral nerve cord.
 
 ```r
 banc_vnc_view()
 ```
-![banc_ans_mirrored_vnc](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/banc_ans_mirrored_vnc.png)
+![banc_ans_mirrored_vnc](https://github.com/flyconnectome/bancr/blob/main/inst/images/banc_ans_mirrored_vnc.png?raw=true)
 
 ### Co-plot *FAFB-FlyWire* and Hemibrain neurons
 
@@ -331,7 +331,7 @@ nopen3d()
 plot3d(JRC2018F.surf, col = "lightgrey", alpha = 0.1)
 plot3d(an1.mesh.simp.brain.jrc2018f, col = c("turquoise", "navy"), alpha = 0.75, add = TRUE)
 ```
-![an_banc_jrc2018f](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/an_banc_jrc2018f.png)
+![an_banc_jrc2018f](https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_jrc2018f.png?raw=true)
 
 We can now read a neuron from *FAFB-FlyWire*. I already know the ID of the 
 comparable *FAFB-FlyWire* neurons to fetch.
@@ -369,7 +369,7 @@ reference = "JRC2018F")
 # Add to plot
 plot3d(fw.an1.meshes.jrc2018f, col = c("red","orange"), alpha = 1, add = TRUE)
 ```
-![an_banc_hemibrain](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/an_banc_fafb.png)
+![an_banc_hemibrain](https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_fafb.png?raw=true)
 
 We can do the same with the *Hemibrain*.
 
@@ -398,7 +398,7 @@ hb.an1.mesh.jrc2018f <- xform_brain(hb.an1.mesh/1000, sample = "JRCFIB2018F", re
 plot3d(hb.an1.mesh.jrc2018f , col = c("chartreuse"), alpha = 1, add = TRUE)
 ```
 
-![an_banc_fafb_hemibrain](https://raw.githubusercontent.com/flyconnectome/bancr/main/inst/images/an_banc_fafb_hemibrain.png)
+![an_banc_fafb_hemibrain](https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_fafb_hemibrain.png?raw=true)
 
 Now we see all related neurons from three data sets in one space. Awesome!
 
