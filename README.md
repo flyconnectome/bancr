@@ -1,5 +1,3 @@
-# bancr
-
 <!-- badges: start -->
 [![natverse](https://img.shields.io/badge/natverse-Part%20of%20the%20natverse-a241b6)](https://natverse.github.io)
 [![Docs](https://img.shields.io/badge/docs-100%25-brightgreen.svg)](https://flyconnectome.github.io/bancr/reference/)
@@ -7,10 +5,15 @@
 [![R-CMD-check](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
+bancr
+===========
+
 The goal of **bancr** is to support analysis of the Brain And
-Nerve Cord dataset aka (BANC), especially autosegmentation data. 
-Those data are made available by the BANC project led by Wei-Chung Allen Lee (Harvard) 
+Nerve Cord dataset aka (*BANC*), especially autosegmentation data. 
+Those data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
+Anyon can request access to the data [here](https://flywire.ai/banc_access).
+Learn more on the [BANC wiki](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/).
 
 To access banc resources, you must have permissions to access the [banc
 autosegmentation
@@ -21,14 +24,17 @@ of the banc proofreading and data ownership guidelines. At this point you should
 have a linked Google account that will be authorised (see below) for access to
 banc online resources.
 
-Broadly speaking the **bancr** package is a thin wrapper over the 
+Broadly speaking the **bancr** package is largely a wrapper over the 
 [fafbseg](https://github.com/natverse/fafbseg) package setting up necessary 
 default paths etc. It is based on another wrapper for a separate project, 
 [fancr](https://github.com/flyconnectome/fancr).
 
+If you have access, you can view *BANC* data in this helpful 
+[neurglancer scene](https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912)
+
 ## Installation
 
-You can install the development version of bancr from github:
+You can install the development version of `bancr` from github:
 
 ```r
 remotes::install_github('flyconnectome/bancr')
@@ -61,7 +67,8 @@ svids=banc_leaves("720575941650432785")
 head(svids)
 ```
 
-Some functions rely on underlying Python code by Philipp Schlegel, 
+Some functions rely on underlying Python code by 
+[Philipp Schlegel](https://www.zoo.cam.ac.uk/directory/dr-philip-schlegel), 
 called using the `reticulate` package.
 You can install full set of recommended libraries including `fafbseg-py`:
 
@@ -70,12 +77,12 @@ simple_python("full")
 ```
 
 Note that this package is designed to play nicely with `fafbseg`, which has
-been used mainly for the FAFB-FlyWire project, but could be used to work with
+been used mainly for the *FAFB-FlyWire* project, but could be used to work with
 data from many neuroglancer/CAVE based projects.
 
 Use `with_banc()` to wrap many additional fafbseg::flywire_* functions 
-for use with the BANC. Alternatively `choose_banc()` to set all 
-`flywire_*` functions from `fafbseg` to target the BANC. Not all functions
+for use with the *BANC*. Alternatively `choose_banc()` to set all 
+`flywire_*` functions from `fafbseg` to target the *BANC*. Not all functions
 will work.
 
 ### Updating
@@ -90,16 +97,15 @@ remotes::install_github('flyconnectome/bancr')
 If you need to update a specific Python library dependent, you can do:
 
 ```r
-
+reticulate::py_install("fafbseg", upgrade = TRUE)
 ```
 
-### Vignette
-
-## Plotting related ascending neurons
+Ascending Neuron Vignette
+--------------------------------
 
 ### Load the code we need
 
-First we need to load the package, and direct ourselves to the BANC data set.
+First we need to load the package, and direct ourselves to the *BANC* data set.
 
 ```r
 library(bancr)
@@ -107,7 +113,7 @@ library(bancr)
 
 ### Identify the neurons we care about
 
-Next, let us query a BANC CAVE table in order to get the neurons users have 
+Next, let us query a *BANC* CAVE table in order to get the neurons users have 
 annotated as 'ascending' neurons, i.e. neurons that have their cell bodies
 and dendrites in the ventral nerve cord, and their axons in the brain.
 
@@ -125,7 +131,7 @@ an1.right <- "720575941566983162"
 an1.left <- "720575941562355975"
 ```
 
-This ID changes each time a neuron is edited, so while the BANC is an 
+This ID changes each time a neuron is edited, so while the *BANC* is an 
 active project they are unstable. Likely by the time you read this, they
 have changed a little, although they describe the same cells.
 
@@ -139,7 +145,7 @@ an1.ids
 ```
 
 Sometimes a more stable way to track a neuron (as long as it has a cell body
-within the BANC volume) is to consider its `nucleus_id`. 
+within the *BANC* volume) is to consider its `nucleus_id`. 
 
 We can get a table of nucleus ids from CAVE and find ours. The `root_id`
 column in these CAVE tables automatically update.
@@ -160,7 +166,7 @@ an1.right.mesh <- banc_read_neuron_meshes(an1.right)
 an1.left.mesh <- banc_read_neuron_meshes(an1.left)
 ```
 
-These neurons will be in 'BANC coordinates', in nanometers. They are read as 
+These neurons will be in '*BANC* coordinates', in nanometers. They are read as 
 `mesh3d` objects which describe triangular meshes.
 
 But we can also get proxy 'L2' skeletons from the segmentation graph for each
@@ -177,15 +183,15 @@ an1.left.skel <- banc_read_l2skel(an1.left)
 We can also get `mesh3d` objects for our nuclei.
 
 ```r
-an1.right.nucleus <- banc_read_nuclei_mesh(an1.right)
-an1.left.nucleus <- banc_read_nuclei_mesh(an1.left)
+an1.right.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[1])
+an1.left.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[2])
 ```
 
-### Plot our BANC neurons
+### Plot our *BANC* neurons
 
 We can plot our neurons in 3D using the `rgl` package.
 
-First, we can plot the BANC volume mesh which shows all the brain tissue.
+First, we can plot the *BANC* volume mesh which shows all the brain tissue.
 
 ```r
 nopen3d()
@@ -211,9 +217,10 @@ plot3d(an1.right.skel, col = "darkred", alpha = 1)
 plot3d(an1.left.skel, col = "darkgreen", alpha = 1)
 
 # Plot nuclei meshes
-plot3d(an1.right.nucleus, col = "darkred", alpha = 0.75)
-plot3d(an1.left.nucleus, col = "darkgreen", alpha = 0.75)
+plot3d(an1.right.nucleus, col = "black", alpha = 1, add = TRUE)
+plot3d(an1.left.nucleus, col = "black", alpha = 1, add = TRUE)
 ```
+![banc_an1](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_an1.png)
 
 We can also make a 2D image of multiple views using `ggplot2`.
 
@@ -226,22 +233,29 @@ an1.right.mesh.simp <- Rvcg::vcgQEdecim(an1.right.mesh[[1]], percent = 0.1)
 an1.left.mesh.simp <- Rvcg::vcgQEdecim(an1.left.mesh[[1]], percent = 0.1)
 
 # Plot!
-g <- banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
-                                 neuron2 = an1.left.mesh.simp,
-                                 neuron1.info = "AN1_right",
-                                 neuron2.info = "AN1_left",
-                                 banc_neuropil = banc_neuropil,
-                                 banc_brain_neuropil = banc_brain_neuropil,
-                                 banc_vnc_neuropil = banc_vnc_neuropil)
+banc_neuron_comparison_plot(neuron1 = an1.right.mesh.simp,
+                           neuron2 = an1.left.mesh.simp,
+                           neuron1.info = "AN1_right",
+                           neuron2.info = "AN1_left",
+                           banc_neuropil = banc_neuropil,
+                           banc_brain_neuropil = banc_brain_neuropil,
+                           banc_vnc_neuropil = banc_vnc_neuropil,
+                           filename = "banc_an_comparison_ggplot2.png")
 
-# Tip: You may need to hit 'zoom' on the RStudio plot pane, to see finer meshes.
-plot(g)
+# Tip: You may need to hit 'zoom' on the RStudio plot pane, to see finer meshes,
+# when filename = NULL.
 ```
+![banc_an_comparison_ggplot2](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_an_comparison_ggplot2.png)
 
-### Left-right mirror BANC neurons
+### Left-right mirror *BANC* neurons
 
 Using a bridge to the symmetric 'template brain' (see below), 
-we can 'mirror' neurons in BANC even though it is an unsymmetric space.
+we can 'mirror' neurons in *BANC* even though it is an asymmetric space.
+
+Here we can see the normal (grey) and mirrored mesh (green). At the moment, 
+this works less well in the VNC than the brain.
+
+![banc_neuropil_mirrored](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_neuropil_mirrored.png)
 
 ```r
 an1.right.skel.m <- banc_mirror(an1.right.skel, method = "tpsreg")
@@ -258,26 +272,44 @@ banc_view()
 plot3d(banc_neuropil.surf, col = "lightgrey", alpha = 0.1)
 
 # Plot native neuron meshes
-plot3d(an1.right.mesh, col = "coral", alpha = 0.3)
-plot3d(an1.left.mesh, col = "chartreuse", alpha = 0.3)
+plot3d(an1.right.mesh, col = "coral", alpha = 0.5)
+plot3d(an1.left.mesh, col = "chartreuse", alpha = 0.5)
 
 # Plot mirrored neuron skeletons
 plot3d(an1.right.skel.m, col = "darkred", alpha = 1)
 plot3d(an1.left.skel.m, col = "darkgreen", alpha = 1)
 ```
+![banc_ans_mirrored](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_ans_mirrored.png)
 
-### Co-plot FAFB-FlyWire and Hemibrain neurons
+We can also change the view to see, for example, the brain more clearly.
 
-Jasper Phelps has made a BANC-to-JRC2018F and JRC2018F-to-BANC transform using 
-the software Elastix. Therefore, we can use this transform to move data 
-transformed first into `JRC2018F`, into the BANC. Or data out of the BANC, 
+```r
+banc_front_view()
+```
+![banc_ans_mirrored_brain](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_ans_mirrored_brain.png)
+
+Or the ventral nerve cord.
+
+```r
+banc_vnc_view()
+```
+![banc_ans_mirrored_vnc](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/banc_ans_mirrored_vnc.png)
+
+### Co-plot *FAFB-FlyWire* and Hemibrain neurons
+
+[Jasper Phelps](https://people.epfl.ch/jasper.phelps/?lang=en) 
+has made a *BANC*-to-JRC2018F and JRC2018F-to-*BANC* transform using 
+the software [Elastix](https://elastix.dev/download.php). 
+Therefore, we can use this transform to move data 
+transformed first into `JRC2018F`, into the *BANC*. Or data out of the *BANC*, 
 into `JRC2018` and then any other template brain to which `JRC2018F` can be
 bridged.
 
 We can either use the Elastix transform directly if you have Elastix installed
 on your machine (implemented as `method="elastix"`). 
 This can be a bit of a journey, so I have also implemented
-a thinplate-spine registration that is based on the Elastix transform, 
+a [thin plate spine registration](https://rdrr.io/cran/Morpho/man/computeTransform.html)
+that is based on the Elastix transform, 
 made and applied using the R package `Morpho` (implemented as `method="tpsreg"`)
 . The end result of the two methods can be very slightly different.
 
@@ -299,9 +331,10 @@ nopen3d()
 plot3d(JRC2018F.surf, col = "lightgrey", alpha = 0.1)
 plot3d(an1.mesh.simp.brain.jrc2018f, col = c("turquoise", "navy"), alpha = 0.75, add = TRUE)
 ```
+![an_banc_jrc2018f](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/an_banc_jrc2018f.png)
 
-We can now read a neuron from FAFB-Flywire. I already know the ID of the 
-comparable FAFB-FlyWire neurons to fetch.
+We can now read a neuron from *FAFB-FlyWire*. I already know the ID of the 
+comparable *FAFB-FlyWire* neurons to fetch.
 
 We need to load a new R package first.
 
@@ -314,7 +347,7 @@ library(nat.jrcbrains)
 ## You may need to download the relevant registration, if you have not already:
 # download_saalfeldlab_registrations()
 ```
-And then get known FAFB-FlyWire neurons.
+And then get known *FAFB-FlyWire* neurons.
 
 ```r
 ## if you previously ran choose_banc()
@@ -335,8 +368,9 @@ reference = "JRC2018F")
 # Add to plot
 plot3d(fw.an1.meshes.jrc2018f, col = c("red","orange"), alpha = 1, add = TRUE)
 ```
+![an_banc_hemibrain](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/an_banc_fafb.png)
 
-We can do the same with the hemibrain.
+We can do the same with the *Hemibrain*.
 
 We need to load a new R package first.
 
@@ -347,7 +381,7 @@ remotes::install_github('flyconnectome/hemibrainr')
 library(hemibrainr)
 ``` 
 
-And now we can get the equivalent hemibrain neuron.
+And now we can get the equivalent *Hemibrain* neuron.
 
 ```r
 # Read hemibrain neuron
@@ -362,6 +396,8 @@ hb.an1.mesh.jrc2018f <- xform_brain(hb.an1.mesh/1000, sample = "JRCFIB2018F", re
 # Add to plot
 plot3d(hb.an1.mesh.jrc2018f , col = c("chartreuse"), alpha = 1, add = TRUE)
 ```
+
+![an_banc_fafb_hemibrain](https://raw.githubusercontent.com/flyconnectome/bancr/master/inst/images/an_banc_fafb_hemibrain.png)
 
 Now we see all related neurons from three data sets in one space. Awesome!
 
@@ -387,4 +423,32 @@ plot3d(an1.mesh.simp.brain.jrc2018f, col = "blue", alpha = 0.75, add = TRUE)
 plot3d(an1.mesh.simp.brain.jrc2018f.elastix, col = "green", alpha = 0.75, add = TRUE)
 ```
 
+Acknowledging the data and tools
+--------------------------------
 
+BANC data needs to be acknowledged in accordance to the [BANC community guidelines](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/)
+and in agreement with the BANC consortium. 
+If you use this package, you can cite the *natverse* paper [(Bates et al. 2020)](https://elifesciences.org/articles/53350)
+and the R package as follows:
+
+``` r
+citation(package = "bancr")
+```
+
+**Bates A, Jefferis G** (2024). _bancr: R Client Access to the Brain And Nerve Cord (BANC) Dataset_. R package version 0.1.0,
+  <https://github.com/flyconnectome/bancr>.
+
+
+Acknowledgements
+----------------
+
+The BANC data set was collected at Harvard Medical School in he laboratory of Wei-Chung Allen Lee, by Minsu Kim and Jasper Phelps.
+The segmentation and synapse prediction was built by [Zett.ai](https://zetta.ai/). 
+The neuron reconstruction effort has been hosted and support by [FlyWire](https://flywire.ai/).
+This R package was built from principles developed
+by Greg Jefferis at the Laboratory of Molecular Biology.
+
+References
+----------
+
+**Bates, Alexander Shakeel, James D. Manton, Sridhar R. Jagannathan, Marta Costa, Philipp Schlegel, Torsten Rohlfing, and Gregory SWE Jefferis**. 2020. *The Natverse, a Versatile Toolbox for Combining and Analysing Neuroanatomical Data.* eLife 9 (April). https://doi.org/10.7554/eLife.53350.
