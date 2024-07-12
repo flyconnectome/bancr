@@ -97,10 +97,10 @@ banc_neuron_comparison_plot <- function(neuron1,
 
     # Create the plot
     p <- ggplot2::ggplot() +
-      geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, low = "grey95", high = "grey50") +
+      geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, low = "grey90", high = "grey50") +
       geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, low = "turquoise", high = "navy", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, low = "red", high = "darkred", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, low = "chartreuse", high = "darkgreen", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, low = "darkred", high = "coral", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, low = "darkgreen", high = "chartreuse", alpha = 0.5, linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
@@ -293,17 +293,16 @@ ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-geom_neuron <-function(x, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron <-function(x, rotation_matrix = NULL, low = "navy", high = "turquoise",
                        stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = FALSE, ...) UseMethod('geom_neuron')
 
 #' @rdname geom_neuron
 #' @method geom_neuron neuron
 #' @export
-geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "navy", high = "turquoise",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
-
   check_package_available('ggnewscale')
   check_package_available('catmaid')
   soma <- catmaid::soma(x)
@@ -328,21 +327,28 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, low = "turquois
 #' @rdname geom_neuron
 #' @method geom_neuron neuronlist
 #' @export
-geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, low = "navy", high = "turquoise",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
-  x <- ggplot2_neuron_path.neuronlist(x, rotation_matrix = rotation_matrix)
-  list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$id, group = .data$group), data = x,
-                       stat = stat, position = position, na.rm = na.rm,
-                       show.legend = show.legend, inherit.aes = inherit.aes, ...)
-  )
+  if(length(x)>1){
+    color_palette <- grDevices::colorRampPalette(c(low, high))(length(x))
+  }
+  glist <- list()
+  for(i in 1:length(x)){
+    if(length(x)>1){
+      low<-high<-color_palette[i]
+    }
+    glist[[i]] <- geom_neuron(x = x[[i]], rotation_matrix = rotation_matrix, low = low, high = high,
+                                     stat = stat, position = position, na.rm = na.rm, show.legend = show.legend,
+                                     inherit.aes = FALSE, ...)
+  }
+  glist
 }
 
 #' @rdname geom_neuron
 #' @method geom_neuron mesh3d
 #' @export
-geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "navy", high = "turquoise",
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
   check_package_available('ggnewscale')
@@ -360,7 +366,7 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, low = "turquois
 #' @rdname geom_neuron
 #' @method geom_neuron hxsurf
 #' @export
-geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, low = "navy", high = "turquoise",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   x <- rgl::as.mesh3d(x)
@@ -372,7 +378,7 @@ geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, low = "turquois
 #' @rdname geom_neuron
 #' @method geom_neuron NULL
 #' @export
-geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "turquoise", high = "navy",
+geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "navy", high = "turquoise",
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   list(
@@ -380,6 +386,80 @@ geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, low = "turquoise"
   )
 }
 
+#' Create a ggplot2 Visualisation of Neuron Objects
+#'
+#' @description
+#' This function creates a complete ggplot2 visualization for neuron objects,
+#' including 'neuron', 'neuronlist', 'mesh3d', and 'hxsurf' objects. It sets up
+#' a minimal theme and applies consistent styling to the plot.
+#'
+#' @param x A 'neuron', 'neuronlist', 'mesh3d', or 'hxsurf' object to be visualized.
+#' @param volume a brain/neuropil volume to be plotted in grey, for context.
+#' Defaults to NULL, no volume plotted.
+#' @param info Optional. A string to be used as the plot title.
+#' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
+#' @param low Color for the lowest Z values. Default is "turquoise".
+#' @param high Color for the highest Z values. Default is "navy".
+#' @param alpha Transparency of the neuron visualization. Default is 0.5.
+#' @param title.col Color of the plot title. Default is "darkgrey".
+#' @param ... Additional arguments passed to geom_neuron().
+#'
+#' @return A ggplot2 object representing the neuron visualization.
+#'
+#' @details
+#' This function wraps around geom_neuron() to create a complete plot with a
+#' consistent, minimal theme. It removes axes, legends, and other extraneous
+#' elements to focus on the neuron visualization itself.
+#'
+#' @examples
+#' \dontrun{
+#' # Visualize the banc volume
+#' ggneuron(banc_neuropil.surf, banc.surf)
+#'
+#' # Visualize the banc brain neuropil
+#' ggneuron(banc_neuropil.surf,
+#' rotation_matrix = bancr:::banc_rotation_matrices[["front"]])
+#' }
+#'
+#' @seealso
+#' \code{\link{geom_neuron}} for the underlying geom used in this function.
+#'
+#' @export
+ggneuron <- function(x,
+                     volume = NULL,
+                     info = NULL,
+                     rotation_matrix = NULL,
+                     low = "turquoise",
+                     high = "navy",
+                     alpha = 0.5,
+                     title.col = "darkgrey",
+                     ...){
+  ggplot2::ggplot() +
+    {if(!is.null(volume)){
+      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = min(alpha-0.25,0.01), low = "grey75", high = "grey50")
+    }} +
+    geom_neuron(x = x, rotation_matrix = rotation_matrix, low =  low, high = high, alpha = alpha, ...) +
+    ggplot2::coord_fixed() +
+    ggplot2::theme_void() +
+    ggplot2::guides(fill="none",color="none") +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(hjust = 0, size = 8, face = "bold", colour = title.col),
+                   axis.title.x=ggplot2::element_blank(),
+                   axis.text.x=ggplot2::element_blank(),
+                   axis.ticks.x=ggplot2::element_blank(),
+                   axis.title.y=ggplot2::element_blank(),
+                   axis.text.y=ggplot2::element_blank(),
+                   axis.ticks.y=ggplot2::element_blank(),
+                   axis.line = ggplot2::element_blank(),
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   plot.margin = ggplot2::margin(0, 0, 0, 0),
+                   panel.spacing = ggplot2::unit(0, "cm"),
+                   panel.border = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(), #gplot2::element_rect(fill = "grey95", color = NA),
+                   plot.background = ggplot2::element_blank()) + #gplot2::element_rect(fill = "grey95", color = NA))
+    ggplot2::labs(title = info)
+}
 
 
 

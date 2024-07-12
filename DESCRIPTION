@@ -42,7 +42,8 @@ Imports:
     RSQLite,
     readr,
     checkmate,
-    utils
+    utils,
+    ggplot2 (>= 3.5.1.9000)
 Suggests: 
     testthat (>= 3.0.0),
     reticulate,
@@ -53,10 +54,10 @@ Suggests:
     rmarkdown,
     spelling,
     arrow,
-    ggplot2,
-    ggnewscale,
+    ggnewscale (>= 0.4.10.9000),
     ggpubr,
-    catmaid
+    catmaid,
+    grDevices
 Remotes: 
     natverse/nat,
     natverse/fafbseg,

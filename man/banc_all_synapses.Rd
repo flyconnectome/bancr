@@ -26,7 +26,7 @@ a taster of the file.}
 
 \item{min_size}{Numeric, filter parameter, the minimum size (in nm) of the detected synapse.}
 
-\item{rawcoords}{Logical, whether or not yto convert from raw coordinates into nanometers. Default is \code{FALSE}.}
+\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 }
 \value{
 a data.frame
@@ -43,7 +43,6 @@ lazily so as not to throw the whole thing into system memory.
 \dontrun{
 syns <- banc_all_synapses()
 }
-# Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
 }
 \seealso{
 \code{\link{banc_partner_summary}}, \code{\link{banc_partners}}
