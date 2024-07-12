@@ -112,7 +112,8 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
   dplyr::tbl(src = con, from = "synapses")
 
 }
-# Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912
+# Helpful scene: https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/
+# nglstate/api/v1/4753860997414912
 
 # # googleCloudStorageR
 # banc_gcs_read <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df"){

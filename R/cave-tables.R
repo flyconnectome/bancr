@@ -4,7 +4,7 @@
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
 #'   to pass in data.frames, BANC URLs or simple ids.
 #' @param nucleus_ids Character vector specifying one or more BANC nucleus ids.
-#' @param rawcoords Logical, whether or not yto convert from raw coordinates into nanometers. Default is `FALSE`.
+#' @param rawcoords Logical, whether or not to convert from raw coordinates into nanometers. Default is `FALSE`.
 #' @param select A regex term for the name of the table you want
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
 #' @param table Possible alternative tables for the sort of data frame the function returns. One must be chosen.
