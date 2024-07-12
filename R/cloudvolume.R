@@ -56,7 +56,7 @@ dr_banc <- function() {
   cat("\n\n")
   res = fafbseg:::py_report()
   cat("\n")
-  try(fafbseg:::check_cloudvolume_reticulate(min_version = "3.12"))
+  try(fafbseg:::check_cloudvolume_reticulate(min_version = "8.32.1"))
   invisible(res)
 }
 
