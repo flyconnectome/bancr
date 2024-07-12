@@ -106,7 +106,7 @@ banc_nuclei <- function (rootids = NULL,
 #' @importFrom nat xyzmatrix2str
 banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
   table <- "cell_info"
-  res <- get_cave_table_data(table)
+  res <- with_banc(get_cave_table_data(table))
   if (isTRUE(rawcoords))
     res
   else {
@@ -118,7 +118,7 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
 #' @rdname banc_cave_tables
 #' @export
 banc_cell_ids <- function(rootids = NULL){
-  get_cave_table_data('cell_ids', rootids)
+  with_banc(get_cave_table_data('cell_ids', rootids))
 }
 
 #' @rdname banc_cave_tables
@@ -126,19 +126,19 @@ banc_cell_ids <- function(rootids = NULL){
 banc_neck_connective_neurons <- function(rootids = NULL,
                                          table = c("neck_connective_y92500", "neck_connective_y121000")){
   table <- match.arg(table)
-  get_cave_table_data(table, rootids)
+  with_banc(get_cave_table_data(table, rootids))
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_peripheral_nerves <- function(rootids = NULL){
-  get_cave_table_data("peripheral_nerves", rootids)
+  with_banc(get_cave_table_data("peripheral_nerves", rootids))
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_backbone_proofread <- function(rootids = NULL){
-  get_cave_table_data("backbone_proofread", rootids)
+  with_banc(get_cave_table_data("backbone_proofread", rootids))
 }
 
 # hidden

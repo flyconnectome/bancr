@@ -4,13 +4,10 @@
 \alias{banc_cave_query}
 \title{Query banc tables in the CAVE annotation system}
 \usage{
-banc_cave_query(table, datastack_name = NULL, live = TRUE, ...)
+banc_cave_query(table, live = TRUE, ...)
 }
 \arguments{
 \item{table}{The name of the table (or view, see views section) to query}
-
-\item{datastack_name}{An optional CAVE \code{datastack_name}. If unset a
-sensible default is chosen.}
 
 \item{live}{Whether to use live query mode, which updates any root ids to
 their current value.}
