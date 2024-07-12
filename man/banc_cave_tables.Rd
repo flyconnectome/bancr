@@ -54,7 +54,7 @@ to pass in data.frames, BANC URLs or simple ids.}
 \value{
 A \code{data.frame} describing a CAVE-table related to the BANC project.
 In the case of \code{banc_cave_tables}, a vector is returned containing the names of
-all queryable cave tables.
+all query-able cave tables.
 }
 \description{
 Read BANC CAVE-tables, good sources of metadata
