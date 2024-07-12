@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/flyconnectome/banc/workflows/R-CMD-check/badge.svg)](https://github.com/flyconnectome/banc/actions)
 [![R-CMD-check](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
-c
+
 bancr
 ===========
 
