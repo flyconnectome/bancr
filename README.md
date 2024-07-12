@@ -406,7 +406,8 @@ based on.
 You will first need to download and install Elastix. To do so, you can follow
 the instructions [here](https://elastix.dev/download/elastix-5.1.0-manual.pdf). Remember that the Elastix binaries must be on your
 `PATH` and your system must be able to see its libraries. On MacOSX it is tricky
-to just install and use the Elastix binaries, you need instead to compile 
+to just install and use the [Elastix binaries directly](https://github.com/SuperElastix/elastix/releases), 
+you need instead to compile 
 ITK then Elastix yourself.
 
 ```r
