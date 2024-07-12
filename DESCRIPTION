@@ -42,7 +42,6 @@ Imports:
     RSQLite,
     readr,
     checkmate,
-    stringr,
     utils
 Suggests: 
     testthat (>= 3.0.0),

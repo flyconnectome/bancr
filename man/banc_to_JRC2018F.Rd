@@ -52,9 +52,9 @@ transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 
 # Where the default transform files are located:
-banc_to_JRC2018F_file <- system.file(file.path("inst","extdata","brain_240707"),
+banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"),
 "BANC_to_template.txt", package="bancr")
-JRC2018F_to_banc_file <- system.file(file.path("inst","extdata","brain_240707"),
+JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"),
 "template_to_BANC.txt", package="bancr")
 }
 

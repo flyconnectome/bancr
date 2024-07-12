@@ -46,7 +46,7 @@ to pass in data.frames, BANC URLs or simple ids.}
 
 \item{table}{Possible alternative tables for the sort of data frame the function returns. One must be chosen.}
 
-\item{rawcoords}{Logical, whether or not yto convert from raw coordinates into nanometers. Default is \code{FALSE}.}
+\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 
 \item{...}{Additional arguments passed to
 \code{fafbseg::\link{flywire_cave_query}}}

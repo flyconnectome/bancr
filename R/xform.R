@@ -350,7 +350,7 @@ banc_to_JRC2018F <- function(x,
       transform_file <- system.file(file.path("extdata","brain_240707"), "3_elastix_Bspline_fine.txt", package="bancr")
       transform_file2 <- system.file(file.path("extdata","brain_240707"), "2_elastix_Bspline_coarse.txt", package="bancr")
       transform_file1 <- system.file(file.path("extdata","brain_240707"), "1_elastix_affine.txt", package="bancr")
-      update_elastix_transforms_locations(transform_file, searh = "2_elastix_Bspline_coarse", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
+      update_elastix_transforms_locations(transform_file, search = "2_elastix_Bspline_coarse", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
       update_elastix_transforms_locations(transform_file2, search = "1_elastix_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
       update_elastix_transforms_locations(transform_file1, search = "0_manual_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
     }else{
