@@ -48,9 +48,6 @@ The default transformation files are included with the package and are located i
 # Transform points from BANC to JRC2018F
 transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 
-# Perform inverse transformation (JRC2018F to BANC)
-inverse_transformed_points <- banc_to_JRC2018F(points, banc.units = "um", inverse = TRUE)
-
 # Use a custom transform file
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 
