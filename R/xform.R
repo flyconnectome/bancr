@@ -230,12 +230,13 @@ read_elastix_output_file <- function(filepath) {
 
 # hidden
 update_elastix_transforms_locations <- function(transform_file,
-                                file_path = NULL){
+                                                search = "1_elastix_affine",
+                                                file_path = NULL){
    # Read the file content
   lines <- readLines(transform_file)
 
   # Define the target pattern and replacement
-  target_pattern <- '(InitialTransformParametersFileName\\s*")(.+1_elastix_affine\\.txt)(")'
+  target_pattern <- sprintf('(InitialTransformParametersFileName\\s*")(.+%s\\.txt)(")', search)
 
   # Function to replace the target pattern
   replace_path <- function(line) {
@@ -321,9 +322,9 @@ navis_elastix_xform <- function(x, transform_file){
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 #'
 #' # Where the default transform files are located:
-#' banc_to_JRC2018F_file <- system.file(file.path("inst","extdata","brain_240707"),
+#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"),
 #' "BANC_to_template.txt", package="bancr")
-#' JRC2018F_to_banc_file <- system.file(file.path("inst","extdata","brain_240707"),
+#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"),
 #' "template_to_BANC.txt", package="bancr")
 #' }
 #'
@@ -346,10 +347,14 @@ banc_to_JRC2018F <- function(x,
   # find transform
   if(is.null(transform_file)){
     if(inverse){
-      transform_file <- system.file(file.path("inst","extdata","brain_240707"), "template_to_BANC.txt", package="bancr")
-      update_elastix_transforms_locations(transform_file, file_path = system.file(file.path("inst","extdata","brain_240707"), package="bancr"))
+      transform_file <- system.file(file.path("extdata","brain_240707"), "3_elastix_Bspline_fine.txt", package="bancr")
+      transform_file2 <- system.file(file.path("extdata","brain_240707"), "2_elastix_Bspline_coarse.txt", package="bancr")
+      transform_file1 <- system.file(file.path("extdata","brain_240707"), "1_elastix_affine.txt", package="bancr")
+      update_elastix_transforms_locations(transform_file, searh = "2_elastix_Bspline_coarse", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
+      update_elastix_transforms_locations(transform_file2, search = "1_elastix_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
+      update_elastix_transforms_locations(transform_file1, search = "0_manual_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
     }else{
-      transform_file <- system.file(file.path("inst","extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+      transform_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
     }
   }
 
