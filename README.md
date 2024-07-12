@@ -157,8 +157,8 @@ We can get a table of nucleus ids from CAVE and find ours. The `root_id`
 column in these CAVE tables automatically update.
 
 ```
-banc.nulcei <- banc_nuclei()
-banc.nuclei.an1 <- subset(banc.nulcei, banc.nulcei$pt_root_id %in% an1.ids)
+banc.nuclei <- banc_nuclei()
+banc.nuclei.an1 <- banc.nuclei[as.character(banc.nuclei$pt_root_id) %in% an1.ids,]
 banc.nuclei.an1.ids <- as.character(banc.nuclei.an1$id)
 banc.nuclei.an1
 ```
