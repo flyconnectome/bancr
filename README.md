@@ -446,7 +446,7 @@ The segmentation and synapse prediction was built by [Zetta.ai](https://zetta.ai
 The neuron reconstruction effort has been hosted and support by [FlyWire](https://flywire.ai/).
 This R package was built from principles developed
 by Greg Jefferis at the Laboratory of Molecular Biology.
-Alex Bates developed with R package while in the laboratory of Rachel Wilson
+Alex Bates worked on this R package while in the laboratory of Rachel Wilson
 at Harvard Medical School.
 
 References
