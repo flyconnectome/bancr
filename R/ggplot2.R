@@ -56,9 +56,9 @@ banc_neuron_comparison_plot <- function(neuron1,
   check_package_available('ggpubr')
   glist <- list()
   title.col <- "black"
-  if(is.null(banc_brain_neuropil)) {utils::data("banc_brain_neuropil.surf", envir = environment()); banc_brain_neuropil <- banc_brain_neuropil.surf}
-  if(is.null(banc_vnc_neuropil)) {utils::data("banc_brain_neuropil.surf", envir = environment()); banc_vnc_neuropil <- banc_vnc_neuropil.surf}
-  if(is.null(banc_neuropil)) {utils::data("banc_brain_neuropil.surf", envir = environment()); banc_neuropil <- banc_neuropil.surf}
+  if(is.null(banc_brain_neuropil)) {banc_brain_neuropil <- bancr::banc_brain_neuropil.surf}
+  if(is.null(banc_vnc_neuropil)) {banc_vnc_neuropil <- bancr::banc_vnc_neuropil.surf}
+  if(is.null(banc_neuropil)) {banc_neuropil <- bancr::banc_neuropil.surf}
   for(view in names(banc_rotation_matrices)){
 
     # Choose mesh

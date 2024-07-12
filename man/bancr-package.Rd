@@ -4,7 +4,7 @@
 \name{bancr-package}
 \alias{bancr}
 \alias{bancr-package}
-\title{bancr: Support Access to the Brain And Nerve Cord (BANC) Dataset}
+\title{bancr: R Client Access to the Brain And Nerve Cord (BANC) Dataset}
 \description{
 Access to the BANC 'righty' EM dataset, focussing on support for BANC autosegmentation. Organised as a wrapper around the fafbseg package.
 }

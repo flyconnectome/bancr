@@ -386,15 +386,15 @@ banc_to_JRC2018F <- function(x,
   }else{
     if(inverse){
       # Result is in nm
-      utils::data("jrc2018f_to_banc_tpsreg", envir = environment())
+      # utils::data("jrc2018f_to_banc_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = jrc2018f_to_banc_tpsreg,
+                                     trafo = bancr::jrc2018f_to_banc_tpsreg,
                                      inverse = FALSE)
     }else{
       # Result is in um
-      utils::data("banc_to_jrc2018f_tpsreg", envir = environment())
+      # utils::data("banc_to_jrc2018f_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = banc_to_jrc2018f_tpsreg,
+                                     trafo = bancr::banc_to_jrc2018f_tpsreg,
                                      inverse = FALSE)
     }
   }
@@ -524,8 +524,9 @@ banc_mirror <- function(x,
     }
 
     # use pre-calculated tps reg
+    # utils::data("banc_mirror_tpsreg", envir = environment())
     x.banc.m <- Morpho::applyTransform(xyz,
-                                       trafo = utils::data("banc_mirror_tpsreg", envir = environment()))
+                                       trafo = bancr::banc_mirror_tpsreg)
 
     # convert from um to original banc.units if necessary
     if(banc.units=='um'){
