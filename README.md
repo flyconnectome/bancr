@@ -450,15 +450,14 @@ citation(package = "bancr")
 Acknowledgements
 ----------------
 
-The BANC data set was collected at Harvard Medical School in he laboratory of Wei-Chung Allen Lee, by Minsu Kim and Jasper Phelps.
+The BANC data set was collected at Harvard Medical School in the laboratory of Wei-Chung Allen Lee, by Minsu Kim and Jasper Phelps.
 The segmentation and synapse prediction was built by [Zetta.ai](https://zetta.ai/). 
-The neuron reconstruction effort has been hosted and support by [FlyWire](https://flywire.ai/).
-This R package was built from principles developed
-by Greg Jefferis at the Laboratory of Molecular Biology.
+The neuron reconstruction effort has been hosted and supported by [FlyWire](https://flywire.ai/).
+This R package was initialised using the [fancr](https://github.com/flyconnectome/fancr) package developed by Greg Jefferis at the MRC Laboratory of Molecular Biology, Cambridge.
 Alex Bates worked on this R package while in the laboratory of Rachel Wilson
 at Harvard Medical School.
 
 References
 ----------
 
-**Bates, Alexander Shakeel, James D. Manton, Sridhar R. Jagannathan, Marta Costa, Philipp Schlegel, Torsten Rohlfing, and Gregory SWE Jefferis**. 2020. *The Natverse, a Versatile Toolbox for Combining and Analysing Neuroanatomical Data.* eLife 9 (April). https://doi.org/10.7554/eLife.53350.
+**Bates, Alexander Shakeel, James D. Manton, Sridhar R. Jagannathan, Marta Costa, Philipp Schlegel, Torsten Rohlfing, and Gregory SXE Jefferis**. 2020. *The Natverse, a Versatile Toolbox for Combining and Analysing Neuroanatomical Data.* eLife 9 (April). https://doi.org/10.7554/eLife.53350.
