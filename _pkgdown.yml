@@ -1,4 +1,6 @@
 url: https://flyconnectome.github.io/bancr
+template:
+  bootstrap: 5
 navbar:
   structure:
     left:
