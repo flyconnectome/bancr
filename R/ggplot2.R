@@ -391,6 +391,22 @@ geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "
   )
 }
 
+#' @rdname geom_neuron
+#' @method geom_neuron list
+#' @export
+geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+                             stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                             inherit.aes = FALSE, ...) {
+
+  if(length(x)){
+    geom_neuron.neuronlist(x=x, rotation_matrix=rotation_matrix, low=low, high=high,
+                       stat=stat, position=position, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
+                       ...)
+  }else{
+    geom_neuron.NULL(x = x, ...)
+  }
+}
+
 #' Create a ggplot2 Visualisation of Neuron Objects
 #'
 #' @description
