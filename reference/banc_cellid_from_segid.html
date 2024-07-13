@@ -143,11 +143,13 @@ wiki</a>.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">banc_cellid_from_segid</span><span class="op">(</span><span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="st">"720575941626035769"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1464</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_get_attr(x, name):</span> AttributeError: 'MaterializationClientV2' object has no attribute 'get_tables_metadata'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">banc_cellid_from_segid</span><span class="op">(</span><span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="st">"720575941480769421"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 224</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_get_attr(x, name):</span> AttributeError: 'MaterializationClientV2' object has no attribute 'get_tables_metadata'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
