@@ -407,6 +407,35 @@ geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "
   }
 }
 
+#' @rdname geom_neuron
+#' @method geom_neuron matrix
+#' @export
+geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+                             stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                             inherit.aes = FALSE, ...) {
+  x<- as.data.frame(nat::xyzmatrix(x))
+  list(
+    ggplot2::geom_point(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z),
+                        size = root,  ...),
+    ggplot2::scale_color_gradient(low = low, high = high),
+    ggnewscale::new_scale_colour()
+  )
+}
+
+#' @rdname geom_neuron
+#' @method geom_neuron data.frame
+#' @export
+geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                               inherit.aes = FALSE, ...) {
+  geom_neuron.matrix(x, rotation_matrix = rotation_matrix, root = root,
+                     low = low, high = high,
+                     stat = stat, position = position,
+                     na.rm = FALSE, show.legend = NA,
+                     inherit.aes = FALSE,
+                     ...)
+}
+
 #' Create a ggplot2 Visualisation of Neuron Objects
 #'
 #' @description

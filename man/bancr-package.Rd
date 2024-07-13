@@ -12,6 +12,7 @@ Access to the BANC 'righty' EM dataset, focussing on support for BANC autosegmen
 Useful links:
 \itemize{
   \item \url{https://github.com/flyconnectome/bancr}
+  \item \url{https://flyconnectome.github.io/bancr/}
   \item Report bugs at \url{https://github.com/flyconnectome/bancr/issues}
 }
 
