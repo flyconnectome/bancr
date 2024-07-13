@@ -127,9 +127,9 @@ It supports 'neuron', 'neuronlist', and 'mesh3d' objects.
 \examples{
 \dontrun{
 library(ggplot2)
-ggplot() + geom_neuron(my_neuron)
-ggplot() + geom_neuron(my_neuronlist)
-ggplot() + geom_neuron(my_mesh)
+ggplot() + geom_neuron(nat::Cell07PNs[[1]], root = 10)
+ggplot() + geom_neuron(nat::Cell07PNs)
+ggplot() + geom_neuron(nat::MBL.surf)
 }
 
 }
