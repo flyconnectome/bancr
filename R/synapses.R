@@ -6,7 +6,7 @@
 #'
 #' @param path The google storage path to the desired synapses file. Read using \code{readr::read_csv}.
 #' @param overwrite Logical, whether or not to overwrite an extant \code{banc_data.sqlite} file.
-#' @param n_max Numeric, the maximum number of rows ot read from \code{path} if you just want to see
+#' @param n_max Numeric, the maximum number of rows to read from \code{path} if you just want to see
 #' a taster of the file.
 #' @param details Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
 #' \code{FALSE} in order to read only the essential presynapse position data.

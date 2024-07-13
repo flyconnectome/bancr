@@ -448,7 +448,7 @@ banc_to_JRC2018F <- function(x,
 #'   If NULL, uses default files.
 #' @param method Character string specifying the transformation method.
 #'   Must be either "elastix" or "tpsreg". Default is "elastix".
-#' @param ... Additional arguments passed to nat.templatebrains::mirror_brain.
+#' @param ... Additional arguments passed to \code{nat.templatebrains::\link{mirror_brain}}.
 #'
 #' @return The input object with mirrored 3D points.
 #'
