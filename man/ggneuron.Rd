@@ -57,6 +57,10 @@ ggneuron(banc_neuropil.surf, banc.surf)
 # Visualize the banc brain neuropil
 ggneuron(banc_neuropil.surf,
 rotation_matrix = bancr:::banc_rotation_matrices[["front"]])
+
+# See constituents of a neuronlist
+ggneuron(nat::Cell07PNs, volume = nat::MBL.surf,
+root = 10, high = "red", low = "black")
 }
 
 }
