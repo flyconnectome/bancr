@@ -3,9 +3,5 @@
 ^LICENSE\.md$
 ^\.github$
 ^_pkgdown\.yml$
-^docs$
-^pkgdown$
-^spare$
 ^vignettes/articles$
-^extdata$
 ^data-raw$
