@@ -12,6 +12,7 @@
 geom_neuron(
   x,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -25,6 +26,7 @@ geom_neuron(
 \method{geom_neuron}{neuron}(
   x = NULL,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -38,6 +40,7 @@ geom_neuron(
 \method{geom_neuron}{neuronlist}(
   x = NULL,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -51,6 +54,7 @@ geom_neuron(
 \method{geom_neuron}{mesh3d}(
   x = NULL,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -64,6 +68,7 @@ geom_neuron(
 \method{geom_neuron}{hxsurf}(
   x = NULL,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -77,6 +82,7 @@ geom_neuron(
 \method{geom_neuron}{`NULL`}(
   x = NULL,
   rotation_matrix = NULL,
+  root = 3,
   low = "navy",
   high = "turquoise",
   stat = "identity",
@@ -91,6 +97,9 @@ geom_neuron(
 \item{x}{A 'neuron', 'neuronlist', or 'mesh3d' object to be visualized.}
 
 \item{rotation_matrix}{An optional 4x4 rotation matrix to apply to the neuron coordinates.}
+
+\item{root}{Numeric, if >0 and x is or contains \code{neuron} objects,
+then the root node is plotted as a dot of size \code{root}. If \code{FALSE} or \code{0} no root node is plotted.}
 
 \item{low}{Color for the lowest Z values. The 'Z' axis is the axis perpendicular to the viewing plane.}
 
