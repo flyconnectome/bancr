@@ -43,7 +43,7 @@ banc_al.surf
 \description{
 \code{banc.surf} is unsymmetrical and not a normalised version of the mesh.
 It is the outline of the dataset in nanometers.\code{banc_neuropil.surf} represents the synaptic neuropil.
-Built from the BANC synapse coud, but not optimised to inlude 100\% of bone fide presynapses.
+Built from the BANC synapse cloud, but not optimised to include 100\% of bona fide presynapses.
 \code{banc_neuropils.surf} contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
 \code{banc_al.surf} contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
 }

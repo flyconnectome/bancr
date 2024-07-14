@@ -30,7 +30,7 @@ If NULL, uses default files.}
 \item{method}{Character string specifying the transformation method.
 Must be either "elastix" or "tpsreg". Default is "elastix".}
 
-\item{...}{Additional arguments passed to nat.templatebrains::mirror_brain.}
+\item{...}{Additional arguments passed to \code{nat.templatebrains::\link{mirror_brain}}.}
 }
 \value{
 The input object with mirrored 3D points.
