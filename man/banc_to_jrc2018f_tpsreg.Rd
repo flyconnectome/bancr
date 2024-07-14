@@ -4,7 +4,7 @@
 \name{banc_to_jrc2018f_tpsreg}
 \alias{banc_to_jrc2018f_tpsreg}
 \alias{jrc2018f_to_banc_tpsreg}
-\title{Thin-Plate Spline Registration from BANC to JRC2018F templatebrain}
+\title{Thin-Plate Spline Registration from BANC to JRC2018F template brain}
 \format{
 An object of class \code{tpsCoeff} created using \code{Morpho::computeTransform}.
 It contains the following components:

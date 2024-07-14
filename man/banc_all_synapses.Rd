@@ -18,7 +18,7 @@ banc_all_synapses(
 
 \item{overwrite}{Logical, whether or not to overwrite an extant \code{banc_data.sqlite} file.}
 
-\item{n_max}{Numeric, the maximum number of rows ot read from \code{path} if you just want to see
+\item{n_max}{Numeric, the maximum number of rows to read from \code{path} if you just want to see
 a taster of the file.}
 
 \item{details}{Logical Whether or not to read all data columns in the target synapse \code{.csv}. Defaults to
