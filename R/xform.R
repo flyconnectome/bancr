@@ -547,3 +547,18 @@ banc_mirror <- function(x,
   return(x)
 
 }
+
+# hidden, for now
+banc_lr_position <- function (x, units = c("nm", "um", "raw"), group = FALSE, ...) {
+  xyz = xyzmatrix(x)
+  xyzt = banc_mirror(xyz, units = units, ...)
+  lrdiff = xyzt[, 1] - xyz[, 1]
+  if (group) {
+    if (!is.neuronlist(x))
+      stop("I only know how to group results for neuronlists")
+    df = data.frame(lrdiff = lrdiff, id = rep(names(x), nvertices(x)))
+    dff = summarise(group_by(df, .data$id), lrdiff = mean(lrdiff))
+    lrdiff = dff$lrdiff[match(names(x), dff$id)]
+  }
+  lrdiff
+}

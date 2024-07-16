@@ -7,6 +7,9 @@
 \alias{geom_neuron.mesh3d}
 \alias{geom_neuron.hxsurf}
 \alias{geom_neuron.NULL}
+\alias{geom_neuron.list}
+\alias{geom_neuron.matrix}
+\alias{geom_neuron.data.frame}
 \title{Create ggplot2 Geom Layer for Neuron Visualization}
 \usage{
 geom_neuron(
@@ -80,6 +83,48 @@ geom_neuron(
 )
 
 \method{geom_neuron}{`NULL`}(
+  x = NULL,
+  rotation_matrix = NULL,
+  root = 3,
+  low = "navy",
+  high = "turquoise",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{list}(
+  x = NULL,
+  rotation_matrix = NULL,
+  root = 3,
+  low = "navy",
+  high = "turquoise",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{matrix}(
+  x = NULL,
+  rotation_matrix = NULL,
+  root = 3,
+  low = "navy",
+  high = "turquoise",
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{data.frame}(
   x = NULL,
   rotation_matrix = NULL,
   root = 3,
