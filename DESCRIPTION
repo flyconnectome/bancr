@@ -43,10 +43,10 @@ Imports:
     readr,
     checkmate,
     utils,
-    ggplot2 (>= 3.5.1.9000)
+    reticulate,
+    ggplot2 (>= 3.5)
 Suggests: 
     testthat (>= 3.0.0),
-    reticulate,
     readobj,
     Rvcg,
     Morpho,
