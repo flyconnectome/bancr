@@ -153,6 +153,23 @@
 #' @docType data
 "banc_mirror_tpsreg"
 
-
+#' BANC neuropil name to number correspondence for neuroglancer
+#'
+#' @name banc.surf
+#' @docType data
+#' @description A BANC neuroglaner scene can be directed to a google cloud storage
+#' location, where BANC-transformed standard neuropil meshes reside.
+#' The source is
+#' `precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes`
+#' They can be
+#' plotted in neuroglancer by adding this location, entering the `Seg.` pane
+#' and entering the number that corresponds to the correct mesh.
+#' This data frame gives the mesh name to nubmer correspondences.
+#'
+#' @seealso
+#' \code{\link{banc.surf}} for the available neuropil objects for BANC.
+#' These are `hxsruf` objects, names for subregions can be found as so:
+#' `banc_neuropils.surf$RegionList`
+"banc_volumes.df"
 
 

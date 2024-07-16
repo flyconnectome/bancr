@@ -375,7 +375,7 @@ reference = "JRC2018F")
 # Add to plot
 plot3d(fw.an1.meshes.jrc2018f, col = c("red","orange"), alpha = 1, add = TRUE)
 ```
-![an_banc_hemibrain](https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_fafb.png?raw=true)
+![an_banc_fafb](https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_fafb.png?raw=true)
 
 We can do the same with the *Hemibrain*.
 
