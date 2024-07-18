@@ -31,7 +31,7 @@
 #' @param user,pwd banctable user and password used by \code{banctable_set_token}
 #'   to obtain a token
 #' @param url Optional URL to the server
-#' @param ac A seatable connection object as returned by \code{banc_table_login}.
+#' @param ac A seatable connection object as returned by \code{banctable_login}.
 #'
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
 #'   matched query.
@@ -51,7 +51,7 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              base = NULL,
                              python = FALSE,
                              convert = TRUE,
-                             ac = bancr::banc_table_login()){
+                             ac = bancr::banctable_login()){
   checkmate::assert_character(sql, len = 1, pattern = "select",
                               ignore.case = T)
   res = stringr::str_match(sql, stringr::regex("\\s+FROM\\s+[']{0,1}([^, ']+).*",
@@ -84,7 +84,7 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
   if (python)
     pdd
   else {
-    colinfo = fafbseg:::flytable_columns(table, base)
+    colinfo = fafbseg::flytable_columns(table, base)
     df = fafbseg:::flytable2df(fafbseg:::pandas2df(pdd, use_arrow = F), tidf = colinfo)
     fields = fafbseg:::sql2fields(sql)
     if (length(fields) == 1 && fields == "*") {
@@ -113,9 +113,9 @@ banc_set_token <- function (user, pwd, url = "https://cloud.seatable.io/"){
 
 #' @export
 #' @rdname banctable_query
-banc_table_login <- function(url = "https://cloud.seatable.io/",
-                             token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)){
-  fafbseg::banctable_login(url=url, token=token)
+banctable_login <- function(url = "https://cloud.seatable.io/",
+                            token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)){
+  fafbseg::flytable_login(url=url, token=token)
 }
 
 # hidden
@@ -124,7 +124,7 @@ banctable_base <- function (base_name = "banc_meta",
                             url = "https://cloud.seatable.io/",
                             workspace_id = "57832",
                             cached = TRUE,
-                            ac = bancr::banc_table_login()) {
+                            ac = bancr::banctable_login()) {
   if (!cached)
     memoise::forget(banctable_base_impl)
   base = try({
@@ -146,7 +146,7 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                  table = NULL,
                                  url = "https://cloud.seatable.io/",
                                  workspace_id = "57832",
-                                 ac = bancr::banc_table_login()){
+                                 ac = bancr::banctable_login()){
     if (is.null(base_name) && is.null(table))
       stop("you must supply one of base or table name!")
     if (is.null(base_name)) {
