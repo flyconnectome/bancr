@@ -1,3 +1,5 @@
+#' Read and write to the seatable for draft BANC annotations
+#'
 #' @description These functions use the logic and wrap some code
 #' from the `flytable_.*` functions in the `fafbseg` R package.
 #' \code{banctable_set_token} will obtain and store a permanent
@@ -125,6 +127,44 @@ banctable_login <- function(url = "https://cloud.seatable.io/",
   fafbseg::flytable_login(url=url, token=token)
 }
 
+
+#' @export
+#' @rdname banctable_query
+banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
+  if (is.character(base) || is.null(base))
+    base = banctable_base(base_name = base, table = table)
+  nx = nrow(df)
+  if (!isTRUE(nx > 0)) {
+    warning("No rows to update in `df`!")
+    return(TRUE)
+  }
+  df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,
+                                                 FALSE))
+  newrows = is.na(df[["row_id"]])
+  if (any(newrows)) {
+    stop("Adding new rows not yet implemented")
+    # flytable_append_rows(df[newrows, , drop = FALSE], table = table,
+    #                      base = base, chunksize = chunksize, ...)
+    # df = df[!newrows, , drop = FALSE]
+    # nx = nrow(df)
+  }
+  if (!isTRUE(nx > 0))
+    return(TRUE)
+  if (nx > chunksize) {
+    nchunks = ceiling(nx/chunksize)
+    chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
+    chunks = split(df, chunkids)
+    oks = pbapply::pbsapply(chunks, flytable_update_rows,
+                            table = table, base = base, chunksize = Inf, append_allowed = FALSE,
+                            ...)
+    return(all(oks))
+  }
+  pyl = fafbseg:::df2updatepayload(df)
+  res = base$batch_update_rows(table_name = table, rows_data = pyl)
+  ok = isTRUE(all.equal(res, list(success = TRUE)))
+  return(ok)
+}
+
 # hidden
 banctable_base <- function (base_name = "banc_meta",
                             table = NULL,
@@ -177,46 +217,6 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                base_name = base_name)
     base
 }
-
-#' @export
-#' @rdname banctable_query
-banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
-  if (is.character(base) || is.null(base))
-    base = banctable_base(base_name = base, table = table)
-  nx = nrow(df)
-  if (!isTRUE(nx > 0)) {
-    warning("No rows to update in `df`!")
-    return(TRUE)
-  }
-  df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,
-                                       FALSE))
-  newrows = is.na(df[["row_id"]])
-  if (any(newrows)) {
-    stop("Adding new rows not yet implemented")
-    # flytable_append_rows(df[newrows, , drop = FALSE], table = table,
-    #                      base = base, chunksize = chunksize, ...)
-    # df = df[!newrows, , drop = FALSE]
-    # nx = nrow(df)
-  }
-  if (!isTRUE(nx > 0))
-    return(TRUE)
-  if (nx > chunksize) {
-    nchunks = ceiling(nx/chunksize)
-    chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
-    chunks = split(df, chunkids)
-    oks = pbapply::pbsapply(chunks, flytable_update_rows,
-                            table = table, base = base, chunksize = Inf, append_allowed = FALSE,
-                            ...)
-    return(all(oks))
-  }
-  pyl = fafbseg:::df2updatepayload(df)
-  res = base$batch_update_rows(table_name = table, rows_data = pyl)
-  ok = isTRUE(all.equal(res, list(success = TRUE)))
-  return(ok)
-}
-
-
-
 
 
 
