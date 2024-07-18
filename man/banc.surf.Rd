@@ -9,6 +9,9 @@
 \alias{banc_neck_connective.surf}
 \alias{banc_neuropils.surf}
 \alias{banc_al.surf}
+\alias{banc_vnc_neuropils.surf}
+\alias{banc_vnc_tracts.surf}
+\alias{banc_vnc_nerves.surf}
 \alias{banc_volumes.df}
 \title{Simplified tissue and neuropil surfaces for BANC}
 \format{
@@ -26,7 +29,13 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} of length 4.
 
-An object of class \code{data.frame} with 79 rows and 2 columns.
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{data.frame} with 220 rows and 2 columns.
 }
 \usage{
 banc.surf
@@ -42,6 +51,12 @@ banc_neck_connective.surf
 banc_neuropils.surf
 
 banc_al.surf
+
+banc_vnc_neuropils.surf
+
+banc_vnc_tracts.surf
+
+banc_vnc_nerves.surf
 
 banc_volumes.df
 }
