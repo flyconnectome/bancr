@@ -40,6 +40,18 @@
 #' @rdname banc.surf
 "banc_al.surf"
 
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_neuropils.surf"
+
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_tracts.surf"
+
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_nerves.surf"
+
 ## How it was obtained:
 # res <- httr::GET("https://www.googleapis.com/storage/v1/b/zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2Fvolume_meshes%2Fmeshes%2F1%3A0.drc?alt=media&neuroglancer=610000b05b6497edcf20b78f29516970")
 # httr::stop_for_status(res)

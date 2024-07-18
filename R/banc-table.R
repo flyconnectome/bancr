@@ -51,7 +51,7 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              base = NULL,
                              python = FALSE,
                              convert = TRUE,
-                             ac = banc_table_login()){
+                             ac = bancr::banc_table_login()){
   checkmate::assert_character(sql, len = 1, pattern = "select",
                               ignore.case = T)
   res = stringr::str_match(sql, stringr::regex("\\s+FROM\\s+[']{0,1}([^, ']+).*",
@@ -124,7 +124,7 @@ banctable_base <- function (base_name = "banc_meta",
                             url = "https://cloud.seatable.io/",
                             workspace_id = "57832",
                             cached = TRUE,
-                            ac = banc_table_login()) {
+                            ac = bancr::banc_table_login()) {
   if (!cached)
     memoise::forget(banctable_base_impl)
   base = try({
@@ -146,7 +146,7 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                  table = NULL,
                                  url = "https://cloud.seatable.io/",
                                  workspace_id = "57832",
-                                 ac = banc_table_login()){
+                                 ac = bancr::banc_table_login()){
     if (is.null(base_name) && is.null(table))
       stop("you must supply one of base or table name!")
     if (is.null(base_name)) {
