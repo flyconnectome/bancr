@@ -11,6 +11,7 @@
 #'   to the Python
 #'   \href{https://seatable.github.io/seatable-scripts/python/base/}{\code{Base}}
 #'    API allowing a range of row/column manipulations.
+#'    \code{banctable_update_rows} updates existing rows in a table, returning TRUE on success.
 #' @param sql A SQL query string. See examples and
 #'   \href{https://seatable.github.io/seatable-scripts/python/query/}{seatable
 #'   docs}.
@@ -32,14 +33,19 @@
 #'   to obtain a token
 #' @param url Optional URL to the server
 #' @param ac A seatable connection object as returned by \code{banctable_login}.
+#' @param df A data.frame containing the data to upload including an `_id`
+#' column that can identify each row in the remote table.
+#' @param append_allowed Logical. Whether rows without row identifiers can be appended.
+#' @param chunksize To split large requests into smaller ones with max this many rows.
+#' @param ... Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.
 #'
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
 #'   matched query.
 #'
 #' @seealso \code{\link{fafbseg::flytable_query}}
 #' @examples
-#' \donttest{
-#' banc_set_token(user="alexander.shakeel.bates@gmail.com",
+#' \dontrun{
+#' banc_set_token(user="my_gmail.com",
 #               pwd="MY_PASSWORD",
 #               url="https://cloud.seatable.io/")
 #' banc.meta <- banctable_query()
@@ -51,7 +57,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              base = NULL,
                              python = FALSE,
                              convert = TRUE,
-                             ac = bancr::banctable_login()){
+                             ac = NULL){
+  if(is.null(ac)) ac <- banctable_login()
   checkmate::assert_character(sql, len = 1, pattern = "select",
                               ignore.case = T)
   res = stringr::str_match(sql, stringr::regex("\\s+FROM\\s+[']{0,1}([^, ']+).*",
@@ -124,7 +131,8 @@ banctable_base <- function (base_name = "banc_meta",
                             url = "https://cloud.seatable.io/",
                             workspace_id = "57832",
                             cached = TRUE,
-                            ac = bancr::banctable_login()) {
+                            ac = NULL) {
+  if(is.null(ac)) ac <- banctable_login()
   if (!cached)
     memoise::forget(banctable_base_impl)
   base = try({
@@ -146,11 +154,12 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                  table = NULL,
                                  url = "https://cloud.seatable.io/",
                                  workspace_id = "57832",
-                                 ac = bancr::banctable_login()){
+                                 ac = NULL){
+    if(is.null(ac)) ac <- banctable_login()
     if (is.null(base_name) && is.null(table))
       stop("you must supply one of base or table name!")
     if (is.null(base_name)) {
-      base = fafbseg:::flytable_base4table(table, ac = ac, cached = F)
+      base = fafbseg:::banctable_base4table(table, ac = ac, cached = F)
       return(invisible(base))
     }
     if (is.null(workspace_id)) {
@@ -168,3 +177,50 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                base_name = base_name)
     base
 }
+
+#' @export
+#' @rdname banctable_query
+banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
+  if (is.character(base) || is.null(base))
+    base = banctable_base(base_name = base, table = table)
+  nx = nrow(df)
+  if (!isTRUE(nx > 0)) {
+    warning("No rows to update in `df`!")
+    return(TRUE)
+  }
+  df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,
+                                       FALSE))
+  newrows = is.na(df[["row_id"]])
+  if (any(newrows)) {
+    stop("Adding new rows not yet implemented")
+    # flytable_append_rows(df[newrows, , drop = FALSE], table = table,
+    #                      base = base, chunksize = chunksize, ...)
+    # df = df[!newrows, , drop = FALSE]
+    # nx = nrow(df)
+  }
+  if (!isTRUE(nx > 0))
+    return(TRUE)
+  if (nx > chunksize) {
+    nchunks = ceiling(nx/chunksize)
+    chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
+    chunks = split(df, chunkids)
+    oks = pbapply::pbsapply(chunks, flytable_update_rows,
+                            table = table, base = base, chunksize = Inf, append_allowed = FALSE,
+                            ...)
+    return(all(oks))
+  }
+  pyl = fafbseg:::df2updatepayload(df)
+  res = base$batch_update_rows(table_name = table, rows_data = pyl)
+  ok = isTRUE(all.equal(res, list(success = TRUE)))
+  return(ok)
+}
+
+
+
+
+
+
+
+
+
+
