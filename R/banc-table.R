@@ -154,7 +154,7 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE
     nchunks = ceiling(nx/chunksize)
     chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
     chunks = split(df, chunkids)
-    oks = pbapply::pbsapply(chunks, flytable_update_rows,
+    oks = pbapply::pbsapply(chunks, banctable_update_rows,
                             table = table, base = base, chunksize = Inf, append_allowed = FALSE,
                             ...)
     return(all(oks))
