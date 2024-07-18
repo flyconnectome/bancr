@@ -199,7 +199,7 @@ banctable_base_impl <- function (base_name = "banc_meta",
     if (is.null(base_name) && is.null(table))
       stop("you must supply one of base or table name!")
     if (is.null(base_name)) {
-      base = fafbseg:::banctable_base4table(table, ac = ac, cached = F)
+      base = fafbseg:::flytable_base4table(table, ac = ac, cached = F)
       return(invisible(base))
     }
     if (is.null(workspace_id)) {
