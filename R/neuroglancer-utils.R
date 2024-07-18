@@ -1,6 +1,6 @@
 #' Upload Mesh to Google Cloud Storage for BANC Neuroglancer
 #'
-#' This function uploads a mesh.obj file to a Google Cloud Storage bucket
+#' @description This function uploads a mesh.obj file to a Google Cloud Storage bucket
 #' that can be accessed by BANC neuroglancer. It uses reticulate to call
 #' Python code and manages a conda environment.
 #'
