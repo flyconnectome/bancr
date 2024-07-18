@@ -44,7 +44,9 @@ Imports:
     checkmate,
     utils,
     reticulate,
-    ggplot2 (>= 3.5)
+    ggplot2 (>= 3.5),
+    stringr,
+    memoise
 Suggests: 
     testthat (>= 3.0.0),
     readobj,

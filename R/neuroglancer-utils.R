@@ -150,8 +150,16 @@ banc_upload_mesh <- function(mesh,
     # Convert R mesh to Python trimesh if necessary
     if (inherits(mesh, "mesh3d")) {
       message("Converting R mesh to Python trimesh...")
-      vertices <- t(mesh$vb[-4,])  # Remove homogeneous coordinate and transpose
-      faces <- t(mesh$it)  # Transpose to get correct orientation
+      clean_mesh <- Rvcg::vcgClean(mesh, sel = 1)  # This removes unreferenced vertices
+      vertices <- t(clean_mesh$vb[-4,])  # Remove homogeneous coordinate and transpose
+      faces <- t(clean_mesh$it)  # Transpose to get correct orientation
+      faces <- t(clean_mesh$it - 1)  # Subtract 1 to convert to 0-based indexing
+
+      # check
+      message("Vertices shape: ", paste(dim(vertices), collapse = " x "))
+      message("Faces shape: ", paste(dim(faces), collapse = " x "))
+      message("Max face index: ", max(faces))
+      message("Number of vertices: ", nrow(vertices))
 
       # Create Python trimesh object
       trimesh <- reticulate::import("trimesh")
@@ -166,7 +174,11 @@ banc_upload_mesh <- function(mesh,
                    vol = vol, compress = compress, overwrite = overwrite)
       message("Mesh uploaded successfully.")
     }, error = function(e) {
-      stop("Error uploading mesh: ", e$message)
+      if(overwrite){
+        message("Error uploading mesh: ", e$message)
+      }else{
+        warning("Error uploading mesh: ", e$message)
+      }
     })
 
     # Return

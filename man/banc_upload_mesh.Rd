@@ -37,7 +37,7 @@ The underlying Python code is based on the bikinibottom package:
 \url{https://github.com/jasper-tms/bikini-bottom/tree/main}
 
 For this function to work the global environment variable \code{GOOGLE_APPLICATION_CREDENTIALS} to
-something like \code{"$HOME/.config/gcloud/legacy_credentials/firs.second@gmail.com/adc.json"}.
+something like \code{"$HOME/.config/gcloud/legacy_credentials/firstname.secondname@gmail.com/adc.json"}.
 This file can be obtains by installing \code{gsutil} and running \verb{gsutil init} in the terminal.
 }
 \examples{

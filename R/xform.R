@@ -373,17 +373,21 @@ banc_to_JRC2018F <- function(x,
 
   # get the right registrations
   if(region=="brain"){
-    banc_to_template_elastix <- "brain_240714"
-    template_to_banc_trafo <- bancr::jrc2018f_to_banc_tpsreg
-    banc_to_template_trafo <- bancr::banc_to_jrc2018f_tpsreg
+    banc_to_template_elastix <- "vnc_240714"
+    if(method=="tpsreg"){
+      template_to_banc_trafo <- bancr::jrc2018f_to_banc_tpsreg
+      banc_to_template_trafo <- bancr::banc_to_jrc2018f_tpsreg
+    }
   }else if(region=="vnc"){
     banc_to_template_elastix <- "vnc_240714"
-    template_to_banc_trafo <- bancr::jrcvnc2018f_to_banc_tpsreg
-    banc_to_template_trafo <- bancr::banc_to_jrcvnc2018f_tpsreg
+    if(method=="tpsreg"){
+      template_to_banc_trafo <- bancr::jrcvnc2018f_to_banc_tpsreg
+      banc_to_template_trafo <- bancr::banc_to_jrcvnc2018f_tpsreg
+    }
   }
 
   # find transform
-  if(is.null(transform_file)){
+  if(is.null(transform_file)&method!="tpsreg"){
     if(inverse){
       transform_file <- system.file(file.path("extdata",banc_to_template_elastix), "3_elastix_Bspline_fine.txt", package="bancr")
       transform_file2 <- system.file(file.path("extdata",banc_to_template_elastix), "2_elastix_Bspline_coarse.txt", package="bancr")
@@ -394,7 +398,7 @@ banc_to_JRC2018F <- function(x,
     }else{
       transform_file <- system.file(file.path("extdata",banc_to_template_elastix), "BANC_to_template.txt", package="bancr")
     }
-  }else{
+  }else if(!is.null(transform_file)){
     if(method=="tpsreg"){
       warning("changing given method 'tpsreg' to 'elastix' because transform_file was given")
       method <- "elastix"
