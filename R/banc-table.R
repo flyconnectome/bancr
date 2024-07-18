@@ -14,6 +14,7 @@
 #'   \href{https://seatable.github.io/seatable-scripts/python/base/}{\code{Base}}
 #'    API allowing a range of row/column manipulations.
 #'    \code{banctable_update_rows} updates existing rows in a table, returning TRUE on success.
+#'
 #' @param sql A SQL query string. See examples and
 #'   \href{https://seatable.github.io/seatable-scripts/python/query/}{seatable
 #'   docs}.
@@ -23,12 +24,13 @@
 #' @param convert Expert use only: Whether or not to allow the Python seatable
 #'   module to process raw output from the database. This is is principally for
 #'   debugging purposes. NB this imposes a requirement of seatable_api >=2.4.0.
-#' @param base_name Character vector specifying the \code{base}
+#' @param python Logical. Whether to return a Python pandas DataFrame. The default of FALSE returns an R data.frame
+#' @param base Character vector specifying the \code{base}
 #' @param table Character vector specifying a table foe which you want a
 #'   \code{base} object.
-#' @param workspace_id A numeric id specifying the workspace. Advanced use only
-#'   since we can normally figure this out from \code{base_name}.
-#' @param cached Whether to use a cached base object
+# @param workspace_id A numeric id specifying the workspace. Advanced use only
+#   since we can normally figure this out from \code{base_name}.
+# @param cached Whether to use a cached base object
 #' @param token normally retrieved from \code{BANCTABLE_TOKEN} environment
 #'   variable.
 #' @param user,pwd banctable user and password used by \code{banctable_set_token}
@@ -53,7 +55,7 @@
 #' banc.meta <- banctable_query()
 #' }
 #' @export
-#' @rdname banctable_query
+#' @rdname banctable
 banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              limit = 100000L,
                              base = NULL,
@@ -108,8 +110,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
 }
 
 #' @export
-#' @rdname banctable_query
-banc_set_token <- function (user, pwd, url = "https://cloud.seatable.io/"){
+#' @rdname banctable
+banc_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
   st <- check_seatable()
   ac <- reticulate::py_call(st$Account, login_name = user,
                             password = pwd, server_url = url)
@@ -121,7 +123,7 @@ banc_set_token <- function (user, pwd, url = "https://cloud.seatable.io/"){
 }
 
 #' @export
-#' @rdname banctable_query
+#' @rdname banctable
 banctable_login <- function(url = "https://cloud.seatable.io/",
                             token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)){
   fafbseg::flytable_login(url=url, token=token)
@@ -129,7 +131,7 @@ banctable_login <- function(url = "https://cloud.seatable.io/",
 
 
 #' @export
-#' @rdname banctable_query
+#' @rdname banctable
 banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table)
