@@ -108,7 +108,7 @@
 
 #' @docType data
 #' @rdname banc_to_jrc2018f_tpsreg
-"banc_to_jrcvnc2018ftpsreg"
+"banc_to_jrcvnc2018f_tpsreg"
 
 #' Thin-Plate Spline Registration for Mirroring in BANC Space
 #'
