@@ -41,6 +41,10 @@ docs}.}
 limit directly in the \code{sql} query. By default seatable limits SQL
 queries to 100 rows. We increase the limit to 100000 rows by default.}
 
+\item{base}{Character vector specifying the \code{base}}
+
+\item{python}{Logical. Whether to return a Python pandas DataFrame. The default of FALSE returns an R data.frame}
+
 \item{convert}{Expert use only: Whether or not to allow the Python seatable
 module to process raw output from the database. This is is principally for
 debugging purposes. NB this imposes a requirement of seatable_api >=2.4.0.}
@@ -63,13 +67,6 @@ column that can identify each row in the remote table.}
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
 \item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
-
-\item{base_name}{Character vector specifying the \code{base}}
-
-\item{workspace_id}{A numeric id specifying the workspace. Advanced use only
-since we can normally figure this out from \code{base_name}.}
-
-\item{cached}{Whether to use a cached base object}
 
 \item{user, pwd}{banctable user and password used by \code{banctable_set_token}
 to obtain a token}
