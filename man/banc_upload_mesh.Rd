@@ -31,11 +31,11 @@ Invisible \code{NULL}. The function is called for it upload effect.
 This function uploads a mesh.obj file to a Google Cloud Storage bucket
 that can be accessed by BANC neuroglancer. It uses reticulate to call
 Python code and manages a conda environment.
-}
-\details{
+
 The underlying Python code is based on the bikinibottom package:
 \url{https://github.com/jasper-tms/bikini-bottom/tree/main}
-
+}
+\details{
 For this function to work the global environment variable \code{GOOGLE_APPLICATION_CREDENTIALS} to
 something like \code{"$HOME/.config/gcloud/legacy_credentials/firstname.secondname@gmail.com/adc.json"}.
 This file can be obtains by installing \code{gsutil} and running \verb{gsutil init} in the terminal.
