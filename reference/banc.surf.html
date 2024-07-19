@@ -3,11 +3,27 @@
 It is the outline of the dataset in nanometers.banc_neuropil.surf represents the synaptic neuropil.
 Built from the BANC synapse cloud, but not optimised to include 100% of bona fide presynapses.
 banc_neuropils.surf contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
-banc_al.surf contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space."><meta property="og:description" content="banc.surf is unsymmetrical and not a normalised version of the mesh.
+banc_al.surf contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
+A BANC neuroglaner scene can be directed to a google cloud storage
+location, where BANC-transformed standard neuropil meshes reside.
+The source is
+precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes
+They can be
+plotted in neuroglancer by adding this location, entering the Seg. pane
+and entering the number that corresponds to the correct mesh.
+This data frame gives the mesh name to nubmer correspondences."><meta property="og:description" content="banc.surf is unsymmetrical and not a normalised version of the mesh.
 It is the outline of the dataset in nanometers.banc_neuropil.surf represents the synaptic neuropil.
 Built from the BANC synapse cloud, but not optimised to include 100% of bona fide presynapses.
 banc_neuropils.surf contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
-banc_al.surf contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space."></head><body>
+banc_al.surf contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
+A BANC neuroglaner scene can be directed to a google cloud storage
+location, where BANC-transformed standard neuropil meshes reside.
+The source is
+precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes
+They can be
+plotted in neuroglancer by adding this location, entering the Seg. pane
+and entering the number that corresponds to the correct mesh.
+This data frame gives the mesh name to nubmer correspondences."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -48,6 +64,14 @@ It is the outline of the dataset in nanometers.<code>banc_neuropil.surf</code> r
 Built from the BANC synapse cloud, but not optimised to include 100% of bona fide presynapses.
 <code>banc_neuropils.surf</code> contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
 <code>banc_al.surf</code> contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.</p>
+<p>A BANC neuroglaner scene can be directed to a google cloud storage
+location, where BANC-transformed standard neuropil meshes reside.
+The source is
+<code>precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes</code>
+They can be
+plotted in neuroglancer by adding this location, entering the <code>Seg.</code> pane
+and entering the number that corresponds to the correct mesh.
+This data frame gives the mesh name to nubmer correspondences.</p>
     </div>
 
     <div class="section level2">
@@ -64,7 +88,15 @@ Built from the BANC synapse cloud, but not optimised to include 100% of bona fid
 <span></span>
 <span><span class="va">banc_neuropils.surf</span></span>
 <span></span>
-<span><span class="va">banc_al.surf</span></span></code></pre></div>
+<span><span class="va">banc_al.surf</span></span>
+<span></span>
+<span><span class="va">banc_vnc_neuropils.surf</span></span>
+<span></span>
+<span><span class="va">banc_vnc_tracts.surf</span></span>
+<span></span>
+<span><span class="va">banc_vnc_nerves.surf</span></span>
+<span></span>
+<span><span class="va">banc_volumes.df</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,6 +108,16 @@ Built from the BANC synapse cloud, but not optimised to include 100% of bona fid
 <p>An object of class <code>hxsurf</code> (inherits from <code>list</code>) of length 4.</p>
 <p>An object of class <code>hxsurf</code> (inherits from <code>list</code>) of length 4.</p>
 <p>An object of class <code>hxsurf</code> of length 4.</p>
+<p>An object of class <code>hxsurf</code> (inherits from <code>list</code>) of length 4.</p>
+<p>An object of class <code>hxsurf</code> (inherits from <code>list</code>) of length 4.</p>
+<p>An object of class <code>hxsurf</code> (inherits from <code>list</code>) of length 4.</p>
+<p>An object of class <code>data.frame</code> with 220 rows and 2 columns.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code>banc.surf</code> for the available neuropil objects for BANC.
+These are <code>hxsruf</code> objects, names for subregions can be found as so:
+<code>banc_neuropils.surf$RegionList</code></p></div>
     </div>
 
     <div class="section level2">

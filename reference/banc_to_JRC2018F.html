@@ -45,6 +45,7 @@ coordinate system and the D. melanogaster template brain JRC2018F coordinate sys
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_to_JRC2018F</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"brain"</span>, <span class="st">"vnc"</span><span class="op">)</span>,</span>
 <span>  banc.units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nm"</span>, <span class="st">"um"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  subset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  inverse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -59,6 +60,10 @@ coordinate system and the D. melanogaster template brain JRC2018F coordinate sys
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>An object containing 3D points (must be compatible with nat::xyzmatrix).</p></dd>
+
+
+<dt id="arg-region">region<a class="anchor" aria-label="anchor" href="#arg-region"></a></dt>
+<dd><p>Whether this transform is for the JRC2018F brainspace (default) ot the JRCVNC2018F VNC template (only alternative).</p></dd>
 
 
 <dt id="arg-banc-units">banc.units<a class="anchor" aria-label="anchor" href="#arg-banc-units"></a></dt>
@@ -93,7 +98,7 @@ Must be either "elastix" or "tpsreg". Default is "elastix".</p></dd>
     <p>This function applies either an Elastix transform or a thin-plate spline registration to convert
 points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.</p>
 <p>The default transformation files are included with the package and are located in the
-'inst/extdata/brain_240707' directory.</p>
+'inst/extdata/brain_240714' directory.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -104,6 +109,7 @@ points between the BANC and JRC2018F coordinate systems. It handles unit convers
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co">### BRAIN EXAMPLE ####</span></span></span>
 <span class="r-in"><span><span class="co"># Transform points from BANC to JRC2018F</span></span></span>
 <span class="r-in"><span><span class="va">transformed_points</span> <span class="op">&lt;-</span> <span class="fu">banc_to_JRC2018F</span><span class="op">(</span><span class="va">points</span>, banc.units <span class="op">=</span> <span class="st">"nm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -111,10 +117,32 @@ points between the BANC and JRC2018F coordinate systems. It handles unit convers
 <span class="r-in"><span><span class="va">custom_transformed</span> <span class="op">&lt;-</span> <span class="fu">banc_to_JRC2018F</span><span class="op">(</span><span class="va">points</span>, transform_file <span class="op">=</span> <span class="st">"path/to/custom/transform.txt"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Where the default transform files are located:</span></span></span>
-<span class="r-in"><span><span class="va">banc_to_JRC2018F_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240707"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">banc_to_JRC2018F_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240714"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="st">"BANC_to_template.txt"</span>, package<span class="op">=</span><span class="st">"bancr"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">JRC2018F_to_banc_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240707"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">JRC2018F_to_banc_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240714"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="st">"template_to_BANC.txt"</span>, package<span class="op">=</span><span class="st">"bancr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### VNC EXAMPLE ####</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/natverse/malevnc" class="external-link">malevnc</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nat.jrcbrains</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">nat.jrcbrains</span><span class="fu">::</span><span class="fu">register_saalfeldlab_registrations</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Get DNa02 axons from the MANC project</span></span></span>
+<span class="r-in"><span><span class="va">DNa02s</span><span class="op">=</span><span class="fu"><a href="https://natverse.org/malevnc/reference/read_manc_meshes.html" class="external-link">read_manc_meshes</a></span><span class="op">(</span><span class="st">'DNa02'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">JRCVNC2018U</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Transform into JRCVNC2918F</span></span></span>
+<span class="r-in"><span><span class="co">## nb convert from nm to microns</span></span></span>
+<span class="r-in"><span><span class="va">DNa02s.jrcvnc2018f</span><span class="op">=</span><span class="fu">xform_brain</span><span class="op">(</span><span class="va">DNa02s</span><span class="op">/</span><span class="fl">1e3</span>, reference <span class="op">=</span> <span class="st">"JRCVNC2018F"</span>, sample<span class="op">=</span><span class="st">"MANC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">DNa02s.jrcvnc2018f</span>, co <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">JRCVNC2018F</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Transform into the BANC</span></span></span>
+<span class="r-in"><span><span class="va">DNa02s.banc</span> <span class="op">&lt;-</span> <span class="fu">banc_to_JRC2018F</span><span class="op">(</span><span class="va">DNa02s.jrcvnc2018f</span>, region<span class="op">=</span><span class="st">"VNC"</span>, method<span class="op">=</span><span class="st">"tpsreg"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/open3d.html" class="external-link">open3d</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">DNa02s.banc</span>, co <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">banc_vnc_neuropil.surf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

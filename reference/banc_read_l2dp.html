@@ -104,19 +104,19 @@ a CAVE data</p>
 <span class="r-in"><span><span class="co"># one time install of necessary python packages</span></span></span>
 <span class="r-in"><span><span class="fu">fafbseg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fafbseg/man/simple_python.html" class="external-link">simple_python</a></span><span class="op">(</span>pkgs<span class="op">=</span><span class="st">"fafbseg"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">dnp42</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"648518346507131167"</span>, <span class="st">"648518346485772414"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dnp42.latest</span><span class="op">=</span><span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="va">dnp42</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dnp42.dps</span> <span class="op">&lt;-</span> <span class="fu">banc_read_l2dp</span><span class="op">(</span><span class="va">dnp42.latest</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dna02</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"720575941478275714"</span>, <span class="st">"720575941512946243"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dna02.latest</span><span class="op">=</span><span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="va">dna02</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dna02.dps</span> <span class="op">&lt;-</span> <span class="fu">banc_read_l2dp</span><span class="op">(</span><span class="va">dna02.latest</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot those</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/nat/man/nclear3d.html" class="external-link">nclear3d</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">dnp42.dps</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">dna02.dps</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># nb dotprops are always in microns</span></span></span>
 <span class="r-in"><span><span class="fu">wire3d</span><span class="op">(</span><span class="va">banc.surf</span><span class="op">/</span><span class="fl">1e3</span>, col<span class="op">=</span><span class="st">'grey'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/nat/man/nclear3d.html" class="external-link">nclear3d</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dnp42.skel</span> <span class="op">&lt;-</span> <span class="fu">banc_read_l2skel</span><span class="op">(</span><span class="va">dnp42.latest</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">dnp42.skel</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dna02.skel</span> <span class="op">&lt;-</span> <span class="fu">banc_read_l2skel</span><span class="op">(</span><span class="va">dna02.latest</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/plot3d.html" class="external-link">plot3d</a></span><span class="op">(</span><span class="va">dna02.skel</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># nb neuron skeletons are in nm</span></span></span>
 <span class="r-in"><span><span class="fu">wire3d</span><span class="op">(</span><span class="va">banc.surf</span>, col<span class="op">=</span><span class="st">'grey'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
