@@ -66,6 +66,8 @@ It is the outline of the dataset in nanometers.\code{banc_neuropil.surf} represe
 Built from the BANC synapse cloud, but not optimised to include 100\% of bona fide presynapses.
 \code{banc_neuropils.surf} contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
 \code{banc_al.surf} contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
+These neuropils may also be seen in neuroglancer,
+\href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6237404072509440}{here}.
 
 A BANC neuroglaner scene can be directed to a google cloud storage
 location, where BANC-transformed standard neuropil meshes reside.

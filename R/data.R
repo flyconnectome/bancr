@@ -7,6 +7,8 @@
 #' Built from the BANC synapse cloud, but not optimised to include 100% of bona fide presynapses.
 #' `banc_neuropils.surf` contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
 #' `banc_al.surf` contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
+#' These neuropils may also be seen in neuroglancer,
+#' \href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6237404072509440}{here}.
 #'
 #' @examples
 #' \dontrun{
@@ -182,9 +184,11 @@
 #' The source is
 #' `precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes`
 #' They can be
-#' plotted in neuroglancer by adding this location, entering the `Seg.` pane
-#' and entering the number that corresponds to the correct mesh.
-#' This data frame gives the mesh name to nubmer correspondences.
+#' plotted in neuroglancer by adding
+#' \href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6237404072509440}{this}
+#' location, entering the `Seg.` pane
+#' and entering the number or name that corresponds to the correct mesh.
+#' This data frame gives the mesh name to number correspondences.
 #'
 #' @seealso
 #' \code{\link{banc.surf}} for the available neuropil objects for BANC.
