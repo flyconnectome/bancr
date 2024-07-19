@@ -40,6 +40,18 @@
 #' @rdname banc.surf
 "banc_al.surf"
 
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_neuropils.surf"
+
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_tracts.surf"
+
+#' @docType data
+#' @rdname banc.surf
+"banc_vnc_nerves.surf"
+
 ## How it was obtained:
 # res <- httr::GET("https://www.googleapis.com/storage/v1/b/zetta_lee_fly_cns_001_kisuk/o/final%2Fv2%2Fvolume_meshes%2Fmeshes%2F1%3A0.drc?alt=media&neuroglancer=610000b05b6497edcf20b78f29516970")
 # httr::stop_for_status(res)
@@ -102,6 +114,14 @@
 #' @rdname banc_to_jrc2018f_tpsreg
 "jrc2018f_to_banc_tpsreg"
 
+#' @docType data
+#' @rdname banc_to_jrc2018f_tpsreg
+"jrcvnc2018f_to_banc_tpsreg"
+
+#' @docType data
+#' @rdname banc_to_jrc2018f_tpsreg
+"banc_to_jrcvnc2018f_tpsreg"
+
 #' Thin-Plate Spline Registration for Mirroring in BANC Space
 #'
 #' @description
@@ -153,6 +173,23 @@
 #' @docType data
 "banc_mirror_tpsreg"
 
-
+#' BANC neuropil name to number correspondence for neuroglancer
+#'
+#' @name banc.surf
+#' @docType data
+#' @description A BANC neuroglaner scene can be directed to a google cloud storage
+#' location, where BANC-transformed standard neuropil meshes reside.
+#' The source is
+#' `precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes`
+#' They can be
+#' plotted in neuroglancer by adding this location, entering the `Seg.` pane
+#' and entering the number that corresponds to the correct mesh.
+#' This data frame gives the mesh name to nubmer correspondences.
+#'
+#' @seealso
+#' \code{\link{banc.surf}} for the available neuropil objects for BANC.
+#' These are `hxsruf` objects, names for subregions can be found as so:
+#' `banc_neuropils.surf$RegionList`
+"banc_volumes.df"
 
 

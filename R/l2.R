@@ -33,19 +33,19 @@
 #' # one time install of necessary python packages
 #' fafbseg::simple_python(pkgs="fafbseg")
 #'
-#' dnp42=c("648518346507131167", "648518346485772414")
-#' dnp42.latest=banc_latestid(dnp42)
-#' dnp42.dps <- banc_read_l2dp(dnp42.latest)
+#' dna02=c("720575941478275714", "720575941512946243")
+#' dna02.latest=banc_latestid(dna02)
+#' dna02.dps <- banc_read_l2dp(dna02.latest)
 #'
 #' # plot those
 #' nclear3d()
-#' plot3d(dnp42.dps, lwd=3)
+#' plot3d(dna02.dps, lwd=3)
 #' # nb dotprops are always in microns
 #' wire3d(banc.surf/1e3, col='grey')
 #'
 #' nclear3d()
-#' dnp42.skel <- banc_read_l2skel(dnp42.latest)
-#' plot3d(dnp42.skel, lwd=2)
+#' dna02.skel <- banc_read_l2skel(dna02.latest)
+#' plot3d(dna02.skel, lwd=2)
 #' # nb neuron skeletons are in nm
 #' wire3d(banc.surf, col='grey')
 #' }

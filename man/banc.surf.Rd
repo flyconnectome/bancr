@@ -9,6 +9,10 @@
 \alias{banc_neck_connective.surf}
 \alias{banc_neuropils.surf}
 \alias{banc_al.surf}
+\alias{banc_vnc_neuropils.surf}
+\alias{banc_vnc_tracts.surf}
+\alias{banc_vnc_nerves.surf}
+\alias{banc_volumes.df}
 \title{Simplified tissue and neuropil surfaces for BANC}
 \format{
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
@@ -24,6 +28,14 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
+
+An object of class \code{data.frame} with 220 rows and 2 columns.
 }
 \usage{
 banc.surf
@@ -39,6 +51,14 @@ banc_neck_connective.surf
 banc_neuropils.surf
 
 banc_al.surf
+
+banc_vnc_neuropils.surf
+
+banc_vnc_tracts.surf
+
+banc_vnc_nerves.surf
+
+banc_volumes.df
 }
 \description{
 \code{banc.surf} is unsymmetrical and not a normalised version of the mesh.
@@ -46,6 +66,15 @@ It is the outline of the dataset in nanometers.\code{banc_neuropil.surf} represe
 Built from the BANC synapse cloud, but not optimised to include 100\% of bona fide presynapses.
 \code{banc_neuropils.surf} contains the standard Ito et al., 2014 brain neuropil volumes transformed into BANC space.
 \code{banc_al.surf} contains the standard Bates and Schlegel et al, 2021 right antennal lobe glomeruli brain neuropil volumes transformed into BANC space.
+
+A BANC neuroglaner scene can be directed to a google cloud storage
+location, where BANC-transformed standard neuropil meshes reside.
+The source is
+\verb{precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes}
+They can be
+plotted in neuroglancer by adding this location, entering the \code{Seg.} pane
+and entering the number that corresponds to the correct mesh.
+This data frame gives the mesh name to nubmer correspondences.
 }
 \examples{
 \dontrun{
@@ -53,5 +82,10 @@ Built from the BANC synapse cloud, but not optimised to include 100\% of bona fi
 library(nat)
 rgl::wire3d(banc.surf)
 }
+}
+\seealso{
+\code{\link{banc.surf}} for the available neuropil objects for BANC.
+These are \code{hxsruf} objects, names for subregions can be found as so:
+\code{banc_neuropils.surf$RegionList}
 }
 \keyword{datasets}

@@ -267,7 +267,7 @@ update_elastix_transforms_locations <- function(transform_file,
 #' neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 #' points <- nat::xyzmatrix(neuron.mesh)
 #' transformed_points <- navis_elastix_xform(points,
-#' transform_file = "brain_240707/BANC_to_template.txt")
+#' transform_file = "brain_240714/BANC_to_template.txt")
 #' points3d(points)
 #' plot3d(nat.flybrains::JRC2018F)
 #' }
@@ -295,6 +295,7 @@ navis_elastix_xform <- function(x, transform_file){
 #' coordinate system and the D. melanogaster template brain JRC2018F coordinate system.
 #'
 #' @param x An object containing 3D points (must be compatible with nat::xyzmatrix).
+#' @param region Whether this transform is for the JRC2018F brainspace (default) ot the JRCVNC2018F VNC template (only alternative).
 #' @param banc.units Character string specifying the units of the BANC space data (input or output, depending on the inverse argument).
 #'   Must be one of "nm" (nanometers), "um", or "raw" (BANC raw banc.units). Default is "nm".
 #' @param subset Optional. A logical vector or expression to subset the input object.
@@ -311,10 +312,11 @@ navis_elastix_xform <- function(x, transform_file){
 #' points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 #'
 #' The default transformation files are included with the package and are located in the
-#' 'inst/extdata/brain_240707' directory.
+#' 'inst/extdata/brain_240714' directory.
 #'
 #' @examples
 #' \dontrun{
+#' ### BRAIN EXAMPLE ####
 #' # Transform points from BANC to JRC2018F
 #' transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 #'
@@ -322,10 +324,32 @@ navis_elastix_xform <- function(x, transform_file){
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 #'
 #' # Where the default transform files are located:
-#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240707"),
+#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240714"),
 #' "BANC_to_template.txt", package="bancr")
-#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240707"),
+#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240714"),
 #' "template_to_BANC.txt", package="bancr")
+#'
+#' ### VNC EXAMPLE ####
+#' library(malevnc)
+#' library(nat.jrcbrains)
+#' nat.jrcbrains::register_saalfeldlab_registrations()
+#'
+#' # Get DNa02 axons from the MANC project
+#' DNa02s=read_manc_meshes('DNa02')
+#' plot3d(JRCVNC2018U)
+#'
+#' # Transform into JRCVNC2918F
+#' ## nb convert from nm to microns
+#' DNa02s.jrcvnc2018f=xform_brain(DNa02s/1e3, reference = "JRCVNC2018F", sample="MANC")
+#' plot3d(DNa02s.jrcvnc2018f, co = "red")
+#' plot3d(JRCVNC2018F)
+#'
+#' # Transform into the BANC
+#' DNa02s.banc <- banc_to_JRC2018F(DNa02s.jrcvnc2018f, region="VNC", method="tpsreg")
+#' open3d()
+#' plot3d(DNa02s.banc, co = "blue")
+#' plot3d(banc_vnc_neuropil.surf)
+#'
 #' }
 #'
 #' @seealso
@@ -334,6 +358,7 @@ navis_elastix_xform <- function(x, transform_file){
 #'
 #' @export
 banc_to_JRC2018F <- function(x,
+                             region = c("brain","vnc"),
                              banc.units = c("nm", "um", "raw"),
                              subset = NULL,
                              inverse = FALSE,
@@ -343,18 +368,40 @@ banc_to_JRC2018F <- function(x,
   # manage arguments
   banc.units <- match.arg(banc.units)
   method <- match.arg(method)
+  region <- tolower(region)
+  region <- match.arg(region)
+
+  # get the right registrations
+  if(region=="brain"){
+    banc_to_template_elastix <- "vnc_240714"
+    if(method=="tpsreg"){
+      template_to_banc_trafo <- bancr::jrc2018f_to_banc_tpsreg
+      banc_to_template_trafo <- bancr::banc_to_jrc2018f_tpsreg
+    }
+  }else if(region=="vnc"){
+    banc_to_template_elastix <- "vnc_240714"
+    if(method=="tpsreg"){
+      template_to_banc_trafo <- bancr::jrcvnc2018f_to_banc_tpsreg
+      banc_to_template_trafo <- bancr::banc_to_jrcvnc2018f_tpsreg
+    }
+  }
 
   # find transform
-  if(is.null(transform_file)){
+  if(is.null(transform_file)&method!="tpsreg"){
     if(inverse){
-      transform_file <- system.file(file.path("extdata","brain_240707"), "3_elastix_Bspline_fine.txt", package="bancr")
-      transform_file2 <- system.file(file.path("extdata","brain_240707"), "2_elastix_Bspline_coarse.txt", package="bancr")
-      transform_file1 <- system.file(file.path("extdata","brain_240707"), "1_elastix_affine.txt", package="bancr")
-      update_elastix_transforms_locations(transform_file, search = "2_elastix_Bspline_coarse", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
-      update_elastix_transforms_locations(transform_file2, search = "1_elastix_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
-      update_elastix_transforms_locations(transform_file1, search = "0_manual_affine", file_path = system.file(file.path("extdata","brain_240707"), package="bancr"))
+      transform_file <- system.file(file.path("extdata",banc_to_template_elastix), "3_elastix_Bspline_fine.txt", package="bancr")
+      transform_file2 <- system.file(file.path("extdata",banc_to_template_elastix), "2_elastix_Bspline_coarse.txt", package="bancr")
+      transform_file1 <- system.file(file.path("extdata",banc_to_template_elastix), "1_elastix_affine.txt", package="bancr")
+      update_elastix_transforms_locations(transform_file, search = "2_elastix_Bspline_coarse", file_path = system.file(file.path("extdata",banc_to_template_elastix), package="bancr"))
+      update_elastix_transforms_locations(transform_file2, search = "1_elastix_affine", file_path = system.file(file.path("extdata",banc_to_template_elastix), package="bancr"))
+      update_elastix_transforms_locations(transform_file1, search = "0_manual_affine", file_path = system.file(file.path("extdata",banc_to_template_elastix), package="bancr"))
     }else{
-      transform_file <- system.file(file.path("extdata","brain_240707"), "BANC_to_template.txt", package="bancr")
+      transform_file <- system.file(file.path("extdata",banc_to_template_elastix), "BANC_to_template.txt", package="bancr")
+    }
+  }else if(!is.null(transform_file)){
+    if(method=="tpsreg"){
+      warning("changing given method 'tpsreg' to 'elastix' because transform_file was given")
+      method <- "elastix"
     }
   }
 
@@ -393,13 +440,13 @@ banc_to_JRC2018F <- function(x,
       # Result is in nm
       # utils::data("jrc2018f_to_banc_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = bancr::jrc2018f_to_banc_tpsreg,
+                                     trafo = template_to_banc_trafo,
                                      inverse = FALSE)
     }else{
       # Result is in um
       # utils::data("banc_to_jrc2018f_tpsreg", envir = environment())
       xyz2 <- Morpho::applyTransform(xyz,
-                                     trafo = bancr::banc_to_jrc2018f_tpsreg,
+                                     trafo = banc_to_template_trafo,
                                      inverse = FALSE)
     }
   }
@@ -431,7 +478,7 @@ banc_to_JRC2018F <- function(x,
   return(x)
 }
 # Jasper's Elastix transform
-# transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240707/BANC_to_template.txt"
+# transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240714/BANC_to_template.txt"
 
 #' Mirror BANC Connectome Points
 #'
@@ -482,8 +529,8 @@ banc_to_JRC2018F <- function(x,
 #'
 #' # Mirror in BANC space
 #' neuron.mesh.mirror <- banc_mirror(neuron.mesh.brain,
-#' transform_files = c("brain_240707/BANC_to_template.txt",
-#'  "brain_240707/template_to_BANC.txt"))
+#' transform_files = c("brain_240714/BANC_to_template.txt",
+#'  "brain_240714/template_to_BANC.txt"))
 #' plot3d(neuron.mesh.mirror, col = "cyan")
 #' }
 #'
@@ -510,15 +557,32 @@ banc_mirror <- function(x,
   # Use elastix transform
   if(method=="elastix"){
 
-    # Convert to JRC2018F
-    x.jrc2018f <- banc_to_JRC2018F(x=xyz, banc.units=banc.units, subset=NULL, inverse=FALSE, transform_file = transform_files[1], method = method)
+    # brain points
+    y.cut <- 325000
+    xyz.brain <- xyz[xyz[,2]<y.cut,]
+    xyz.vnc <- xyz[xyz[,2]>y.cut,]
 
-    # Mirror
-    x.jrc2018f.m <-  nat.templatebrains::mirror_brain(x.jrc2018f, brain = nat.flybrains::JRC2018F, transform = "flip")
+    if(nrow(xyz.brain)){
+      # Convert to JRC2018F
+      x.jrc2018f <- banc_to_JRC2018F(x=xyz.brain, region="brain", banc.units=banc.units, subset=NULL, inverse=FALSE, transform_file = transform_files[1], method = method)
 
-    # Back to BANC
-    x.banc.m <- banc_to_JRC2018F(x=x.jrc2018f.m, banc.units=banc.units, subset=NULL, inverse=TRUE , transform_file = transform_files[2], method = method)
+      # Mirror
+      x.jrc2018f.m <-  nat.templatebrains::mirror_brain(x.jrc2018f, brain = nat.flybrains::JRC2018F, transform = "flip")
 
+      # Back to BANC
+      x.banc.m <- banc_to_JRC2018F(x=x.jrc2018f.m,  region="brain", banc.units=banc.units, subset=NULL, inverse=TRUE , transform_file = transform_files[2], method = method)
+    }
+    if(nrow(xyz.brain)){
+
+      # Convert to JRC2018F
+      x.jrcvnc2018f <- banc_to_JRC2018F(x=xyz.brain, region="VNC", banc.units=banc.units, subset=NULL, inverse=FALSE, transform_file = transform_files[1], method = method)
+
+      # Mirror
+      x.jrcvnc2018f.m <-  nat.templatebrains::mirror_brain(x.jrcvnc2018f, brain = nat.flybrains::JRCVNC2018F, transform = "flip")
+
+      # Back to BANC
+      x.banc.m <- banc_to_JRC2018F(x=x.jrcvnc2018f.m, region="VNC", banc.units=banc.units, subset=NULL, inverse=TRUE , transform_file = transform_files[2], method = method)
+    }
   }else{
 
     # convert to um if necessary
@@ -550,14 +614,14 @@ banc_mirror <- function(x,
 
 # hidden, for now
 banc_lr_position <- function (x, units = c("nm", "um", "raw"), group = FALSE, ...) {
-  xyz = xyzmatrix(x)
+  xyz = nat::xyzmatrix(x)
   xyzt = banc_mirror(xyz, units = units, ...)
   lrdiff = xyzt[, 1] - xyz[, 1]
   if (group) {
-    if (!is.neuronlist(x))
+    if (!nat::is.neuronlist(x))
       stop("I only know how to group results for neuronlists")
-    df = data.frame(lrdiff = lrdiff, id = rep(names(x), nvertices(x)))
-    dff = summarise(group_by(df, .data$id), lrdiff = mean(lrdiff))
+    df = data.frame(lrdiff = lrdiff, id = rep(names(x), nat::nvertices(x)))
+    dff = dplyr::summarise(dplyr::group_by(df, .data$id), lrdiff = mean(lrdiff))
     lrdiff = dff$lrdiff[match(names(x), dff$id)]
   }
   lrdiff
