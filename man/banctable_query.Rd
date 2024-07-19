@@ -2,7 +2,7 @@
 % Please edit documentation in R/banc-table.R
 \name{banctable_query}
 \alias{banctable_query}
-\alias{banc_set_token}
+\alias{banctable_set_token}
 \alias{banctable_login}
 \alias{banctable_update_rows}
 \title{Read and write to the seatable for draft BANC annotations}
@@ -16,7 +16,7 @@ banctable_query(
   ac = NULL
 )
 
-banc_set_token(token = NULL)
+banctable_set_token(user, pwd, url = "https://cloud.seatable.io/")
 
 banctable_login(
   url = "https://cloud.seatable.io/",
@@ -51,10 +51,13 @@ debugging purposes. NB this imposes a requirement of seatable_api >=2.4.0.}
 
 \item{ac}{A seatable connection object as returned by \code{banctable_login}.}
 
-\item{token}{normally retrieved from \code{BANCTABLE_TOKEN} environment
-variable.}
+\item{user, pwd}{banctable user and password used by \code{banctable_set_token}
+to obtain a token}
 
 \item{url}{Optional URL to the server}
+
+\item{token}{normally retrieved from \code{BANCTABLE_TOKEN} environment
+variable.}
 
 \item{df}{A data.frame containing the data to upload including an \verb{_id}
 column that can identify each row in the remote table.}
@@ -67,9 +70,6 @@ column that can identify each row in the remote table.}
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
 \item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
-
-\item{user, pwd}{banctable user and password used by \code{banctable_set_token}
-to obtain a token}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows
@@ -93,10 +93,15 @@ API allowing a range of row/column manipulations.
 }
 \examples{
 \dontrun{
-banc_set_token(user="my_gmail.com",
+# Do this once
+banctable_set_token(user="MY_EMAIL_FOR_SEATABLE.com",
+                    pwd="MY_SEATABLE_PASSWORD",
+                    url="https://cloud.seatable.io/")
+
+# Thereafter:
 banc.meta <- banctable_query()
 }
 }
 \seealso{
-\code{\link{fafbseg::flytable_query}}
+\code{fafbseg::\link{flytable_query}}
 }

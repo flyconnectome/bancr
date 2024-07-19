@@ -1,4 +1,4 @@
-#' Read and write to the seatable for draft BANC annotations
+#' @title Read and write to the seatable for draft BANC annotations
 #'
 #' @description These functions use the logic and wrap some code
 #' from the `flytable_.*` functions in the `fafbseg` R package.
@@ -46,16 +46,19 @@
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
 #'   matched query.
 #'
-#' @seealso \code{\link{fafbseg::flytable_query}}
+#' @seealso \code{fafbseg::\link{flytable_query}}
 #' @examples
 #' \dontrun{
-#' banc_set_token(user="my_gmail.com",
-#               pwd="MY_PASSWORD",
-#               url="https://cloud.seatable.io/")
+#' # Do this once
+#' banctable_set_token(user="MY_EMAIL_FOR_SEATABLE.com",
+#'                     pwd="MY_SEATABLE_PASSWORD",
+#'                     url="https://cloud.seatable.io/")
+#'
+#' # Thereafter:
 #' banc.meta <- banctable_query()
 #' }
 #' @export
-#' @rdname banctable
+#' @rdname banctable_query
 banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              limit = 100000L,
                              base = NULL,
@@ -110,9 +113,9 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
 }
 
 #' @export
-#' @rdname banctable
-banc_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
-  st <- check_seatable()
+#' @rdname banctable_query
+banctable_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
+  st <- fafbseg:::check_seatable()
   ac <- reticulate::py_call(st$Account, login_name = user,
                             password = pwd, server_url = url)
   ac$auth()
@@ -123,7 +126,7 @@ banc_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
 }
 
 #' @export
-#' @rdname banctable
+#' @rdname banctable_query
 banctable_login <- function(url = "https://cloud.seatable.io/",
                             token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)){
   fafbseg::flytable_login(url=url, token=token)
@@ -131,7 +134,7 @@ banctable_login <- function(url = "https://cloud.seatable.io/",
 
 
 #' @export
-#' @rdname banctable
+#' @rdname banctable_query
 banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table)
