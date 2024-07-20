@@ -93,7 +93,7 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' frame. If NULL, it will be taken from the `x$root_id` slot.
 #' @param banc_nuclei A data frame containing information about nuclei
 #' obtained using `bancr::banc_nuclei()`. This data frame is assumed to have
-#' columns named `root_id` and `soma_position_nm`, where `soma_position_nm`
+#' columns named `root_id` and `nucleus_position_nm`, where `nucleus_position_nm`
 #' specifies the 3D coordinates of the soma for each `root_id`.
 #' @param ... Methods passed to \code{nat::nlapply}.
 #'
@@ -120,8 +120,8 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(),
     stop("a root_id in banc_nuclei must be given")
   }
   df <- subset(banc_nuclei,banc_nuclei$root_id==id)
-  if( nrow(df) && !is.na(df$soma_position_nm[1]) & df$nucleus_id!="0"){
-    soma <- nat::xyzmatrix(df$soma_position_nm)[1,]
+  if( nrow(df) && !is.na(df$nucleus_position_nm[1]) & df$nucleus_id!="0"){
+    soma <- nat::xyzmatrix(df$nucleus_position_nm)[1,]
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x )
   }else{ # As best we can

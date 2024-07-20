@@ -1,3 +1,4 @@
+# hidden
 check_package_available <- function(pkg, repo=c("CRAN", "Bioconductor")) {
   if(!requireNamespace(pkg, quietly = TRUE)) {
     repo=match.arg(repo)
@@ -9,4 +10,9 @@ check_package_available <- function(pkg, repo=c("CRAN", "Bioconductor")) {
     stop("Please install suggested package: ", pkg, " by doing\n",
          installmsg, call. = F)
   }
+}
+
+# hidden
+euclidean_distances <- function(A, B) {
+  sqrt(rowSums((A - B)^2))
 }

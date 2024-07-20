@@ -20,7 +20,7 @@ frame. If NULL, it will be taken from the \code{x$root_id} slot.}
 
 \item{banc_nuclei}{A data frame containing information about nuclei
 obtained using \code{bancr::banc_nuclei()}. This data frame is assumed to have
-columns named \code{root_id} and \code{soma_position_nm}, where \code{soma_position_nm}
+columns named \code{root_id} and \code{nucleus_position_nm}, where \code{nucleus_position_nm}
 specifies the 3D coordinates of the soma for each \code{root_id}.}
 
 \item{...}{Methods passed to \code{nat::nlapply}.}
