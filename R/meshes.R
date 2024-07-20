@@ -49,7 +49,8 @@ banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', '
 #' @param x an object with 3d points to be subsetted, e.g. an xyz matrix, a \code{neuron}, \code{neuronlist} or a \code{mesh3d} object.
 #' Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.
 #' @param y.cut Numeric, the Y-axis cut point, in nanometers, in BANC space,
-#'  that separates the head from the neck and ventral nerve cord.
+#'  that separates the head from the neck and ventral nerve cord. For fitting to the
+#'  MANC data set, a cut height of `y.cut=5e05` seems good.
 #' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
 #' @param ... Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}
 #'

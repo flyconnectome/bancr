@@ -1,11 +1,17 @@
 # And the same for the mesh
-write_mesh3d_to_vtk <- function(mesh, filename) {
+write_mesh3d_to_vtk <- function(mesh, filename, simplify = TRUE, percent = 0.1) {
   if (!requireNamespace("rgl", quietly = TRUE)) {
     stop("Package 'rgl' is required but not installed.")
   }
 
   if (!inherits(mesh, "mesh3d")) {
     stop("Input must be a mesh3d object")
+  }
+
+  # Clean and simplify meesh
+  if(simplify){
+    mesh <- Rvcg::vcgQEdecim(mesh, percent = percent)
+    mesh <- Rvcg::vcgClean(mesh, sel=c(0,1,2,3,4,6,7))
   }
 
   vertices <- t(mesh$vb[1:3,])

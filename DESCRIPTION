@@ -59,7 +59,8 @@ Suggests:
     ggnewscale (>= 0.4.10.9000),
     ggpubr,
     catmaid,
-    grDevices
+    grDevices,
+    nabor
 Remotes: 
     natverse/nat,
     natverse/fafbseg,

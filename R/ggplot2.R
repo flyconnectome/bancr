@@ -413,7 +413,12 @@ geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "
 geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
                              stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                              inherit.aes = FALSE, ...) {
-  x<- as.data.frame(nat::xyzmatrix(x))
+  x<-as.data.frame(nat::xyzmatrix(x))
+  if(!is.null(rotation_matrix)){
+    x <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(x))))
+    x <- x[,-4]
+    colnames(x) <- c("X","Y","Z")
+  }
   list(
     ggplot2::geom_point(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z),
                         size = root,  ...),
@@ -436,6 +441,21 @@ geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, l
                      ...)
 }
 
+#' @rdname geom_neuron
+#' @method geom_neuron dotprops
+#' @export
+geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+                                   stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
+                                   inherit.aes = FALSE, ...) {
+  x<-as.data.frame(nat::xyzmatrix(x))
+  geom_neuron.data.frame(x, rotation_matrix = rotation_matrix, root = root,
+                     low = low, high = high,
+                     stat = stat, position = position,
+                     na.rm = FALSE, show.legend = NA,
+                     inherit.aes = FALSE,
+                     ...)
+}
+
 #' Create a ggplot2 Visualisation of Neuron Objects
 #'
 #' @description
@@ -448,8 +468,8 @@ geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, l
 #' Defaults to NULL, no volume plotted.
 #' @param info Optional. A string to be used as the plot title.
 #' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
-#' @param low Color for the lowest Z values. Default is "turquoise".
-#' @param high Color for the highest Z values. Default is "navy".
+#' @param low1,low2 Color for the lowest Z values. Default is "turquoise".
+#' @param high1,high2 Color for the highest Z values. Default is "navy".
 #' @param alpha Transparency of the neuron visualization. Default is 0.5.
 #' @param title.col Color of the plot title. Default is "darkgrey".
 #' @param ... Additional arguments passed to geom_neuron().
@@ -483,16 +503,18 @@ ggneuron <- function(x,
                      volume = NULL,
                      info = NULL,
                      rotation_matrix = NULL,
-                     low = "turquoise",
-                     high = "navy",
+                     low1 = "turquoise",
+                     high1 = "navy",
+                     low2 = "grey75",
+                     high2 = "grey50",
                      alpha = 0.5,
                      title.col = "darkgrey",
                      ...){
   ggplot2::ggplot() +
     {if(!is.null(volume)){
-      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = max(alpha-0.25,0.01), low = "grey75", high = "grey50")
+      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = max(alpha-0.25,0.01), low = low2, high = high2)
     }} +
-    geom_neuron(x = x, rotation_matrix = rotation_matrix, low =  low, high = high, alpha = alpha, ...) +
+    geom_neuron(x = x, rotation_matrix = rotation_matrix, low =  low1, high = high1, alpha = alpha, ...) +
     ggplot2::coord_fixed() +
     ggplot2::theme_void() +
     ggplot2::guides(fill="none",color="none") +

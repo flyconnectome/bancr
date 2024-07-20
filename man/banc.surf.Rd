@@ -74,9 +74,11 @@ location, where BANC-transformed standard neuropil meshes reside.
 The source is
 \verb{precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/volume_meshes}
 They can be
-plotted in neuroglancer by adding this location, entering the \code{Seg.} pane
-and entering the number that corresponds to the correct mesh.
-This data frame gives the mesh name to nubmer correspondences.
+plotted in neuroglancer by adding
+\href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6237404072509440}{this}
+location, entering the \code{Seg.} pane
+and entering the number or name that corresponds to the correct mesh.
+This data frame gives the mesh name to number correspondences.
 }
 \examples{
 \dontrun{

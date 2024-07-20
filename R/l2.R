@@ -79,3 +79,80 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
   sk=fp$flywire$l2_skeleton(id, omit_failures = OmitFailures, dataset=dataset, ...)
   fafbseg:::navis2nat_neuronlist(sk)
 }
+
+#' @title Re-root BANC neuron skeleton at soma
+#'
+#' @description
+#' This function re-roots a neuron skeleton represented as a `neuron`
+#' object at the location of the corresponding soma in the `banc_nuclei` data
+#' frame. It uses the `root_id` in the skeleton object to identify the soma
+#' location.
+#'
+#' @param x A `banc.neurite` object representing the neuron skeleton.
+#' @param id (Optional) The `root_id` of the neuron in the `banc_nuclei` data
+#' frame. If NULL, it will be taken from the `x$root_id` slot.
+#' @param banc_nuclei A data frame containing information about nuclei
+#' obtained using `bancr::banc_nuclei()`. This data frame is assumed to have
+#' columns named `root_id` and `soma_position_nm`, where `soma_position_nm`
+#' specifies the 3D coordinates of the soma for each `root_id`.
+#' @param ... Methods passed to \code{nat::nlapply}.
+#'
+#' @return The function returns the re-rooted `neuron` object.
+#'
+#' @examples
+#' \dontrun{
+#' x <- banc_read_l2skel(..., simplify = FALSE)
+#' banc_nuclei <- banc_nuclei()
+#' re-rooted_neuron <- banc_reroot(x, banc_nuclei = banc_nuclei)
+#' }
+#' @export
+#' @rdname banc_reroot
+banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...) UseMethod("banc_reroot")
+
+#' @rdname banc_reroot
+#' @method banc_reroot neuron
+#' @export
+banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...){
+  if(is.null(id)){
+    id <- x$root_id
+  }
+  if(is.null(id)){
+    stop("a root_id in banc_nuclei must be given")
+  }
+  df <- subset(banc_nuclei,banc_nuclei$root_id==id)
+  if( nrow(df) && !is.na(df$soma_position_nm[1]) & df$nucleus_id!="0"){
+    soma <- nat::xyzmatrix(df$soma_position_nm)[1,]
+    x <- nat::reroot(x = x, point = c(soma))
+    x$tags$soma <- nat::rootpoints(x )
+  }else{ # As best we can
+    warning(sprintf("no valid nucleus ID detecting for %s, estimating root point"),id)
+    leaves <- nat::endpoints(x)
+    npoints1 <- nat::xyzmatrix(x)[leaves,]
+    if(nrow(npoints1)){npoints=npoints1}
+    pin <- nat::pointsinside(x = npoints, surf = bancr::banc_neuropil.surf)
+    npoints2 <- data.frame(npoints[!pin,])
+    if(nrow(npoints2)){npoints=npoints2}
+    pin <- nat::pointsinside(x = npoints, surf = bancr::banc_neck_connective.surf)
+    npoints3 <- data.frame(npoints[!pin,])
+    if(nrow(npoints3)){npoints=npoints3}
+    npoints$nucleus_id <- 0
+    npoints$root_id <- id
+    nearest <- nabor::knn(query = nat::xyzmatrix(npoints), data = rbind(xyzmatrix(banc_neuropil.surf),xyzmatrix(banc_neck_connective.surf)), k = 1)
+    soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
+    x <- nat::reroot(x = x, point = c(soma))
+  }
+  x
+}
+
+#' @rdname banc_reroot
+#' @method banc_reroot neuronlist
+#' @export
+banc_reroot.neuronlist <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...){
+  if(is.null(id)){
+    id <- names(x)
+  }
+  nat::nlapply(x, banc_reroot.neuron, FUN = banc_reroot.neuron, banc_nuclei = banc_nuclei, id = id, ...)
+}
+
+
+
