@@ -148,7 +148,8 @@ banc_neuron_comparison_plot <- function(neuron1,
 
   # Save
   if(!is.null(filename)){
-    ggplot2::ggsave(filename, plot = ga, width = width, height = height, bg = "#fcfcfa")
+    ggplot2::ggsave(filename, plot = ga, width = width, height = height,
+                    bg = "#fcfcfa", dpi = 300, limitsize = FALSE)
     message("saved as:  ", filename)
     invisible()
   }else{
