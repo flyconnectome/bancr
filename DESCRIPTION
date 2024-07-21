@@ -60,7 +60,9 @@ Suggests:
     ggpubr,
     catmaid,
     grDevices,
-    nabor
+    nabor,
+    fs,
+    purrr
 Remotes: 
     natverse/nat,
     natverse/fafbseg,

@@ -137,7 +137,9 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(),
     if(nrow(npoints3)){npoints=npoints3}
     npoints$nucleus_id <- 0
     npoints$root_id <- id
-    nearest <- nabor::knn(query = nat::xyzmatrix(npoints), data = rbind(xyzmatrix(banc_neuropil.surf),xyzmatrix(banc_neck_connective.surf)), k = 1)
+    nearest <- nabor::knn(query = nat::xyzmatrix(npoints),
+                          data = rbind(nat::xyzmatrix(bancr::banc_neuropil.surf),
+                                       nat::xyzmatrix(bancr::banc_neck_connective.surf)), k = 1)
     soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
     x <- nat::reroot(x = x, point = c(soma))
   }

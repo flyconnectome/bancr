@@ -16,3 +16,60 @@ check_package_available <- function(pkg, repo=c("CRAN", "Bioconductor")) {
 euclidean_distances <- function(A, B) {
   sqrt(rowSums((A - B)^2))
 }
+
+# Helper
+create_express_symlinks <- function(base_dir) {
+  todo_dir <- fs::path(base_dir, "todo")
+  if (fs::dir_exists(todo_dir)) {
+    express_dir <- fs::path(base_dir, "express")
+
+    # Create express directory if it doesn't exist
+    fs::dir_create(express_dir)
+    express.files <- list.files(express_dir, full.names = TRUE)
+    remove.old <- file.remove(express.files)
+
+    # Get all PNG files in todo directory that start with '1'
+    png_files <- fs::dir_ls(todo_dir, recurse = TRUE, glob = "*.png")
+    png_files<- png_files[grepl("^1", basename(png_files))]
+
+    # Create symlinks
+    purrr::walk(png_files, function(file) {
+      # Use only the filename for the symlink, not the full path
+      file_name <- fs::path_file(file)
+      symlink_path <- fs::path(express_dir, file_name)
+
+      # If a symlink with this name already exists, add a numeric suffix
+      if (fs::file_exists(symlink_path)) {
+        i <- 1
+        while (fs::file_exists(symlink_path)) {
+          symlink_path <- fs::path(express_dir, paste0(fs::path_ext_remove(file_name), "_", i, ".png"))
+          i <- i + 1
+        }
+      }
+
+      # Create symlink
+      fs::link_create(file, symlink_path)
+      cat("Created symlink:", symlink_path, "->", file, "\n")
+    })
+    remove_empty_dirs(base_dir)
+    cat("Symlink creation completed.\n")
+  }else{
+    cat("No 'todo' folder from which to symlink.\n")
+  }
+  invisible()
+}
+
+# helper
+remove_empty_dirs <- function(base_dir) {
+  dirs <- fs::dir_ls(base_dir, recurse = TRUE, type = "directory") %>%
+    purrr::discard(~grepl("/express$|/done$", .x))
+  dirs <- rev(dirs)  # Start from the deepest directories
+  purrr::walk(dirs, function(dir) {
+    if (length(fs::dir_ls(dir)) == 0) {
+      fs::dir_delete(dir)
+      cat("Removed empty directory:", dir, "\n")
+    }
+  })
+}
+
+
