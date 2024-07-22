@@ -10,6 +10,7 @@
 #' @param neuron1.info Character, a vector to be printed on the outputted ggplot in reference to neuron1.
 #' @param neuron2.info Character, a vector to be printed on the outputted ggplot in reference to neuron2.
 #' @param neuron3.info Character, a vector to be printed on the outputted ggplot in reference to neuron3.
+#' @param region Character, whether to plot the brain area, VNC area or both (default).
 #' @param banc_brain_neuropil A mesh object representing the brain neuropil. Default is banc_brain_neuropil.surf.
 #' @param banc_vnc_neuropil A mesh object representing the ventral nerve cord (VNC) neuropil. Default is banc_vnc_neuropil.surf.
 #' @param banc_neuropil A mesh object representing the entire neuropil. Default is banc_neuropil.surf.
@@ -34,7 +35,20 @@
 #' @examples
 #' \dontrun{
 #' # Assuming neuron1 and neuron2 are valid neuron objects
-#' banc_neuron_comparison_plot(neuron1, neuron2, filename = "neuron_comparison.png")
+#' banc.meta <- banctable_query()
+#'
+#' # Get some neurons to plot
+#' banc.meta.dnao1 <- subset(banc.meta, cell_type=="DNa01")
+#' dna01 <- banc_read_neuron_meshes(banc.meta.dnao1$root_id)
+#' banc.meta.dnao2 <- subset(banc.meta, cell_type=="DNa02")
+#' dna02 <- banc_read_neuron_meshes(banc.meta.dnao2$root_id)
+#'
+#' # Simplify neurons to make them easier to plot
+#' dna01 <- nat::nlapply(dna01,Rvcg::vcgQEdecim,percent = 0.1)
+#' dna02 <- nat::nlapply(dna02,Rvcg::vcgQEdecim,percent = 0.1)
+#'
+#' # Make plot!
+#' banc_neuron_comparison_plot(dna01, dna02, filename = "neuron_comparison.png")
 #' }
 #'
 #' @export
@@ -44,6 +58,7 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
                                         neuron3.info = NULL,
+                                        region = c("both","brain","vinc"),
                                         banc_brain_neuropil = NULL,
                                         banc_vnc_neuropil = NULL,
                                         banc_neuropil = NULL,
@@ -52,6 +67,7 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         height = 16) {
 
   # Get 3D spatial points
+  region <- match.arg(region)
   check_package_available('ggplot2')
   check_package_available('ggpubr')
   glist <- list()
@@ -59,14 +75,26 @@ banc_neuron_comparison_plot <- function(neuron1,
   if(is.null(banc_brain_neuropil)) {banc_brain_neuropil <- bancr::banc_brain_neuropil.surf}
   if(is.null(banc_vnc_neuropil)) {banc_vnc_neuropil <- bancr::banc_vnc_neuropil.surf}
   if(is.null(banc_neuropil)) {banc_neuropil <- bancr::banc_neuropil.surf}
-  for(view in names(banc_rotation_matrices)){
+  views <- names(banc_rotation_matrices)
+  if(region=="brain"){
+    views <- c("front", "brain_side")
+    banc_neuropil <- NULL
+    banc_vnc_neuropil <- NULL
+  }else if(region == "vnc"){
+    views <- c("vnc", "vnc_side")
+    banc_neuropil <- NULL
+    banc_brain_neuropil <- NULL
+  }else{
+    views <- c("main", "side", "front", "vnc")
+  }
+  for(view in views){
 
     # Choose mesh
     rotation_matrix <- banc_rotation_matrices[[view]]
-    if(view=="front"){
+    if(view%in%c("front","brain_side")){
       mesh <- banc_brain_neuropil
       decaptitate <- "brain"
-    }else if(view=="vnc"){
+    }else if(view%in%c("vnc","vnc_side")){
       mesh <- banc_vnc_neuropil
       decaptitate <- "vnc"
     }else if (view=="main"){
@@ -95,12 +123,29 @@ banc_neuron_comparison_plot <- function(neuron1,
       neuron_pruned3 <- neuron3
     }
 
+    # Work out colours
+    if(length(neuron1)==1){
+      cols1 <- c("blue", "navy")
+    }else{
+      cols1 <- grDevices::colorRampPalette(c("#191970", "#0000CD", "#4169E1", "#6A5ACD", "#9370DB"))
+    }
+    if(length(neuron2)==1){
+      cols2 <- c("darkred", "red")
+    }else{
+      cols2 <- grDevices::colorRampPalette(c("#8B0000", "#DC143C", "#FF4500", "#FF8C00", "#FFD700"))
+    }
+    if(length(neuron1)==1){
+      cols3 <- c("darkgreen", "green")
+    }else{
+      cols3 <- grDevices::colorRampPalette(c("#0a2a1a", "#32c080","chartreuse"))
+    }
+
     # Create the plot
     p <- ggplot2::ggplot() +
-      geom_neuron.mesh3d(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, low = "grey90", high = "grey50") +
-      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, low = "blue", high = "navy", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, low = "darkred", high = "red", alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, low = "darkgreen", high = "green", alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey50")) +
+      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = c("blue", "navy"), alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = c("darkred", "red"), alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = c("darkgreen", "green"), alpha = 0.5, linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
@@ -133,10 +178,17 @@ banc_neuron_comparison_plot <- function(neuron1,
   }
 
   # Arrange
-  ga <- ggpubr::ggarrange(glist[["main"]], glist[["side"]], glist[["front"]], glist[["vnc"]],
-            heights = c(1, 1, 1, 1), widths = c(1, 1, 1, 1),
-            ncol = 2, nrow = 2) +
-    ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
+  if(region=="both"){
+    ga <- ggpubr::ggarrange(glist[["main"]], glist[["side"]], glist[["front"]], glist[["vnc"]],
+                            heights = c(1, 1, 1, 1), widths = c(1, 1, 1, 1),
+                            ncol = 2, nrow = 2) +
+      ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
+  }else{
+    ga <- ggpubr::ggarrange(glist[[1]], glist[[2]],
+                            heights = c(1, 1), widths = c(1, 1),
+                            ncol = 1, nrow = 2) +
+      ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
+  }
 
   # # Annotate with some more information
   # if(!is.null(neuron1.info)&!is.null(neuron2.info)){
@@ -275,8 +327,8 @@ ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
 #' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
 #' @param root Numeric, if >0 and x is or contains `neuron` objects,
 #' then the root node is plotted as a dot of size `root`. If `FALSE` or `0` no root node is plotted.
-#' @param low Color for the lowest Z values. The 'Z' axis is the axis perpendicular to the viewing plane.
-#' @param high Color for the highest Z values.
+#' @param cols The color to plot the neurons in. If \code{length(cols)==length(x)} each neuron will be coloured
+#' by its index in `x` applied to `cols`.
 #' @param stat The statistical transformation to use on the data for this layer.
 #' @param position Position adjustment, either as a string, or the result of a call to a position adjustment function.
 #' @param na.rm If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed.
@@ -296,14 +348,14 @@ ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-geom_neuron <-function(x, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron <-function(x, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                        stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = FALSE, ...) UseMethod('geom_neuron')
 
 #' @rdname geom_neuron
 #' @method geom_neuron neuron
 #' @export
-geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   check_package_available('ggnewscale')
@@ -325,7 +377,7 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
     ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y), data = soma,
                          color = low, alpha = 0.5, size = root),
-    ggplot2::scale_color_gradient(low = low, high = high),
+    ggplot2::scale_color_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_colour()
   )
 }
@@ -333,20 +385,32 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
 #' @rdname geom_neuron
 #' @method geom_neuron neuronlist
 #' @export
-geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
-  if(length(x)>1){
-    color_palette <- grDevices::colorRampPalette(c(low, high))(length(x))
-  }
   glist <- list()
-  for(i in 1:length(x)){
-    if(length(x)>1){
-      low<-high<-color_palette[i]
+  if(length(x)!=1){
+    if(cols[1]=="rainbow"){
+      cols <- grDevices::rainbow(length(x))
+    }else if(length(cols)==1){
+      cols <- rep(cols, length(x))
+    }else{
+      cols <- grDevices::colorRampPalette(c(cols[1], cols[length(cols)]))(length(x))
     }
-    glist[[i]] <- geom_neuron(x = x[[i]], rotation_matrix = rotation_matrix, low = low, high = high,
-                                     stat = stat, position = position, na.rm = na.rm, show.legend = show.legend,
-                                     inherit.aes = FALSE, ...)
+    for(i in 1:length(x)){
+      glist[[i]] <- geom_neuron(x = x[[i]], rotation_matrix = rotation_matrix, cols = cols[i],
+                                stat = stat, position = position, na.rm = na.rm, show.legend = show.legend,
+                                inherit.aes = FALSE, ...)
+    }
+  }else{
+    if(cols[1]=="rainbow"){
+      cols <-c("darkred","red")
+    }
+    for(i in 1:length(x)){
+      glist[[i]] <- geom_neuron(x = x[[i]], rotation_matrix = rotation_matrix, cols = cols,
+                                stat = stat, position = position, na.rm = na.rm, show.legend = show.legend,
+                                inherit.aes = FALSE, ...)
+    }
   }
   glist
 }
@@ -354,7 +418,7 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, l
 #' @rdname geom_neuron
 #' @method geom_neuron mesh3d
 #' @export
-geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
   check_package_available('ggnewscale')
@@ -364,7 +428,7 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
                     color = NA,
                     stat = stat, position = position, na.rm = na.rm,
                     show.legend = show.legend, inherit.aes = inherit.aes, ...),
-    ggplot2::scale_fill_gradient(low = low, high = high),
+    ggplot2::scale_fill_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_fill()
   )
 }
@@ -372,11 +436,11 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
 #' @rdname geom_neuron
 #' @method geom_neuron hxsurf
 #' @export
-geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   x <- rgl::as.mesh3d(x)
-  geom_neuron.mesh3d(x=x, rotation_matrix=rotation_matrix, low=low, high=high,
+  geom_neuron.mesh3d(x=x, rotation_matrix=rotation_matrix, cols=cols,
                      stat=stat, position=position, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
                      ...)
 }
@@ -384,7 +448,7 @@ geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
 #' @rdname geom_neuron
 #' @method geom_neuron NULL
 #' @export
-geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   list(
@@ -395,12 +459,12 @@ geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "
 #' @rdname geom_neuron
 #' @method geom_neuron list
 #' @export
-geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                              stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                              inherit.aes = FALSE, ...) {
 
   if(length(x)){
-    geom_neuron.neuronlist(x=x, rotation_matrix=rotation_matrix, low=low, high=high,
+    geom_neuron.neuronlist(x=x, rotation_matrix=rotation_matrix, cols=cols,
                        stat=stat, position=position, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
                        ...)
   }else{
@@ -411,7 +475,7 @@ geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "
 #' @rdname geom_neuron
 #' @method geom_neuron matrix
 #' @export
-geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                              stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                              inherit.aes = FALSE, ...) {
   x<-as.data.frame(nat::xyzmatrix(x))
@@ -423,7 +487,7 @@ geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
   list(
     ggplot2::geom_point(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z),
                         size = root,  ...),
-    ggplot2::scale_color_gradient(low = low, high = high),
+    ggplot2::scale_color_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_colour()
   )
 }
@@ -431,11 +495,11 @@ geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, low =
 #' @rdname geom_neuron
 #' @method geom_neuron data.frame
 #' @export
-geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = FALSE, ...) {
   geom_neuron.matrix(x, rotation_matrix = rotation_matrix, root = root,
-                     low = low, high = high,
+                     low = cols[1], high = cols[length(cols)],
                      stat = stat, position = position,
                      na.rm = FALSE, show.legend = NA,
                      inherit.aes = FALSE,
@@ -445,12 +509,12 @@ geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, l
 #' @rdname geom_neuron
 #' @method geom_neuron dotprops
 #' @export
-geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, low = "navy", high = "turquoise",
+geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
                                    stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
                                    inherit.aes = FALSE, ...) {
   x<-as.data.frame(nat::xyzmatrix(x))
   geom_neuron.data.frame(x, rotation_matrix = rotation_matrix, root = root,
-                     low = low, high = high,
+                     low = cols[1], high = cols[length(cols)],
                      stat = stat, position = position,
                      na.rm = FALSE, show.legend = NA,
                      inherit.aes = FALSE,
@@ -469,8 +533,8 @@ geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, low
 #' Defaults to NULL, no volume plotted.
 #' @param info Optional. A string to be used as the plot title.
 #' @param rotation_matrix An optional 4x4 rotation matrix to apply to the neuron coordinates.
-#' @param low1,low2 Color for the lowest Z values. Default is "turquoise".
-#' @param high1,high2 Color for the highest Z values. Default is "navy".
+#' @param cols1 Color for the lowest Z values. Default is "turquoise".
+#' @param cols2 Color for the highest Z values. Default is "navy".
 #' @param alpha Transparency of the neuron visualization. Default is 0.5.
 #' @param title.col Color of the plot title. Default is "darkgrey".
 #' @param ... Additional arguments passed to geom_neuron().
@@ -504,18 +568,16 @@ ggneuron <- function(x,
                      volume = NULL,
                      info = NULL,
                      rotation_matrix = NULL,
-                     low1 = "turquoise",
-                     high1 = "navy",
-                     low2 = "grey75",
-                     high2 = "grey50",
+                     cols1 = c("turquoise","navy"),
+                     cols2 =  c("grey75", "grey50"),
                      alpha = 0.5,
                      title.col = "darkgrey",
                      ...){
   ggplot2::ggplot() +
     {if(!is.null(volume)){
-      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = max(alpha-0.25,0.01), low = low2, high = high2)
+      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = max(alpha-0.25,0.01), cols = cols2)
     }} +
-    geom_neuron(x = x, rotation_matrix = rotation_matrix, low =  low1, high = high1, alpha = alpha, ...) +
+    geom_neuron(x = x, rotation_matrix = rotation_matrix, cols = cols1, alpha = alpha, ...) +
     ggplot2::coord_fixed() +
     ggplot2::theme_void() +
     ggplot2::guides(fill="none",color="none") +
