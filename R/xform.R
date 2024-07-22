@@ -267,7 +267,7 @@ update_elastix_transforms_locations <- function(transform_file,
 #' neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 #' points <- nat::xyzmatrix(neuron.mesh)
 #' transformed_points <- navis_elastix_xform(points,
-#' transform_file = "brain_240714/BANC_to_template.txt")
+#' transform_file = "brain_240721/BANC_to_template.txt")
 #' points3d(points)
 #' plot3d(nat.flybrains::JRC2018F)
 #' }
@@ -312,7 +312,7 @@ navis_elastix_xform <- function(x, transform_file){
 #' points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 #'
 #' The default transformation files are included with the package and are located in the
-#' 'inst/extdata/brain_240714' directory.
+#' 'inst/extdata/brain_240721' directory.
 #'
 #' @examples
 #' \dontrun{
@@ -324,9 +324,9 @@ navis_elastix_xform <- function(x, transform_file){
 #' custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 #'
 #' # Where the default transform files are located:
-#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240714"),
+#' banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240721"),
 #' "BANC_to_template.txt", package="bancr")
-#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240714"),
+#' JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240721"),
 #' "template_to_BANC.txt", package="bancr")
 #'
 #' ### VNC EXAMPLE ####
@@ -373,13 +373,13 @@ banc_to_JRC2018F <- function(x,
 
   # get the right registrations
   if(region=="brain"){
-    banc_to_template_elastix <- "vnc_240714"
+    banc_to_template_elastix <- "vnc_240721"
     if(method=="tpsreg"){
       template_to_banc_trafo <- bancr::jrc2018f_to_banc_tpsreg
       banc_to_template_trafo <- bancr::banc_to_jrc2018f_tpsreg
     }
   }else if(region=="vnc"){
-    banc_to_template_elastix <- "vnc_240714"
+    banc_to_template_elastix <- "vnc_240721"
     if(method=="tpsreg"){
       template_to_banc_trafo <- bancr::jrcvnc2018f_to_banc_tpsreg
       banc_to_template_trafo <- bancr::banc_to_jrcvnc2018f_tpsreg
@@ -478,7 +478,7 @@ banc_to_JRC2018F <- function(x,
   return(x)
 }
 # Jasper's Elastix transform
-# transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240714/BANC_to_template.txt"
+# transform_file <- "/Users/GD/LMBD/Papers/banc/the-BANC-fly-connectome/fanc/transforms/transform_parameters/brain_240721/BANC_to_template.txt"
 
 #' Mirror BANC Connectome Points
 #'
@@ -529,8 +529,8 @@ banc_to_JRC2018F <- function(x,
 #'
 #' # Mirror in BANC space
 #' neuron.mesh.mirror <- banc_mirror(neuron.mesh.brain,
-#' transform_files = c("brain_240714/BANC_to_template.txt",
-#'  "brain_240714/template_to_BANC.txt"))
+#' transform_files = c("brain_240721/BANC_to_template.txt",
+#'  "brain_240721/template_to_BANC.txt"))
 #' plot3d(neuron.mesh.mirror, col = "cyan")
 #' }
 #'
