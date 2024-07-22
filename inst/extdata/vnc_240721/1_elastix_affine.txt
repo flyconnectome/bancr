@@ -4,7 +4,7 @@
 (FixedInternalImagePixelType "float")
 (HowToCombineTransforms "Compose")
 (Index 0 0 0)
-(InitialTransformParametersFileName "/Users/abates/projects/flyconnectome/bancr/inst/extdata/brain_240721/0_manual_affine.txt")
+(InitialTransformParametersFileName "/Users/abates/projects/flyconnectome/bancr/inst/extdata/vnc_240721")
 (MovingImageDimension 3)
 (MovingInternalImagePixelType "float")
 (NumberOfParameters 12)

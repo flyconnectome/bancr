@@ -9,7 +9,7 @@
 (GridSpacing 31.904547872784633 32.045270260969765 32.0755115961637)
 (HowToCombineTransforms "Compose")
 (Index 0 0 0)
-(InitialTransformParametersFileName "/Users/abates/projects/flyconnectome/bancr/inst/extdata/brain_240721/1_elastix_affine.txt")
+(InitialTransformParametersFileName "/Users/abates/projects/flyconnectome/bancr/inst/extdata/vnc_240721")
 (MovingImageDimension 3)
 (MovingInternalImagePixelType "float")
 (NumberOfParameters 28350)
