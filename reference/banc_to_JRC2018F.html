@@ -98,7 +98,7 @@ Must be either "elastix" or "tpsreg". Default is "elastix".</p></dd>
     <p>This function applies either an Elastix transform or a thin-plate spline registration to convert
 points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.</p>
 <p>The default transformation files are included with the package and are located in the
-'inst/extdata/brain_240714' directory.</p>
+'inst/extdata/brain_240721' directory.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -117,9 +117,9 @@ points between the BANC and JRC2018F coordinate systems. It handles unit convers
 <span class="r-in"><span><span class="va">custom_transformed</span> <span class="op">&lt;-</span> <span class="fu">banc_to_JRC2018F</span><span class="op">(</span><span class="va">points</span>, transform_file <span class="op">=</span> <span class="st">"path/to/custom/transform.txt"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Where the default transform files are located:</span></span></span>
-<span class="r-in"><span><span class="va">banc_to_JRC2018F_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240714"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">banc_to_JRC2018F_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240721"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="st">"BANC_to_template.txt"</span>, package<span class="op">=</span><span class="st">"bancr"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">JRC2018F_to_banc_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240714"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">JRC2018F_to_banc_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"extdata"</span>,<span class="st">"brain_240721"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="st">"template_to_BANC.txt"</span>, package<span class="op">=</span><span class="st">"bancr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### VNC EXAMPLE ####</span></span></span>
