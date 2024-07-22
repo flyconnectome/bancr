@@ -25,7 +25,7 @@ This function requires the reticulate R package and the Navis Python library.
 neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 points <- nat::xyzmatrix(neuron.mesh)
 transformed_points <- navis_elastix_xform(points,
-transform_file = "brain_240714/BANC_to_template.txt")
+transform_file = "brain_240721/BANC_to_template.txt")
 points3d(points)
 plot3d(nat.flybrains::JRC2018F)
 }

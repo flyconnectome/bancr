@@ -44,7 +44,7 @@ This function applies either an Elastix transform or a thin-plate spline registr
 points between the BANC and JRC2018F coordinate systems. It handles unit conversions as necessary.
 
 The default transformation files are included with the package and are located in the
-'inst/extdata/brain_240714' directory.
+'inst/extdata/brain_240721' directory.
 }
 \examples{
 \dontrun{
@@ -56,9 +56,9 @@ transformed_points <- banc_to_JRC2018F(points, banc.units = "nm")
 custom_transformed <- banc_to_JRC2018F(points, transform_file = "path/to/custom/transform.txt")
 
 # Where the default transform files are located:
-banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240714"),
+banc_to_JRC2018F_file <- system.file(file.path("extdata","brain_240721"),
 "BANC_to_template.txt", package="bancr")
-JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240714"),
+JRC2018F_to_banc_file <- system.file(file.path("extdata","brain_240721"),
 "template_to_BANC.txt", package="bancr")
 
 ### VNC EXAMPLE ####
