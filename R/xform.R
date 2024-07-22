@@ -53,6 +53,20 @@ banc_vnc_view <- function(){
   rgl::rgl.viewpoint(userMatrix = banc_rotation_matrices[["vnc"]], zoom = 0.51)
 }
 
+# for nm
+#' @export
+#' @rdname banc_view
+banc_vnc_side_view <- function(){
+  rgl::rgl.viewpoint(userMatrix = banc_rotation_matrices[["vnc_side"]], zoom = 0.3)
+}
+
+# for nm
+#' @export
+#' @rdname banc_view
+banc_brain_side_view <- function(){
+  rgl::rgl.viewpoint(userMatrix = banc_rotation_matrices[["brain_side"]], zoom = 0.25)
+}
+
 # hidden
 banc_rotation_matrices <- list(
   main = structure(c(0.961547076702118, 0.037275392562151,
@@ -71,7 +85,19 @@ banc_rotation_matrices <- list(
                                  0.263022243976593, 0, -0.95634800195694, -0.0832427442073822,
                                  0.280123054981232, 0, -0.244629606604576, -0.296320915222168,
                                  -0.923228204250336, 0, 169877.109375, 8134.845703125, -597.831604003906,
-                                 1), dim = c(4L, 4L)))
+                                 1), dim = c(4L, 4L)),
+  vnc_side = structure(c(0.000764884985983372, 0.0153511334210634,
+                         -0.99988180398941, 0, -0.940421104431152, -0.339961022138596,
+                         -0.00593886896967888, 0, -0.340011894702911, 0.94031423330307,
+                         0.0141764245927334, 0, 213081.451169508, 16147.1762941271, -5607.34082031255,
+                         1), dim = c(4L, 4L)),
+  brain_side = structure(c(0.000764884985983372, 0.0153511334210634,
+                           -0.99988180398941, 0, -0.940421104431152, -0.339961022138596,
+                           -0.00593886896967888, 0, -0.340011894702911, 0.94031423330307,
+                           0.0141764245927334, 0, -401395.405539944, -128785.809090088,
+                           -5607.3408203126, 1), dim = c(4L, 4L))
+
+  )
 
 #' Perform Elastix Transform on 3D Points
 #'
