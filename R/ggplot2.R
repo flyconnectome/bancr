@@ -48,7 +48,9 @@
 #' dna02 <- nat::nlapply(dna02,Rvcg::vcgQEdecim,percent = 0.1)
 #'
 #' # Make plot!
-#' banc_neuron_comparison_plot(dna01, dna02, filename = "neuron_comparison.png")
+#' banc_neuron_comparison_plot(dna01, dna02, neuron1.info = "DNa01",
+#' neuron2.info = "DNa02",
+#' filename = "neuron_comparison.png")
 #' }
 #'
 #' @export
@@ -58,7 +60,7 @@ banc_neuron_comparison_plot <- function(neuron1,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
                                         neuron3.info = NULL,
-                                        region = c("both","brain","vinc"),
+                                        region = c("both","brain","vnc"),
                                         banc_brain_neuropil = NULL,
                                         banc_vnc_neuropil = NULL,
                                         banc_neuropil = NULL,
@@ -97,10 +99,15 @@ banc_neuron_comparison_plot <- function(neuron1,
     }else if(view%in%c("vnc","vnc_side")){
       mesh <- banc_vnc_neuropil
       decaptitate <- "vnc"
+      if(grepl("side")){
+        title.col <- "firebrick"
+      }else{
+        title.col <- "blue"
+      }
     }else if (view=="main"){
       mesh <- banc_neuropil
       decaptitate <- "none"
-      title.col <- "darkturquoise"
+      title.col <- "blue"
     }else if (view=="side"){
       mesh <- banc_neuropil
       decaptitate <- "none"
@@ -165,9 +172,9 @@ banc_neuron_comparison_plot <- function(neuron1,
             panel.border = ggplot2::element_blank(),
             panel.background = ggplot2::element_blank(), #gplot2::element_rect(fill = "grey95", color = NA),
             plot.background = ggplot2::element_blank()) + #gplot2::element_rect(fill = "grey95", color = NA))
-      if(view=="main"){
+      if(view%in%c("front")){
         ggplot2::labs(title = neuron1.info)
-      }else if (view=="side"){
+      }else if (view%in%c("vnc","brain_side","vnc_side")){
         ggplot2::labs(title = neuron2.info)
       }else{
         ggplot2::labs(title = "")
@@ -179,7 +186,7 @@ banc_neuron_comparison_plot <- function(neuron1,
 
   # Arrange
   if(region=="both"){
-    ga <- ggpubr::ggarrange(glist[["main"]], glist[["side"]], glist[["front"]], glist[["vnc"]],
+    ga <- ggpubr::ggarrange(glist[["front"]], glist[["vnc"]], glist[["main"]], glist[["side"]],
                             heights = c(1, 1, 1, 1), widths = c(1, 1, 1, 1),
                             ncol = 2, nrow = 2) +
       ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))

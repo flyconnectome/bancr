@@ -9,10 +9,8 @@ ggneuron(
   volume = NULL,
   info = NULL,
   rotation_matrix = NULL,
-  low1 = "turquoise",
-  high1 = "navy",
-  low2 = "grey75",
-  high2 = "grey50",
+  cols1 = c("turquoise", "navy"),
+  cols2 = c("grey75", "grey50"),
   alpha = 0.5,
   title.col = "darkgrey",
   ...
@@ -28,9 +26,9 @@ Defaults to NULL, no volume plotted.}
 
 \item{rotation_matrix}{An optional 4x4 rotation matrix to apply to the neuron coordinates.}
 
-\item{low1, low2}{Color for the lowest Z values. Default is "turquoise".}
+\item{cols1}{Color for the lowest Z values. Default is "turquoise".}
 
-\item{high1, high2}{Color for the highest Z values. Default is "navy".}
+\item{cols2}{Color for the highest Z values. Default is "navy".}
 
 \item{alpha}{Transparency of the neuron visualization. Default is 0.5.}
 

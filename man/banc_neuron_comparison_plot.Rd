@@ -11,6 +11,7 @@ banc_neuron_comparison_plot(
   neuron1.info = NULL,
   neuron2.info = NULL,
   neuron3.info = NULL,
+  region = c("both", "brain", "vnc"),
   banc_brain_neuropil = NULL,
   banc_vnc_neuropil = NULL,
   banc_neuropil = NULL,
@@ -31,6 +32,8 @@ banc_neuron_comparison_plot(
 \item{neuron2.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron2.}
 
 \item{neuron3.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron3.}
+
+\item{region}{Character, whether to plot the brain area, VNC area or both (default).}
 
 \item{banc_brain_neuropil}{A mesh object representing the brain neuropil. Default is banc_brain_neuropil.surf.}
 
@@ -66,7 +69,22 @@ The two neurons are plotted in different colors (navy/turquoise for neuron1, red
 \examples{
 \dontrun{
 # Assuming neuron1 and neuron2 are valid neuron objects
-banc_neuron_comparison_plot(neuron1, neuron2, filename = "neuron_comparison.png")
+banc.meta <- banctable_query()
+
+# Get some neurons to plot
+banc.meta.dnao1 <- subset(banc.meta, cell_type=="DNa01")
+dna01 <- banc_read_neuron_meshes(banc.meta.dnao1$root_id)
+banc.meta.dnao2 <- subset(banc.meta, cell_type=="DNa02")
+dna02 <- banc_read_neuron_meshes(banc.meta.dnao2$root_id)
+
+# Simplify neurons to make them easier to plot
+dna01 <- nat::nlapply(dna01,Rvcg::vcgQEdecim,percent = 0.1)
+dna02 <- nat::nlapply(dna02,Rvcg::vcgQEdecim,percent = 0.1)
+
+# Make plot!
+banc_neuron_comparison_plot(dna01, dna02, neuron1.info = "DNa01",
+neuron1.info = "DNa02",
+filename = "neuron_comparison.png")
 }
 
 }

@@ -5,6 +5,8 @@
 \alias{banc_side_view}
 \alias{banc_front_view}
 \alias{banc_vnc_view}
+\alias{banc_vnc_side_view}
+\alias{banc_brain_side_view}
 \title{Set Default View for BANC EM Dataset}
 \usage{
 banc_view()
@@ -14,6 +16,10 @@ banc_side_view()
 banc_front_view()
 
 banc_vnc_view()
+
+banc_vnc_side_view()
+
+banc_brain_side_view()
 }
 \value{
 This function is called for its side effect of changing the rgl viewpoint.
