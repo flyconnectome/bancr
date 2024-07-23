@@ -28,7 +28,7 @@ banc_cave_tables <- function(datastack_name = NULL,
                              select = NULL){
   if(is.null(datastack_name))
     datastack_name=banc_datastack_name()
-  fac <- flywire_cave_client(datastack_name = datastack_name)
+  fac <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
   tt <- fac$annotation$get_tables()
   if(!is.null(select)){

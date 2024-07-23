@@ -1,7 +1,7 @@
 #' Fetch change log information for one or more neurons
 #'
 #' @details As of August 2021 this is a simple wrapper of
-#'   \code{fabseg::\link{flywire_change_log}}. For now the old (and less
+#'   \code{fafbseg::\link{flywire_change_log}}. For now the old (and less
 #'   convenient format) available from the zetta API can be obtained with the
 #'   private \code{bancr:::banc_change_log_zetta} function.
 #'
