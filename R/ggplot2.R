@@ -49,12 +49,11 @@
 #'
 #' # Make plot!
 #' banc_neuron_comparison_plot(dna01, dna02, neuron1.info = "DNa01",
-#' neuron2.info = "DNa02",
-#' filename = "neuron_comparison.png")
+#' neuron2.info = "DNa02", filename = "neuron_comparison.png")
 #' }
 #'
 #' @export
-banc_neuron_comparison_plot <- function(neuron1,
+banc_neuron_comparison_plot <- function(neuron1 = NULL,
                                         neuron2 = NULL,
                                         neuron3 = NULL,
                                         neuron1.info = NULL,
@@ -96,14 +95,11 @@ banc_neuron_comparison_plot <- function(neuron1,
     if(view%in%c("front","brain_side")){
       mesh <- banc_brain_neuropil
       decaptitate <- "brain"
+      title.col <- "blue"
     }else if(view%in%c("vnc","vnc_side")){
       mesh <- banc_vnc_neuropil
       decaptitate <- "vnc"
-      if(grepl("side")){
-        title.col <- "firebrick"
-      }else{
-        title.col <- "blue"
-      }
+      title.col <- "firebrick"
     }else if (view=="main"){
       mesh <- banc_neuropil
       decaptitate <- "none"
@@ -134,25 +130,25 @@ banc_neuron_comparison_plot <- function(neuron1,
     if(length(neuron1)==1){
       cols1 <- c("blue", "navy")
     }else{
-      cols1 <- grDevices::colorRampPalette(c("#191970", "#0000CD", "#4169E1", "#6A5ACD", "#9370DB"))
+      cols1 <- grDevices::colorRampPalette(c("#0000CD", "#4169E1", "cyan"))(length(neuron1))
     }
     if(length(neuron2)==1){
       cols2 <- c("darkred", "red")
     }else{
-      cols2 <- grDevices::colorRampPalette(c("#8B0000", "#DC143C", "#FF4500", "#FF8C00", "#FFD700"))
+      cols2 <- grDevices::colorRampPalette(c("#8f0723","#DC143C", "#FF4500", "#FF4500"))(length(neuron2))
     }
-    if(length(neuron1)==1){
+    if(length(neuron3)==1){
       cols3 <- c("darkgreen", "green")
     }else{
-      cols3 <- grDevices::colorRampPalette(c("#0a2a1a", "#32c080","chartreuse"))
+      cols3 <- grDevices::colorRampPalette(c("#076b3e", "#32c080","chartreuse"))(length(neuron3))
     }
 
     # Create the plot
     p <- ggplot2::ggplot() +
       geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey50")) +
-      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = c("blue", "navy"), alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = c("darkred", "red"), alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = c("darkgreen", "green"), alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = cols1, alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = cols2, alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = cols3, alpha = 0.5, linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
