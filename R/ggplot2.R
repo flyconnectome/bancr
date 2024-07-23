@@ -383,7 +383,7 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
               stat = stat, position = position, na.rm = na.rm,
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
     ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y), data = soma,
-                         color = low, alpha = 0.5, size = root),
+                         color = cols[1], alpha = 0.5, size = root),
     ggplot2::scale_color_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_colour()
   )
@@ -411,7 +411,7 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, c
     }
   }else{
     if(cols[1]=="rainbow"){
-      cols <-c("darkred","red")
+      cols <-c("purple","pink")
     }
     for(i in 1:length(x)){
       glist[[i]] <- geom_neuron(x = x[[i]], rotation_matrix = rotation_matrix, cols = cols,
