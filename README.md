@@ -8,7 +8,7 @@ bancr
 ===========
 
 The goal of **bancr** is to support analysis of the Brain And
-Nerve Cord dataset aka (*BANC*), especially autosegmentation data. 
+Nerve Cord data set (*BANC*), especially auto-segmentation data. 
 Those data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
 Anyone can request access to the data [here](https://flywire.ai/banc_access).
@@ -438,7 +438,7 @@ Acknowledging the data and tools
 
 BANC data needs to be acknowledged in accordance to the [BANC community guidelines](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/)
 and in agreement with the BANC consortium. 
-If you use this package, you can cite the *natverse* paper [(Bates et al. 2020)](https://elifesciences.org/articles/53350)
+If you use this package, you should cite the eventual BANC paper as well (TBD) as our *natverse* paper [(Bates et al. 2020)](https://elifesciences.org/articles/53350)
 and the R package as follows:
 
 ``` r
