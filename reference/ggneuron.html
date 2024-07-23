@@ -51,10 +51,8 @@ a minimal theme and applies consistent styling to the plot.</p>
 <span>  volume <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  info <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rotation_matrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  low1 <span class="op">=</span> <span class="st">"turquoise"</span>,</span>
-<span>  high1 <span class="op">=</span> <span class="st">"navy"</span>,</span>
-<span>  low2 <span class="op">=</span> <span class="st">"grey75"</span>,</span>
-<span>  high2 <span class="op">=</span> <span class="st">"grey50"</span>,</span>
+<span>  cols1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"turquoise"</span>, <span class="st">"navy"</span><span class="op">)</span>,</span>
+<span>  cols2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grey75"</span>, <span class="st">"grey50"</span><span class="op">)</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  title.col <span class="op">=</span> <span class="st">"darkgrey"</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -82,11 +80,11 @@ Defaults to NULL, no volume plotted.</p></dd>
 <dd><p>An optional 4x4 rotation matrix to apply to the neuron coordinates.</p></dd>
 
 
-<dt id="arg-low-low-">low1, low2<a class="anchor" aria-label="anchor" href="#arg-low-low-"></a></dt>
+<dt id="arg-cols-">cols1<a class="anchor" aria-label="anchor" href="#arg-cols-"></a></dt>
 <dd><p>Color for the lowest Z values. Default is "turquoise".</p></dd>
 
 
-<dt id="arg-high-high-">high1, high2<a class="anchor" aria-label="anchor" href="#arg-high-high-"></a></dt>
+<dt id="arg-cols-">cols2<a class="anchor" aria-label="anchor" href="#arg-cols-"></a></dt>
 <dd><p>Color for the highest Z values. Default is "navy".</p></dd>
 
 
