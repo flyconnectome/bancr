@@ -15,7 +15,7 @@
 banc_voxdims <- memoise::memoise(function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']]) {
   fafbseg::flywire_voxdims(url)
 })
-# 4  4 40
+# 4  4 45
 
 #' @param x 3D coordinates in any form compatible with \code{\link{xyzmatrix}}
 #'
