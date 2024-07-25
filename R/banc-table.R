@@ -135,7 +135,7 @@ banctable_login <- function(url = "https://cloud.seatable.io/",
 
 #' @export
 #' @rdname banctable_query
-banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE, chunksize = 1000L,  ...) {
+banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALSE, chunksize = 1000L,  ...) {
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table)
   nx = nrow(df)
@@ -148,10 +148,10 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = TRUE
   newrows = is.na(df[["row_id"]])
   if (any(newrows)) {
     stop("Adding new rows not yet implemented")
-    # flytable_append_rows(df[newrows, , drop = FALSE], table = table,
-    #                      base = base, chunksize = chunksize, ...)
-    # df = df[!newrows, , drop = FALSE]
-    # nx = nrow(df)
+    banctable_append_rows(df[newrows, , drop = FALSE], table = table,
+                         base = base, chunksize = chunksize, ...)
+    df = df[!newrows, , drop = FALSE]
+    nx = nrow(df)
   }
   if (!isTRUE(nx > 0))
     return(TRUE)
@@ -223,9 +223,30 @@ banctable_base_impl <- function (base_name = "banc_meta",
     base
 }
 
-
-
-
+#' @export
+#' @rdname banctable_query
+banctable_append_rows <- function (df, table, base = NULL, chunksize = 1000L, ...) {
+  if (is.character(base) || is.null(base))
+    base = banctable_base(base_name = base, table = table)
+  nx = nrow(df)
+  if (!isTRUE(nx > 0)) {
+    warning("No rows to append in `df`!")
+    return(TRUE)
+  }
+  df = fafbseg:::df2flytable(df, append = T)
+  if (nx > chunksize) {
+    nchunks = ceiling(nx/chunksize)
+    chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
+    chunks = split(df, chunkids)
+    oks = pbapply::pbsapply(chunks, banctable_append_rows,
+                            table = table, base = base, chunksize = Inf, ...)
+    return(all(oks))
+  }
+  pyl = fafbseg:::df2appendpayload(df)
+  res = base$batch_append_rows(table_name = table, rows_data = pyl)
+  ok = isTRUE(all.equal(res[["inserted_row_count"]], nx))
+  return(ok)
+}
 
 
 
