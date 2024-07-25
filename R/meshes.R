@@ -84,7 +84,16 @@ banc_decapitate.neuron <- function(x, y.cut = 325000, invert = FALSE, ...){
   z <- as.data.frame(nat::xyzmatrix(x))
   rownames(z) <- x$d$PointNo
   z <- subset(z,z$Y<y.cut)
-  nat::prune_vertices(x, verticestoprune = rownames(z), invert = invert, ...)
+  if(!nrow(z)){
+   if(invert){
+     warning("no points remaining after banc_decapitate.neuron")
+     NULL
+   }else{
+     x
+   }
+  }else{
+    nat::prune_vertices(x, verticestoprune = rownames(z), invert = invert, ...)
+  }
 }
 
 #' @export

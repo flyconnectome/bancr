@@ -153,7 +153,7 @@ banc_reroot.neuronlist <- function(x, id = NULL, banc_nuclei = bancr::banc_nucle
   if(is.null(id)){
     id <- names(x)
   }
-  nat::nlapply(x, banc_reroot.neuron, FUN = banc_reroot.neuron, banc_nuclei = banc_nuclei, id = id, ...)
+  nat::nlapply(x, FUN = banc_reroot.neuron, banc_nuclei = banc_nuclei, id = id, ...)
 }
 
 

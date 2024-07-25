@@ -234,7 +234,7 @@ banctable_append_rows <- function (df, table, base = NULL, chunksize = 1000L, ..
     warning("No rows to append in `df`!")
     return(TRUE)
   }
-  df = fafbseg:::df2flytable(df, append = T)
+  df = fafbseg:::df2flytable(df, append = TRUE)
   if (nx > chunksize) {
     nchunks = ceiling(nx/chunksize)
     chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
