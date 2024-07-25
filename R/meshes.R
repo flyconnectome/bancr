@@ -143,6 +143,59 @@ banc_decapitate.hxsurf <- function(x, y.cut = 325000, invert = FALSE, ...){
   nat::as.hxsurf(m)
 }
 
+# hidden, for now
+banc_in_neuropil.mesh3d <- function(x,
+                                    surf = bancr::banc_neuropil.surf,
+                                    facenum = 2500,
+                                    invert = FALSE){
+
+  # Step 0, slightly scale the meshes
+  m <- as.mesh3d(surf)
+  # m1.scaled <- Morpho::scalemesh(as.mesh3d(bancr::banc_brain_neuropil.surf),
+  #                               size = 1.2,
+  #                               center = "mean")
+  # m2.scaled <- Morpho::scalemesh(as.mesh3d(bancr::banc_vnc_neuropil.surf),
+  #                               size = 1.2,
+  #                               center = "mean")
+  # m <-merge(m1.scaled,m2.scaled)
+
+  # Step 1: Calculate distances
+  distance_field <- Rvcg::vcgClostKD(x, m, sign = TRUE)
+  if(invert){
+    outside_vertices <- which(distance_field$quality > 0)
+  }else{
+    outside_vertices <- which(distance_field$quality <= 0)
+  }
+  C <- x
+
+  # Step 2: Identify vertices to keep
+  vertices_to_keep <- setdiff(1:ncol(x$vb), outside_vertices)
+
+  # Step 3: Update the vertices
+  C$vb <- x$vb[, vertices_to_keep, drop = FALSE]
+
+  # Step 4: Create a mapping from old vertex indices to new ones
+  vertex_map <- setNames(seq_along(vertices_to_keep), vertices_to_keep)
+
+  # Step 5: Update the faces (triangles)
+  message("calculating faces ...")
+  valid_faces <- pbapply::pbapply(C$it, 2, function(face) all(face %in% vertices_to_keep))
+  C$it <- C$it[, valid_faces, drop = FALSE]
+  message("calculating vertex map ...")
+  C$it <- pbapply::pbapply(C$it, 2, function(face) vertex_map[as.character(face)])
+
+  # Step 6: Remove any unused attributes
+  C$normals <- NULL
+  C$material <- NULL
+  C$texcoords <- NULL
+
+  # Step 7: Ensure the class is set correctly
+  class(C) <- "mesh3d"
+  D <- Rvcg::vcgClean(C, sel=c(0:8))
+  D <- Rvcg::vcgIsolated(D, facenum = facenum)
+  D
+}
+
 #' Read BANC euroglancer meshes, e.g., ROI meshes
 #'
 #' @param x the numeric identifier that specifies the mesh to read, defaults to \code{1} the BANC outline mesh.
