@@ -5,7 +5,7 @@
 \title{Compare two neurons from the BANC connectome dataset}
 \usage{
 banc_neuron_comparison_plot(
-  neuron1,
+  neuron1 = NULL,
   neuron2 = NULL,
   neuron3 = NULL,
   neuron1.info = NULL,
@@ -83,8 +83,7 @@ dna02 <- nat::nlapply(dna02,Rvcg::vcgQEdecim,percent = 0.1)
 
 # Make plot!
 banc_neuron_comparison_plot(dna01, dna02, neuron1.info = "DNa01",
-neuron2.info = "DNa02",
-filename = "neuron_comparison.png")
+neuron2.info = "DNa02", filename = "neuron_comparison.png")
 }
 
 }

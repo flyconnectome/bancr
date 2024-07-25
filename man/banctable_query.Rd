@@ -5,6 +5,7 @@
 \alias{banctable_set_token}
 \alias{banctable_login}
 \alias{banctable_update_rows}
+\alias{banctable_append_rows}
 \title{Read and write to the seatable for draft BANC annotations}
 \usage{
 banctable_query(
@@ -27,10 +28,12 @@ banctable_update_rows(
   df,
   table,
   base = NULL,
-  append_allowed = TRUE,
+  append_allowed = FALSE,
   chunksize = 1000L,
   ...
 )
+
+banctable_append_rows(df, table, base = NULL, chunksize = 1000L, ...)
 }
 \arguments{
 \item{sql}{A SQL query string. See examples and

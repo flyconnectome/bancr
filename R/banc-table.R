@@ -226,8 +226,9 @@ banctable_base_impl <- function (base_name = "banc_meta",
 #' @export
 #' @rdname banctable_query
 banctable_append_rows <- function (df, table, base = NULL, chunksize = 1000L, ...) {
-  if (is.character(base) || is.null(base))
+  if (is.character(base) || is.null(base)){
     base = banctable_base(base_name = base, table = table)
+  }
   nx = nrow(df)
   if (!isTRUE(nx > 0)) {
     warning("No rows to append in `df`!")
