@@ -150,7 +150,7 @@ banc_in_neuropil.mesh3d <- function(x,
                                     invert = FALSE){
 
   # Step 0, slightly scale the meshes
-  m <- as.mesh3d(surf)
+  m <- rgl::as.mesh3d(surf)
   # m1.scaled <- Morpho::scalemesh(as.mesh3d(bancr::banc_brain_neuropil.surf),
   #                               size = 1.2,
   #                               center = "mean")
@@ -175,7 +175,7 @@ banc_in_neuropil.mesh3d <- function(x,
   C$vb <- x$vb[, vertices_to_keep, drop = FALSE]
 
   # Step 4: Create a mapping from old vertex indices to new ones
-  vertex_map <- setNames(seq_along(vertices_to_keep), vertices_to_keep)
+  vertex_map <- stats::setNames(seq_along(vertices_to_keep), vertices_to_keep)
 
   # Step 5: Update the faces (triangles)
   message("calculating faces ...")
