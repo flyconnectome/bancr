@@ -92,10 +92,14 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 
     # Choose mesh
     rotation_matrix <- banc_rotation_matrices[[view]]
-    if(view%in%c("front","brain_side")){
+    if(view%in%c("front")){
       mesh <- banc_brain_neuropil
       decaptitate <- "brain"
       title.col <- "blue"
+    }else if(view%in%c("brain_side")){
+      mesh <- banc_brain_neuropil
+      decaptitate <- "brain"
+      title.col <- "firebrick"
     }else if(view%in%c("vnc","vnc_side")){
       mesh <- banc_vnc_neuropil
       decaptitate <- "vnc"
