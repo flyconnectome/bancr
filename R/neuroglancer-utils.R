@@ -182,6 +182,15 @@ def process_large_integer(int64_str):
 def process_large_integer(large_int_str):
     # Convert the string back to an integer in Python
     large_int = int(large_int_str)
+    print(f'Received integer from character: {large_int}')
+    print(f'Type in Python: {type(large_int)}')
+    # Your processing logic here
+    return large_int  # or whatever you want to return
+")
+    }else{
+      reticulate::py_run_string("
+def process_large_integer(large_int):
+    # Convert the string back to an integer in Python
     print(f'Received integer: {large_int}')
     print(f'Type in Python: {type(large_int)}')
     # Your processing logic here
