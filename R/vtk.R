@@ -95,3 +95,42 @@ write_mesh3d_to_obj <- function(mesh, filename) {
 
   cat("OBJ file written successfully:", filename, "\n")
 }
+
+# hidden
+write_neuron_to_vtk_paired <- function(neuron, file) {
+
+  # Extract points from the neuron
+  points <- nat::xyzmatrix(neuron)
+
+  # Open the file for writing
+  con <- file(file, "w")
+
+  # Write VTK header
+  writeLines("# vtk DataFile Version 3.0", con)
+  writeLines("Neuron VTK file", con)
+  writeLines("ASCII", con)
+  writeLines("DATASET POLYDATA", con)
+
+  # Write POINTS section
+  writeLines(sprintf("POINTS %d float", nrow(points)), con)
+  write.table(points, con, row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+  # Prepare LINES section
+  line_data <- neuron$d %>%
+    dplyr::mutate(Parent = Parent,
+                  PointNo  = PointNo) %>%
+    dplyr::mutate(from = (1:dplyr::n())-1,
+                  to = from[match(Parent,PointNo)],
+                  pair = 2) %>%
+    dplyr::filter(!is.na(to)) %>%
+    dplyr::select(pair, to, from)
+  num_pairs <- nrow(line_data)
+
+  # Write LINES section
+  writeLines(sprintf("LINES %d %d", num_pairs, num_pairs * 3), con)
+  write.table(line_data, con, row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+  # Close the file
+  close(con)
+  cat(sprintf("VTK file written to: %s\n", file))
+}
