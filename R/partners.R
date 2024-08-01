@@ -16,15 +16,15 @@
 #' @examples
 #' \dontrun{
 #' # NB id must be up to date
-#' sample_id=banc_latestid("720575941480769421")
+#' sample_id=banc_latestid("720575941478275714")
 #' head(banc_partner_summary(sample_id))
 #' head(banc_partner_summary(sample_id, partners='inputs'))
 #' # get the latest id for an outdate
-#' banc_partner_summary(banc_latestid("720575941480769421"))
+#' banc_partner_summary(banc_latestid("720575941478275714"))
 #'
 #' ## open banc/flywire scene containing top partners
 #' library(dplyr)
-#' banc_partner_summary(banc_latestid("720575941480769421"), partners='inputs') %>%
+#' banc_partner_summary(banc_latestid("720575941478275714"), partners='inputs') %>%
 #'   slice_max(weight, n = 20) %>%
 #'   banc_scene(open=TRUE)
 #' }
@@ -82,9 +82,9 @@ banc_datastack_name <- memoise::memoise(function() {
 #' \dontrun{
 #' # plot input and output synapses of a neuron
 #' nclear3d()
-#' fpi=banc_partners(banc_latestid("648518346481082458"), partners='in')
+#' fpi=banc_partners(banc_latestid("720575941478275714"), partners='in')
 #' points3d(banc_raw2nm(fpi$post_pt_position), col='cyan')
-#' fpo=banc_partners(banc_latestid("648518346481082458"), partners='out')
+#' fpo=banc_partners(banc_latestid("720575941478275714"), partners='out')
 #' points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
 #' }
 banc_partners <- function(rootids, partners=c("input", "output"), ...) {
