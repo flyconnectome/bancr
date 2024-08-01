@@ -165,7 +165,6 @@ banc_upload_mesh <- function(mesh,
       py_mesh <- mesh  # If it's a file path, pass it directly
     }
 
-    # Handle longer integer mesh IDs
     # Define a Python function that will receive and process the large integer
     if(bit64::is.integer64(mesh_id)){
       reticulate::py_run_string("
