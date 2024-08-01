@@ -355,6 +355,7 @@ library(nat.jrcbrains)
 ## You may need to download the relevant registration, if you have not already:
 # download_saalfeldlab_registrations()
 ```
+
 And then get known *FAFB-FlyWire* neurons.
 
 ```r
@@ -371,7 +372,7 @@ fw.an1.ids <- c("720575940626768442", "720575940636821616")
 fw.an1.meshes <- read_cloudvolume_meshes(fw.an1.ids)
 
 # Convert to JRC2018F
-fw.an1.meshes.jrc2018f <- xform_brain(fw.an1.meshes. sample = "FAFB14",
+fw.an1.meshes.jrc2018f <- xform_brain(fw.an1.meshes, sample = "FAFB14",
 reference = "JRC2018F")
 
 # Add to plot
@@ -432,6 +433,37 @@ plot3d(JRC2018F.surf, col = "lightgrey", alpha = 0.1)
 plot3d(an1.mesh.simp.brain.jrc2018f, col = "blue", alpha = 0.75, add = TRUE)
 plot3d(an1.mesh.simp.brain.jrc2018f.elastix, col = "green", alpha = 0.75, add = TRUE)
 ```
+
+### Get neurons connectivity
+
+```r
+an.upstream <- banc_partner_summary(an1.ids, partners = "input")
+an.downstream <- banc_partner_summary(an1.ids, partners = "output")
+
+# Combine the two data frames and add a source column
+combined_data <- bind_rows(
+  mutate(an.upstream, source = "Upstream"),
+  mutate(an.downstream, source = "Downstream")
+) %>%
+dplyr::filter(weight>2)
+
+# Create the histogram
+ggplot(combined_data, aes(x = weight, fill = source)) +
+  geom_histogram(binwidth = 1, color = "black", alpha = 0.7, position = "identity") +
+  scale_fill_manual(values = c("Upstream" = "skyblue", "Downstream" = "orange")) +
+  labs(title = "histogram of weights: upstream vs downstream",
+       x = "Weight",
+       y = "Frequency",
+       fill = "Source") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.position = "top"
+  )
+```
+
 
 Acknowledging the data and tools
 --------------------------------
