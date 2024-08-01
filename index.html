@@ -274,24 +274,25 @@
 <span><span class="co">## You may need to download the relevant registration, if you have not already:</span></span>
 <span><span class="co"># download_saalfeldlab_registrations()</span></span></code></pre></div>
 <p>And then get known <em>FAFB-FlyWire</em> neurons.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="do">## if you previously ran choose_banc()</span></span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="do">## now run: </span></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co"># choose_segmentation("flywire31")</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co"># Which directs you towards the active FAFB-FlyWire segmentation</span></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co"># Define the IDs we wish to fetch</span></span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co"># these are from the 783 materialisation (i.e.) published version</span></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>fw.an1.ids <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"720575940626768442"</span>, <span class="st">"720575940636821616"</span>)</span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="co"># Get neuron meshes</span></span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>fw.an1.meshes <span class="ot">&lt;-</span> <span class="fu">read_cloudvolume_meshes</span>(fw.an1.ids)</span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a></span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a><span class="co"># Convert to JRC2018F</span></span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>fw.an1.meshes.jrc2018f <span class="ot">&lt;-</span> <span class="fu">xform_brain</span>(fw.an1.meshes. <span class="at">sample =</span> <span class="st">"FAFB14"</span>,</span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="at">reference =</span> <span class="st">"JRC2018F"</span>)</span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a></span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="co"># Add to plot</span></span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="fu">plot3d</span>(fw.an1.meshes.jrc2018f, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>,<span class="st">"orange"</span>), <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## if you previously ran choose_banc()</span></span>
+<span><span class="co">## now run: </span></span>
+<span><span class="co"># choose_segmentation("flywire31")</span></span>
+<span><span class="co"># Which directs you towards the active FAFB-FlyWire segmentation</span></span>
+<span></span>
+<span><span class="co"># Define the IDs we wish to fetch</span></span>
+<span><span class="co"># these are from the 783 materialisation (i.e.) published version</span></span>
+<span><span class="va">fw.an1.ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"720575940626768442"</span>, <span class="st">"720575940636821616"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get neuron meshes</span></span>
+<span><span class="va">fw.an1.meshes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/fafbseg/man/read_cloudvolume_meshes.html" class="external-link">read_cloudvolume_meshes</a></span><span class="op">(</span><span class="va">fw.an1.ids</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to JRC2018F</span></span>
+<span><span class="va">fw.an1.meshes.jrc2018f</span> <span class="op">&lt;-</span> <span class="fu">xform_brain</span><span class="op">(</span><span class="va">fw.an1.meshes</span>, sample <span class="op">=</span> <span class="st">"FAFB14"</span>,</span>
+<span>reference <span class="op">=</span> <span class="st">"JRC2018F"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add to plot</span></span>
+<span><span class="fu">plot3d</span><span class="op">(</span><span class="va">fw.an1.meshes.jrc2018f</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>,<span class="st">"orange"</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
 <img src="https://github.com/flyconnectome/bancr/blob/main/inst/images/an_banc_fafb.png?raw=true" alt="an_banc_fafb"><div class="figcaption">an_banc_fafb</div>
 </div>
@@ -333,12 +334,42 @@
 <span><span class="fu">plot3d</span><span class="op">(</span><span class="va">an1.mesh.simp.brain.jrc2018f</span>, col <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">plot3d</span><span class="op">(</span><span class="va">an1.mesh.simp.brain.jrc2018f.elastix</span>, col <span class="op">=</span> <span class="st">"green"</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="get-neurons-connectivity">Get neurons connectivity<a class="anchor" aria-label="anchor" href="#get-neurons-connectivity"></a>
+</h3>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">an.upstream</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/banc_partner_summary.html">banc_partner_summary</a></span><span class="op">(</span><span class="va">an1.ids</span>, partners <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span>
+<span><span class="va">an.downstream</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/banc_partner_summary.html">banc_partner_summary</a></span><span class="op">(</span><span class="va">an1.ids</span>, partners <span class="op">=</span> <span class="st">"output"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine the two data frames and add a source column</span></span>
+<span><span class="va">combined_data</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="va">an.upstream</span>, source <span class="op">=</span> <span class="st">"Upstream"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="va">an.downstream</span>, source <span class="op">=</span> <span class="st">"Downstream"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">weight</span><span class="op">&gt;</span><span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create the histogram</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">combined_data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">weight</span>, fill <span class="op">=</span> <span class="va">source</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">1</span>, color <span class="op">=</span> <span class="st">"black"</span>, alpha <span class="op">=</span> <span class="fl">0.7</span>, position <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Upstream"</span> <span class="op">=</span> <span class="st">"skyblue"</span>, <span class="st">"Downstream"</span> <span class="op">=</span> <span class="st">"orange"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"histogram of weights: upstream vs downstream"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Weight"</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
+<span>       fill <span class="op">=</span> <span class="st">"Source"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span></span>
+<span>    plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">16</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    axis.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    axis.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"top"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="acknowledging-the-data-and-tools">Acknowledging the data and tools<a class="anchor" aria-label="anchor" href="#acknowledging-the-data-and-tools"></a>
 </h2>
 <p>BANC data needs to be acknowledged in accordance to the <a href="https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/" class="external-link">BANC community guidelines</a> and in agreement with the BANC consortium. If you use this package, you should cite the eventual BANC paper as well (TBD) as our <em>natverse</em> paper <a href="https://elifesciences.org/articles/53350" class="external-link">(Bates et al. 2020)</a> and the R package as follows:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"bancr"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Bates A, Jefferis G</strong> (2024). <em>bancr: R Client Access to the Brain And Nerve Cord (BANC) Dataset</em>. R package version 0.1.0, <a href="https://github.com/flyconnectome/bancr" class="external-link uri">https://github.com/flyconnectome/bancr</a>.</p>
 </div>
