@@ -199,6 +199,7 @@ def send_mesh(mesh, mesh_id, vol, compress, overwrite):
 
     # Upload mesh
     tryCatch({
+      message("Uploading mesh_id: ", mesh_id)
       reticulate::py$send_mesh(mesh = py_mesh, mesh_id = mesh_id,
                    vol = vol, compress = compress, overwrite = overwrite)
       message("Mesh uploaded successfully.")
