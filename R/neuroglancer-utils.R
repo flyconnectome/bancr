@@ -167,6 +167,7 @@ banc_upload_mesh <- function(mesh,
 
     # Define a Python function that will receive and process the large integer
     if(bit64::is.integer64(mesh_id)){
+      mesh_id <- as.character(mesh_id)
       reticulate::py_run_string("
 import numpy as np
 def process_large_integer(int64_str):
