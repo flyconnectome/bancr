@@ -26,7 +26,7 @@ banc_api_url <- function(endpoint="") {
 #' @export
 banc_set_token <- function(token=NULL) {
   # path=fafbseg::flywire_set_token(token=token, domain='cave.banc-fly.com')
-  path=flywire_set_token(token=token, domain = NULL)
+  path=fafbseg::flywire_set_token(token=token, domain = NULL)
   # clear the token cache so the new one is immediately available
   banc_token(cached=FALSE)
   invisible(path)

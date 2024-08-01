@@ -51,9 +51,6 @@ banc_upload_mesh <- function(mesh,
     if (is.character(mesh) && !file.exists(mesh)) {
       stop("Invalid mesh path. Please provide a valid path to an existing .obj file.")
     }
-    if (!is.numeric(mesh_id) || mesh_id %% 1 != 0) {
-      stop("mesh_id must be an integer.")
-    }
     if (!is.character(vol) || !grepl("^precomputed://", vol)) {
       stop("Invalid vol. It should be a character string starting with 'precomputed://'.")
     }
@@ -168,9 +165,41 @@ banc_upload_mesh <- function(mesh,
       py_mesh <- mesh  # If it's a file path, pass it directly
     }
 
+    # Handle longer integer mesh IDs
+    # Define a Python function that will receive and process the large integer
+    if(bit64::is.integer64(mesh_id)){
+      reticulate::py_run_string("
+import numpy as np
+def process_large_integer(int64_str):
+    # Convert the string to a 64-bit integer using numpy
+    int64 = np.int64(int64_str)
+    print(f'Received 64-bit integer: {int64}')
+    print(f'Type in Python: {type(int64)}')
+    return int64
+")
+    }else if(is.character(mesh_id)){
+      reticulate::py_run_string("
+def process_large_integer(large_int_str):
+    # Convert the string back to an integer in Python
+    large_int = int(large_int_str)
+    print(f'Received integer: {large_int}')
+    print(f'Type in Python: {type(large_int)}')
+    # Your processing logic here
+    return large_int  # or whatever you want to return
+")
+    }
+
+    # Pass integer to bb
+    reticulate::py_run_string("
+import bikinibottom as bb
+def send_mesh(mesh, mesh_id, vol, compress, overwrite):
+    mesh_id = process_large_integer(mesh_id)
+    bb.push_mesh(mesh=mesh, mesh_id=mesh_id, vol=vol, compress=compress, overwrite=overwrite)
+")
+
     # Upload mesh
     tryCatch({
-      bb$push_mesh(mesh = py_mesh, mesh_id = as.integer(mesh_id),
+      reticulate::py$send_mesh(mesh = py_mesh, mesh_id = mesh_id,
                    vol = vol, compress = compress, overwrite = overwrite)
       message("Mesh uploaded successfully.")
     }, error = function(e) {
