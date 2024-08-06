@@ -20,7 +20,7 @@ banc_add_synapses(x, ...)
 
 \method{banc_add_synapses}{neuronlist}(
   x,
-  ids = NULL,
+  id = NULL,
   connectors = NULL,
   size.threshold = 5,
   remove.autapses = TRUE,
@@ -29,7 +29,7 @@ banc_add_synapses(x, ...)
 
 \method{banc_add_synapses}{default}(
   x,
-  ids = NULL,
+  id = NULL,
   connectors = NULL,
   size.threshold = 5,
   remove.autapses = TRUE,
@@ -39,7 +39,7 @@ banc_add_synapses(x, ...)
 \arguments{
 \item{x}{A neuron object, neuronlist, or other object to add synapses to}
 
-\item{...}{Additional arguments passed to methods}
+\item{...}{Additional arguments passed to methods, \code{nat::nlapply}}
 
 \item{id}{The root ID of the neuron. If NULL, it uses the ID from the neuron object}
 

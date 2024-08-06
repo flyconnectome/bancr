@@ -91,6 +91,8 @@ banc_decapitate.neuron <- function(x, y.cut = 325000, invert = FALSE, ...){
    }else{
      x
    }
+  }else if ("splitneuron"%in%class(x)|"synapticneuron"%in%class(x)){
+    prune_vertices.synapticneuron(x, verticestoprune = rownames(z), invert = invert, ...)
   }else{
     nat::prune_vertices(x, verticestoprune = rownames(z), invert = invert, ...)
   }

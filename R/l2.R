@@ -109,12 +109,12 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' }
 #' @export
 #' @rdname banc_reroot
-banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...) UseMethod("banc_reroot")
+banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE), estimate = TRUE, ...) UseMethod("banc_reroot")
 
 #' @rdname banc_reroot
 #' @method banc_reroot neuron
 #' @export
-banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...){
+banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE), estimate = TRUE, ...){
   if(is.null(id)){
     id <- x$root_id
   }

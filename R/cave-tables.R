@@ -51,10 +51,15 @@ banc_cave_tables <- function(datastack_name = NULL,
 #' @export
 banc_nuclei <- function (rootids = NULL,
                          nucleus_ids = NULL,
-                         table = c("somas_v1a","somas_v1b"),
+                         table = c("both","somas_v1a","somas_v1b"),
                          rawcoords = FALSE,
                          ...) {
   table <- match.arg(table)
+  if(table=="both"){
+    ba <- banc_nuclei(table="somas_v1a", nucleus_ids=nucleus_ids,rawcoords=rawcoords,...)
+    bb <- banc_nuclei(table="somas_v1b", nucleus_ids=nucleus_ids,rawcoords=rawcoords,...)
+    return(plyr::rbind.fill(bb,ba))
+  }
   if (!is.null(rootids) & !is.null(nucleus_ids))
     stop("You must supply only one of rootids or nucleus_ids!")
   res <- if (is.null(rootids) && is.null(nucleus_ids))
@@ -90,13 +95,18 @@ banc_nuclei <- function (rootids = NULL,
       dplyr::select(colnames(nuclei))
   }
   res
-  #  apply coordinate transform
-  # res <- standard_nuclei(res)
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
+    res <- res %>%
+      dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
       nat::xyzmatrix2str(banc_raw2nm(x))))
+    res$pt_position <- sapply(res$pt_position, paste, collapse=", ")
+    res <- res %>%
+      dplyr::rename(nucleus_id = `id`,
+                    nucleus_position_nm = `pt_position`,
+                    root_id = `pt_root_id`) %>%
+      dplyr::filter(valid=="t")
   }
 }
 

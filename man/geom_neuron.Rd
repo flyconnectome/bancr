@@ -11,6 +11,8 @@
 \alias{geom_neuron.matrix}
 \alias{geom_neuron.data.frame}
 \alias{geom_neuron.dotprops}
+\alias{geom_neuron.synapticneuron}
+\alias{geom_neuron.splitneuron}
 \title{Create ggplot2 Geom Layer for Neuron Visualization}
 \usage{
 geom_neuron(
@@ -131,6 +133,32 @@ geom_neuron(
 )
 
 \method{geom_neuron}{dotprops}(
+  x = NULL,
+  rotation_matrix = NULL,
+  root = 3,
+  cols = c("navy", "turquoise"),
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{synapticneuron}(
+  x = NULL,
+  rotation_matrix = NULL,
+  root = 3,
+  cols = c("navy", "turquoise"),
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = FALSE,
+  ...
+)
+
+\method{geom_neuron}{splitneuron}(
   x = NULL,
   rotation_matrix = NULL,
   root = 3,

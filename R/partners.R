@@ -28,7 +28,7 @@
 #'   slice_max(weight, n = 20) %>%
 #'   banc_scene(open=TRUE)
 #' }
-#' @rdname banc_partners
+#' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
                                  threshold = 0,
@@ -78,7 +78,6 @@ banc_datastack_name <- memoise::memoise(function() {
 #' connection (including its xyz location).
 #'
 #'
-#' @rdname banc_partner_summary
 #' @examples
 #' \dontrun{
 #' # plot input and output synapses of a neuron
@@ -89,7 +88,7 @@ banc_datastack_name <- memoise::memoise(function() {
 #' points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
 #' }
 #' @export
-#' @rdname banc_partners
+#' @rdname banc_partner_summary
 banc_partners <- function(rootids, partners=c("input", "output"), ...) {
   partners=match.arg(partners)
   rootids=banc_ids(rootids)

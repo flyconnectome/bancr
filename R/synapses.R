@@ -163,42 +163,48 @@ banc_add_synapses.neuron <- function(x,
 
   # Get synaptic data
   if(is.null(connectors)){
-    connectors.in <- bancr:::banc_partners(id, partners = "input")
+    connectors.in <- banc_partners(id, partners = "input")
     if(nrow(connectors.in)){
       connectors.in.xyz <- do.call(rbind,connectors.in$post_pt_position)
       connectors.in.xyz <- as.data.frame(connectors.in.xyz)
       colnames(connectors.in.xyz) <- c("X","Y","Z")
       connectors.in <- cbind(connectors.in,connectors.in.xyz)
       connectors.in <- connectors.in %>%
-        dplyr::rename(connector_id = id,
-                      pre_id = pre_pt_root_id,
-                      pre_svid = pre_pt_supervoxel_id,
-                      post_id = post_pt_root_id,
-                      post_svid = post_pt_supervoxel_id) %>%
+        dplyr::rename(connector_id = .data$id,
+                      pre_id = .data$pre_pt_root_id,
+                      pre_svid = .data$pre_pt_supervoxel_id,
+                      post_id = .data$post_pt_root_id,
+                      post_svid = .data$post_pt_supervoxel_id) %>%
         dplyr::filter(size>size.threshold) %>%
         dplyr::mutate(prepost = 1) %>%
-        dplyr::select(connector_id, pre_id, post_id, prepost, pre_svid, post_svid, size, X, Y, Z)
+        dplyr::select(.data$connector_id,
+                      .data$pre_id, .data$post_id, .data$prepost,
+                      .data$pre_svid, .data$post_svid, .data$size,
+                      .data$X, .data$Y, .data$Z)
     }
-    connectors.out <- bancr:::banc_partners(id, partners = "output")
+    connectors.out <- banc_partners(id, partners = "output")
     if(nrow(connectors.out)){
       connectors.out.xyz <- do.call(rbind,connectors.out$pre_pt_position)
       connectors.out.xyz <- as.data.frame(connectors.out.xyz)
       colnames(connectors.out.xyz) <- c("X","Y","Z")
       connectors.out <- cbind(connectors.out,connectors.out.xyz)
       connectors.out <- connectors.out %>%
-        dplyr::rename(connector_id = id,
-                      pre_id = pre_pt_root_id,
-                      pre_svid = pre_pt_supervoxel_id,
-                      post_id = post_pt_root_id,
-                      post_svid = post_pt_supervoxel_id) %>%
+        dplyr::rename(connector_id = .data$id,
+                      pre_id = .data$pre_pt_root_id,
+                      pre_svid = .data$pre_pt_supervoxel_id,
+                      post_id = .data$post_pt_root_id,
+                      post_svid = .data$post_pt_supervoxel_id) %>%
         dplyr::filter(size>size.threshold) %>%
         dplyr::mutate(prepost = 0) %>%
-        dplyr::select(connector_id, pre_id, post_id, prepost, pre_svid, post_svid, size, X, Y, Z)
+        dplyr::select(.data$connector_id,
+                      .data$pre_id, .data$post_id, .data$prepost,
+                      .data$pre_svid, .data$post_svid, .data$size,
+                      .data$X, .data$Y, .data$Z)
     }
     connectors <- rbind(connectors.in,connectors.out)
   }else{
     connectors <- connectors %>%
-      dplyr::filter(post_id==id|pre_id==id)
+      dplyr::filter(.data$post_id==id|.data$pre_id==id)
   }
   if(remove.autapses) {
     connectors=connectors[connectors$post_id!=connectors$pre_id,,drop=FALSE]

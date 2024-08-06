@@ -2,6 +2,7 @@
 % Please edit documentation in R/partners.R
 \name{banc_partner_summary}
 \alias{banc_partner_summary}
+\alias{banc_partners}
 \title{Summarise the connectivity of banc neurons}
 \usage{
 banc_partner_summary(
@@ -13,6 +14,8 @@ banc_partner_summary(
   datastack_name = NULL,
   ...
 )
+
+banc_partners(rootids, partners = c("input", "output"), ...)
 }
 \arguments{
 \item{rootids}{Character vector specifying one or more BANC rootids. As a
@@ -40,7 +43,8 @@ sensible default is chosen.}
 a data.frame
 }
 \description{
-Summarise the connectivity of banc neurons
+\code{banc_partners} returns details of each unitary synaptic
+connection (including its xyz location).
 }
 \details{
 note that the rootids you pass in must be up to date. See example.
@@ -59,6 +63,14 @@ library(dplyr)
 banc_partner_summary(banc_latestid("720575941478275714"), partners='inputs') \%>\%
   slice_max(weight, n = 20) \%>\%
   banc_scene(open=TRUE)
+}
+\dontrun{
+# plot input and output synapses of a neuron
+nclear3d()
+fpi=banc_partners(banc_latestid("720575941478275714"), partners='in')
+points3d(banc_raw2nm(fpi$post_pt_position), col='cyan')
+fpo=banc_partners(banc_latestid("720575941478275714"), partners='out')
+points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
 }
 }
 \seealso{
