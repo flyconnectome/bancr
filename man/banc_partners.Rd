@@ -2,7 +2,6 @@
 % Please edit documentation in R/partners.R
 \name{banc_partner_summary}
 \alias{banc_partner_summary}
-\alias{banc_partners}
 \title{Summarise the connectivity of banc neurons}
 \usage{
 banc_partner_summary(
@@ -14,8 +13,6 @@ banc_partner_summary(
   datastack_name = NULL,
   ...
 )
-
-banc_partners(rootids, partners = c("input", "output"), ...)
 }
 \arguments{
 \item{rootids}{Character vector specifying one or more BANC rootids. As a
@@ -43,8 +40,7 @@ sensible default is chosen.}
 a data.frame
 }
 \description{
-\code{banc_partners} returns details of each unitary synaptic
-connection (including its xyz location).
+Summarise the connectivity of banc neurons
 }
 \details{
 note that the rootids you pass in must be up to date. See example.
@@ -52,25 +48,17 @@ note that the rootids you pass in must be up to date. See example.
 \examples{
 \dontrun{
 # NB id must be up to date
-sample_id=banc_latestid("720575941480769421")
+sample_id=banc_latestid("720575941478275714")
 head(banc_partner_summary(sample_id))
 head(banc_partner_summary(sample_id, partners='inputs'))
 # get the latest id for an outdate
-banc_partner_summary(banc_latestid("720575941480769421"))
+banc_partner_summary(banc_latestid("720575941478275714"))
 
 ## open banc/flywire scene containing top partners
 library(dplyr)
-banc_partner_summary(banc_latestid("720575941480769421"), partners='inputs') \%>\%
+banc_partner_summary(banc_latestid("720575941478275714"), partners='inputs') \%>\%
   slice_max(weight, n = 20) \%>\%
   banc_scene(open=TRUE)
-}
-\dontrun{
-# plot input and output synapses of a neuron
-nclear3d()
-fpi=banc_partners(banc_latestid("648518346481082458"), partners='in')
-points3d(banc_raw2nm(fpi$post_pt_position), col='cyan')
-fpo=banc_partners(banc_latestid("648518346481082458"), partners='out')
-points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
 }
 }
 \seealso{

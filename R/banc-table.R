@@ -120,7 +120,7 @@ banctable_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
                             password = pwd, server_url = url)
   ac$auth()
   Sys.setenv(banctable_TOKEN = ac$token)
-  cat("banctable_TOKEN='", ac$token, "'\n", sep = "", append = TRUE,
+  cat("BANCTABLE_TOKEN='", ac$token, "'\n", sep = "", append = TRUE,
       file = path.expand("~/.Renviron"))
   return(invisible(NULL))
 }

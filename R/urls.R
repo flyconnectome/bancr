@@ -22,7 +22,7 @@ banc_scene <- function(ids=NULL, open=FALSE) {
   url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6283844278812672"
   url=sub("#!middleauth+", "?", url, fixed = T)
   parts=unlist(strsplit(url, "?", fixed = T))
-  json=try(flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
+  json=try(fafbseg::flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
   if(inherits(json, 'try-error')) {
     badtoken=paste0("You have a token but it doesn't seem to be authorised for banc.\n",
                     "Have you definitely used `banc_set_token()` to make a token for the banc dataset?")

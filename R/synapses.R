@@ -127,3 +127,134 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
   # path <- 'gs://zetta_lee_fly_cns_001_synapse/240529_run/240604_assignment/final_edgelist.df'
   # df <- googleCloudStorageR::gcs_get_object(path, parseFunction = function(x) read.csv(x, nrows = 1000))
 # }
+
+
+#' Add synapses to neuron objects
+#'
+#' This function family adds synaptic data to neuron objects or neuron lists.
+#' It retrieves synaptic connections and attaches them to the neuron object(s).
+#'
+#' @param x A neuron object, neuronlist, or other object to add synapses to
+#' @param id The root ID of the neuron. If NULL, it uses the ID from the neuron object
+#' @param connectors A dataframe of synaptic connections. If NULL, it retrieves the data
+#' @param size.threshold Minimum size threshold for synapses to include
+#' @param remove.autapses Whether to remove autapses (self-connections)
+#' @param ... Additional arguments passed to methods, \code{nat::nlapply}
+#'
+#' @return An object of the same type as `x`, with synapses added
+#'
+#' @export
+banc_add_synapses <- function(x, ...) {
+  UseMethod("banc_add_synapses")
+}
+
+#' @rdname banc_add_synapses
+#' @export
+banc_add_synapses.neuron <- function(x,
+                              id = NULL,
+                              connectors = NULL,
+                              size.threshold = 5,
+                              remove.autapses = TRUE,
+                              ...){
+  # Get valid root id
+  if(is.null(id)){
+    id <- x$id
+  }
+
+  # Get synaptic data
+  if(is.null(connectors)){
+    connectors.in <- bancr:::banc_partners(id, partners = "input")
+    if(nrow(connectors.in)){
+      connectors.in.xyz <- do.call(rbind,connectors.in$post_pt_position)
+      connectors.in.xyz <- as.data.frame(connectors.in.xyz)
+      colnames(connectors.in.xyz) <- c("X","Y","Z")
+      connectors.in <- cbind(connectors.in,connectors.in.xyz)
+      connectors.in <- connectors.in %>%
+        dplyr::rename(connector_id = id,
+                      pre_id = pre_pt_root_id,
+                      pre_svid = pre_pt_supervoxel_id,
+                      post_id = post_pt_root_id,
+                      post_svid = post_pt_supervoxel_id) %>%
+        dplyr::filter(size>size.threshold) %>%
+        dplyr::mutate(prepost = 1) %>%
+        dplyr::select(connector_id, pre_id, post_id, prepost, pre_svid, post_svid, size, X, Y, Z)
+    }
+    connectors.out <- bancr:::banc_partners(id, partners = "output")
+    if(nrow(connectors.out)){
+      connectors.out.xyz <- do.call(rbind,connectors.out$pre_pt_position)
+      connectors.out.xyz <- as.data.frame(connectors.out.xyz)
+      colnames(connectors.out.xyz) <- c("X","Y","Z")
+      connectors.out <- cbind(connectors.out,connectors.out.xyz)
+      connectors.out <- connectors.out %>%
+        dplyr::rename(connector_id = id,
+                      pre_id = pre_pt_root_id,
+                      pre_svid = pre_pt_supervoxel_id,
+                      post_id = post_pt_root_id,
+                      post_svid = post_pt_supervoxel_id) %>%
+        dplyr::filter(size>size.threshold) %>%
+        dplyr::mutate(prepost = 0) %>%
+        dplyr::select(connector_id, pre_id, post_id, prepost, pre_svid, post_svid, size, X, Y, Z)
+    }
+    connectors <- rbind(connectors.in,connectors.out)
+  }else{
+    connectors <- connectors %>%
+      dplyr::filter(post_id==id|pre_id==id)
+  }
+  if(remove.autapses) {
+    connectors=connectors[connectors$post_id!=connectors$pre_id,,drop=FALSE]
+  }
+
+  # Attach synapses
+  if(nrow(connectors)){
+    near <- nabor::knn(query = nat::xyzmatrix(connectors),
+                       data = nat::xyzmatrix(x$d),k=1)
+    connectors$treenode_id <- x$d[near$nn.idx,"PointNo"]
+    x$connectors = as.data.frame(connectors, stringsAsFactors = FALSE)
+  }
+  x$connectors <- connectors
+
+  # Change class to work with connectivity functions in other packages
+  class(x) <- union(c("synapticneuron"), class(x))
+
+  # Return
+  x
+}
+
+#' @rdname banc_add_synapses
+#' @export
+banc_add_synapses.neuronlist <- function(x,
+                                         id = NULL,
+                                         connectors = NULL,
+                                         size.threshold = 5,
+                                         remove.autapses = TRUE,
+                                         ...) {
+  if(is.null(id)){
+    is <- names(x)
+  }
+  nat::nlapply(x,banc_add_synapses.neuron,
+               id=id,
+               connectors=connectors,
+               size.threshold=size.threshold,
+               remove.autapses=remove.autapses)
+}
+
+#' @rdname banc_add_synapses
+#' @export
+banc_add_synapses.default <- function(x,
+                                      id = NULL,
+                                      connectors = NULL,
+                                      size.threshold = 5,
+                                      remove.autapses = TRUE,
+                                      ...) {
+  stop("No method for class ", class(x))
+}
+
+
+
+
+
+
+
+
+
+

@@ -528,6 +528,167 @@ geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, col
                      ...)
 }
 
+#' @rdname geom_neuron
+#' @method geom_neuron synapticneuron
+#' @export
+geom_neuron.synapticneuron <- function(x = NULL,
+                                       rotation_matrix = NULL,
+                                       root = 3,
+                                       cols = c("navy", "turquoise"),
+                                       stat = "identity", position = "identity",
+                                       na.rm = FALSE,
+                                       show.legend = NA,
+                                       inherit.aes = FALSE,
+                                       ...) {
+  if("splitneuron"%in%class(x)){
+    geomneuron<-geom_neuron.splitneuron(x = x,
+                                   rotation_matrix = rotation_matrix,
+                                   root = root,
+                                   cols = cols,
+                                   stat = stat,
+                                   position = position,
+                                   na.rm = na.rm,
+                                   show.legend = show.legend,
+                                   inherit.aes = inherit.aes,
+                                   ...)
+  }else{
+    geomneuron<-geom_neuron.neuron(x = x,
+                                   rotation_matrix = rotation_matrix,
+                                   root = root,
+                                   cols = cols,
+                                   stat = stat,
+                                   position = position,
+                                   na.rm = na.rm,
+                                   show.legend = show.legend,
+                                   inherit.aes = inherit.aes,
+                                   ...)
+  }
+  if(!is.null(x$connectors)){
+    syns.in <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==1))
+    syns.out <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==0))
+    if(!is.null(rotation_matrix)){
+      syns.in <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.in)))
+      syns.in <- syns.in[,-4]
+      colnames(syns.in) <- c("X","Y","Z")
+      syns.out <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.out)))
+      syns.out <- syns.out[,-4]
+      colnames(syns.out) <- c("X","Y","Z")
+    }
+    glist <- list(
+      ggplot2::geom_point(data = syns.in,
+                          mapping = ggplot2::aes(x = .data$X,
+                                                 y = .data$Y),
+                          color = "#132157",
+                          size = root/50,
+                          alpha = 0.5),
+      ggplot2::geom_point(data = syns.out,
+                          mapping = ggplot2::aes(x = .data$X,
+                                                 y = .data$Y),
+                          color = "#D72000",
+                          size = root/50,
+                          alpha = 0.5)
+    )
+    c(geomneuron,glist)
+  }else{
+    geomneuron
+  }
+}
+
+#' @rdname geom_neuron
+#' @method geom_neuron dotprops
+#' @export
+geom_neuron.splitneuron <- function(x = NULL,
+                                   rotation_matrix = NULL,
+                                   root = 3,
+                                   cols = c("navy", "turquoise"),
+                                   stat = "identity", position = "identity",
+                                   na.rm = FALSE,
+                                   show.legend = NA,
+                                   inherit.aes = FALSE,
+                                   ...) {
+
+  # Get parts
+  if(root){
+    x$tags$soma <- nat::rootpoints(x)
+  }
+  soma <- catmaid::soma(x)
+  if(!is.null(rotation_matrix)){
+    soma <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(soma))))
+    soma <- soma[,-4]
+    colnames(soma) <- c("X","Y","Z")
+  }
+  dendrites.v = subset(rownames(x$d), x$d$Label == 3)
+  axon.v = subset(rownames(x$d), x$d$Label == 2)
+  p.d.v = subset(rownames(x$d), x$d$Label == 4)
+  p.n.v = subset(rownames(x$d), x$d$Label == 7)
+  null.v = subset(rownames(x$d), x$d$Label ==  0 | is.na(x$d$Label))
+
+  # Get cable
+  dendrites = tryCatch(nat::prune_vertices(x,
+                                           verticestoprune = as.integer(c(axon.v,p.d.v, p.n.v, null.v))),
+                       error = function(e) NULL)
+  axon = tryCatch(nat::prune_vertices(x,
+                                      verticestoprune = as.integer(c(dendrites.v, p.d.v, p.n.v, null.v))),
+                  error = function(e) NULL)
+  p.d = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v, null.v))),
+                 error = function(e) NULL)
+  p.n = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, null.v))),
+                 error = function(e) NULL)
+  nulls = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v))),
+                 error = function(e) NULL)
+
+  # Make ggplot2 objects
+  g.dendrites <- ggplot2_neuron_path.neuron(dendrites, rotation_matrix = rotation_matrix)
+  g.axon <- ggplot2_neuron_path.neuron(axon, rotation_matrix = rotation_matrix)
+  g.p.d <- ggplot2_neuron_path.neuron(p.d, rotation_matrix = rotation_matrix)
+  g.p.n <- ggplot2_neuron_path.neuron(p.n, rotation_matrix = rotation_matrix)
+  g.nulls <- ggplot2_neuron_path.neuron(nulls, rotation_matrix = rotation_matrix)
+
+  # Make geom objects
+  list(
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+                       data = g.dendrites, col = "#54BCD1",
+                       stat = stat, position = position, na.rm = na.rm,
+                       show.legend = show.legend, inherit.aes = inherit.aes, alpha = 1),
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+                       data = g.axon, col = "#EF7C12",
+                       stat = stat, position = position, na.rm = na.rm,
+                       show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1),
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+                       data = g.p.d, col = "#8FDA04",
+                       stat = stat, position = position, na.rm = na.rm,
+                       show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1),
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+                       data = g.p.n, col = "#C70E7B",
+                       stat = stat, position = position, na.rm = na.rm,
+                       show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1),
+    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+                       data = g.nulls, col = "#B3B3B3",
+                       stat = stat, position = position, na.rm = na.rm,
+                       show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1),
+    ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y),
+                        data = soma, col = "black",
+                        color = cols[1], alpha = 0.75, size = root)
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #' Create a ggplot2 Visualisation of Neuron Objects
 #'
 #' @description

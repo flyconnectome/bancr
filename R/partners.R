@@ -28,6 +28,7 @@
 #'   slice_max(weight, n = 20) %>%
 #'   banc_scene(open=TRUE)
 #' }
+#' @rdname banc_partners
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
                                  threshold = 0,
@@ -87,6 +88,8 @@ banc_datastack_name <- memoise::memoise(function() {
 #' fpo=banc_partners(banc_latestid("720575941478275714"), partners='out')
 #' points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
 #' }
+#' @export
+#' @rdname banc_partners
 banc_partners <- function(rootids, partners=c("input", "output"), ...) {
   partners=match.arg(partners)
   rootids=banc_ids(rootids)

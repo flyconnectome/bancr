@@ -95,6 +95,8 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' obtained using `bancr::banc_nuclei()`. This data frame is assumed to have
 #' columns named `root_id` and `nucleus_position_nm`, where `nucleus_position_nm`
 #' specifies the 3D coordinates of the soma for each `root_id`.
+#' @param estimate if \code{TRUE} and nucleus position is not in `banc_nuclei`,
+#' then root is estimated as a leaf node furthest outside of the brain neuropil.
 #' @param ... Methods passed to \code{nat::nlapply}.
 #'
 #' @return The function returns the re-rooted `neuron` object.
@@ -107,12 +109,12 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' }
 #' @export
 #' @rdname banc_reroot
-banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...) UseMethod("banc_reroot")
+banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...) UseMethod("banc_reroot")
 
 #' @rdname banc_reroot
 #' @method banc_reroot neuron
 #' @export
-banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...){
+banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...){
   if(is.null(id)){
     id <- x$root_id
   }
@@ -124,7 +126,7 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(),
     soma <- nat::xyzmatrix(df$nucleus_position_nm)[1,]
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x )
-  }else{ # As best we can
+  }else if (estimate){ # As best we can
     warning(sprintf("no valid nucleus ID detecting for %s, estimating root point"),id)
     leaves <- nat::endpoints(x)
     npoints1 <- nat::xyzmatrix(x)[leaves,]
@@ -142,6 +144,8 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(),
                                        nat::xyzmatrix(bancr::banc_neck_connective.surf)), k = 1)
     soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
     x <- nat::reroot(x = x, point = c(soma))
+  }else{
+    warning(sprintf("no valid nucleus ID detecting for %s, no action taken"),id)
   }
   x
 }
@@ -149,7 +153,7 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(),
 #' @rdname banc_reroot
 #' @method banc_reroot neuronlist
 #' @export
-banc_reroot.neuronlist <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...){
+banc_reroot.neuronlist <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...){
   if(is.null(id)){
     id <- names(x)
   }

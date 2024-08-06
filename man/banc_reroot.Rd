@@ -6,11 +6,29 @@
 \alias{banc_reroot.neuronlist}
 \title{Re-root BANC neuron skeleton at soma}
 \usage{
-banc_reroot(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...)
+banc_reroot(
+  x,
+  id = NULL,
+  banc_nuclei = bancr::banc_nuclei(),
+  estimate = TRUE,
+  ...
+)
 
-\method{banc_reroot}{neuron}(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...)
+\method{banc_reroot}{neuron}(
+  x,
+  id = NULL,
+  banc_nuclei = bancr::banc_nuclei(),
+  estimate = TRUE,
+  ...
+)
 
-\method{banc_reroot}{neuronlist}(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), ...)
+\method{banc_reroot}{neuronlist}(
+  x,
+  id = NULL,
+  banc_nuclei = bancr::banc_nuclei(),
+  estimate = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{banc.neurite} object representing the neuron skeleton.}
@@ -22,6 +40,9 @@ frame. If NULL, it will be taken from the \code{x$root_id} slot.}
 obtained using \code{bancr::banc_nuclei()}. This data frame is assumed to have
 columns named \code{root_id} and \code{nucleus_position_nm}, where \code{nucleus_position_nm}
 specifies the 3D coordinates of the soma for each \code{root_id}.}
+
+\item{estimate}{if \code{TRUE} and nucleus position is not in \code{banc_nuclei},
+then root is estimated as a leaf node furthest outside of the brain neuropil.}
 
 \item{...}{Methods passed to \code{nat::nlapply}.}
 }
