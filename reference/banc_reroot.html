@@ -49,13 +49,31 @@ location.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_reroot</span><span class="op">(</span><span class="va">x</span>, id <span class="op">=</span> <span class="cn">NULL</span>, banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_reroot</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'neuron'</span></span>
-<span><span class="fu">banc_reroot</span><span class="op">(</span><span class="va">x</span>, id <span class="op">=</span> <span class="cn">NULL</span>, banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">banc_reroot</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'neuronlist'</span></span>
-<span><span class="fu">banc_reroot</span><span class="op">(</span><span class="va">x</span>, id <span class="op">=</span> <span class="cn">NULL</span>, banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">banc_reroot</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  banc_nuclei <span class="op">=</span> <span class="fu">bancr</span><span class="fu">::</span><span class="fu"><a href="banc_cave_tables.html">banc_nuclei</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,6 +94,11 @@ frame. If NULL, it will be taken from the <code>x$root_id</code> slot.</p></dd>
 obtained using <code><a href="banc_cave_tables.html">bancr::banc_nuclei()</a></code>. This data frame is assumed to have
 columns named <code>root_id</code> and <code>nucleus_position_nm</code>, where <code>nucleus_position_nm</code>
 specifies the 3D coordinates of the soma for each <code>root_id</code>.</p></dd>
+
+
+<dt id="arg-estimate">estimate<a class="anchor" aria-label="anchor" href="#arg-estimate"></a></dt>
+<dd><p>if <code>TRUE</code> and nucleus position is not in <code>banc_nuclei</code>,
+then root is estimated as a leaf node furthest outside of the brain neuropil.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

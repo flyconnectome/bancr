@@ -6,6 +6,7 @@
 <url><loc>https://flyconnectome.github.io/bancr/index.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/news/index.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc.surf.html</loc></url>
+<url><loc>https://flyconnectome.github.io/bancr/reference/banc_add_synapses.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_all_synapses.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_cave_client.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_cave_query.html</loc></url>
@@ -20,7 +21,7 @@
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_mirror.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_mirror_tpsreg.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_neuron_comparison_plot.html</loc></url>
-<url><loc>https://flyconnectome.github.io/bancr/reference/banc_partner_summary.html</loc></url>
+<url><loc>https://flyconnectome.github.io/bancr/reference/banc_partners.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_read_l2dp.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_read_neuroglancer_mesh.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_read_neuron_meshes.html</loc></url>
