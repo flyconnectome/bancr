@@ -235,7 +235,7 @@ banc_add_synapses.neuronlist <- function(x,
                                          remove.autapses = TRUE,
                                          ...) {
   if(is.null(id)){
-    is <- names(x)
+    id <- names(x)
   }
   nat::nlapply(x,banc_add_synapses.neuron,
                id=id,
