@@ -15,7 +15,7 @@ banc_cave_tables(datastack_name = NULL, select = NULL)
 banc_nuclei(
   rootids = NULL,
   nucleus_ids = NULL,
-  table = c("somas_v1a", "somas_v1b"),
+  table = c("both", "somas_v1a", "somas_v1b"),
   rawcoords = FALSE,
   ...
 )

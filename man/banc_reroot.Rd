@@ -9,7 +9,7 @@
 banc_reroot(
   x,
   id = NULL,
-  banc_nuclei = bancr::banc_nuclei(),
+  banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE),
   estimate = TRUE,
   ...
 )
@@ -17,7 +17,7 @@ banc_reroot(
 \method{banc_reroot}{neuron}(
   x,
   id = NULL,
-  banc_nuclei = bancr::banc_nuclei(),
+  banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE),
   estimate = TRUE,
   ...
 )

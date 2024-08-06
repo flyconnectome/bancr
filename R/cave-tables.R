@@ -103,10 +103,10 @@ banc_nuclei <- function (rootids = NULL,
       nat::xyzmatrix2str(banc_raw2nm(x))))
     res$pt_position <- sapply(res$pt_position, paste, collapse=", ")
     res <- res %>%
-      dplyr::rename(nucleus_id = `id`,
-                    nucleus_position_nm = `pt_position`,
-                    root_id = `pt_root_id`) %>%
-      dplyr::filter(valid=="t")
+      dplyr::rename(nucleus_id = .data$id,
+                    nucleus_position_nm = .data$pt_position,
+                    root_id = .data$pt_root_id) %>%
+      dplyr::filter(.data$valid=="t")
   }
 }
 

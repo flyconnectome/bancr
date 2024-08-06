@@ -142,7 +142,27 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
 #' @param ... Additional arguments passed to methods, \code{nat::nlapply}
 #'
 #' @return An object of the same type as `x`, with synapses added
+#' @examples
+#' \donttrun{
+#' # Get BANC ID for DNA01
+#' id <- "720575941572711675"
+#' id <- banc_latestid(id)
 #'
+#' # Get the L2 skeletons
+#' n <- banc_read_l2skel(id)
+#'
+#' # Re-root to soma
+#' n.rerooted <- banc_reroot(n)
+#'
+#' # Add synapse information, stored at n.syn[[1]]$connectors
+#' n.syn <- banc_add_synapses(n.rerooted)
+#'
+#' # Split neuron
+#' n.split <- hemibrainr::flow_centrality(n.syn)
+#'
+#' # Visualise
+#' banc_neuron_comparison_plot(n.split)
+#' }
 #' @export
 banc_add_synapses <- function(x, ...) {
   UseMethod("banc_add_synapses")
@@ -194,7 +214,7 @@ banc_add_synapses.neuron <- function(x,
                       pre_svid = .data$pre_pt_supervoxel_id,
                       post_id = .data$post_pt_root_id,
                       post_svid = .data$post_pt_supervoxel_id) %>%
-        dplyr::filter(size>size.threshold) %>%
+        dplyr::filter(.data$size>size.threshold) %>%
         dplyr::mutate(prepost = 0) %>%
         dplyr::select(.data$connector_id,
                       .data$pre_id, .data$post_id, .data$prepost,

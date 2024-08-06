@@ -5,6 +5,7 @@
 \alias{ggplot2_neuron_path.neuron}
 \alias{ggplot2_neuron_path.neuronlist}
 \alias{ggplot2_neuron_path.mesh3d}
+\alias{ggplot2_neuron_path.NULL}
 \title{Convert Neuron Objects to ggplot2-Compatible Data}
 \usage{
 ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
@@ -14,6 +15,8 @@ ggplot2_neuron_path(x, rotation_matrix = NULL, ...)
 \method{ggplot2_neuron_path}{neuronlist}(x, rotation_matrix = NULL, ...)
 
 \method{ggplot2_neuron_path}{mesh3d}(x, rotation_matrix = NULL, ...)
+
+\method{ggplot2_neuron_path}{`NULL`}(x, rotation_matrix = NULL, ...)
 }
 \arguments{
 \item{x}{A 'neuron', 'neuronlist', or 'mesh3d' object to be converted.}

@@ -62,7 +62,8 @@ Suggests:
     grDevices,
     nabor,
     fs,
-    purrr
+    purrr,
+    plyr
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
