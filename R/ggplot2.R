@@ -318,7 +318,7 @@ ggplot2_neuron_path.mesh3d <- function(x, rotation_matrix = NULL, ...) {
     group = rep(1:nrow(faces.matrix), each = 3)
   )
   triangles <- triangles %>%
-    dplyr::arrange(dplyr::desc(.data$Z))
+    dplyr::arrange(dplyr::desc(`Z`))
 
   # return: triangles
   triangles
@@ -385,11 +385,11 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
   }
   x <- ggplot2_neuron_path.neuron(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z, group = .data$group),
+    ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, color = `Z`, group = .data$group),
                        data = x,
               stat = stat, position = position, na.rm = na.rm,
               show.legend = show.legend, inherit.aes = inherit.aes, ...),
-    ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y), data = soma,
+    ggplot2::geom_point(mapping = ggplot2::aes(x = `X`, y = `Y`), data = soma,
                          color = cols[1], alpha = 0.5, size = root),
     ggplot2::scale_color_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_colour()
@@ -438,7 +438,7 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
   check_package_available('ggnewscale')
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
   list(
-    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, fill = .data$Z, group = .data$group),
+    ggplot2::geom_polygon(data = x, mapping = ggplot2::aes(x = `X`, y = `Y`, fill = `Z`, group = .data$group),
                     color = NA,
                     stat = stat, position = position, na.rm = na.rm,
                     show.legend = show.legend, inherit.aes = inherit.aes, ...),
@@ -499,7 +499,7 @@ geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
     colnames(x) <- c("X","Y","Z")
   }
   list(
-    ggplot2::geom_point(data = x, mapping = ggplot2::aes(x = .data$X, y = .data$Y, color = .data$Z),
+    ggplot2::geom_point(data = x, mapping = ggplot2::aes(x = `X`, y = `Y`, color = `Z`),
                         size = root,  ...),
     ggplot2::scale_color_gradient(low = cols[1], high = cols[length(cols)]),
     ggnewscale::new_scale_colour()
@@ -583,14 +583,14 @@ geom_neuron.synapticneuron <- function(x = NULL,
     }
     glist <- list(
       ggplot2::geom_point(data = syns.in,
-                          mapping = ggplot2::aes(x = .data$X,
-                                                 y = .data$Y),
+                          mapping = ggplot2::aes(x = `X`,
+                                                 y = `Y`),
                           color = "#132157",
                           size = root/100,
                           alpha = 0.25),
       ggplot2::geom_point(data = syns.out,
-                          mapping = ggplot2::aes(x = .data$X,
-                                                 y = .data$Y),
+                          mapping = ggplot2::aes(x = `X`,
+                                                 y = `Y`),
                           color = "#D72000",
                           size = root/100,
                           alpha = 0.25)
@@ -655,7 +655,7 @@ geom_neuron.splitneuron <- function(x = NULL,
   # Make geom objects
   list(
     if(length(g.dendrites)){
-      ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+      ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, group = .data$group),
                          data = g.dendrites, col = "#54BCD1", na.rm = TRUE,
                          stat = stat, position = position,
                          show.legend = show.legend, inherit.aes = inherit.aes, alpha = 1)
@@ -663,7 +663,7 @@ geom_neuron.splitneuron <- function(x = NULL,
       NULL
     },
     if(length(g.axon)){
-      ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+      ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, group = .data$group),
                          data = g.axon, col = "#EF7C12", na.rm = TRUE,
                          stat = stat, position = position,
                          show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1)
@@ -671,7 +671,7 @@ geom_neuron.splitneuron <- function(x = NULL,
       NULL
     },
     if(length(g.p.d)){
-      ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+      ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, group = .data$group),
                          data = g.p.d, col = "#8FDA04", na.rm = TRUE,
                          stat = stat, position = position,
                          show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1)
@@ -679,7 +679,7 @@ geom_neuron.splitneuron <- function(x = NULL,
       NULL
     },
     if(length(g.p.n)){
-      ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+      ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, group = .data$group),
                          data = g.p.n, col = "#C70E7B", na.rm = TRUE,
                          stat = stat, position = position,
                          show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1)
@@ -687,14 +687,14 @@ geom_neuron.splitneuron <- function(x = NULL,
       NULL
     },
     if(length(g.nulls)){
-      ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
+      ggplot2::geom_path(mapping = ggplot2::aes(x = `X`, y = `Y`, group = .data$group),
                          data = g.nulls, col = "#B3B3B3", na.rm = TRUE,
                          stat = stat, position = position,
                          show.legend = show.legend, inherit.aes = inherit.aes,  alpha = 1)
     }else{
       NULL
     },
-    ggplot2::geom_point(mapping = ggplot2::aes(x = .data$X, y = .data$Y),
+    ggplot2::geom_point(mapping = ggplot2::aes(x = `X`, y = `Y`),
                         data = soma, col = "black",
                         color = cols[1], alpha = 0.75, size = root)
     )
