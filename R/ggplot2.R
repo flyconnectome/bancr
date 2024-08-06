@@ -547,29 +547,16 @@ geom_neuron.synapticneuron <- function(x = NULL,
                                        show.legend = NA,
                                        inherit.aes = FALSE,
                                        ...) {
-  if("splitneuron"%in%class(x)){
-    geomneuron<-geom_neuron.splitneuron(x = x,
-                                   rotation_matrix = rotation_matrix,
-                                   root = root,
-                                   cols = cols,
-                                   stat = stat,
-                                   position = position,
-                                   na.rm = na.rm,
-                                   show.legend = show.legend,
-                                   inherit.aes = inherit.aes,
-                                   ...)
-  }else{
-    geomneuron<-geom_neuron.neuron(x = x,
-                                   rotation_matrix = rotation_matrix,
-                                   root = root,
-                                   cols = cols,
-                                   stat = stat,
-                                   position = position,
-                                   na.rm = na.rm,
-                                   show.legend = show.legend,
-                                   inherit.aes = inherit.aes,
-                                   ...)
-  }
+  geomneuron<-geom_neuron.neuron(x = x,
+                                 rotation_matrix = rotation_matrix,
+                                 root = root,
+                                 cols = cols,
+                                 stat = stat,
+                                 position = position,
+                                 na.rm = na.rm,
+                                 show.legend = show.legend,
+                                 inherit.aes = inherit.aes,
+                                 ...)
   if(!is.null(x$connectors)){
     syns.in <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==1))
     syns.out <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==0))
@@ -654,7 +641,7 @@ geom_neuron.splitneuron <- function(x = NULL,
   g.nulls <- ggplot2_neuron_path(nulls, rotation_matrix = rotation_matrix)
 
   # Make geom objects
-  list(
+  glist <- list(
     if(length(g.dendrites)){
       ggplot2::geom_path(mapping = ggplot2::aes(x = .data$X, y = .data$Y, group = .data$group),
                          data = g.dendrites, col = "#54BCD1", na.rm = TRUE,
@@ -699,6 +686,37 @@ geom_neuron.splitneuron <- function(x = NULL,
                         data = soma, col = "black",
                         color = cols[1], alpha = 0.75, size = root)
     )
+
+  # And synapses?
+  if(!is.null(x$connectors)){
+    syns.in <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==1))
+    syns.out <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==0))
+    if(!is.null(rotation_matrix)){
+      syns.in <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.in)))
+      syns.in <- syns.in[,-4]
+      colnames(syns.in) <- c("X","Y","Z")
+      syns.out <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.out)))
+      syns.out <- syns.out[,-4]
+      colnames(syns.out) <- c("X","Y","Z")
+    }
+    syn.glist <- list(
+      ggplot2::geom_point(data = syns.in,
+                          mapping = ggplot2::aes(x = .data$X,
+                                                 y = .data$Y),
+                          color = "#132157",
+                          size = root/100,
+                          alpha = 0.25),
+      ggplot2::geom_point(data = syns.out,
+                          mapping = ggplot2::aes(x = .data$X,
+                                                 y = .data$Y),
+                          color = "#D72000",
+                          size = root/100,
+                          alpha = 0.25)
+    )
+    c(glist,syn.glist)
+  }else{
+    glist
+  }
 }
 
 
