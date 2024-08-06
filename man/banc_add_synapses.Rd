@@ -56,3 +56,25 @@ An object of the same type as \code{x}, with synapses added
 This function family adds synaptic data to neuron objects or neuron lists.
 It retrieves synaptic connections and attaches them to the neuron object(s).
 }
+\examples{
+\donttrun{
+# Get BANC ID for DNA01
+id <- "720575941572711675"
+id <- banc_latestid(id)
+
+# Get the L2 skeletons
+n <- banc_read_l2skel(id)
+
+# Re-root to soma
+n.rerooted <- banc_reroot(n)
+
+# Add synapse information, stored at n.syn[[1]]$connectors
+n.syn <- banc_add_synapses(n.rerooted)
+
+# Split neuron
+n.split <- hemibrainr::flow_centrality(n.syn)
+
+# Visualise
+banc_neuron_comparison_plot(n.split)
+}
+}

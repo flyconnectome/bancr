@@ -125,7 +125,7 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(ra
   if( nrow(df) && !is.na(df$nucleus_position_nm[1]) & df$nucleus_id!="0"){
     soma <- nat::xyzmatrix(df$nucleus_position_nm)[1,]
     x <- nat::reroot(x = x, point = c(soma))
-    x$tags$soma <- nat::rootpoints(x )
+    x$tags$soma <- nat::rootpoints(x)
   }else if (estimate){ # As best we can
     warning(sprintf("no valid nucleus ID detecting for %s, estimating root point"),id)
     leaves <- nat::endpoints(x)

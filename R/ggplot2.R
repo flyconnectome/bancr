@@ -618,7 +618,8 @@ geom_neuron.splitneuron <- function(x = NULL,
   if(root){
     x$tags$soma <- nat::rootpoints(x)
   }
-  soma <- catmaid::soma(x)
+  soma <- nat::xyzmatrix(x)[rootpoints(x),] # catmaid::soma(x)
+  soma = t(as.data.frame(soma))
   if(!is.null(rotation_matrix)){
     soma <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(soma))))
     soma <- soma[,-4]
@@ -782,22 +783,30 @@ ggneuron <- function(x,
 }
 
 prune_vertices.synapticneuron <- function (x, verticestoprune, invert = FALSE, ...){
+  soma <- catmaid::somaid(x)
+  if(!is.null(soma)&&!is.na(soma)){
+    x$d[catmaid::somaindex(x),"Label"] <- 1
+  }
   pruned <- nat::prune_vertices(x, verticestoprune, invert = invert, ...)
+  root <- nat::rootpoints(x)
+  if(!is.null(root)){
+    root <- nat::xyzmatrix(x)[root,]
+    pruned <- nat::reroot(x = pruned, point = c(root))
+  }
   pruned$connectors <- x$connectors[x$connectors$treenode_id %in%
                                      pruned$d$PointNo, ]
   relevant.points <- subset(x$d, x$d$PointNo %in% pruned$d$PointNo)
-  y <-  pruned
-  y$d <-relevant.points[match(pruned$d$PointNo, relevant.points$PointNo),]
+  y <- pruned
+  y$d <- relevant.points[match(pruned$d$PointNo, relevant.points$PointNo),]
   y$d$Parent <-  pruned$d$Parent
   y$tags <- lapply(x$tags, function(t) t[t %in% pruned$d$PointNo])
   y$url <- x$url
   y$headers <- x$headers
   y$AD.segregation.index = x$AD.segregation.index
+  smid <- which(y$d$Label==1)[1]
+  if(length(smid)){
+    y$tags$soma <- d$PointNo[smid]
+  }
   class(y) <- class(x)
   y
 }
-
-
-
-
-
