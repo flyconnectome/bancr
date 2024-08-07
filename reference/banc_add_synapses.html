@@ -43,7 +43,15 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_add_synapses</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_add_synapses</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  connectors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  size.threshold <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  remove.autapses <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  update.id <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'neuron'</span></span>
 <span><span class="fu">banc_add_synapses</span><span class="op">(</span></span>
@@ -52,6 +60,7 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 <span>  connectors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size.threshold <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  remove.autapses <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  update.id <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -62,6 +71,7 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 <span>  connectors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size.threshold <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  remove.autapses <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  update.id <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -72,6 +82,7 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 <span>  connectors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size.threshold <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  remove.autapses <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  update.id <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,16 +95,12 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 <dd><p>A neuron object, neuronlist, or other object to add synapses to</p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to methods, <code><a href="https://rdrr.io/pkg/nat/man/nlapply.html" class="external-link">nat::nlapply</a></code></p></dd>
-
-
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>The root ID of the neuron. If NULL, it uses the ID from the neuron object</p></dd>
+<dd><p>The root ID of the neuron. If <code>NULL</code>, it uses the ID from the neuron object</p></dd>
 
 
 <dt id="arg-connectors">connectors<a class="anchor" aria-label="anchor" href="#arg-connectors"></a></dt>
-<dd><p>A dataframe of synaptic connections. If NULL, it retrieves the data</p></dd>
+<dd><p>A dataframe of synaptic connections. If <code>NULL</code>, it retrieves the data</p></dd>
 
 
 <dt id="arg-size-threshold">size.threshold<a class="anchor" aria-label="anchor" href="#arg-size-threshold"></a></dt>
@@ -103,6 +110,14 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 <dt id="arg-remove-autapses">remove.autapses<a class="anchor" aria-label="anchor" href="#arg-remove-autapses"></a></dt>
 <dd><p>Whether to remove autapses (self-connections)</p></dd>
 
+
+<dt id="arg-update-id">update.id<a class="anchor" aria-label="anchor" href="#arg-update-id"></a></dt>
+<dd><p>Logical, whether or not to use <code>banc_latestid</code> to update the neuron's <code>root_id</code> when fetching synapses.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional arguments passed to methods, <code><a href="https://rdrr.io/pkg/nat/man/nlapply.html" class="external-link">nat::nlapply</a></code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -111,7 +126,27 @@ It retrieves synaptic connections and attaches them to the neuron object(s).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Get BANC ID for DNA01</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="st">"720575941572711675"</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Get the L2 skeletons</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="banc_read_l2dp.html">banc_read_l2skel</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Re-root to soma</span></span></span>
+<span class="r-in"><span><span class="va">n.rerooted</span> <span class="op">&lt;-</span> <span class="fu"><a href="banc_reroot.html">banc_reroot</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add synapse information, stored at n.syn[[1]]$connectors</span></span></span>
+<span class="r-in"><span><span class="va">n.syn</span> <span class="op">&lt;-</span> <span class="fu">banc_add_synapses</span><span class="op">(</span><span class="va">n.rerooted</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Split neuron</span></span></span>
+<span class="r-in"><span><span class="va">n.split</span> <span class="op">&lt;-</span> <span class="fu">hemibrainr</span><span class="fu">::</span><span class="fu">flow_centrality</span><span class="op">(</span><span class="va">n.syn</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Visualise</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="banc_neuron_comparison_plot.html">banc_neuron_comparison_plot</a></span><span class="op">(</span><span class="va">n.split</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
