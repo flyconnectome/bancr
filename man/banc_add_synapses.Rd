@@ -7,7 +7,15 @@
 \alias{banc_add_synapses.default}
 \title{Add synapses to neuron objects}
 \usage{
-banc_add_synapses(x, ...)
+banc_add_synapses(
+  x,
+  id = NULL,
+  connectors = NULL,
+  size.threshold = 5,
+  remove.autapses = TRUE,
+  update.id = TRUE,
+  ...
+)
 
 \method{banc_add_synapses}{neuron}(
   x,
@@ -15,6 +23,7 @@ banc_add_synapses(x, ...)
   connectors = NULL,
   size.threshold = 5,
   remove.autapses = TRUE,
+  update.id = TRUE,
   ...
 )
 
@@ -24,6 +33,7 @@ banc_add_synapses(x, ...)
   connectors = NULL,
   size.threshold = 5,
   remove.autapses = TRUE,
+  update.id = TRUE,
   ...
 )
 
@@ -33,21 +43,24 @@ banc_add_synapses(x, ...)
   connectors = NULL,
   size.threshold = 5,
   remove.autapses = TRUE,
+  update.id = TRUE,
   ...
 )
 }
 \arguments{
 \item{x}{A neuron object, neuronlist, or other object to add synapses to}
 
-\item{...}{Additional arguments passed to methods, \code{nat::nlapply}}
+\item{id}{The root ID of the neuron. If \code{NULL}, it uses the ID from the neuron object}
 
-\item{id}{The root ID of the neuron. If NULL, it uses the ID from the neuron object}
-
-\item{connectors}{A dataframe of synaptic connections. If NULL, it retrieves the data}
+\item{connectors}{A dataframe of synaptic connections. If \code{NULL}, it retrieves the data}
 
 \item{size.threshold}{Minimum size threshold for synapses to include}
 
 \item{remove.autapses}{Whether to remove autapses (self-connections)}
+
+\item{update.id}{Logical, whether or not to use \code{banc_latestid} to update the neuron's \code{root_id} when fetching synapses.}
+
+\item{...}{Additional arguments passed to methods, \code{nat::nlapply}}
 }
 \value{
 An object of the same type as \code{x}, with synapses added
@@ -57,7 +70,7 @@ This function family adds synaptic data to neuron objects or neuron lists.
 It retrieves synaptic connections and attaches them to the neuron object(s).
 }
 \examples{
-\donttrun{
+\dontrun{
 # Get BANC ID for DNA01
 id <- "720575941572711675"
 id <- banc_latestid(id)

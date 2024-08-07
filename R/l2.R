@@ -116,7 +116,7 @@ banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords
 #' @export
 banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE), estimate = TRUE, ...){
   if(is.null(id)){
-    id <- x$root_id
+    id <- x$id
   }
   if(is.null(id)){
     stop("a root_id in banc_nuclei must be given")

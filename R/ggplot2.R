@@ -823,7 +823,7 @@ prune_vertices.synapticneuron <- function (x, verticestoprune, invert = FALSE, .
   y$AD.segregation.index = x$AD.segregation.index
   smid <- which(y$d$Label==1)[1]
   if(length(smid)){
-    y$tags$soma <- d$PointNo[smid]
+    y$tags$soma <- y$d$PointNo[smid]
   }
   class(y) <- class(x)
   y

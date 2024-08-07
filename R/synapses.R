@@ -135,15 +135,16 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
 #' It retrieves synaptic connections and attaches them to the neuron object(s).
 #'
 #' @param x A neuron object, neuronlist, or other object to add synapses to
-#' @param id The root ID of the neuron. If NULL, it uses the ID from the neuron object
-#' @param connectors A dataframe of synaptic connections. If NULL, it retrieves the data
+#' @param id The root ID of the neuron. If `NULL`, it uses the ID from the neuron object
+#' @param connectors A dataframe of synaptic connections. If `NULL`, it retrieves the data
 #' @param size.threshold Minimum size threshold for synapses to include
 #' @param remove.autapses Whether to remove autapses (self-connections)
+#' @param update.id Logical, whether or not to use \code{banc_latestid} to update the neuron's `root_id` when fetching synapses.
 #' @param ... Additional arguments passed to methods, \code{nat::nlapply}
 #'
 #' @return An object of the same type as `x`, with synapses added
 #' @examples
-#' \donttrun{
+#' \dontrun{
 #' # Get BANC ID for DNA01
 #' id <- "720575941572711675"
 #' id <- banc_latestid(id)
@@ -164,7 +165,13 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
 #' banc_neuron_comparison_plot(n.split)
 #' }
 #' @export
-banc_add_synapses <- function(x, ...) {
+banc_add_synapses <- function(x,
+                              id = NULL,
+                              connectors = NULL,
+                              size.threshold = 5,
+                              remove.autapses = TRUE,
+                              update.id = TRUE,
+                              ...) {
   UseMethod("banc_add_synapses")
 }
 
@@ -175,10 +182,14 @@ banc_add_synapses.neuron <- function(x,
                               connectors = NULL,
                               size.threshold = 5,
                               remove.autapses = TRUE,
+                              update.id = TRUE,
                               ...){
   # Get valid root id
   if(is.null(id)){
     id <- x$id
+  }
+  if(update.id){
+    id <- banc_latestid(id)
   }
 
   # Get synaptic data
@@ -226,16 +237,18 @@ banc_add_synapses.neuron <- function(x,
     connectors <- connectors %>%
       dplyr::filter(.data$post_id==id|.data$pre_id==id)
   }
-  if(remove.autapses) {
-    connectors=connectors[connectors$post_id!=connectors$pre_id,,drop=FALSE]
-  }
 
   # Attach synapses
   if(nrow(connectors)){
+    if(remove.autapses) {
+      connectors=connectors[connectors$post_id!=connectors$pre_id,,drop=FALSE]
+    }
     near <- nabor::knn(query = nat::xyzmatrix(connectors),
                        data = nat::xyzmatrix(x$d),k=1)
     connectors$treenode_id <- x$d[near$nn.idx,"PointNo"]
     x$connectors = as.data.frame(connectors, stringsAsFactors = FALSE)
+  }else{
+    connectors <- data.frame()
   }
   x$connectors <- connectors
 
@@ -253,6 +266,7 @@ banc_add_synapses.neuronlist <- function(x,
                                          connectors = NULL,
                                          size.threshold = 5,
                                          remove.autapses = TRUE,
+                                         update.id = TRUE,
                                          ...) {
   if(is.null(id)){
     id <- names(x)
@@ -271,6 +285,7 @@ banc_add_synapses.default <- function(x,
                                       connectors = NULL,
                                       size.threshold = 5,
                                       remove.autapses = TRUE,
+                                      update.id = TRUE,
                                       ...) {
   stop("No method for class ", class(x))
 }
