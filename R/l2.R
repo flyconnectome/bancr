@@ -121,8 +121,8 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(ra
   if(is.null(id)){
     stop("a root_id in banc_nuclei must be given")
   }
-  df <- subset(banc_nuclei,banc_nuclei$root_id==id)
-  if( nrow(df) && !is.na(df$nucleus_position_nm[1]) & df$nucleus_id!="0"){
+  df <- subset(banc_nuclei,banc_nuclei$root_id==id & nucleus_id!="0" & !is.na(banc_nuclei$nucleus_position_nm))
+  if(nrow(df)){
     soma <- nat::xyzmatrix(df$nucleus_position_nm)[1,]
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x)
