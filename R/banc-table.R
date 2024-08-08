@@ -60,12 +60,35 @@
 #' @export
 #' @rdname banctable_query
 banctable_query <- function (sql = "SELECT * FROM banc_meta",
-                             limit = 100000L,
+                             limit = 200000L,
                              base = NULL,
                              python = FALSE,
                              convert = TRUE,
                              ac = NULL){
   if(is.null(ac)) ac <- banctable_login()
+  seatable.max <- 10000L
+  if(limit>seatable.max){
+    offset <- 0
+    df <- data.frame()
+    while(offset<limit){
+      cat("reading from row: ", offset,"\n")
+      sql.new <- sprintf("%s LIMIT %d OFFSET %d", sql, seatable.max, offset)
+      bc <- banctable_query(sql=sql.new,
+                            limit=FALSE,
+                            base=base,
+                            python=python,
+                            convert=convert,
+                            ac=ac)
+      df <- rbind(df,bc)
+      offset <- offset+nrow(bc)
+      if(!length(bc)|nrow(bc)<seatable.max){
+        cat("read rows: ",nrow(df), " read columns:", ncol(df),"\n")
+        return(df)
+      }
+    }
+    cat("read rows: ",nrow(df), " read columns:", ncol(df),"\n")
+    return(df)
+  }
   checkmate::assert_character(sql, len = 1, pattern = "select",
                               ignore.case = T)
   res = stringr::str_match(sql, stringr::regex("\\s+FROM\\s+[']{0,1}([^, ']+).*",
