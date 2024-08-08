@@ -166,6 +166,7 @@ banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, 
   nat::nlapply(x, FUN = banc_reroot.neuron, roots = roots, id = id, ...)
 }
 
+# hidden
 banc_roots <- function(){
   roots <- bancr::banc_nuclei(rawcoords = FALSE)
   roots$pt_position <- roots$nucleus_position_nm
