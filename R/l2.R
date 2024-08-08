@@ -124,7 +124,7 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
   if(is.null(id)){
     stop("a root_id in roots must be given")
   }
-  df <- subset(roots,roots$root_id==id & nucleus_id!="0" & !is.na(roots$pt_position))
+  df <- subset(roots, roots$root_id==id & !is.na(roots$pt_position))
   if(nrow(df)){
     soma <- nat::xyzmatrix(df$pt_position)[1,]
     x <- nat::reroot(x = x, point = c(soma))
@@ -148,7 +148,7 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
     soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
     x <- nat::reroot(x = x, point = c(soma))
   }else{
-    warning(sprintf("no valid nucleus ID detecting for %s, no action taken"),id)
+    warning(sprintf("no valid nucleus ID detecting for %s, no action taken",id))
   }
   x
 }
