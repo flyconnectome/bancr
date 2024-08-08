@@ -6,42 +6,24 @@
 \alias{banc_reroot.neuronlist}
 \title{Re-root BANC neuron skeleton at soma}
 \usage{
-banc_reroot(
-  x,
-  id = NULL,
-  banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE),
-  estimate = TRUE,
-  ...
-)
+banc_reroot(x, id = NULL, roots = NULL, estimate = TRUE, ...)
 
-\method{banc_reroot}{neuron}(
-  x,
-  id = NULL,
-  banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE),
-  estimate = TRUE,
-  ...
-)
+\method{banc_reroot}{neuron}(x, id = NULL, roots = NULL, estimate = TRUE, ...)
 
-\method{banc_reroot}{neuronlist}(
-  x,
-  id = NULL,
-  banc_nuclei = bancr::banc_nuclei(),
-  estimate = TRUE,
-  ...
-)
+\method{banc_reroot}{neuronlist}(x, id = NULL, roots = NULL, estimate = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{banc.neurite} object representing the neuron skeleton.}
 
-\item{id}{(Optional) The \code{root_id} of the neuron in the \code{banc_nuclei} data
+\item{id}{(Optional) The \code{root_id} of the neuron in the \code{roots} data
 frame. If NULL, it will be taken from the \code{x$root_id} slot.}
 
-\item{banc_nuclei}{A data frame containing information about nuclei
-obtained using \code{bancr::banc_nuclei()}. This data frame is assumed to have
-columns named \code{root_id} and \code{nucleus_position_nm}, where \code{nucleus_position_nm}
+\item{roots}{A data frame containing information about root points, i.e. nuclei
+obtained using \code{bancr::roots()}. This data frame is assumed to have
+columns named \code{root_id} and \code{pt_position}, where \code{pt_position}
 specifies the 3D coordinates of the soma for each \code{root_id}.}
 
-\item{estimate}{if \code{TRUE} and nucleus position is not in \code{banc_nuclei},
+\item{estimate}{if \code{TRUE} and nucleus position is not in \code{roots},
 then root is estimated as a leaf node furthest outside of the brain neuropil.}
 
 \item{...}{Methods passed to \code{nat::nlapply}.}
@@ -51,14 +33,14 @@ The function returns the re-rooted \code{neuron} object.
 }
 \description{
 This function re-roots a neuron skeleton represented as a \code{neuron}
-object at the location of the corresponding soma in the \code{banc_nuclei} data
+object at the location of the corresponding soma in the \code{roots} data
 frame. It uses the \code{root_id} in the skeleton object to identify the soma
 location.
 }
 \examples{
 \dontrun{
 x <- banc_read_l2skel(..., simplify = FALSE)
-banc_nuclei <- banc_nuclei()
-re-rooted_neuron <- banc_reroot(x, banc_nuclei = banc_nuclei)
+roots <- roots()
+re-rooted_neuron <- banc_reroot(x, roots = roots)
 }
 }
