@@ -84,18 +84,18 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #'
 #' @description
 #' This function re-roots a neuron skeleton represented as a `neuron`
-#' object at the location of the corresponding soma in the `banc_nuclei` data
+#' object at the location of the corresponding soma in the `roots` data
 #' frame. It uses the `root_id` in the skeleton object to identify the soma
 #' location.
 #'
 #' @param x A `banc.neurite` object representing the neuron skeleton.
-#' @param id (Optional) The `root_id` of the neuron in the `banc_nuclei` data
+#' @param id (Optional) The `root_id` of the neuron in the `roots` data
 #' frame. If NULL, it will be taken from the `x$root_id` slot.
-#' @param banc_nuclei A data frame containing information about nuclei
-#' obtained using `bancr::banc_nuclei()`. This data frame is assumed to have
-#' columns named `root_id` and `nucleus_position_nm`, where `nucleus_position_nm`
+#' @param roots A data frame containing information about root points, i.e. nuclei
+#' obtained using `bancr::roots()`. This data frame is assumed to have
+#' columns named `root_id` and `pt_position`, where `pt_position`
 #' specifies the 3D coordinates of the soma for each `root_id`.
-#' @param estimate if \code{TRUE} and nucleus position is not in `banc_nuclei`,
+#' @param estimate if \code{TRUE} and nucleus position is not in `roots`,
 #' then root is estimated as a leaf node furthest outside of the brain neuropil.
 #' @param ... Methods passed to \code{nat::nlapply}.
 #'
@@ -104,26 +104,29 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' @examples
 #' \dontrun{
 #' x <- banc_read_l2skel(..., simplify = FALSE)
-#' banc_nuclei <- banc_nuclei()
-#' re-rooted_neuron <- banc_reroot(x, banc_nuclei = banc_nuclei)
+#' roots <- roots()
+#' re-rooted_neuron <- banc_reroot(x, roots = roots)
 #' }
 #' @export
 #' @rdname banc_reroot
-banc_reroot <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE), estimate = TRUE, ...) UseMethod("banc_reroot")
+banc_reroot <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...) UseMethod("banc_reroot")
 
 #' @rdname banc_reroot
 #' @method banc_reroot neuron
 #' @export
-banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(rawcoords = FALSE), estimate = TRUE, ...){
+banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...){
   if(is.null(id)){
     id <- x$id
   }
-  if(is.null(id)){
-    stop("a root_id in banc_nuclei must be given")
+  if(is.null(roots)){
+    roots <- banc_roots()
   }
-  df <- subset(banc_nuclei,banc_nuclei$root_id==id & nucleus_id!="0" & !is.na(banc_nuclei$nucleus_position_nm))
+  if(is.null(id)){
+    stop("a root_id in roots must be given")
+  }
+  df <- subset(roots,roots$root_id==id & nucleus_id!="0" & !is.na(roots$pt_position))
   if(nrow(df)){
-    soma <- nat::xyzmatrix(df$nucleus_position_nm)[1,]
+    soma <- nat::xyzmatrix(df$pt_position)[1,]
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x)
   }else if (estimate){ # As best we can
@@ -153,12 +156,26 @@ banc_reroot.neuron <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(ra
 #' @rdname banc_reroot
 #' @method banc_reroot neuronlist
 #' @export
-banc_reroot.neuronlist <- function(x, id = NULL, banc_nuclei = bancr::banc_nuclei(), estimate = TRUE, ...){
+banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...){
   if(is.null(id)){
     id <- names(x)
   }
-  nat::nlapply(x, FUN = banc_reroot.neuron, banc_nuclei = banc_nuclei, id = id, ...)
+  if(is.null(roots)){
+    roots <- banc_roots()
+  }
+  nat::nlapply(x, FUN = banc_reroot.neuron, roots = roots, id = id, ...)
 }
 
+banc_roots <- function(){
+  roots <- bancr::banc_nuclei(rawcoords = FALSE)
+  roots$pt_position <- roots$nucleus_position_nm
+  info <- banc_cell_info(rawcoords = FALSE)
+  info$root_id <-info$pt_root_id
+  xyz <- nat::xyzmatrix(info$pt_position)
+  p <- nat::pointsinside(xyz,surf=bancr::banc_brain_neuropil.surf)
+  info <- info[!p,]
+  roots <- rbind(roots[,c("root_id","pt_position")],info[,c("root_id","pt_position")])
+  roots
+}
 
 
