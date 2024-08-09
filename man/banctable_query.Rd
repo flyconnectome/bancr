@@ -10,7 +10,7 @@
 \usage{
 banctable_query(
   sql = "SELECT * FROM banc_meta",
-  limit = 100000L,
+  limit = 200000L,
   base = NULL,
   python = FALSE,
   convert = TRUE,
