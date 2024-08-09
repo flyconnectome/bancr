@@ -801,6 +801,10 @@ ggneuron <- function(x,
 }
 
 prune_vertices.synapticneuron <- function (x, verticestoprune, invert = FALSE, ...){
+  if(length(verticestoprune)==nrow(x$d)){
+    warning('no points left after pruning')
+    return(NULL)
+  }
   soma <- catmaid::somaid(x)
   if(!is.null(soma)&&!is.na(soma)){
     x$d[catmaid::somaindex(x),"Label"] <- 1
