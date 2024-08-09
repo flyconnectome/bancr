@@ -63,6 +63,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
                                         banc_brain_neuropil = NULL,
                                         banc_vnc_neuropil = NULL,
                                         banc_neuropil = NULL,
+                                        alpha = 0.5,
                                         filename = NULL,
                                         width = 16,
                                         height = 16) {
@@ -146,13 +147,16 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
     }else{
       cols3 <- grDevices::colorRampPalette(c("#076b3e", "#32c080","chartreuse"))(length(neuron3))
     }
+    if(length(alpha)<3){
+      alpha<-rep(alpha[1],3)
+    }
 
     # Create the plot
     p <- ggplot2::ggplot() +
       geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey50")) +
-      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = cols1, alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = cols2, alpha = 0.5, linewidth = 0.3) +
-      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = cols3, alpha = 0.5, linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = cols1, alpha = alpha[1], linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = cols2, alpha = alpha[2], linewidth = 0.3) +
+      geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = cols3, alpha = alpha[3], linewidth = 0.3) +
       ggplot2::coord_fixed() +
       ggplot2::theme_void() +
       ggplot2::guides(fill="none",color="none") +
