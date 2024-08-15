@@ -17,6 +17,7 @@
 #' @param filename Optional. If provided, the plot will be saved to this file. If NULL (default), the plot will be displayed but not saved.
 #' @param width Numeric. The width of the output plot in inches. Default is 16.
 #' @param height Numeric. The height of the output plot in inches. Default is 16.
+#' @param alpha Vector of alpha values for neurons 1, 2 and 3. If a single value, applied to all.
 #'
 #' @return If filename is NULL, the function returns a ggplot object. If filename is provided, the function saves the plot and returns invisibly.
 #'

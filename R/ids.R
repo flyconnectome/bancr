@@ -63,7 +63,7 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' @examples
 #' \dontrun{
 #' # a point from neuroglancer, should map to 648518346498932033
-#' banc_xyz2id(cbind(34495, 82783, 1954), rawcoords=TRUE)
+#' banc_xyz2id(cbind(438976,985856,215955), rawcoords=FALSE)
 #' }
 banc_xyz2id <- function(xyz,
                         rawcoords=FALSE,
@@ -111,7 +111,6 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
   with_banc(flywire_islatest(x=x, timestamp = timestamp, ...))
 }
 
-
 #' Find the latest id for a banc root id
 #'
 #' @inheritParams fafbseg::flywire_latestid
@@ -128,6 +127,17 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
   with_banc(fafbseg::flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
 }
 
+#' @export
+#' @rdname banc_latestid
+banc_updateids <- function(rootid, ...){
+  old <- !banc_islatest(rootid, ...)
+  old[is.na(old)] <- TRUE
+  #cat("latest/outdated: ",table(old))
+  updated <- banc_latestid(x[old], ...)
+  rootid[old] <- updated
+  rootid
+}
+
 #' Return a vector of banc root ids from diverse inputs
 #'
 #' @param x A data.frame, URL or vector of ids
@@ -141,7 +151,7 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
 #' banc_ids(data.frame(rootid="648518346474360770"))
 banc_ids <- function(x, integer64=NA) {
   if(is.data.frame(x)) {
-    colstocheck=c("rootid", "id", "pre_id", "post_id")
+    colstocheck=c("rootid", "id", "pre_id", "post_id", "root_id")
     for(col in colstocheck) {
       if(col %in% colnames(x))
         return(banc_ids(x[[col]], integer64 = integer64))

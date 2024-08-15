@@ -15,6 +15,7 @@ banc_neuron_comparison_plot(
   banc_brain_neuropil = NULL,
   banc_vnc_neuropil = NULL,
   banc_neuropil = NULL,
+  alpha = 0.5,
   filename = NULL,
   width = 16,
   height = 16
@@ -40,6 +41,8 @@ banc_neuron_comparison_plot(
 \item{banc_vnc_neuropil}{A mesh object representing the ventral nerve cord (VNC) neuropil. Default is banc_vnc_neuropil.surf.}
 
 \item{banc_neuropil}{A mesh object representing the entire neuropil. Default is banc_neuropil.surf.}
+
+\item{alpha}{Vector of alpha values for neurons 1, 2 and 3. If a single value, applied to all.}
 
 \item{filename}{Optional. If provided, the plot will be saved to this file. If NULL (default), the plot will be displayed but not saved.}
 

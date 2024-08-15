@@ -2,6 +2,7 @@
 % Please edit documentation in R/ids.R
 \name{banc_latestid}
 \alias{banc_latestid}
+\alias{banc_updateids}
 \title{Find the latest id for a banc root id}
 \usage{
 banc_latestid(
@@ -11,6 +12,8 @@ banc_latestid(
   Verbose = FALSE,
   ...
 )
+
+banc_updateids(rootid, ...)
 }
 \arguments{
 \item{rootid}{One ore more FlyWire rootids defining a segment (in any form
