@@ -54,6 +54,7 @@ dataset. It generates four different anatomical views to facilitate comparison.<
 <span>  banc_brain_neuropil <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  banc_vnc_neuropil <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  banc_neuropil <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  width <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>  height <span class="op">=</span> <span class="fl">16</span></span>
@@ -102,6 +103,10 @@ dataset. It generates four different anatomical views to facilitate comparison.<
 
 <dt id="arg-banc-neuropil">banc_neuropil<a class="anchor" aria-label="anchor" href="#arg-banc-neuropil"></a></dt>
 <dd><p>A mesh object representing the entire neuropil. Default is banc_neuropil.surf.</p></dd>
+
+
+<dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dd><p>Vector of alpha values for neurons 1, 2 and 3. If a single value, applied to all.</p></dd>
 
 
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
