@@ -44,7 +44,7 @@ banc_partner_summary <- function(rootids,
       threshold = threshold,
       partners=partners,
       method = "cave",
-      datastack_name = banc_datastack_name(),
+      datastack_name = datastack_name,
       remove_autapses = remove_autapses,
       cleft.threshold = cleft.threshold,
       ...
