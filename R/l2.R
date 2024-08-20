@@ -115,9 +115,7 @@ banc_reroot <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...) UseMet
 #' @method banc_reroot neuron
 #' @export
 banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...){
-  if(is.null(id)){
-    id <- x$id
-  }
+  id <- x$id
   if(is.null(roots)){
     roots <- banc_roots()
   }
@@ -130,7 +128,7 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x)
   }else if (estimate){ # As best we can
-    warning(sprintf("no valid nucleus ID detecting for %s, estimating root point"),id)
+    warning(sprintf("no valid nucleus ID detecting for %s, estimating root point \n",id))
     leaves <- nat::endpoints(x)
     npoints1 <- nat::xyzmatrix(x)[leaves,]
     if(nrow(npoints1)){npoints=npoints1}
@@ -148,7 +146,7 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
     soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
     x <- nat::reroot(x = x, point = c(soma))
   }else{
-    warning(sprintf("no valid nucleus ID detecting for %s, no action taken",id))
+    warning(sprintf("no valid nucleus ID detecting for %s, no action taken \n",id))
   }
   x
 }
@@ -163,7 +161,8 @@ banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, 
   if(is.null(roots)){
     roots <- banc_roots()
   }
-  nat::nlapply(x, FUN = banc_reroot.neuron, roots = roots, id = id, ...)
+  x <- add_field_seq(x, entries=id, field="id")
+  nat::nlapply(x, FUN = banc_reroot.neuron, roots = roots, id = id, estimate = estimate, ...)
 }
 
 # hidden
@@ -179,4 +178,36 @@ banc_roots <- function(){
   roots
 }
 
+# hidden
+add_field_seq <- function (x, entries, field = "id", ...) {
+  x = nat::as.neuronlist(x)
+  if (length(entries) != length(x)) {
+    stop("The length of the entries to add must be the same as the length of the neuronlist, x")
+  }
+  nl = nat::neuronlist()
+  nams = names(x)
+  for (i in 1:length(x)) {
+    y = x[[i]]
+    entry = entries[i]
+    y = add_field(y, entry = entry, field = field, ...)
+    y = nat::as.neuronlist(y)
+    names(y) = nams[i]
+    nl = c(nl, y)
+  }
+  names(nl) = names(x)
+  nl[, ] = x[, ]
+  nl
+}
 
+add_field.neuron <- function (x, entry, field = "id", ...) {
+  x[[field]] = entry
+  x
+}
+
+add_field.neuronlist <- function (x, entry, field = "id", ...) {
+  nat::nlapply(x, add_field.neuron, entry, field = "id",
+               ...)
+}
+
+add_field <- function (x, entry, field = "bodyid", ...)
+  UseMethod("add_field")
