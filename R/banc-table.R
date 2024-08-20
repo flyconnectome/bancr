@@ -122,7 +122,7 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
     pdd
   else {
     colinfo = fafbseg::flytable_columns(table, base)
-    df = fafbseg:::flytable2df(fafbseg:::pandas2df(pdd, use_arrow = F), tidf = colinfo)
+    df = banctable2df(fafbseg:::pandas2df(pdd, use_arrow = F), tidf = colinfo)
     fields = fafbseg:::sql2fields(sql)
     if (length(fields) == 1 && fields == "*") {
       toorder = intersect(colinfo$name, colnames(df))
@@ -166,8 +166,8 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALS
     warning("No rows to update in `df`!")
     return(TRUE)
   }
-  df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,
-                                                 FALSE))
+  tablecols = fafbseg:::flytable_columns(table,base)
+  df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,FALSE))
   newrows = is.na(df[["row_id"]])
   if (any(newrows)) {
     stop("Adding new rows not yet implemented")
@@ -175,6 +175,17 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALS
                          base = base, chunksize = chunksize, ...)
     df = df[!newrows, , drop = FALSE]
     nx = nrow(df)
+  }
+  multi = tablecols$name[tablecols$type=="multiple-select"]
+  if(length(multi)){
+    i = intersect(colnames(df),multi)
+    if(length(i)){
+      for(j in i){
+        l =  sapply(df[[j]], strsplit, split = ",|, ")
+        l = unname(l)
+        df[[j]] = l
+      }
+    }
   }
   if (!isTRUE(nx > 0))
     return(TRUE)
@@ -187,7 +198,7 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALS
                             ...)
     return(all(oks))
   }
-  pyl = fafbseg:::df2updatepayload(df)
+  pyl = banc_df2updatepayload(df, via_json = TRUE)
   res = base$batch_update_rows(table_name = table, rows_data = pyl)
   ok = isTRUE(all.equal(res, list(success = TRUE)))
   return(ok)
@@ -272,5 +283,87 @@ banctable_append_rows <- function (df, table, base = NULL, chunksize = 1000L, ..
   return(ok)
 }
 
+# modified to enable list uploads to multi-select columns
+banc_df2updatepayload <- function (x, via_json = TRUE){
+  if (via_json) {
+    othercols <- setdiff(colnames(x), "row_id")
+    updates <- list(list(
+      row_id = x[1, "row_id"],
+      row = as.list(x[1, othercols])
+    ))
+
+    # Iterate through the row and convert multi-select columns to list of strings
+    for (col in othercols) {
+      if (is.character(x[[col]]) && grepl(",", x[[col]])) {
+        updates[[1]]$row[[col]] <- strsplit(x[[col]], ",")[[1]]
+      }
+    }
+
+    js <- jsonlite::toJSON(updates, auto_unbox = TRUE)
+    pyjson <- reticulate::import("json")
+    pyl <- reticulate::py_call(pyjson$loads, js)
+  }
+  pdf = reticulate::r_to_py(x)
+  pyfun = fafbseg:::df2updatepayload_py()
+  reticulate::py_call(pyfun$pdf2list, pdf)
+}
+
+# hidden, modified to enable working with list columns
+banctable2df <- function (df, tidf = NULL) {
+  if (!isTRUE(ncol(df) > 0))
+    return(df)
+  nr = nrow(df)
+  listcols = sapply(df, is.list)
+  for (i in which(listcols)) {
+    li = lengths(df[[i]])
+    if (isTRUE(all(li == 1))) {
+      ul = unlist(df[[i]])
+      if (!isTRUE(length(ul) == nr))
+        ul = sapply(ul,paste,collapse=",")
+      else df[[i]] = ul
+    }
+    else if (isTRUE(all(li %in% 0:1))) {
+      df[[i]][!nzchar(df[[i]])] = NA
+      df[[i]] = fafbseg:::null2na(df[[i]])
+    }
+    else df[[i]] = sapply(df[[i]],paste,collapse=",")
+  }
+  if (is.null(tidf))
+    df
+  else {
+    if (is.character(tidf))
+      tidf = fafbseg:::flytable_columns(tidf)
+    fafbseg:::flytable_fix_coltypes(df, tidf = tidf)
+  }
+}
+
+# hidden, helper function to update status column
+banc_update_status <- function(df, update, col = "status", wipe = FALSE){
+  if(wipe){
+    df$status <- ""
+  }else{
+    df$status[is.na(df$status)] <- ""
+    df$status[df$status%in%c("NA","NaN")] <- ""
+  }
+  update.col <- sapply(df$status, function(x){
+    x=paste(c(x,update),collapse=",")
+    paste(sort(unique(unlist(strsplit(x,split=",|, ")))),collapse=",")
+  }
+  )
+  update.col <- gsub("^,","",update.col)
+  df[[col]] <- update.col
+  df
+}
+
+# # Example of adding a labels to the status column
+# bc <- banctable_query()
+# sizes <- as.numeric(bc$l2_cable_length_um)
+# tadpoles <- bc[sizes>1&sizes<10,]
+# tadpoles <- banc_update_status(tadpoles,update="TOO_SMALL")
+# banctable_update_rows(base = 'banc_meta',
+#                       table = "banc_meta",
+#                       df = tadpoles[,c("_id","super_class","status")],
+#                       append_allowed = FALSE,
+#                       chunksize = 100)
 
 
