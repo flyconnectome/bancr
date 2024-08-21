@@ -358,16 +358,16 @@ banc_update_status <- function(df, update, col = "status", wipe = FALSE){
   df
 }
 
-# Example of adding a labels to the status column
-bc <- banctable_query()
-sizes <- as.numeric(bc$l2_cable_length_um)
-sizes[is.na(sizes)] <- 0
-tadpoles <- bc[sizes>1&sizes<10,]
-tadpoles <- banc_update_status(tadpoles,update="INVESTIGATE")
-banctable_update_rows(base = 'banc_meta',
-                      table = "banc_meta",
-                      df = tadpoles[,c("_id","super_class","status")],
-                      append_allowed = FALSE,
-                      chunksize = 100)
+# # Example of adding a labels to the status column
+# bc <- banctable_query()
+# sizes <- as.numeric(bc$l2_cable_length_um)
+# sizes[is.na(sizes)] <- 0
+# tadpoles <- bc[sizes>1&sizes<10,]
+# tadpoles <- banc_update_status(tadpoles,update="INVESTIGATE")
+# banctable_update_rows(base = 'banc_meta',
+#                       table = "banc_meta",
+#                       df = tadpoles[,c("_id","super_class","status")],
+#                       append_allowed = FALSE,
+#                       chunksize = 100)
 
 
