@@ -51,7 +51,7 @@ banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
   } else (u)
 }
 
-#' Visualize Neurons Across Multiple Drosophila Connectomic Datasets
+#' Visualise neurons across multiple Drosophila connectomic datasets in BANC spelunker
 #'
 #' @description
 #' This function constructs a Neuroglancer scene that visualizes neurons from multiple
@@ -62,11 +62,12 @@ banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
 #' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
 #' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
+#' @param nuclei_ids A vector of nuclei IDs for the BANC dataset. Default is NULL.
 #' @param open Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.
 #'
 #' @return
 #' If `open = FALSE`, returns a character string containing the URL for the Neuroglancer scene.
-#' If `open = TRUE`, opens the Neuroglancer scene in a web browser and invisibly returns the URL.
+#' If `open = TRUE`, opens the Spelunker Neuroglancer scene in a web browser and invisibly returns the URL.
 #'
 #' @details
 #' The function creates a Neuroglancer scene with multiple layers, each corresponding to a different dataset:
@@ -74,12 +75,14 @@ banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
 #' - FAFB: "fafb v783 imported" layer
 #' - Hemibrain: "hemibrain v1.2.1 imported" and "hemibrain v1.2.1 imported, mirrored" layers
 #' - MANC: "manc v1.2.1 imported" layer
+#' - BANC nuclei: "nuclei (v1)" layer
 #'
 #' Each dataset is assigned a unique color palette to distinguish neurons from different sources:
 #' - BANC: Blue to purple spectrum
 #' - FAFB: Red spectrum
 #' - Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
 #' - MANC: Orange spectrum
+#' - BANC nuclei: Pink
 #'
 #' @note
 #' This function suppresses all warnings during execution. While this ensures smooth operation,
@@ -110,6 +113,7 @@ bancsee <- function(banc_ids = NULL,
                     fafb_ids = NULL,
                     hemibrain_ids = NULL,
                     manc_ids = NULL,
+                    nuclei_ids = NULL,
                     open = FALSE){
 
   # Do not get the neuroglancer warnings
@@ -156,14 +160,50 @@ bancsee <- function(banc_ids = NULL,
     fafbseg::ngl_layers(sc1)$`manc v1.2.1 imported` <- fafbseg::ngl_layers(sc5)$`manc v1.2.1 imported`
   }
 
+  if(!is.null(nuclei_ids)){
+    u6=banc_scene(manc_ids, open=F, layer = "nuclei (v1)")
+    colourdf6 = data.frame(ids = nuclei_ids,
+                           col="#FC6882")
+    sc6<-fafbseg::ngl_add_colours(u6, colourdf6, layer = "nuclei (v1)")
+    fafbseg::ngl_layers(sc1)$`nuclei (v1)` <- fafbseg::ngl_layers(sc6)$`nuclei (v1)`
+  }
+
   # see
   u<-as.character(sc1)
   if(open) {
     utils::browseURL(u)
     invisible(u)
   } else {
-    u #fafbseg::flywire_shortenurl()
+    banc_shorturl(u)
   }
+}
+
+# hidden
+banc_shorturl <- function (x,
+                           baseurl = NULL,
+                           cache = TRUE,
+                           ...)
+{
+  if (fafbseg:::is.ngscene(x)) {
+    sc <- x
+    x <- fafbseg::ngl_encode_url(sc, ...)
+  }
+  else {
+    stopifnot(is.character(x))
+    if (length(x) > 1) {
+      res = pbapply::pbsapply(x,
+                              banc_shorturl,
+                              baseurl = baseurl,
+                              cache = cache,
+                              ...)
+      return(res)
+    }
+    sc = fafbseg::ngl_decode_scene(x)
+  }
+  state_server = "https://global.daf-apis.com/nglstate/post"
+  json = ngl_decode_scene(x, return.json = TRUE)
+  res = flywire_fetch(state_server, body = json, cache = cache)
+  sprintf("https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/%s",basename(res))
 }
 
 #' Choose or (temporarily) use the banc autosegmentation

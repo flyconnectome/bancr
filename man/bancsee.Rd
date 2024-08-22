@@ -2,13 +2,14 @@
 % Please edit documentation in R/urls.R
 \name{bancsee}
 \alias{bancsee}
-\title{Visualize Neurons Across Multiple Drosophila Connectomic Datasets}
+\title{Visualise neurons across multiple Drosophila connectomic datasets in BANC spelunker}
 \usage{
 bancsee(
   banc_ids = NULL,
   fafb_ids = NULL,
   hemibrain_ids = NULL,
   manc_ids = NULL,
+  nuclei_ids = NULL,
   open = FALSE
 )
 }
@@ -21,11 +22,13 @@ bancsee(
 
 \item{manc_ids}{A vector of neuron IDs from the MANC dataset. Default is NULL.}
 
+\item{nuclei_ids}{A vector of nuclei IDs for the BANC dataset. Default is NULL.}
+
 \item{open}{Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.}
 }
 \value{
 If \code{open = FALSE}, returns a character string containing the URL for the Neuroglancer scene.
-If \code{open = TRUE}, opens the Neuroglancer scene in a web browser and invisibly returns the URL.
+If \code{open = TRUE}, opens the Spelunker Neuroglancer scene in a web browser and invisibly returns the URL.
 }
 \description{
 This function constructs a Neuroglancer scene that visualizes neurons from multiple
@@ -39,6 +42,7 @@ The function creates a Neuroglancer scene with multiple layers, each correspondi
 \item FAFB: "fafb v783 imported" layer
 \item Hemibrain: "hemibrain v1.2.1 imported" and "hemibrain v1.2.1 imported, mirrored" layers
 \item MANC: "manc v1.2.1 imported" layer
+\item BANC nuclei: "nuclei (v1)" layer
 }
 
 Each dataset is assigned a unique color palette to distinguish neurons from different sources:
@@ -47,6 +51,7 @@ Each dataset is assigned a unique color palette to distinguish neurons from diff
 \item FAFB: Red spectrum
 \item Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
 \item MANC: Orange spectrum
+\item BANC nuclei: Pink
 }
 }
 \note{
