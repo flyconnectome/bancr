@@ -282,5 +282,3 @@ def send_mesh(mesh, mesh_id, vol, compress, overwrite):
 
 
 
-
-

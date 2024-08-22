@@ -4,7 +4,7 @@
 \alias{banc_scene}
 \title{Return a sample Neuroglancer scene URL for banc dataset}
 \usage{
-banc_scene(ids = NULL, open = FALSE)
+banc_scene(ids = NULL, open = FALSE, layer = NULL)
 }
 \arguments{
 \item{ids}{A set of root ids to include in the scene. Can also be a
@@ -12,6 +12,9 @@ data.frame.}
 
 \item{open}{Whether to open the URL in your browser (see
 \code{\link{browseURL}})}
+
+\item{layer}{the segmentation layer for which \code{ids} intended. Defaults to 'segmentation proofreading',
+but could point to another dataset layer.}
 }
 \value{
 A character vector containing a single Neuroglancer URL (invisibly
@@ -29,6 +32,9 @@ slack} for details.
 \dontrun{
 browseURL(banc_scene())
 banc_scene(open=T)
-banc_scene("648518346498254576", open=T)
+banc_scene("720575941545083784", open=T)
 }
+}
+\seealso{
+\code{\link{bancsee}}
 }

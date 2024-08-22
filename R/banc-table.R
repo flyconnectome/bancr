@@ -159,6 +159,7 @@ banctable_login <- function(url = "https://cloud.seatable.io/",
 #' @export
 #' @rdname banctable_query
 banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALSE, chunksize = 1000L,  ...) {
+  df <- as.data.frame(df)
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table)
   nx = nrow(df)
@@ -358,7 +359,7 @@ banc_update_status <- function(df, update, col = "status", wipe = FALSE){
   df
 }
 
-# # Example of adding a labels to the status column
+# # # Example of adding a labels to the status column
 # bc <- banctable_query()
 # sizes <- as.numeric(bc$l2_cable_length_um)
 # sizes[is.na(sizes)] <- 0

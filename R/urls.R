@@ -6,20 +6,24 @@
 #'
 #' @param ids A set of root ids to include in the scene. Can also be a
 #'   data.frame.
+#' @param layer the segmentation layer for which `ids` intended. Defaults to 'segmentation proofreading',
+#' but could point to another dataset layer.
 #' @param open Whether to open the URL in your browser (see
 #'   \code{\link{browseURL}})
 #' @return A character vector containing a single Neuroglancer URL (invisibly
 #'   when \code{open=TRUE}).
+#' @seealso \code{\link{bancsee}}
 #' @export
 #' @importFrom utils browseURL
 #' @examples
 #' \dontrun{
 #' browseURL(banc_scene())
 #' banc_scene(open=T)
-#' banc_scene("648518346498254576", open=T)
+#' banc_scene("720575941545083784", open=T)
 #' }
-banc_scene <- function(ids=NULL, open=FALSE) {
-  url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6283844278812672"
+banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
+  #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6283844278812672"
+  url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
   url=sub("#!middleauth+", "?", url, fixed = T)
   parts=unlist(strsplit(url, "?", fixed = T))
   json=try(fafbseg::flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
@@ -39,12 +43,127 @@ banc_scene <- function(ids=NULL, open=FALSE) {
   }
   u=ngl_encode_url(json, baseurl = parts[1])
   if(!is.null(ids)){
-    fafbseg::ngl_segments(u) <- banc_ids(ids)
+    banc_ngl_segments(u, layer=layer) <- banc_ids(ids)
   }
   if(open) {
     browseURL(u)
     invisible(u)
   } else (u)
+}
+
+#' Visualize Neurons Across Multiple Drosophila Connectomic Datasets
+#'
+#' @description
+#' This function constructs a Neuroglancer scene that visualizes neurons from multiple
+#' co-registered Drosophila connectomic datasets, including BANC, FAFB, hemibrain, and MANC.
+#' It allows for simultaneous visualization of corresponding neurons across these datasets.
+#'
+#' @param banc_ids A vector of neuron IDs from the BANC dataset. Default is NULL.
+#' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
+#' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
+#' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
+#' @param open Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.
+#'
+#' @return
+#' If `open = FALSE`, returns a character string containing the URL for the Neuroglancer scene.
+#' If `open = TRUE`, opens the Neuroglancer scene in a web browser and invisibly returns the URL.
+#'
+#' @details
+#' The function creates a Neuroglancer scene with multiple layers, each corresponding to a different dataset:
+#' - BANC: "segmentation proofreading" layer
+#' - FAFB: "fafb v783 imported" layer
+#' - Hemibrain: "hemibrain v1.2.1 imported" and "hemibrain v1.2.1 imported, mirrored" layers
+#' - MANC: "manc v1.2.1 imported" layer
+#'
+#' Each dataset is assigned a unique color palette to distinguish neurons from different sources:
+#' - BANC: Blue to purple spectrum
+#' - FAFB: Red spectrum
+#' - Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
+#' - MANC: Orange spectrum
+#'
+#' @note
+#' This function suppresses all warnings during execution. While this ensures smooth operation,
+#' it may hide important messages. Use with caution and refer to individual function documentation
+#' if unexpected behavior occurs.
+#'
+#' @examples
+#' \dontrun{
+#' # Visualize cell type DNa01 across datasets
+#' bancsee(banc_ids = c("720575941493078142","720575941455137261"),
+#'         fafb_ids = c("720575940644438551","720575940627787609"),
+#'         hemibrain_ids = c("1170939344"),
+#'         manc_ids = c("10751","10760"),
+#'         open = TRUE)
+#'
+#' # Get URL without opening browser
+#' url <- bancsee(banc_ids = c("720575941493078142"),
+#'                fafb_ids = c("720575940644438551"),
+#'                open = FALSE)
+#' }
+#'
+#' @importFrom grDevices colorRampPalette
+#' @importFrom utils browseURL
+#' @seealso \code{\link{banc_scene}}
+#'
+#' @export
+bancsee <- function(banc_ids = NULL,
+                    fafb_ids = NULL,
+                    hemibrain_ids = NULL,
+                    manc_ids = NULL,
+                    open = FALSE){
+
+  # Do not get the neuroglancer warnings
+  old_warn <- options(warn = -1)  # Suppress all warnings
+  on.exit(options(old_warn))  # Restore warning settings when function exits
+
+  # Get BANC IDs
+  if(!is.null(banc_ids)){
+    u1=banc_scene(banc_ids, open=F, layer = "segmentation proofreading")
+    colourdf1 = data.frame(ids = banc_ids,
+                           col=grDevices::colorRampPalette(c("#00BFFF", "#0000FF", "#8A2BE2"))(length(banc_ids)))
+    sc1<-fafbseg::ngl_add_colours(u1, colourdf1, layer = "segmentation proofreading")
+  }else{
+    sc1 = fafbseg::ngl_decode_scene(banc_scene())
+    banc_ngl_segments(sc1) <- NULL
+  }
+
+  if(!is.null(fafb_ids)){
+    u2=banc_scene(fafb_ids, open=F, layer = "fafb v783 imported")
+    colourdf2 = data.frame(ids = fafb_ids,
+                           col=grDevices::colorRampPalette(c("#EE4244", "#D72000", "#C23A4B"))(length(fafb_ids)))
+    sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "fafb v783 imported")
+    fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc2)$`fafb v783 imported`
+  }
+
+  if(!is.null(hemibrain_ids)){
+    u3=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported")
+    colourdf3 = data.frame(ids = hemibrain_ids,
+                           col=grDevices::colorRampPalette(c("#00FF00", "#32CD32", "#006400"))(length(hemibrain_ids)))
+    sc3<-fafbseg::ngl_add_colours(u3, colourdf3, layer = "hemibrain v1.2.1 imported")
+    fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported` <- fafbseg::ngl_layers(sc3)$`hemibrain v1.2.1 imported`
+    u4=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported, mirrored")
+    colourdf4 = data.frame(ids = hemibrain_ids,
+                           col=grDevices::colorRampPalette(c("#FFFF00", "#FFD700", "#FFA500"))(length(hemibrain_ids)))
+    sc4<-fafbseg::ngl_add_colours(u4, colourdf4, layer = "hemibrain v1.2.1 imported, mirrored")
+    fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported, mirrored` <- fafbseg::ngl_layers(sc4)$`hemibrain v1.2.1 imported, mirrored`
+  }
+
+  if(!is.null(manc_ids)){
+    u5=banc_scene(manc_ids, open=F, layer = "manc v1.2.1 imported")
+    colourdf5 = data.frame(ids = manc_ids,
+                           col=grDevices::colorRampPalette(c("#FFA07A", "#FF4500", "#FF8C00"))(length(manc_ids)))
+    sc5<-fafbseg::ngl_add_colours(u5, colourdf5, layer = "manc v1.2.1 imported")
+    fafbseg::ngl_layers(sc1)$`manc v1.2.1 imported` <- fafbseg::ngl_layers(sc5)$`manc v1.2.1 imported`
+  }
+
+  # see
+  u<-as.character(sc1)
+  if(open) {
+    utils::browseURL(u)
+    invisible(u)
+  } else {
+    u #fafbseg::flywire_shortenurl()
+  }
 }
 
 #' Choose or (temporarily) use the banc autosegmentation
@@ -97,8 +216,43 @@ with_banc <- function(expr) {
   force(expr)
 }
 
+# hidden
 banc_fetch <- function(url, token=banc_token(), ...) {
   flywire_fetch(url, token=token, ...)
 }
 
+# hidden
+`banc_ngl_segments<-` <- function (x, layer = NULL, value) {
+  was_char <- is.character(x)
+  baseurl <- if (was_char)
+    x
+  else NULL
+  x = fafbseg:::ngl_decode_scene(x)
+  layers = fafbseg:::ngl_layers(x)
+  nls = fafbseg:::ngl_layer_summary(layers)
+  sel = which(nls$type == "segmentation_with_graph")
+  if (length(sel) == 0)
+    sel = which(nls$visible & grepl("^segmentation", nls$type))
+  if (length(sel) == 0)
+    stop("Could not find a visible segmentation layer!")
+  if (length(sel) > 1) {
+    if(is.null(layer)){
+      sel = 1
+    }else{
+      sel = match(layer,nls$name)
+    }
+  }
+  if (is.null(value))
+    value <- character()
+  newsegs = fafbseg::ngl_segments(value, as_character = TRUE, must_work = FALSE)
+  if (!all(fafbseg:::valid_id(newsegs)))
+    warning("There are ", sum(!fafbseg:::valid_id(newsegs)), " invalid segments")
+  x[["layers"]][[sel]][["segments"]] = newsegs
+  nls$nhidden[sel] <- 1
+  if (nls$nhidden[sel] > 0)
+    x[["layers"]][[sel]][["hiddenSegments"]] = NULL
+  if (was_char)
+    as.character(x, baseurl = baseurl)
+  else x
+}
 
