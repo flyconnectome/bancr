@@ -104,7 +104,7 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' @examples
 #' \dontrun{
 #' x <- banc_read_l2skel(..., simplify = FALSE)
-#' roots <- roots()
+#' roots <- bancr:::banc_roots()
 #' re-rooted_neuron <- banc_reroot(x, roots = roots)
 #' }
 #' @export
