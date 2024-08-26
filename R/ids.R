@@ -133,7 +133,7 @@ banc_updateids <- function(rootid, ...){
   old <- !banc_islatest(rootid, ...)
   old[is.na(old)] <- TRUE
   #cat("latest/outdated: ",table(old))
-  updated <- banc_latestid(x[old], ...)
+  updated <- banc_latestid(rootid[old], ...)
   rootid[old] <- updated
   rootid
 }
