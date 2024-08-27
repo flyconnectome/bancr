@@ -221,6 +221,50 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
   }
 }
 
+#' Plot a neuron in the BANC connectomic dataset using ggplot2
+#'
+#' This function visualizes a neuron or neuron-related object from the BANC connectomic dataset using ggplot2.
+#'
+#' @param x A 'neuron', 'neuronlist', 'mesh3d', or 'hxsurf' object to be visualized.
+#' @param volume A brain/neuropil volume to be plotted in grey, for context.
+#'   Defaults to NULL, no volume plotted.
+#' @param info Optional. A string to be used as the plot title.
+#' @param view A character string specifying the view orientation.
+#'   Options are "main", "side", "front", "vnc", "vnc_side", "brain_side".
+#' @param cols1 A vector of two colors for the lowest Z values. Default is c("turquoise", "navy").
+#' @param cols2 A vector of two colors for the highest Z values. Default is c("grey75", "grey50").
+#' @param alpha Transparency of the neuron visualization. Default is 0.5.
+#' @param title.col Color of the plot title. Default is "darkgrey".
+#' @param ... Additional arguments passed to geom_neuron().
+#'
+#' @return A ggplot object representing the visualized neuron.
+#'
+#' @details This function is a wrapper around the ggneuron function, specifically tailored for the BANC dataset.
+#'   It applies a rotation matrix based on the specified view and uses predefined color schemes.
+#'
+#' @export
+banc_ggneuron <-function(x,
+                         volume = NULL,
+                         info = NULL,
+                         view = c("main", "side", "front", "vnc", "vnc_side", "brain_side"),
+                         cols1 = c("turquoise","navy"),
+                         cols2 =  c("grey75", "grey50"),
+                         alpha = 0.5,
+                         title.col = "darkgrey",
+                         ...){
+  view <- match.arg(rotation_matrix)
+  rotation_matrix <- banc_rotation_matrices[[view]]
+  ggneuron(x,
+           volume = volume,
+           info = info,
+           rotation_matrix = rotation_matrix,
+           cols1 = cols1,
+           cols2 =  cols2,
+           alpha = alpha,
+           title.col = title.col,
+           ...)
+}
+
 #' Convert Neuron Objects to ggplot2-Compatible Data
 #'
 #' @description
@@ -837,3 +881,4 @@ prune_vertices.synapticneuron <- function (x, verticestoprune, invert = FALSE, .
   class(y) <- class(x)
   y
 }
+
