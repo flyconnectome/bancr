@@ -96,7 +96,7 @@ then root is estimated as a leaf node furthest outside of the brain neuropil.</p
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="banc_read_l2dp.html">banc_read_l2skel</a></span><span class="op">(</span><span class="va">...</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">roots</span> <span class="op">&lt;-</span> <span class="fu">roots</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">roots</span> <span class="op">&lt;-</span> <span class="fu">bancr</span><span class="fu">:::</span><span class="fu">banc_roots</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">re</span><span class="op">-</span><span class="va">rooted_neuron</span> <span class="op">&lt;-</span> <span class="fu">banc_reroot</span><span class="op">(</span><span class="va">x</span>, roots <span class="op">=</span> <span class="va">roots</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

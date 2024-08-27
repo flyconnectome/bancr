@@ -53,7 +53,11 @@
 
 <dt id="arg-live">live<a class="anchor" aria-label="anchor" href="#arg-live"></a></dt>
 <dd><p>Whether to use live query mode, which updates any root ids to
-their current value.</p></dd>
+their current value (or to another <code>timestamp</code> when provided). Values
+of <code>TRUE</code> or <code>1</code> select CAVE's <em>Live</em> mode, while <code>2</code>
+selects <code>Live live</code> mode which gives access even to annotations that
+are not part of a materialisation version. See section <b>Live and Live
+Live queries</b> for details.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
