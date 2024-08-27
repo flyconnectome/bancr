@@ -252,7 +252,7 @@ banc_ggneuron <-function(x,
                          alpha = 0.5,
                          title.col = "darkgrey",
                          ...){
-  view <- match.arg(rotation_matrix)
+  view <- match.arg(view)
   rotation_matrix <- banc_rotation_matrices[[view]]
   ggneuron(x,
            volume = volume,
