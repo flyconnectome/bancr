@@ -199,6 +199,9 @@ add_field_seq <- function (x, entries, field = "id", ...) {
   nl
 }
 
+add_field <- function (x, entry, field = "bodyid", ...)
+  UseMethod("add_field")
+
 add_field.neuron <- function (x, entry, field = "id", ...) {
   x[[field]] = entry
   x
@@ -209,5 +212,3 @@ add_field.neuronlist <- function (x, entry, field = "id", ...) {
                ...)
 }
 
-add_field <- function (x, entry, field = "bodyid", ...)
-  UseMethod("add_field")

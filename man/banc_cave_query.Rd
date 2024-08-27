@@ -10,7 +10,11 @@ banc_cave_query(table, live = TRUE, ...)
 \item{table}{The name of the table (or view, see views section) to query}
 
 \item{live}{Whether to use live query mode, which updates any root ids to
-their current value.}
+their current value (or to another \code{timestamp} when provided). Values
+of \code{TRUE} or \code{1} select CAVE's \emph{Live} mode, while \code{2}
+selects \code{Live live} mode which gives access even to annotations that
+are not part of a materialisation version. See section \bold{Live and Live
+Live queries} for details.}
 
 \item{...}{Additional arguments passed to \code{\link{flywire_cave_query}}
 \code{\link[fafbseg]{flywire_cave_query}}}
