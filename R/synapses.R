@@ -269,13 +269,15 @@ banc_add_synapses.neuronlist <- function(x,
                                          update.id = TRUE,
                                          ...) {
   if(is.null(id)){
-    id <- names(x)
+    x <- add_field_seq(x, entries= names(x), field = "id")
   }
-  nat::nlapply(x,banc_add_synapses.neuron,
-               id=id,
+  nat::nlapply(x,
+               banc_add_synapses.neuron,
+               id=NULL,
                connectors=connectors,
                size.threshold=size.threshold,
-               remove.autapses=remove.autapses)
+               remove.autapses=remove.autapses,
+               ...)
 }
 
 #' @rdname banc_add_synapses
