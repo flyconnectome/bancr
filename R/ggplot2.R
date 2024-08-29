@@ -224,6 +224,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 #' Plot a neuron in the BANC connectomic dataset using ggplot2
 #'
 #' This function visualizes a neuron or neuron-related object from the BANC connectomic dataset using ggplot2.
+#' The only thing specific to the BANC data set is are the prreset 'view' angles.
 #'
 #' @param x A 'neuron', 'neuronlist', 'mesh3d', or 'hxsurf' object to be visualized.
 #' @param volume A brain/neuropil volume to be plotted in grey, for context.

@@ -129,15 +129,44 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
 
 #' @export
 #' @rdname banc_latestid
-banc_updateids <- function(rootid, ...){
-  old <- !banc_islatest(rootid, ...)
-  old[is.na(old)] <- TRUE
-  #cat("latest/outdated: ",table(old))
-  updated <- banc_latestid(rootid[old], ...)
-  rootid[old] <- updated
-  rootid
-}
+banc_updateids <- function(x, ...){
+  if(is.data.frame(x)){
+    # what needs updating?
+    root.col <- intersect(c("root_id","pt_root_id"),colnames(x))[1]
+    if(!length(root.col)){
+      root.col <- "root_id"
+    }
+    if(any(c("root_id","pt_root_id")%in%colnames(x))){
+      old <- !banc_islatest(x[[root.col]], ...)
+    }else{
+      old <- rep(TRUE,nrow(x))
+    }
 
+    # update based on supervoxels
+    if(any(c("supervoxel_id","pt_supervoxel_id")%in%colnames(x))){
+      svid.col <- intersect(c("supervoxel_id","pt_supervoxel_id"),colnames(x))[1]
+      x[old,][[root.col]] <- banc_root(x[old,][[svid.col]], ...)
+      new <- is.na(x[old,][[svid.col]])|x[old,][[root.col]]=="0"
+      old <- old+!new
+    }
+
+    # update based on root Ids
+    if(any(c("root_id","pt_root_id")%in%colnames(x)) && any(sum(old))){
+      x[old,][[root.col]] <- banc_latestid(x[old,][[root.col]], ...)
+      new <- is.na(x[old,][[root.col]])|x[old,][[root.col]]=="0"
+      old <- old+!new
+      if(sum(old)){
+        warning("Failed to update: ", sum(old))
+      }
+    }
+  }else{
+    old <- !banc_islatest(x, ...)
+    old[is.na(old)] <- TRUE
+    updated <- banc_latestid(x[old], ...)
+    x[old] <- updated
+    x
+  }
+}
 #' Return a vector of banc root ids from diverse inputs
 #'
 #' @param x A data.frame, URL or vector of ids
