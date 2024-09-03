@@ -131,7 +131,7 @@ bancsee <- function(banc_ids = NULL,
   nuclei_ids <- nuclei_ids[nuclei_ids!="0"]
 
   # Get BANC IDs
-  if(!is.null(banc_ids)){
+  if(!length(banc_ids)){
     u1=banc_scene(banc_ids, open=F, layer = "segmentation proofreading")
     colourdf1 = data.frame(ids = banc_ids,
                            col=grDevices::colorRampPalette(c("#54BCD1", "#0000FF", "#8A2BE2"))(length(banc_ids)))
@@ -141,7 +141,7 @@ bancsee <- function(banc_ids = NULL,
     banc_ngl_segments(sc1) <- NULL
   }
 
-  if(!is.null(fafb_ids)){
+  if(!length(fafb_ids)){
     u2=banc_scene(fafb_ids, open=F, layer = "fafb v783 imported")
     colourdf2 = data.frame(ids = fafb_ids,
                            col=grDevices::colorRampPalette(c("#EE4244", "#D72000", "#C23A4B"))(length(fafb_ids)))
@@ -149,7 +149,7 @@ bancsee <- function(banc_ids = NULL,
     fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc2)$`fafb v783 imported`
   }
 
-  if(!is.null(hemibrain_ids)){
+  if(!length(hemibrain_ids)){
     u3=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported")
     colourdf3 = data.frame(ids = hemibrain_ids,
                            col=grDevices::colorRampPalette(c("#00FF00", "#32CD32", "#006400"))(length(hemibrain_ids)))
@@ -162,7 +162,7 @@ bancsee <- function(banc_ids = NULL,
     fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported, mirrored` <- fafbseg::ngl_layers(sc4)$`hemibrain v1.2.1 imported, mirrored`
   }
 
-  if(!is.null(manc_ids)){
+  if(!length(manc_ids)){
     u5=banc_scene(manc_ids, open=F, layer = "manc v1.2.1 imported")
     colourdf5 = data.frame(ids = manc_ids,
                            col=grDevices::colorRampPalette(c("#FFA07A", "#FF4500", "#FF8C00"))(length(manc_ids)))
@@ -170,7 +170,7 @@ bancsee <- function(banc_ids = NULL,
     fafbseg::ngl_layers(sc1)$`manc v1.2.1 imported` <- fafbseg::ngl_layers(sc5)$`manc v1.2.1 imported`
   }
 
-  if(!is.null(nuclei_ids)){
+  if(!length(nuclei_ids)){
     u6=banc_scene(manc_ids, open=F, layer = "nuclei (v1)")
     colourdf6 = data.frame(ids = nuclei_ids,
                            col="#FC6882")
