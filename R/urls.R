@@ -119,12 +119,22 @@ bancsee <- function(banc_ids = NULL,
   # Do not get the neuroglancer warnings
   old_warn <- options(warn = -1)  # Suppress all warnings
   on.exit(options(old_warn))  # Restore warning settings when function exits
+  banc_ids <- banc_ids[!is.na(banc_ids)]
+  banc_ids <- banc_ids[banc_ids!="0"]
+  fafb_ids <- fafb_ids[!is.na(fafb_ids)]
+  fafb_ids <- fafb_ids[fafb_ids!="0"]
+  hemibrain_ids <- hemibrain_ids[!is.na(hemibrain_ids)]
+  hemibrain_ids <- hemibrain_ids[hemibrain_ids!="0"]
+  manc_ids <- manc_ids[!is.na(manc_ids)]
+  manc_ids <- manc_ids[manc_ids!="0"]
+  nuclei_ids <- nuclei_ids[!is.na(nuclei_ids)]
+  nuclei_ids <- nuclei_ids[nuclei_ids!="0"]
 
   # Get BANC IDs
   if(!is.null(banc_ids)){
     u1=banc_scene(banc_ids, open=F, layer = "segmentation proofreading")
     colourdf1 = data.frame(ids = banc_ids,
-                           col=grDevices::colorRampPalette(c("#00BFFF", "#0000FF", "#8A2BE2"))(length(banc_ids)))
+                           col=grDevices::colorRampPalette(c("#54BCD1", "#0000FF", "#8A2BE2"))(length(banc_ids)))
     sc1<-fafbseg::ngl_add_colours(u1, colourdf1, layer = "segmentation proofreading")
   }else{
     sc1 = fafbseg::ngl_decode_scene(banc_scene())
