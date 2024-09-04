@@ -371,10 +371,41 @@ banc_update_status <- function(df, update, col = "status", wipe = FALSE){
 #                       append_allowed = FALSE,
 #                       chunksize = 100)
 
+# Update the BANC IDs
+banctable_updateids <- function(){
 
+  # Get cell info table
+  info <- banc_cell_info() %>%
+    dplyr::select(pt_root_id, pt_supervoxel_id) %>%
+    dplyr::mutate(pt_root_id=as.character(pt_root_id),
+                  pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
+    dplyr::distinct(pt_supervoxel_id, .keep_all = TRUE)
 
+  # Get current table
+  bc <- banctable_query() %>%
+    dplyr::select(root_id, supervoxel_id, `_id`)
 
+  # Update
+  bc.new <- bc %>%
+    dplyr::left_join(info,
+                     by = c("supervoxel_id"="pt_supervoxel_id")) %>%
+    dplyr::mutate(root_id = ifelse(is.na(pt_root_id),root_id,pt_root_id)) %>%
+    dplyr::select(-pt_root_id)
 
+  # Update root IDs directly where needed
+  # bc.new <- banc_updateids(bc.new)
+
+  # Update
+  banctable_update_rows(df = bc.new,
+                        base = "banc_meta",
+                        table = "banc_meta",
+                        append_allowed = FALSE,
+                        chunksize = 1000)
+
+  # Return
+  invisible()
+
+}
 
 
 
