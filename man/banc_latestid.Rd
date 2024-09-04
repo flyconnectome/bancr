@@ -30,6 +30,10 @@ dataset.}
 of}
 
 \item{...}{Additional arguments passed to \code{\link{flywire_latestid}}}
+
+\item{x}{a \code{data.frame} with at least one of: \code{root_id}, \code{pt_root_id}, \code{supervoxel_id} and/or \code{pt_supervoxel_id}.
+Supervoxels will be preferentially used to update the \code{root_id} column.
+Else a vector of \code{BANC} root IDs.}
 }
 \description{
 Find the latest id for a banc root id

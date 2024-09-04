@@ -114,6 +114,9 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' Find the latest id for a banc root id
 #'
 #' @inheritParams fafbseg::flywire_latestid
+#' @param x a `data.frame` with at least one of: `root_id`, `pt_root_id`, `supervoxel_id` and/or `pt_supervoxel_id`.
+#' Supervoxels will be preferentially used to update the `root_id` column.
+#' Else a vector of `BANC` root IDs.
 #' @param ... Additional arguments passed to \code{\link{flywire_latestid}}
 #'
 #' @export
