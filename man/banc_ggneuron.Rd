@@ -42,6 +42,7 @@ A ggplot object representing the visualized neuron.
 }
 \description{
 This function visualizes a neuron or neuron-related object from the BANC connectomic dataset using ggplot2.
+The only thing specific to the BANC data set is are the prreset 'view' angles.
 }
 \details{
 This function is a wrapper around the ggneuron function, specifically tailored for the BANC dataset.

@@ -12,6 +12,7 @@
 \alias{banc_vnc_neuropils.surf}
 \alias{banc_vnc_tracts.surf}
 \alias{banc_vnc_nerves.surf}
+\alias{banc_hemibrain.surf}
 \alias{banc_volumes.df}
 \title{Simplified tissue and neuropil surfaces for BANC}
 \format{
@@ -28,6 +29,8 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} of length 4.
+
+An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
@@ -57,6 +60,8 @@ banc_vnc_neuropils.surf
 banc_vnc_tracts.surf
 
 banc_vnc_nerves.surf
+
+banc_hemibrain.surf
 
 banc_volumes.df
 }

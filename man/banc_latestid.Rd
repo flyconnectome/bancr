@@ -13,7 +13,7 @@ banc_latestid(
   ...
 )
 
-banc_updateids(rootid, ...)
+banc_updateids(x, ...)
 }
 \arguments{
 \item{rootid}{One ore more FlyWire rootids defining a segment (in any form
