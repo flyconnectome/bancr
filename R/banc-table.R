@@ -376,18 +376,26 @@ banctable_updateids <- function(){
 
   # Get cell info table
   cat('reading cell info cave table...')
-  info <- banc_cell_info() %>%
+  info <- banc_cell_info(rawcoords = TRUE)  %>%
+    dplyr::mutate(pt_position = xyzmatrix2str(pt_position)) %>%
     dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
     rbind(banc_backbone_proofread() %>%
-             dplyr::select(pt_root_id, pt_supervoxel_id,pt_position)) %>%
+            dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
+            dplyr::mutate(pt_position = xyzmatrix2str(pt_position))) %>%
+    rbind(banc_neck_connective_neurons() %>%
+            dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
+            dplyr::mutate(pt_position = xyzmatrix2str(pt_position))) %>%
     dplyr::mutate(pt_root_id=as.character(pt_root_id),
                   pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
-    dplyr::distinct(pt_supervoxel_id, .keep_all = TRUE)
+    dplyr::distinct(pt_supervoxel_id, .keep_all = TRUE) %>%
+    dplyr::rowwise()
 
   # Get current table
   cat('reading banc meta table...')
   bc <- banctable_query(sql = 'select _id, root_id, supervoxel_id, position from banc_meta') %>%
     dplyr::select(root_id, supervoxel_id, position, `_id`)
+  bc[bc=="0"] <- NA
+  bc[bc==""] <- NA
 
   # Update
   bc.new <- bc %>%
@@ -398,8 +406,8 @@ banctable_updateids <- function(){
     dplyr::select(-pt_root_id,-pt_position)
 
   # Update root IDs directly where needed
-  bc.new.rup <- banc_updateids(bc.new)
-  bc.new.rup.joined <- bc.new.rup %>%
+  bc.new <- banc_updateids(bc.new)
+  bc.new <- bc.new %>%
     dplyr::left_join(info %>% dplyr::distinct(pt_root_id, .keep_all = TRUE),
                      by = c("root_id"="pt_root_id")) %>%
     dplyr::mutate(supervoxel_id = ifelse(is.na(supervoxel_id),pt_supervoxel_id,supervoxel_id)) %>%
@@ -408,6 +416,8 @@ banctable_updateids <- function(){
 
   # Update
   cat('updating banc meta table...')
+  bc.new[is.na(bc.new)] <- ''
+  bc.new[bc.new=="0"] <- ''
   banctable_update_rows(df = bc.new,
                         base = "banc_meta",
                         table = "banc_meta",
@@ -417,7 +427,6 @@ banctable_updateids <- function(){
 
   # Return
   invisible()
-
 }
 
 
