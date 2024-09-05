@@ -66,16 +66,58 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' banc_xyz2id(cbind(438976,985856,215955), rawcoords=FALSE)
 #' }
 banc_xyz2id <- function(xyz,
-                        rawcoords=FALSE,
-                        voxdims=c(4, 4, 45),
-                        root=TRUE,
-                        ...){
-  if(is.numeric(xyz) && !is.matrix(xyz) && length(xyz)==3)
-    xyz=matrix(xyz, ncol=3)
-  if(rawcoords)
-    xyz=scale(xyzmatrix(xyz), center = F, scale = 1/voxdims)
-  svids=banc_supervoxels(xyz, voxdims=voxdims)
-  if(isTRUE(root)) banc_rootid(svids) else svids
+                        rawcoords = FALSE,
+                        voxdims = c(4, 4, 45),
+                        root = TRUE,
+                        timestamp = NULL,
+                        version = NULL,
+                        stop_layer = NULL,
+                        integer64 = FALSE, fast_root = TRUE,
+                        method = c("cloudvolume", "spine"),
+                        ...) {
+  fafbseg:::check_cloudvolume_reticulate()
+  method = match.arg(method)
+  if (isTRUE(is.numeric(xyz) && is.vector(xyz) && length(xyz) ==
+             3)) {
+    xyz = matrix(xyz, ncol = 3)
+  }
+  else {
+    xyz = xyzmatrix(xyz)
+  }
+  if (isTRUE(rawcoords)) {
+    xyz <- scale(xyz, scale = 1/voxdims, center = FALSE)
+  }
+  checkmate::assertNumeric(xyz)
+  if (method %in% c("spine")) {
+    res <- banc_supervoxels(xyz, voxdims=voxdims)
+  }
+  else {
+    cv = banc_cloudvolume()
+    pycode = sprintf("\nfrom cloudvolume import Vec\n\ndef py_flywire_xyz2id(cv, xyz, agglomerate):\n  pt = Vec(*xyz) // cv.meta.resolution(0)\n  img = cv.download_point(pt, mip=0, size=1, agglomerate=agglomerate)\n  return str(img[0,0,0,0])\n")
+    pydict = reticulate::py_run_string(pycode)
+    safexyz2id <- function(pt) {
+      tryCatch(pydict$py_flywire_xyz2id(cv, pt, agglomerate = root &&
+                                          !fast_root), error = function(e) {
+                                            warning(e)
+                                            NA_character_
+                                          })
+    }
+    res = pbapply::pbapply(xyz, 1, safexyz2id, ...)
+  }
+  if (fast_root && root) {
+    res = banc_rootid(res,
+                     timestamp = timestamp, version = version,
+                     stop_layer = stop_layer,
+                     integer64 = integer64)
+  }
+  if (isFALSE(rawcoords) && sum(res == 0) > 0.25 * length(res)) {
+    if (all(is_rawcoord(xyz))) {
+      warning("It looks like you may be passing in raw coordinates. If so, use rawcoords=TRUE")
+    }
+  }
+  if (integer64)
+    bit64::as.integer64(res)
+  else as.character(res)
 }
 
 # rawxyz=cbind(34496, 82782, 1954)
@@ -140,29 +182,41 @@ banc_updateids <- function(x, ...){
       root.col <- "root_id"
     }
     if(any(c("root_id","pt_root_id")%in%colnames(x))){
+      cat('determining old root_ids...')
       old <- !banc_islatest(x[[root.col]], ...)
     }else{
       old <- rep(TRUE,nrow(x))
     }
+    old[is.na(old)] <- TRUE
 
     # update based on supervoxels
     if(any(c("supervoxel_id","pt_supervoxel_id")%in%colnames(x))){
+      cat('updating root_ids with a supervoxel_id...')
       svid.col <- intersect(c("supervoxel_id","pt_supervoxel_id"),colnames(x))[1]
-      x[old,][[root.col]] <- banc_root(x[old,][[svid.col]], ...)
-      new <- is.na(x[old,][[svid.col]])|x[old,][[root.col]]=="0"
-      old <- old+!new
+      update <- unname(pbapply::pbsapply(x[old,][[svid.col]], banc_rootid, ...))
+      bad <- is.na(update)|update=="0"
+      update <- update[!bad]
+      x[old,][[root.col]][!bad] <- update
+      old[!bad] <- FALSE
     }
+    old[is.na(old)] <- TRUE
 
     # update based on root Ids
-    if(any(c("root_id","pt_root_id")%in%colnames(x)) && any(sum(old))){
+    if(any(c("root_id","pt_root_id")%in%colnames(x)) && sum(old)){
+      cat('updating root_ids without a supervoxel_id...')
       x[old,][[root.col]] <- banc_latestid(x[old,][[root.col]], ...)
       new <- is.na(x[old,][[root.col]])|x[old,][[root.col]]=="0"
-      old <- old+!new
+      bad <- is.na(update)|update=="0"
+      update <- update[!bad]
+      x[old,][[root.col]][!bad] <- update
+      old[!bad] <- FALSE
       if(sum(old)){
-        warning("Failed to update: ", sum(old))
+        warning("failed to update: ", sum(old))
       }
     }
+    x
   }else{
+    cat('updating root_ids directly')
     old <- !banc_islatest(x, ...)
     old[is.na(old)] <- TRUE
     updated <- banc_latestid(x[old], ...)
@@ -170,6 +224,7 @@ banc_updateids <- function(x, ...){
     x
   }
 }
+
 #' Return a vector of banc root ids from diverse inputs
 #'
 #' @param x A data.frame, URL or vector of ids
