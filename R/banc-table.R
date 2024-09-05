@@ -375,32 +375,45 @@ banc_update_status <- function(df, update, col = "status", wipe = FALSE){
 banctable_updateids <- function(){
 
   # Get cell info table
+  cat('reading cell info cave table...')
   info <- banc_cell_info() %>%
-    dplyr::select(pt_root_id, pt_supervoxel_id) %>%
+    dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
+    rbind(banc_backbone_proofread() %>%
+             dplyr::select(pt_root_id, pt_supervoxel_id,pt_position)) %>%
     dplyr::mutate(pt_root_id=as.character(pt_root_id),
                   pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
     dplyr::distinct(pt_supervoxel_id, .keep_all = TRUE)
 
   # Get current table
-  bc <- banctable_query() %>%
-    dplyr::select(root_id, supervoxel_id, `_id`)
+  cat('reading banc meta table...')
+  bc <- banctable_query(sql = 'select _id, root_id, supervoxel_id, position from banc_meta') %>%
+    dplyr::select(root_id, supervoxel_id, position, `_id`)
 
   # Update
   bc.new <- bc %>%
     dplyr::left_join(info,
                      by = c("supervoxel_id"="pt_supervoxel_id")) %>%
     dplyr::mutate(root_id = ifelse(is.na(pt_root_id),root_id,pt_root_id)) %>%
-    dplyr::select(-pt_root_id)
+    dplyr::mutate(position = ifelse(is.na(position),pt_position,position)) %>%
+    dplyr::select(-pt_root_id,-pt_position)
 
   # Update root IDs directly where needed
-  # bc.new <- banc_updateids(bc.new)
+  bc.new.rup <- banc_updateids(bc.new)
+  bc.new.rup.joined <- bc.new.rup %>%
+    dplyr::left_join(info %>% dplyr::distinct(pt_root_id, .keep_all = TRUE),
+                     by = c("root_id"="pt_root_id")) %>%
+    dplyr::mutate(supervoxel_id = ifelse(is.na(supervoxel_id),pt_supervoxel_id,supervoxel_id)) %>%
+    dplyr::mutate(position = ifelse(is.na(position),pt_position,position)) %>%
+    dplyr::select(-pt_supervoxel_id,-pt_position)
 
   # Update
+  cat('updating banc meta table...')
   banctable_update_rows(df = bc.new,
                         base = "banc_meta",
                         table = "banc_meta",
                         append_allowed = FALSE,
                         chunksize = 1000)
+  cat('done.')
 
   # Return
   invisible()
