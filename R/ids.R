@@ -188,6 +188,9 @@ banc_updateids <- function(x, ...){
       old <- rep(TRUE,nrow(x))
     }
     old[is.na(old)] <- TRUE
+    if(!sum(old)){
+      return(x)
+    }
 
     # update based on supervoxels
     if(any(c("supervoxel_id","pt_supervoxel_id")%in%colnames(x))){
@@ -210,19 +213,36 @@ banc_updateids <- function(x, ...){
       update <- update[!bad]
       x[old,][[root.col]][!bad] <- update
       old[!bad] <- FALSE
-      if(sum(old)){
-        warning("failed to update: ", sum(old))
-      }
     }
-    x
+
+    # update based on position
+    if(any(c("position","pt_position")%in%colnames(x)) && sum(old)){
+      cat('updating root_ids with a position ...')
+      pos.col <- intersect(c("position","pt_position"),colnames(x))[1]
+      update <- unname(pbapply::pbsapply(x[old,][[pos.col]], banc_xyz2id, rawcoords = TRUE, ...))
+      bad <- is.na(update)|update=="0"
+      update <- update[!bad]
+      x[old,][[root.col]][!bad] <- update
+      old[!bad] <- FALSE
+    }
+    old[is.na(old)] <- TRUE
+
   }else{
     cat('updating root_ids directly')
     old <- !banc_islatest(x, ...)
     old[is.na(old)] <- TRUE
-    updated <- banc_latestid(x[old], ...)
-    x[old] <- updated
-    x
+    update <- banc_latestid(x[old], ...)
+    bad <- is.na(update)|update=="0"
+    update <- update[!bad]
+    x[old][!bad]  <- update
+    old[!bad] <- FALSE
   }
+
+  # return
+  if(sum(old)){
+    warning("failed to update: ", sum(old))
+  }
+  x
 }
 
 #' Return a vector of banc root ids from diverse inputs
