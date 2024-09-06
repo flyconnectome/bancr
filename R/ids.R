@@ -52,7 +52,6 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #'   clearly shows voxel coordinates of 4.3x4.3x45. But in this function, the
 #'   voxel coordinates must be set to 4.25 in x-y to give the correct answers.
 #'
-#' @param voxdims The voxel dimensions (in nm). See details.
 #' @inheritParams fafbseg::flywire_xyz2id
 #'
 #' @return A character vector of segment ids, NA when lookup fails.
@@ -67,15 +66,13 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' }
 banc_xyz2id <- function(xyz,
                         rawcoords = FALSE,
-                        voxdims = c(4, 4, 45),
                         root = TRUE,
-                        timestamp = NULL,
-                        version = NULL,
-                        stop_layer = NULL,
-                        integer64 = FALSE, fast_root = TRUE,
+                        integer64 = FALSE,
+                        fast_root = TRUE,
                         method = c("cloudvolume", "spine"),
                         ...) {
   fafbseg:::check_cloudvolume_reticulate()
+  voxdims <- banc_voxdims()
   method = match.arg(method)
   if (isTRUE(is.numeric(xyz) && is.vector(xyz) && length(xyz) ==
              3)) {
@@ -106,9 +103,8 @@ banc_xyz2id <- function(xyz,
   }
   if (fast_root && root) {
     res = banc_rootid(res,
-                     timestamp = timestamp, version = version,
-                     stop_layer = stop_layer,
-                     integer64 = integer64)
+                     integer64 = integer64,
+                     ...)
   }
   if (isFALSE(rawcoords) && sum(res == 0) > 0.25 * length(res)) {
     if (all(is_rawcoord(xyz))) {
@@ -199,7 +195,7 @@ banc_updateids <- function(x, ...){
       update <- unname(pbapply::pbsapply(x[old,][[svid.col]], banc_rootid, ...))
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
-      x[old,][[root.col]][!bad] <- update
+      if(length(update)) x[old,][[root.col]][!bad] <- update
       old[!bad] <- FALSE
     }
     old[is.na(old)] <- TRUE
@@ -207,11 +203,10 @@ banc_updateids <- function(x, ...){
     # update based on root Ids
     if(any(c("root_id","pt_root_id")%in%colnames(x)) && sum(old)){
       cat('updating root_ids without a supervoxel_id...')
-      x[old,][[root.col]] <- banc_latestid(x[old,][[root.col]], ...)
-      new <- is.na(x[old,][[root.col]])|x[old,][[root.col]]=="0"
+      update <- banc_latestid(x[old,][[root.col]], ...)
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
-      x[old,][[root.col]][!bad] <- update
+      if(length(update)) x[old,][[root.col]][!bad] <- update
       old[!bad] <- FALSE
     }
 
@@ -222,7 +217,7 @@ banc_updateids <- function(x, ...){
     #   update <- unname(pbapply::pbsapply(x[old,][[pos.col]], banc_xyz2id, rawcoords = TRUE, ...))
     #   bad <- is.na(update)|update=="0"
     #   update <- update[!bad]
-    #   x[old,][[root.col]][!bad] <- update
+    #   if(length(update)) x[old,][[root.col]][!bad] <- update
     #   old[!bad] <- FALSE
     # }
     # old[is.na(old)] <- TRUE
@@ -234,7 +229,7 @@ banc_updateids <- function(x, ...){
     update <- banc_latestid(x[old], ...)
     bad <- is.na(update)|update=="0"
     update <- update[!bad]
-    x[old][!bad]  <- update
+    if(length(update)) x[old][!bad]  <- update
     old[!bad] <- FALSE
   }
 
