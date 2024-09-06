@@ -4,7 +4,15 @@
 \alias{banc_xyz2id}
 \title{Convert xyz locations to root or supervoxel ids}
 \usage{
-banc_xyz2id(xyz, rawcoords = FALSE, voxdims = c(4, 4, 45), root = TRUE, ...)
+banc_xyz2id(
+  xyz,
+  rawcoords = FALSE,
+  root = TRUE,
+  integer64 = FALSE,
+  fast_root = TRUE,
+  method = c("cloudvolume", "spine"),
+  ...
+)
 }
 \arguments{
 \item{xyz}{One or more xyz locations as an Nx3 matrix or in any form
@@ -13,10 +21,20 @@ compatible with \code{\link[fafbseg]{xyzmatrix}} including \code{neuron} or
 
 \item{rawcoords}{whether the input values are raw voxel indices or in nm}
 
-\item{voxdims}{The voxel dimensions (in nm). See details.}
-
 \item{root}{Whether to return the root id of the whole segment rather than
 the supervoxel id.}
+
+\item{integer64}{Whether to return ids as integer64 type (more compact but a
+little fragile) rather than character (default \code{FALSE}).}
+
+\item{fast_root}{Whether to use a fast but two-step look-up procedure when
+finding roots. This is strongly recommended and the alternative approach
+has only been retained for validation purposes.}
+
+\item{method}{Whether to use the
+\href{https://services.itanna.io/app/transform-service/docs}{spine
+transform-service} API or cloudvolume for lookup. \code{"auto"} is
+presently a synonym for \code{"spine"}.}
 
 \item{...}{additional arguments passed to \code{pbapply} when looking up
 multiple positions.}
