@@ -136,17 +136,17 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
     if(length(neuron1)==1){
       cols1 <- c("blue", "navy")
     }else{
-      cols1 <- grDevices::colorRampPalette(c("#0000CD", "#4169E1", "cyan"))(length(neuron1))
+      cols1 <- grDevices::colorRampPalette(c("#0000CD", "#4169E1"))(length(neuron1))
     }
     if(length(neuron2)==1){
       cols2 <- c("darkred", "red")
     }else{
-      cols2 <- grDevices::colorRampPalette(c("#8f0723","#DC143C", "#FF4500", "#FF4500"))(length(neuron2))
+      cols2 <- grDevices::colorRampPalette(c("#8f0723","#DC143C", "#FF4500"))(length(neuron2))
     }
     if(length(neuron3)==1){
       cols3 <- c("darkgreen", "green")
     }else{
-      cols3 <- grDevices::colorRampPalette(c("#076b3e", "#32c080","chartreuse"))(length(neuron3))
+      cols3 <- grDevices::colorRampPalette(c("#076b3e", "#32c080"))(length(neuron3))
     }
     if(length(alpha)<3){
       alpha<-rep(alpha[1],3)
