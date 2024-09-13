@@ -166,10 +166,10 @@ banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, 
 }
 
 # hidden
-banc_roots <- function(){
-  roots <- bancr::banc_nuclei(rawcoords = FALSE)
+banc_roots <- function(rawcoords = FALSE){
+  roots <- bancr::banc_nuclei(rawcoords = rawcoords)
   roots$pt_position <- roots$nucleus_position_nm
-  info <- banc_cell_info(rawcoords = FALSE)
+  info <- banc_cell_info(rawcoords = rawcoords)
   info$root_id <-info$pt_root_id
   xyz <- nat::xyzmatrix(info$pt_position)
   p <- nat::pointsinside(xyz,surf=bancr::banc_brain_neuropil.surf)
