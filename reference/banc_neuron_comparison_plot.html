@@ -50,6 +50,7 @@ dataset. It generates four different anatomical views to facilitate comparison.<
 <span>  neuron1.info <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  neuron2.info <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  neuron3.info <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  volume <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"both"</span>, <span class="st">"brain"</span>, <span class="st">"vnc"</span><span class="op">)</span>,</span>
 <span>  banc_brain_neuropil <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  banc_vnc_neuropil <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -87,6 +88,10 @@ dataset. It generates four different anatomical views to facilitate comparison.<
 
 <dt id="arg-neuron-info">neuron3.info<a class="anchor" aria-label="anchor" href="#arg-neuron-info"></a></dt>
 <dd><p>Character, a vector to be printed on the outputted ggplot in reference to neuron3.</p></dd>
+
+
+<dt id="arg-volume">volume<a class="anchor" aria-label="anchor" href="#arg-volume"></a></dt>
+<dd><p>A mesh3d  or hxsurf object in BANC space that you wish you co-plot.</p></dd>
 
 
 <dt id="arg-region">region<a class="anchor" aria-label="anchor" href="#arg-region"></a></dt>
