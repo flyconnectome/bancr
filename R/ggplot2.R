@@ -10,6 +10,7 @@
 #' @param neuron1.info Character, a vector to be printed on the outputted ggplot in reference to neuron1.
 #' @param neuron2.info Character, a vector to be printed on the outputted ggplot in reference to neuron2.
 #' @param neuron3.info Character, a vector to be printed on the outputted ggplot in reference to neuron3.
+#' @param volume A mesh3d  or hxsurf object in BANC space that you wish you co-plot.
 #' @param region Character, whether to plot the brain area, VNC area or both (default).
 #' @param banc_brain_neuropil A mesh object representing the brain neuropil. Default is banc_brain_neuropil.surf.
 #' @param banc_vnc_neuropil A mesh object representing the ventral nerve cord (VNC) neuropil. Default is banc_vnc_neuropil.surf.
@@ -60,6 +61,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
                                         neuron1.info = NULL,
                                         neuron2.info = NULL,
                                         neuron3.info = NULL,
+                                        volume = NULL,
                                         region = c("both","brain","vnc"),
                                         banc_brain_neuropil = NULL,
                                         banc_vnc_neuropil = NULL,
@@ -155,6 +157,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
     # Create the plot
     p <- ggplot2::ggplot() +
       geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey50")) +
+      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey30")) +
       geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = cols1, alpha = alpha[1], linewidth = 0.3) +
       geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = cols2, alpha = alpha[2], linewidth = 0.3) +
       geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = cols3, alpha = alpha[3], linewidth = 0.3) +
