@@ -11,6 +11,7 @@ banc_neuron_comparison_plot(
   neuron1.info = NULL,
   neuron2.info = NULL,
   neuron3.info = NULL,
+  volume = NULL,
   region = c("both", "brain", "vnc"),
   banc_brain_neuropil = NULL,
   banc_vnc_neuropil = NULL,
@@ -33,6 +34,8 @@ banc_neuron_comparison_plot(
 \item{neuron2.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron2.}
 
 \item{neuron3.info}{Character, a vector to be printed on the outputted ggplot in reference to neuron3.}
+
+\item{volume}{A mesh3d  or hxsurf object in BANC space that you wish you co-plot.}
 
 \item{region}{Character, whether to plot the brain area, VNC area or both (default).}
 
