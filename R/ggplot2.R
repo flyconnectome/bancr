@@ -687,10 +687,10 @@ geom_neuron.splitneuron <- function(x = NULL,
                  error = function(e) NULL)
 
   # Stitch subtree
-  dendrites <- nat::stitch_neurons_mst(dendrites)
-  axon <- nat::stitch_neurons_mst(axon)
-  p.d <- nat::stitch_neurons_mst(p.d)
-  p.n <- nat::stitch_neurons_mst(p.n)
+  dendrites <- tryCatch(nat::stitch_neurons_mst(dendrites), error = function(e) NULL)
+  axon <- tryCatch(nat::stitch_neurons_mst(axon), error = function(e) NULL)
+  p.d <- tryCatch(nat::stitch_neurons_mst(p.d), error = function(e) NULL)
+  p.n <- tryCatch(nat::stitch_neurons_mst(p.n), error = function(e) NULL)
 
   # Make into a multi-segmen neuroblist
   nulls <- nat::nlapply(1:length(nulls$SubTrees), function(subt) tryCatch(nat::prune_vertices(nulls,
@@ -699,6 +699,9 @@ geom_neuron.splitneuron <- function(x = NULL,
                                                                           error = function(e) NULL),
                                                                           .progress = FALSE)
   nulls <- nulls[unlist(lapply(nulls, length))>0]
+  if(!length(nulls)){
+    nulls <- NULL
+  }
 
   # Make ggplot2 objects
   g.dendrites <- ggplot2_neuron_path(dendrites, rotation_matrix = rotation_matrix)
