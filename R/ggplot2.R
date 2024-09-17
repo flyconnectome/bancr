@@ -673,18 +673,32 @@ geom_neuron.splitneuron <- function(x = NULL,
   null.v = subset(rownames(x$d), x$d$Label ==  0 | is.na(x$d$Label))
 
   # Get cable
-  dendrites = tryCatch(nat::prune_vertices(x,
+  dendrites <- tryCatch(nat::prune_vertices(x,
                                            verticestoprune = as.integer(c(axon.v,p.d.v, p.n.v, null.v))),
                        error = function(e) NULL)
-  axon = tryCatch(nat::prune_vertices(x,
+  axon <- tryCatch(nat::prune_vertices(x,
                                       verticestoprune = as.integer(c(dendrites.v, p.d.v, p.n.v, null.v))),
                   error = function(e) NULL)
-  p.d = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v, null.v))),
+  p.d <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v, null.v))),
                  error = function(e) NULL)
-  p.n = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, null.v))),
+  p.n <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, null.v))),
                  error = function(e) NULL)
-  nulls = tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v))),
+  nulls <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v))),
                  error = function(e) NULL)
+
+  # Stitch subtree
+  dendrites <- nat::stitch_neurons_mst(dendrites)
+  axon <- nat::stitch_neurons_mst(axon)
+  p.d <- nat::stitch_neurons_mst(p.d)
+  p.n <- nat::stitch_neurons_mst(p.n)
+
+  # Make into a multi-segmen neuroblist
+  nulls <- nat::nlapply(1:length(nulls$SubTrees), function(subt) tryCatch(nat::prune_vertices(nulls,
+                                                                                verticestoprune = unlist(nulls$SubTrees[[subt]]),
+                                                                                invert = TRUE),
+                                                                          error = function(e) NULL),
+                                                                          .progress = FALSE)
+  nulls <- nulls[unlist(lapply(nulls, length))>0]
 
   # Make ggplot2 objects
   g.dendrites <- ggplot2_neuron_path(dendrites, rotation_matrix = rotation_matrix)
