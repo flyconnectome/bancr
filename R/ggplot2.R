@@ -156,8 +156,8 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 
     # Create the plot
     p <- ggplot2::ggplot() +
-      geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey50")) +
-      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey30")) +
+      geom_neuron(x = mesh, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey90", "grey60")) +
+      geom_neuron(x = volume, rotation_matrix = rotation_matrix, alpha = 0.05, cols = c("grey50")) +
       geom_neuron(x=neuron_pruned1, rotation_matrix = rotation_matrix, cols = cols1, alpha = alpha[1], linewidth = 0.3) +
       geom_neuron(x=neuron_pruned2, rotation_matrix = rotation_matrix, cols = cols2, alpha = alpha[2], linewidth = 0.3) +
       geom_neuron(x=neuron_pruned3, rotation_matrix = rotation_matrix, cols = cols3, alpha = alpha[3], linewidth = 0.3) +
