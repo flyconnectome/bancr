@@ -13,7 +13,12 @@ banc_latestid(
   ...
 )
 
-banc_updateids(x, ...)
+banc_updateids(
+  x,
+  root.column = "root_id",
+  supervoxel.column = "supervoxel_id",
+  ...
+)
 }
 \arguments{
 \item{rootid}{One ore more FlyWire rootids defining a segment (in any form
@@ -34,6 +39,10 @@ of}
 \item{x}{a \code{data.frame} with at least one of: \code{root_id}, \code{pt_root_id}, \code{supervoxel_id} and/or \code{pt_supervoxel_id}.
 Supervoxels will be preferentially used to update the \code{root_id} column.
 Else a vector of \code{BANC} root IDs.}
+
+\item{root.column}{when \code{x} is a \code{data.frame}, the \code{root_id} column you wish to update}
+
+\item{supervoxel.column}{when \code{x} is a \code{data.frame}, the \code{supervoxel_id} column you wish to use to update \code{root.column}}
 }
 \description{
 Find the latest id for a banc root id

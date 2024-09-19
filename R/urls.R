@@ -64,6 +64,12 @@ banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
 #' @param nuclei_ids A vector of nuclei IDs for the BANC dataset. Default is NULL.
 #' @param open Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.
+#' @param banc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are cyan-purple.
+#' @param fafb.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are red hues.
+#' @param hemibrain.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.
+#' @param hemibrain.mirrored.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.
+#' @param manc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.
+#' @param nulcei.col Hex code for the colour in which nuclei will be plotted. Default is pink.
 #'
 #' @return
 #' If `open = FALSE`, returns a character string containing the URL for the Neuroglancer scene.
@@ -114,7 +120,13 @@ bancsee <- function(banc_ids = NULL,
                     hemibrain_ids = NULL,
                     manc_ids = NULL,
                     nuclei_ids = NULL,
-                    open = FALSE){
+                    open = FALSE,
+                    banc.cols = c("#54BCD1", "#0000FF", "#8A2BE2"),
+                    fafb.cols = c("#C41E3A", "#FF3131", "#F88379"),
+                    hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
+                    hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
+                    manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
+                    nulcei.col = "#FC6882"){
 
   # Do not get the neuroglancer warnings
   old_warn <- options(warn = -1)  # Suppress all warnings
@@ -134,7 +146,7 @@ bancsee <- function(banc_ids = NULL,
   if(length(banc_ids)){
     u1=banc_scene(banc_ids, open=F, layer = "segmentation proofreading")
     colourdf1 = data.frame(ids = banc_ids,
-                           col=grDevices::colorRampPalette(c("#54BCD1", "#0000FF", "#8A2BE2"))(length(banc_ids)))
+                           col=grDevices::colorRampPalette(banc.cols)(length(banc_ids)))
     sc1<-fafbseg::ngl_add_colours(u1, colourdf1, layer = "segmentation proofreading")
   }else{
     sc1 = fafbseg::ngl_decode_scene(banc_scene())
@@ -144,7 +156,7 @@ bancsee <- function(banc_ids = NULL,
   if(length(fafb_ids)){
     u2=banc_scene(fafb_ids, open=F, layer = "fafb v783 imported")
     colourdf2 = data.frame(ids = fafb_ids,
-                           col=grDevices::colorRampPalette(c("#EE4244", "#D72000", "#C23A4B"))(length(fafb_ids)))
+                           col=grDevices::colorRampPalette(fafb.cols)(length(fafb_ids)))
     sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "fafb v783 imported")
     fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc2)$`fafb v783 imported`
   }
@@ -152,12 +164,12 @@ bancsee <- function(banc_ids = NULL,
   if(length(hemibrain_ids)){
     u3=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported")
     colourdf3 = data.frame(ids = hemibrain_ids,
-                           col=grDevices::colorRampPalette(c("#00FF00", "#32CD32", "#006400"))(length(hemibrain_ids)))
+                           col=grDevices::colorRampPalette(hemibrain.cols)(length(hemibrain_ids)))
     sc3<-fafbseg::ngl_add_colours(u3, colourdf3, layer = "hemibrain v1.2.1 imported")
     fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported` <- fafbseg::ngl_layers(sc3)$`hemibrain v1.2.1 imported`
     u4=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported, mirrored")
     colourdf4 = data.frame(ids = hemibrain_ids,
-                           col=grDevices::colorRampPalette(c("#FFFF00", "#FFD700", "#FFA500"))(length(hemibrain_ids)))
+                           col=grDevices::colorRampPalette(hemibrain.mirrored.cols)(length(hemibrain_ids)))
     sc4<-fafbseg::ngl_add_colours(u4, colourdf4, layer = "hemibrain v1.2.1 imported, mirrored")
     fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported, mirrored` <- fafbseg::ngl_layers(sc4)$`hemibrain v1.2.1 imported, mirrored`
   }
@@ -165,7 +177,7 @@ bancsee <- function(banc_ids = NULL,
   if(length(manc_ids)){
     u5=banc_scene(manc_ids, open=F, layer = "manc v1.2.1 imported")
     colourdf5 = data.frame(ids = manc_ids,
-                           col=grDevices::colorRampPalette(c("#FFA07A", "#FF4500", "#FF8C00"))(length(manc_ids)))
+                           col=grDevices::colorRampPalette(manc.cols)(length(manc_ids)))
     sc5<-fafbseg::ngl_add_colours(u5, colourdf5, layer = "manc v1.2.1 imported")
     fafbseg::ngl_layers(sc1)$`manc v1.2.1 imported` <- fafbseg::ngl_layers(sc5)$`manc v1.2.1 imported`
   }
@@ -173,7 +185,7 @@ bancsee <- function(banc_ids = NULL,
   if(length(nuclei_ids)){
     u6=banc_scene(manc_ids, open=F, layer = "nuclei (v1)")
     colourdf6 = data.frame(ids = nuclei_ids,
-                           col="#FC6882")
+                           col=nulcei.col)
     sc6<-fafbseg::ngl_add_colours(u6, colourdf6, layer = "nuclei (v1)")
     fafbseg::ngl_layers(sc1)$`nuclei (v1)` <- fafbseg::ngl_layers(sc6)$`nuclei (v1)`
   }

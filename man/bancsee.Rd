@@ -10,7 +10,13 @@ bancsee(
   hemibrain_ids = NULL,
   manc_ids = NULL,
   nuclei_ids = NULL,
-  open = FALSE
+  open = FALSE,
+  banc.cols = c("#54BCD1", "#0000FF", "#8A2BE2"),
+  fafb.cols = c("#C41E3A", "#FF3131", "#F88379"),
+  hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
+  hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
+  manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
+  nulcei.col = "#FC6882"
 )
 }
 \arguments{
@@ -25,6 +31,18 @@ bancsee(
 \item{nuclei_ids}{A vector of nuclei IDs for the BANC dataset. Default is NULL.}
 
 \item{open}{Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.}
+
+\item{banc.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are cyan-purple.}
+
+\item{fafb.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are red hues.}
+
+\item{hemibrain.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.}
+
+\item{hemibrain.mirrored.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.}
+
+\item{manc.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.}
+
+\item{nulcei.col}{Hex code for the colour in which nuclei will be plotted. Default is pink.}
 }
 \value{
 If \code{open = FALSE}, returns a character string containing the URL for the Neuroglancer scene.

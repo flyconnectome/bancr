@@ -156,7 +156,8 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' Supervoxels will be preferentially used to update the `root_id` column.
 #' Else a vector of `BANC` root IDs.
 #' @param ... Additional arguments passed to \code{\link{flywire_latestid}}
-#'
+#' @param root.column when `x` is a `data.frame`, the `root_id` column you wish to update
+#' @param supervoxel.column when `x` is a `data.frame`, the `supervoxel_id` column you wish to use to update `root.column`
 #' @export
 #' @seealso \code{\link{banc_islatest}}
 #' @family banc-ids
@@ -170,45 +171,48 @@ banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FA
 
 #' @export
 #' @rdname banc_latestid
-banc_updateids <- function(x, ...){
+banc_updateids <- function(x,
+                           root.column = "root_id",
+                           supervoxel.column = "supervoxel_id",
+                           ...){
   if(is.data.frame(x)){
+
     # what needs updating?
-    root.col <- intersect(c("root_id","pt_root_id"),colnames(x))[1]
-    if(!length(root.col)){
-      root.col <- "root_id"
+    if(!length(root.column)){
+      root.column <- "root_id"
     }
-    if(any(c("root_id","pt_root_id")%in%colnames(x))){
+    if(root.column%in%colnames(x)){
       cat('determining old root_ids...')
-      old <- !banc_islatest(x[[root.col]], ...)
+      old <- !banc_islatest(x[[root.column]], ...)
     }else{
       old <- rep(TRUE,nrow(x))
     }
-    old[is.na(old)] <- TRUE
+    old[is.na(old)] <- FALSE
     if(!sum(old)){
       return(x)
     }
 
     # update based on supervoxels
-    if(any(c("supervoxel_id","pt_supervoxel_id")%in%colnames(x))){
+    if(supervoxel.column%in%colnames(x)){
       cat('updating root_ids with a supervoxel_id...')
-      svid.col <- intersect(c("supervoxel_id","pt_supervoxel_id"),colnames(x))[1]
-      update <- unname(pbapply::pbsapply(x[old,][[svid.col]], banc_rootid, ...))
+      update <- unname(pbapply::pbsapply(x[old,][[supervoxel.column]], banc_rootid, ...))
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
-      if(length(update)) x[old,][[root.col]][!bad] <- update
-      old[!bad] <- FALSE
+      if(length(update)) x[old,][[root.column]][!bad] <- update
+      old[old][!bad] <- FALSE
     }
-    old[is.na(old)] <- TRUE
+    old[is.na(old)] <- FALSE
 
     # update based on root Ids
-    if(any(c("root_id","pt_root_id")%in%colnames(x)) && sum(old)){
+    if(root.column%in%colnames(x) && sum(old)){
       cat('updating root_ids without a supervoxel_id...')
-      update <- banc_latestid(x[old,][[root.col]], ...)
+      update <- banc_latestid(x[old,][[root.column]], ...)
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
-      if(length(update)) x[old,][[root.col]][!bad] <- update
-      old[!bad] <- FALSE
+      if(length(update)) x[old,][[root.column]][!bad] <- update
+      old[old][!bad] <- FALSE
     }
+    old[is.na(old)] <- FALSE
 
     # # update based on position
     # if(any(c("position","pt_position")%in%colnames(x)) && sum(old)){
@@ -217,7 +221,7 @@ banc_updateids <- function(x, ...){
     #   update <- unname(pbapply::pbsapply(x[old,][[pos.col]], banc_xyz2id, rawcoords = TRUE, ...))
     #   bad <- is.na(update)|update=="0"
     #   update <- update[!bad]
-    #   if(length(update)) x[old,][[root.col]][!bad] <- update
+    #   if(length(update)) x[old,][[root.column]][!bad] <- update
     #   old[!bad] <- FALSE
     # }
     # old[is.na(old)] <- TRUE
