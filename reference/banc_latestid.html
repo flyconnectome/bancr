@@ -48,7 +48,12 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_updateids</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">banc_updateids</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  root.column <span class="op">=</span> <span class="st">"root_id"</span>,</span>
+<span>  supervoxel.column <span class="op">=</span> <span class="st">"supervoxel_id"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,6 +89,14 @@ of</p></dd>
 <dd><p>a <code>data.frame</code> with at least one of: <code>root_id</code>, <code>pt_root_id</code>, <code>supervoxel_id</code> and/or <code>pt_supervoxel_id</code>.
 Supervoxels will be preferentially used to update the <code>root_id</code> column.
 Else a vector of <code>BANC</code> root IDs.</p></dd>
+
+
+<dt id="arg-root-column">root.column<a class="anchor" aria-label="anchor" href="#arg-root-column"></a></dt>
+<dd><p>when <code>x</code> is a <code>data.frame</code>, the <code>root_id</code> column you wish to update</p></dd>
+
+
+<dt id="arg-supervoxel-column">supervoxel.column<a class="anchor" aria-label="anchor" href="#arg-supervoxel-column"></a></dt>
+<dd><p>when <code>x</code> is a <code>data.frame</code>, the <code>supervoxel_id</code> column you wish to use to update <code>root.column</code></p></dd>
 
 </dl></div>
     <div class="section level2">

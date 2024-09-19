@@ -52,7 +52,13 @@ It allows for simultaneous visualization of corresponding neurons across these d
 <span>  hemibrain_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  manc_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nuclei_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  open <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  open <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  banc.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#54BCD1"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#8A2BE2"</span><span class="op">)</span>,</span>
+<span>  fafb.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#C41E3A"</span>, <span class="st">"#FF3131"</span>, <span class="st">"#F88379"</span><span class="op">)</span>,</span>
+<span>  hemibrain.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#00FF00"</span>, <span class="st">"#32CD32"</span>, <span class="st">"#006400"</span><span class="op">)</span>,</span>
+<span>  hemibrain.mirrored.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FFFF00"</span>, <span class="st">"#FFD700"</span>, <span class="st">"#FFA500"</span><span class="op">)</span>,</span>
+<span>  manc.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FFA07A"</span>, <span class="st">"#FF4500"</span>, <span class="st">"#FF8C00"</span><span class="op">)</span>,</span>
+<span>  nulcei.col <span class="op">=</span> <span class="st">"#FC6882"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,6 +88,30 @@ It allows for simultaneous visualization of corresponding neurons across these d
 
 <dt id="arg-open">open<a class="anchor" aria-label="anchor" href="#arg-open"></a></dt>
 <dd><p>Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.</p></dd>
+
+
+<dt id="arg-banc-cols">banc.cols<a class="anchor" aria-label="anchor" href="#arg-banc-cols"></a></dt>
+<dd><p>Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are cyan-purple.</p></dd>
+
+
+<dt id="arg-fafb-cols">fafb.cols<a class="anchor" aria-label="anchor" href="#arg-fafb-cols"></a></dt>
+<dd><p>Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are red hues.</p></dd>
+
+
+<dt id="arg-hemibrain-cols">hemibrain.cols<a class="anchor" aria-label="anchor" href="#arg-hemibrain-cols"></a></dt>
+<dd><p>Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.</p></dd>
+
+
+<dt id="arg-hemibrain-mirrored-cols">hemibrain.mirrored.cols<a class="anchor" aria-label="anchor" href="#arg-hemibrain-mirrored-cols"></a></dt>
+<dd><p>Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.</p></dd>
+
+
+<dt id="arg-manc-cols">manc.cols<a class="anchor" aria-label="anchor" href="#arg-manc-cols"></a></dt>
+<dd><p>Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.</p></dd>
+
+
+<dt id="arg-nulcei-col">nulcei.col<a class="anchor" aria-label="anchor" href="#arg-nulcei-col"></a></dt>
+<dd><p>Hex code for the colour in which nuclei will be plotted. Default is pink.</p></dd>
 
 </dl></div>
     <div class="section level2">
