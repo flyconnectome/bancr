@@ -143,7 +143,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
     if(length(neuron2)==1){
       cols2 <- c("darkred", "#F88379")
     }else{
-      cols2 <- grDevices::colorRampPalette(c("#8f0723","#DC143C","#FF4500","#FF7F50:","#F88379","#FFB6C1","#FF69B4"))(length(neuron2))
+      cols2 <- grDevices::colorRampPalette(c("#8f0723","#DC143C","#FF4500","#FF7F50","#F88379","#FFB6C1","#FF69B4"))(length(neuron2))
     }
     if(length(neuron3)==1){
       cols3 <- c("darkgreen", "green")

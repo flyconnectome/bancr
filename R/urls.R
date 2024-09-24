@@ -138,15 +138,15 @@ bancsee <- function(banc_ids = NULL,
   old_warn <- options(warn = -1)  # Suppress all warnings
   on.exit(options(old_warn))  # Restore warning settings when function exits
   banc_ids <- banc_ids[!is.na(banc_ids)]
-  banc_ids <- banc_ids[banc_ids!="0"]
+  banc_ids <- banc_ids[!banc_ids%in%c("0","","NA")]
   fafb_ids <- fafb_ids[!is.na(fafb_ids)]
-  fafb_ids <- fafb_ids[fafb_ids!="0"]
+  fafb_ids <- fafb_ids[!fafb_ids%in%c("0","","NA")]
   hemibrain_ids <- hemibrain_ids[!is.na(hemibrain_ids)]
-  hemibrain_ids <- hemibrain_ids[hemibrain_ids!="0"]
+  hemibrain_ids <- hemibrain_ids[!hemibrain_ids%in%c("0","","NA")]
   manc_ids <- manc_ids[!is.na(manc_ids)]
-  manc_ids <- manc_ids[manc_ids!="0"]
+  manc_ids <- manc_ids[!manc_ids%in%c("0","","NA")]
   nuclei_ids <- nuclei_ids[!is.na(nuclei_ids)]
-  nuclei_ids <- nuclei_ids[nuclei_ids!="0"]
+  nuclei_ids <- nuclei_ids[!nuclei_ids%in%c("0","","NA")]
 
   # Get BANC IDs
   if(length(banc_ids)){

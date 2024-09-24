@@ -50,7 +50,8 @@ jobs:
           pak::local_install()
           library(fafbseg)
           simple_python()
-          dr_fafbseg()
+          simple_python('none', pkgs='cloud-volume~=8.32.1')
+          dr_banc()
         shell: Rscript {0}
 
       - name: writetoken
