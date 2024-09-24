@@ -4,6 +4,7 @@
 #'   \href{https://banc-reconstruction.slack.com/archives/C01RZP5JH9C/p1616522511001900}{banc
 #'    slack} for details.
 #'
+#' @param url a spelunker neuroglancer URL.
 #' @param ids A set of root ids to include in the scene. Can also be a
 #'   data.frame.
 #' @param layer the segmentation layer for which `ids` intended. Defaults to 'segmentation proofreading',
@@ -21,9 +22,12 @@
 #' banc_scene(open=T)
 #' banc_scene("720575941545083784", open=T)
 #' }
-banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
+banc_scene <- function(ids=NULL,
+                       open=FALSE,
+                       layer = NULL,
+                       url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952") {
   #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6283844278812672"
-  url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+  #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
   url=sub("#!middleauth+", "?", url, fixed = T)
   parts=unlist(strsplit(url, "?", fixed = T))
   json=try(fafbseg::flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
@@ -58,6 +62,7 @@ banc_scene <- function(ids=NULL, open=FALSE, layer = NULL) {
 #' co-registered Drosophila connectomic datasets, including BANC, FAFB, hemibrain, and MANC.
 #' It allows for simultaneous visualization of corresponding neurons across these datasets.
 #'
+#' @param url a spelunker neuroglancer URL.
 #' @param banc_ids A vector of neuron IDs from the BANC dataset. Default is NULL.
 #' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
 #' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
@@ -126,7 +131,8 @@ bancsee <- function(banc_ids = NULL,
                     hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
                     hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
                     manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
-                    nulcei.col = "#FC6882"){
+                    nulcei.col = "#FC6882",
+                    url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"){
 
   # Do not get the neuroglancer warnings
   old_warn <- options(warn = -1)  # Suppress all warnings
@@ -144,17 +150,17 @@ bancsee <- function(banc_ids = NULL,
 
   # Get BANC IDs
   if(length(banc_ids)){
-    u1=banc_scene(banc_ids, open=F, layer = "segmentation proofreading")
+    u1=banc_scene(url = url, ids = banc_ids, open=F, layer = "segmentation proofreading")
     colourdf1 = data.frame(ids = banc_ids,
                            col=grDevices::colorRampPalette(banc.cols)(length(banc_ids)))
     sc1<-fafbseg::ngl_add_colours(u1, colourdf1, layer = "segmentation proofreading")
   }else{
-    sc1 = fafbseg::ngl_decode_scene(banc_scene())
+    sc1 = fafbseg::ngl_decode_scene(banc_scene(url = url))
     banc_ngl_segments(sc1) <- NULL
   }
 
   if(length(fafb_ids)){
-    u2=banc_scene(fafb_ids, open=F, layer = "fafb v783 imported")
+    u2=banc_scene(url = url, ids = fafb_ids, open=F, layer = "fafb v783 imported")
     colourdf2 = data.frame(ids = fafb_ids,
                            col=grDevices::colorRampPalette(fafb.cols)(length(fafb_ids)))
     sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "fafb v783 imported")
@@ -162,12 +168,12 @@ bancsee <- function(banc_ids = NULL,
   }
 
   if(length(hemibrain_ids)){
-    u3=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported")
+    u3=banc_scene(url = url, ids = hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported")
     colourdf3 = data.frame(ids = hemibrain_ids,
                            col=grDevices::colorRampPalette(hemibrain.cols)(length(hemibrain_ids)))
     sc3<-fafbseg::ngl_add_colours(u3, colourdf3, layer = "hemibrain v1.2.1 imported")
     fafbseg::ngl_layers(sc1)$`hemibrain v1.2.1 imported` <- fafbseg::ngl_layers(sc3)$`hemibrain v1.2.1 imported`
-    u4=banc_scene(hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported, mirrored")
+    u4=banc_scene(url = url, ids = hemibrain_ids, open=F, layer = "hemibrain v1.2.1 imported, mirrored")
     colourdf4 = data.frame(ids = hemibrain_ids,
                            col=grDevices::colorRampPalette(hemibrain.mirrored.cols)(length(hemibrain_ids)))
     sc4<-fafbseg::ngl_add_colours(u4, colourdf4, layer = "hemibrain v1.2.1 imported, mirrored")
@@ -175,7 +181,7 @@ bancsee <- function(banc_ids = NULL,
   }
 
   if(length(manc_ids)){
-    u5=banc_scene(manc_ids, open=F, layer = "manc v1.2.1 imported")
+    u5=banc_scene(url = url, ids = manc_ids, open=F, layer = "manc v1.2.1 imported")
     colourdf5 = data.frame(ids = manc_ids,
                            col=grDevices::colorRampPalette(manc.cols)(length(manc_ids)))
     sc5<-fafbseg::ngl_add_colours(u5, colourdf5, layer = "manc v1.2.1 imported")
@@ -183,7 +189,7 @@ bancsee <- function(banc_ids = NULL,
   }
 
   if(length(nuclei_ids)){
-    u6=banc_scene(manc_ids, open=F, layer = "nuclei (v1)")
+    u6=banc_scene(url = url, ids = nuclei_ids, open=F, layer = "nuclei (v1)")
     colourdf6 = data.frame(ids = nuclei_ids,
                            col=nulcei.col)
     sc6<-fafbseg::ngl_add_colours(u6, colourdf6, layer = "nuclei (v1)")

@@ -16,7 +16,9 @@ bancsee(
   hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
   hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
   manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
-  nulcei.col = "#FC6882"
+  nulcei.col = "#FC6882",
+  url =
+    "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
 )
 }
 \arguments{
@@ -43,6 +45,8 @@ bancsee(
 \item{manc.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.}
 
 \item{nulcei.col}{Hex code for the colour in which nuclei will be plotted. Default is pink.}
+
+\item{url}{a spelunker neuroglancer URL.}
 }
 \value{
 If \code{open = FALSE}, returns a character string containing the URL for the Neuroglancer scene.

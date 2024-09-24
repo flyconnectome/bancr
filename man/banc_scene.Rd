@@ -4,7 +4,13 @@
 \alias{banc_scene}
 \title{Return a sample Neuroglancer scene URL for banc dataset}
 \usage{
-banc_scene(ids = NULL, open = FALSE, layer = NULL)
+banc_scene(
+  ids = NULL,
+  open = FALSE,
+  layer = NULL,
+  url =
+    "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+)
 }
 \arguments{
 \item{ids}{A set of root ids to include in the scene. Can also be a
@@ -15,6 +21,8 @@ data.frame.}
 
 \item{layer}{the segmentation layer for which \code{ids} intended. Defaults to 'segmentation proofreading',
 but could point to another dataset layer.}
+
+\item{url}{a spelunker neuroglancer URL.}
 }
 \value{
 A character vector containing a single Neuroglancer URL (invisibly
