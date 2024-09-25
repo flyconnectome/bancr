@@ -36,7 +36,7 @@
 
 #' @docType data
 #' @rdname banc.surf
-"banc_neuropils.surf"
+"banc_brain_neuropils.surf"
 
 #' @docType data
 #' @rdname banc.surf
@@ -197,7 +197,7 @@
 #' @seealso
 #' \code{\link{banc.surf}} for the available neuropil objects for BANC.
 #' These are `hxsruf` objects, names for subregions can be found as so:
-#' `banc_neuropils.surf$RegionList`
+#' `banc_brain_neuropil.surf$RegionList`
 "banc_volumes.df"
 
 

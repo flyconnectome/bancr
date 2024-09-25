@@ -229,8 +229,8 @@ banc_shorturl <- function (x,
     sc = fafbseg::ngl_decode_scene(x)
   }
   state_server = "https://global.daf-apis.com/nglstate/post"
-  json = ngl_decode_scene(x, return.json = TRUE)
-  res = flywire_fetch(state_server, body = json, cache = cache)
+  json = fafbseg::ngl_decode_scene(x, return.json = TRUE)
+  res = fafbseg::flywire_fetch(state_server, body = json, cache = cache)
   sprintf("https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/%s",basename(res))
 }
 
@@ -295,8 +295,8 @@ banc_fetch <- function(url, token=banc_token(), ...) {
   baseurl <- if (was_char)
     x
   else NULL
-  x = fafbseg:::ngl_decode_scene(x)
-  layers = fafbseg:::ngl_layers(x)
+  x = fafbseg::ngl_decode_scene(x)
+  layers = fafbseg::ngl_layers(x)
   nls = fafbseg:::ngl_layer_summary(layers)
   sel = which(nls$type == "segmentation_with_graph")
   if (length(sel) == 0)

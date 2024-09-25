@@ -7,7 +7,7 @@
 \alias{banc_brain_neuropil.surf}
 \alias{banc_vnc_neuropil.surf}
 \alias{banc_neck_connective.surf}
-\alias{banc_neuropils.surf}
+\alias{banc_brain_neuropils.surf}
 \alias{banc_al.surf}
 \alias{banc_vnc_neuropils.surf}
 \alias{banc_vnc_tracts.surf}
@@ -38,7 +38,7 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
-An object of class \code{data.frame} with 220 rows and 2 columns.
+An object of class \code{data.frame} with 307 rows and 2 columns.
 }
 \usage{
 banc.surf
@@ -51,7 +51,7 @@ banc_vnc_neuropil.surf
 
 banc_neck_connective.surf
 
-banc_neuropils.surf
+banc_brain_neuropils.surf
 
 banc_al.surf
 
@@ -95,6 +95,6 @@ rgl::wire3d(banc.surf)
 \seealso{
 \code{\link{banc.surf}} for the available neuropil objects for BANC.
 These are \code{hxsruf} objects, names for subregions can be found as so:
-\code{banc_neuropils.surf$RegionList}
+\code{banc_brain_neuropil.surf$RegionList}
 }
 \keyword{datasets}

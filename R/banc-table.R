@@ -167,7 +167,7 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALS
     warning("No rows to update in `df`!")
     return(TRUE)
   }
-  tablecols = fafbseg:::flytable_columns(table,base)
+  tablecols = fafbseg::flytable_columns(table,base)
   df = fafbseg:::df2flytable(df, append = ifelse(append_allowed, NA,FALSE))
   newrows = is.na(df[["row_id"]])
   if (any(newrows)) {
@@ -336,7 +336,7 @@ banctable2df <- function (df, tidf = NULL) {
     df
   else {
     if (is.character(tidf))
-      tidf = fafbseg:::flytable_columns(tidf)
+      tidf = fafbseg::flytable_columns(tidf)
     fafbseg:::flytable_fix_coltypes(df, tidf = tidf)
   }
 }
@@ -492,6 +492,81 @@ banctable_updateids <- function(){
   invisible()
 }
 
+banctable_annotate <- function(root_ids,
+                               update,
+                               overwrite = FALSE,
+                               append = FALSE,
+                               column="notes"){
 
+
+  # Get current table
+  cat('reading banc meta seatable...\n')
+  bc <- banctable_query(sql = sprintf('select _id, root_id, supervoxel_id, %s from banc_meta',column)) %>%
+    dplyr::filter(.data$root_id %in% root_ids)
+  if(!nrow(bc)){
+    message("root_ids not in BANC meta")
+    return(invisible())
+  }
+  bc[bc=="0"] <- NA
+  bc[bc==""] <- NA
+
+  # Update
+  cat('updating column: root_id ...\n')
+  bc.new <- bc
+  if(overwrite){
+    bc.new[[column]] <- NA
+  }
+  if(append){
+    bc.new <- bc.new %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(update = dplyr::case_when(
+        is.na(.data[[column]]) ~ update,
+        TRUE ~ paste(.data[[column]], update, sep = ", ", collapse = ", "),
+      )
+      )
+  }else{
+    bc.new <- bc.new %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(update = dplyr::case_when(
+        is.na(.data[[column]]) ~ update,
+        TRUE ~ .data[[column]],
+      )
+    )
+  }
+  changed <- sum(bc.new[[column]] != bc.new$update, na.rm = TRUE)
+  bc.new[[column]] <- bc.new$update
+  bc.new$update <- NULL
+
+  # Summarise update
+  message("Changed ", changed, " rows")
+  cat(sprintf("%s before update: \n",column))
+  if(nrow(bc.new)==1){
+    cat(bc[[column]])
+  }else{
+    cat(sort(table(bc[[column]])))
+  }
+  cat(sprintf("\n %s after update: \n",column))
+  if(nrow(bc.new)==1){
+    cat(bc.new[[column]])
+  }else{
+    cat(sort(table(bc.new[[column]])))
+  }
+
+  # Update
+  cat('updating banc meta seatable...\n')
+  bc.new <- as.data.frame(bc.new)
+  bc.new[is.na(bc.new)] <- ''
+  bc.new[bc.new=="0"] <- ''
+  banctable_update_rows(df = bc.new,
+                        base = "banc_meta",
+                        table = "banc_meta",
+                        append_allowed = FALSE,
+                        chunksize = 1000)
+  cat('done.')
+
+  # Return
+  invisible()
+
+}
 
 
