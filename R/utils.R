@@ -30,7 +30,7 @@ express_lane <- function(base_dir) {
 
     # Get all PNG files in todo directory that start with '1'
     png_files <- fs::dir_ls(todo_dir, recurse = TRUE, glob = "*.png")
-    png_files<- png_files[grepl("^1", basename(png_files))]
+    png_files<- png_files[grepl("^1_", fs::path_file(png_files))]
 
     # Create symlinks
     purrr::walk(png_files, function(file) {
