@@ -2,7 +2,7 @@
 % Please edit documentation in R/urls.R
 \name{banc_scene}
 \alias{banc_scene}
-\title{Return a sample Neuroglancer scene URL for banc dataset}
+\title{Return a sample Neuroglancer scene URL for BANC dataset}
 \usage{
 banc_scene(
   ids = NULL,
@@ -29,7 +29,7 @@ A character vector containing a single Neuroglancer URL (invisibly
 when \code{open=TRUE}).
 }
 \description{
-Return a sample Neuroglancer scene URL for banc dataset
+Return a sample Neuroglancer scene URL for BANC dataset
 }
 \details{
 See

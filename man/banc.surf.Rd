@@ -38,7 +38,7 @@ An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
 An object of class \code{hxsurf} (inherits from \code{list}) of length 4.
 
-An object of class \code{data.frame} with 310 rows and 3 columns.
+An object of class \code{data.frame} with 311 rows and 3 columns.
 }
 \usage{
 banc.surf

@@ -49,7 +49,7 @@ Find the latest id for a banc root id
 }
 \examples{
 \dontrun{
-banc_latestid("648518346473954669")
+banc_latestid("720575941520182775")
 }
 }
 \seealso{

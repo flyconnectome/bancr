@@ -1,4 +1,4 @@
-#' Return a sample Neuroglancer scene URL for banc dataset
+#' Return a sample Neuroglancer scene URL for BANC dataset
 #'
 #' @details See
 #'   \href{https://banc-reconstruction.slack.com/archives/C01RZP5JH9C/p1616522511001900}{banc

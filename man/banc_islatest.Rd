@@ -19,7 +19,7 @@ time will be ignored (see details).}
 Check if a banc root id is up to date
 }
 \examples{
-banc_islatest("648518346473954669")
+banc_islatest("720575941520182775")
 }
 \seealso{
 Other banc-ids: 

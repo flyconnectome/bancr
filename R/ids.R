@@ -144,7 +144,7 @@ banc_supervoxels <- function(x, voxdims=c(4,4,45)) {
 #' @export
 #' @family banc-ids
 #' @examples
-#' banc_islatest("648518346473954669")
+#' banc_islatest("720575941520182775")
 banc_islatest <- function(x, timestamp=NULL, ...) {
   with_banc(flywire_islatest(x=x, timestamp = timestamp, ...))
 }
@@ -163,7 +163,7 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' @family banc-ids
 #' @examples
 #' \dontrun{
-#' banc_latestid("648518346473954669")
+#' banc_latestid("720575941520182775")
 #' }
 banc_latestid <- function(rootid, sample=1000L, cloudvolume.url=NULL, Verbose=FALSE, ...) {
   with_banc(fafbseg::flywire_latestid(rootid=rootid, sample = sample, Verbose=Verbose, ...))
@@ -387,3 +387,13 @@ banc_cellid_table <- memoise::memoise(function(fac=banc_cave_client()) {
   seltable=rev(sort(grep("^cell_info", tablenames, value = T)))[1]
   return(seltable)
 })
+
+# hideen
+banc_nucelus_id_to_rootid <- function(nucleus_ids){
+  nuclei <- banc_nuclei()
+  nuclei$root_id <- as.character(nuclei$root_id)
+  nuclei$nucleus_id <- as.character(nuclei$nucleus_id)
+  ids <- nuclei$root_id[match(nucleus_ids, nuclei$nucleus_id)]
+  ids[is.na(ids)] <- "0"
+  ids
+}

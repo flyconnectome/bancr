@@ -2,12 +2,12 @@
 % Please edit documentation in R/cloudvolume.R
 \name{dr_banc}
 \alias{dr_banc}
-\title{Print information about your banc setup including tokens and python modules}
+\title{Print information about your BANC setup including tokens and python modules}
 \usage{
 dr_banc()
 }
 \description{
-Print information about your banc setup including tokens and python modules
+Print information about your BANC setup including tokens and python modules
 }
 \examples{
 \dontrun{

@@ -43,7 +43,7 @@ banc_token_available <- function() {
   !inherits(try(banc_token(), silent = TRUE), 'try-error')
 }
 
-#' Print information about your banc setup including tokens and python modules
+#' Print information about your BANC setup including tokens and python modules
 #'
 #' @export
 #' @seealso \code{\link{dr_fafbseg}}
@@ -61,13 +61,13 @@ dr_banc <- function() {
 }
 
 # hidden
-banc_api_report <- function() {
-  message("BANC Neuroglancer / CAVE API access\n----")
+banc_api_report <- function(with_dataset = bancr::with_banc) {
+  message("Neuroglancer / CAVE API access\n----")
   token=try(banc_token(cached = F), silent = FALSE)
   if(inherits(token, "try-error")) {
     FUN=if(requireNamespace('usethis', quietly = T)) usethis::ui_todo else message
     FUN(paste('No valid banc API token found. Set your token by doing:\n',
-                  "{ui_code('banc_set_token()')}"))
+                  "{ui_code('*_set_token()')}"))
   } else{
     cat("Valid banc API ChunkedGraph token is set!\n")
   }
@@ -77,7 +77,7 @@ banc_api_report <- function() {
         fafbseg:::cv_secretdir(),"\n")
     print(ff)
   }
-  u=with_banc(fafbseg:::check_cloudvolume_url(set = F))
+  u=with_dataset(fafbseg:::check_cloudvolume_url(set = F))
   cat("\nZetta cloudvolume URL:", u)
 }
 

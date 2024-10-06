@@ -41,9 +41,9 @@
 #'
 #' # Get some neurons to plot
 #' banc.meta.dnao1 <- subset(banc.meta, cell_type=="DNa01")
-#' dna01 <- banc_read_neuron_meshes(banc.meta.dnao1$root_id)
+#' dna01 <- banc_read_neuron_meshes(unique(banc.meta.dnao1$root_id))
 #' banc.meta.dnao2 <- subset(banc.meta, cell_type=="DNa02")
-#' dna02 <- banc_read_neuron_meshes(banc.meta.dnao2$root_id)
+#' dna02 <- banc_read_neuron_meshes(unique(banc.meta.dnao2$root_id))
 #'
 #' # Simplify neurons to make them easier to plot
 #' dna01 <- nat::nlapply(dna01,Rvcg::vcgQEdecim,percent = 0.1)
@@ -136,7 +136,7 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 
     # Work out colours
     if(length(neuron1)==1){
-      cols1 <- c("blue", "navy")
+      cols1 <- c("darkblue", "navy")
     }else{
       cols1 <- grDevices::colorRampPalette(c("#00008B","#0000CD","#4169E1","#1E90FF","#87CEEB", "#B0E0E6"))(length(neuron1))
     }
