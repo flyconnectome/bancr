@@ -14,14 +14,21 @@ banctable_query(
   base = NULL,
   python = FALSE,
   convert = TRUE,
-  ac = NULL
+  ac = NULL,
+  token_name = "BANCTABLE_TOKEN",
+  workspace_id = "57832"
 )
 
-banctable_set_token(user, pwd, url = "https://cloud.seatable.io/")
+banctable_set_token(
+  user,
+  pwd,
+  url = "https://cloud.seatable.io/",
+  token_name = "BANCTABLE_TOKEN"
+)
 
 banctable_login(
   url = "https://cloud.seatable.io/",
-  token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)
+  token_name = "BANCTABLE_TOKEN"
 )
 
 banctable_update_rows(
@@ -30,10 +37,20 @@ banctable_update_rows(
   base = NULL,
   append_allowed = FALSE,
   chunksize = 1000L,
+  workspace_id = "57832",
+  token_name = "BANCTABLE_TOKEN",
   ...
 )
 
-banctable_append_rows(df, table, base = NULL, chunksize = 1000L, ...)
+banctable_append_rows(
+  df,
+  table,
+  base = NULL,
+  chunksize = 1000L,
+  workspace_id = "57832",
+  token_name = "BANCTABLE_TOKEN",
+  ...
+)
 }
 \arguments{
 \item{sql}{A SQL query string. See examples and
@@ -54,13 +71,14 @@ debugging purposes. NB this imposes a requirement of seatable_api >=2.4.0.}
 
 \item{ac}{A seatable connection object as returned by \code{banctable_login}.}
 
+\item{token_name}{The name of the token in your .Renviron file, should be \code{BANCTABLE_TOKEN}.}
+
+\item{workspace_id}{A numeric id specifying the workspace. Advanced use only}
+
 \item{user, pwd}{banctable user and password used by \code{banctable_set_token}
 to obtain a token}
 
 \item{url}{Optional URL to the server}
-
-\item{token}{normally retrieved from \code{BANCTABLE_TOKEN} environment
-variable.}
 
 \item{df}{A data.frame containing the data to upload including an \verb{_id}
 column that can identify each row in the remote table.}
@@ -73,6 +91,9 @@ column that can identify each row in the remote table.}
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
 \item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
+
+\item{token}{normally retrieved from \code{BANCTABLE_TOKEN} environment
+variable.}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows

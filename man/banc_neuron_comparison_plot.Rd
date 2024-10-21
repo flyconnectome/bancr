@@ -79,9 +79,9 @@ banc.meta <- banctable_query()
 
 # Get some neurons to plot
 banc.meta.dnao1 <- subset(banc.meta, cell_type=="DNa01")
-dna01 <- banc_read_neuron_meshes(banc.meta.dnao1$root_id)
+dna01 <- banc_read_neuron_meshes(unique(banc.meta.dnao1$root_id))
 banc.meta.dnao2 <- subset(banc.meta, cell_type=="DNa02")
-dna02 <- banc_read_neuron_meshes(banc.meta.dnao2$root_id)
+dna02 <- banc_read_neuron_meshes(unique(banc.meta.dnao2$root_id))
 
 # Simplify neurons to make them easier to plot
 dna01 <- nat::nlapply(dna01,Rvcg::vcgQEdecim,percent = 0.1)

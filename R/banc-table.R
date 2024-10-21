@@ -28,7 +28,7 @@
 #' @param base Character vector specifying the \code{base}
 #' @param table Character vector specifying a table foe which you want a
 #'   \code{base} object.
-# @param workspace_id A numeric id specifying the workspace. Advanced use only
+#' @param workspace_id A numeric id specifying the workspace. Advanced use only
 #   since we can normally figure this out from \code{base_name}.
 # @param cached Whether to use a cached base object
 #' @param token normally retrieved from \code{BANCTABLE_TOKEN} environment
@@ -41,6 +41,7 @@
 #' column that can identify each row in the remote table.
 #' @param append_allowed Logical. Whether rows without row identifiers can be appended.
 #' @param chunksize To split large requests into smaller ones with max this many rows.
+#' @param token_name The name of the token in your .Renviron file, should be \code{BANCTABLE_TOKEN}.
 #' @param ... Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.
 #'
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
@@ -64,8 +65,10 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                              base = NULL,
                              python = FALSE,
                              convert = TRUE,
-                             ac = NULL){
-  if(is.null(ac)) ac <- banctable_login()
+                             ac = NULL,
+                             token_name = "BANCTABLE_TOKEN",
+                             workspace_id = "57832"){
+  if(is.null(ac)) ac <- banctable_login(token_name=token_name)
   seatable.max <- 10000L
   if(limit>seatable.max){
     offset <- 0
@@ -78,7 +81,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                             base=base,
                             python=python,
                             convert=convert,
-                            ac=ac)
+                            ac=ac,
+                            token_name=token_name)
       df <- rbind(df,bc)
       offset <- offset+nrow(bc)
       if(!length(bc)|nrow(bc)<seatable.max){
@@ -97,12 +101,12 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
     stop("Cannot identify a table name in your sql statement!\n")
   table = res[, 2]
   if (is.null(base)) {
-    base = try(banctable_base(table = table))
+    base = try(banctable_base(table = table, workspace_id = workspace_id, token_name = token_name))
     if (inherits(base, "try-error"))
       stop("I inferred table_name: ", table, " from your SQL query but couldn't connect to a base with this table!")
   }
   else if (is.character(base))
-    base = banctable_base(base_name = base)
+    base = banctable_base(base_name = base, workspace_id = workspace_id, token_name = token_name)
   if (!isTRUE(grepl("\\s+limit\\s+\\d+", sql)) && !isFALSE(limit)) {
     if (!is.finite(limit))
       limit = .Machine$integer.max
@@ -137,13 +141,16 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
 
 #' @export
 #' @rdname banctable_query
-banctable_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
+banctable_set_token <- function(user,
+                                pwd,
+                                url = "https://cloud.seatable.io/",
+                                token_name = "BANCTABLE_TOKEN"){
   st <- fafbseg:::check_seatable()
   ac <- reticulate::py_call(st$Account, login_name = user,
                             password = pwd, server_url = url)
   ac$auth()
   Sys.setenv(banctable_TOKEN = ac$token)
-  cat("BANCTABLE_TOKEN='", ac$token, "'\n", sep = "", append = TRUE,
+  cat(token_name,"='", ac$token, "'\n", sep = "", append = TRUE,
       file = path.expand("~/.Renviron"))
   return(invisible(NULL))
 }
@@ -151,17 +158,24 @@ banctable_set_token <- function(user, pwd, url = "https://cloud.seatable.io/"){
 #' @export
 #' @rdname banctable_query
 banctable_login <- function(url = "https://cloud.seatable.io/",
-                            token = Sys.getenv("BANCTABLE_TOKEN", unset = NA_character_)){
+                            token_name = "BANCTABLE_TOKEN"){
+  token = Sys.getenv(token_name, unset = NA_character_)
   fafbseg::flytable_login(url=url, token=token)
 }
 
 
 #' @export
 #' @rdname banctable_query
-banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALSE, chunksize = 1000L,  ...) {
+banctable_update_rows <- function (df,
+                                   table,
+                                   base = NULL,
+                                   append_allowed = FALSE,
+                                   chunksize = 1000L,
+                                   workspace_id = "57832",
+                                   token_name = "BANCTABLE_TOKEN", ...) {
   df <- as.data.frame(df)
   if (is.character(base) || is.null(base))
-    base = banctable_base(base_name = base, table = table)
+    base = banctable_base(base_name = base, table = table, workspace_id = workspace_id, token_name = token_name)
   nx = nrow(df)
   if (!isTRUE(nx > 0)) {
     warning("No rows to update in `df`!")
@@ -210,10 +224,11 @@ banctable_update_rows <- function (df, table, base = NULL, append_allowed = FALS
 banctable_base <- function (base_name = "banc_meta",
                             table = NULL,
                             url = "https://cloud.seatable.io/",
+                            token_name = "BANCTABLE_TOKEN",
                             workspace_id = "57832",
                             cached = TRUE,
                             ac = NULL) {
-  if(is.null(ac)) ac <- banctable_login()
+  if(is.null(ac)) ac <- banctable_login(token_name=token_name)
   if (!cached)
     memoise::forget(banctable_base_impl)
   base = try({
@@ -226,8 +241,11 @@ banctable_base <- function (base_name = "banc_meta",
   if (!retry)
     return(base)
   memoise::forget(banctable_base_impl)
-  banctable_base_impl(table = table, base_name = base_name,
-                     url = url, workspace_id = workspace_id)
+  banctable_base_impl(table = table,
+                      base_name = base_name,
+                      url = url,
+                      workspace_id = workspace_id,
+                      token_name = token_name)
 }
 
 # hidden
@@ -235,8 +253,9 @@ banctable_base_impl <- function (base_name = "banc_meta",
                                  table = NULL,
                                  url = "https://cloud.seatable.io/",
                                  workspace_id = "57832",
+                                 token_name = "BANCTABLE_TOKEN",
                                  ac = NULL){
-    if(is.null(ac)) ac <- banctable_login()
+    if(is.null(ac)) ac <- banctable_login(token_name=token_name)
     if (is.null(base_name) && is.null(table))
       stop("you must supply one of base or table name!")
     if (is.null(base_name)) {
@@ -261,9 +280,15 @@ banctable_base_impl <- function (base_name = "banc_meta",
 
 #' @export
 #' @rdname banctable_query
-banctable_append_rows <- function (df, table, base = NULL, chunksize = 1000L, ...) {
+banctable_append_rows <- function (df,
+                                   table,
+                                   base = NULL,
+                                   chunksize = 1000L,
+                                   workspace_id = "57832",
+                                   token_name = "BANCTABLE_TOKEN",
+                                   ...) {
   if (is.character(base) || is.null(base)){
-    base = banctable_base(base_name = base, table = table)
+    base <- banctable_base(base_name = base, table = table, workspace_id = workspace_id, token_name = token_name)
   }
   nx = nrow(df)
   if (!isTRUE(nx > 0)) {
