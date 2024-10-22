@@ -91,9 +91,6 @@ column that can identify each row in the remote table.}
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
 \item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
-
-\item{token}{normally retrieved from \code{BANCTABLE_TOKEN} environment
-variable.}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows
