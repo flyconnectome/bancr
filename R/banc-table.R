@@ -31,8 +31,7 @@
 #' @param workspace_id A numeric id specifying the workspace. Advanced use only
 #   since we can normally figure this out from \code{base_name}.
 # @param cached Whether to use a cached base object
-#' @param token normally retrieved from \code{BANCTABLE_TOKEN} environment
-#'   variable.
+# @param token normally retrieved from \code{BANCTABLE_TOKEN} environment variable.
 #' @param user,pwd banctable user and password used by \code{banctable_set_token}
 #'   to obtain a token
 #' @param url Optional URL to the server
@@ -82,7 +81,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                             python=python,
                             convert=convert,
                             ac=ac,
-                            token_name=token_name)
+                            token_name=token_name,
+                            workspace_id=workspace_id)
       df <- rbind(df,bc)
       offset <- offset+nrow(bc)
       if(!length(bc)|nrow(bc)<seatable.max){
@@ -172,7 +172,8 @@ banctable_update_rows <- function (df,
                                    append_allowed = FALSE,
                                    chunksize = 1000L,
                                    workspace_id = "57832",
-                                   token_name = "BANCTABLE_TOKEN", ...) {
+                                   token_name = "BANCTABLE_TOKEN",
+                                   ...) {
   df <- as.data.frame(df)
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table, workspace_id = workspace_id, token_name = token_name)
@@ -367,7 +368,10 @@ banctable2df <- function (df, tidf = NULL) {
 }
 
 # hidden, helper function to update status column
-banc_update_status <- function(df, update, col = "status", wipe = FALSE){
+banc_update_status <- function(df,
+                               update,
+                               col = "status",
+                               wipe = FALSE){
   if(wipe){
     df$status <- ""
   }else{
