@@ -210,6 +210,7 @@ bancsee <- function(banc_ids = NULL,
 banc_shorturl <- function (x,
                            baseurl = NULL,
                            cache = TRUE,
+                           state_server = "https://global.daf-apis.com/nglstate/post",
                            ...)
 {
   if (fafbseg:::is.ngscene(x)) {
