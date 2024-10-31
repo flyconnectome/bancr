@@ -202,7 +202,7 @@ banc_updateids <- function(x,
     }else{
       old <- rep(TRUE,nrow(x))
     }
-    old[is.na(old)] <- FALSE
+    old[is.na(old)] <- TRUE
     if(!sum(old)){
       return(x)
     }
@@ -214,9 +214,9 @@ banc_updateids <- function(x,
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
       if(length(update)) x[old,][[root.column]][!bad] <- update
-      old[old][!bad] <- FALSE
+      old[old][!bad] <- TRUE
     }
-    old[is.na(old)] <- FALSE
+    old[is.na(old)] <- TRUE
 
     # update based on position
     if(any(c("position","pt_position")%in%colnames(x)) && sum(old)){
@@ -227,7 +227,7 @@ banc_updateids <- function(x,
       if(length(update)) x[old,][[root.column]][!bad] <- update
       old[!bad] <- FALSE
     }
-    old[is.na(old)] <- TRUE
+    old[is.na(old)] <- FALSE
 
     # update based on root Ids
     if(root.column%in%colnames(x) && sum(old)){
