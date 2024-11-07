@@ -29,7 +29,7 @@ default paths etc. It is based on another wrapper for a separate project,
 [fancr](https://github.com/flyconnectome/fancr).
 
 If you have access, you can view *BANC* data in this helpful 
-[neurglancer scene](https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912).
+[neuroglancer scene](https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912).
 
 The BANC project uses [CAVE tables](https://global.daf-apis.com/info/) to store many sorts of annotation information. 
 You can see the available CAVE tables for BANC [here](https://cave.fanc-fly.com/annotation/views/aligned_volume/brain_and_nerve_cord).
