@@ -113,9 +113,20 @@ API allowing a range of row/column manipulations.
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">banctable_move_to_bigdata</span><span class="op">(</span></span>
+<span>  table <span class="op">=</span> <span class="st">"banc_meta"</span>,</span>
+<span>  base <span class="op">=</span> <span class="st">"banc_meta"</span>,</span>
+<span>  url <span class="op">=</span> <span class="st">"https://cloud.seatable.io/"</span>,</span>
+<span>  workspace_id <span class="op">=</span> <span class="st">"57832"</span>,</span>
+<span>  token_name <span class="op">=</span> <span class="st">"BANCTABLE_TOKEN"</span>,</span>
+<span>  where <span class="op">=</span> <span class="st">"`region` = 'optic'"</span>,</span>
+<span>  invert <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">banctable_append_rows</span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
 <span>  <span class="va">table</span>,</span>
+<span>  bigdata <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  chunksize <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  workspace_id <span class="op">=</span> <span class="st">"57832"</span>,</span>
@@ -195,6 +206,18 @@ column that can identify each row in the remote table.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.</p></dd>
+
+
+<dt id="arg-where">where<a class="anchor" aria-label="anchor" href="#arg-where"></a></dt>
+<dd><p>Optional SQL-like where clause to filter rows (default: NULL moves all rows)</p></dd>
+
+
+<dt id="arg-invert">invert<a class="anchor" aria-label="anchor" href="#arg-invert"></a></dt>
+<dd><p>whether to send the specified rows (<code>where</code>) to big data storage (<code>FALSE</code>) or from storage to the 'normal' table (<code>FALSE</code>.)</p></dd>
+
+
+<dt id="arg-bigdata">bigdata<a class="anchor" aria-label="anchor" href="#arg-bigdata"></a></dt>
+<dd><p>logical, if <code>TRUE</code> new rows are added to the bigdata archive rather than the 'normal' seatable.</p></dd>
 
 </dl></div>
     <div class="section level2">
