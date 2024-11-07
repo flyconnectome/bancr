@@ -573,11 +573,11 @@ banctable_updateids <- function(){
 
   # Update directly
   cat('updating column: banc_match ...\n')
-  bc.new <- banc_updateids(bc.new, root.column = "banc_match", supervoxel.column = "banc_match_supervoxel_id")
+  bc.new <- banc_updateids(bc.new, root.column = "banc_match", supervoxel.column = "banc_match_supervoxel_id", position.column = "banc_match_position")
   cat('updating column: banc_png_match ...\n')
-  bc.new <- banc_updateids(bc.new, root.column = "banc_png_match", supervoxel.column = "banc_png_match_supervoxel_id")
+  bc.new <- banc_updateids(bc.new, root.column = "banc_png_match", supervoxel.column = "banc_png_match_supervoxel_id", position.column = "banc_png_match_position")
   cat('updating column: banc_nblast_match ...\n')
-  bc.new <- banc_updateids(bc.new, root.column = "banc_nblast_match", supervoxel.column = "banc_nblast_match_supervoxel_id")
+  bc.new <- banc_updateids(bc.new, root.column = "banc_nblast_match", supervoxel.column = "banc_nblast_match_supervoxel_id", position.column = "banc_nblast_match_position")
   bc.new <- bc.new %>%
     dplyr::left_join(lookup %>%dplyr::distinct(lookup_root_id, .keep_all=TRUE),
                      by = c("banc_match"="lookup_root_id")) %>%
