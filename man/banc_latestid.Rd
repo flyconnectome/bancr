@@ -17,6 +17,8 @@ banc_updateids(
   x,
   root.column = "root_id",
   supervoxel.column = "supervoxel_id",
+  position.column = "position",
+  serial = FALSE,
   ...
 )
 }
@@ -43,6 +45,10 @@ Else a vector of \code{BANC} root IDs.}
 \item{root.column}{when \code{x} is a \code{data.frame}, the \code{root_id} column you wish to update}
 
 \item{supervoxel.column}{when \code{x} is a \code{data.frame}, the \code{supervoxel_id} column you wish to use to update \code{root.column}}
+
+\item{position.column}{when \code{x} is a \code{data.frame}, the \code{position} column with xyz values you wish to use to update \code{supervoxel.column}}
+
+\item{serial}{if TRUE and x is a vector, calls \code{banc_updateids} on each ID in sequence to bufffer against connection failures. Slower.}
 }
 \description{
 Find the latest id for a banc root id

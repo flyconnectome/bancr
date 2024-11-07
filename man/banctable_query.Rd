@@ -5,6 +5,7 @@
 \alias{banctable_set_token}
 \alias{banctable_login}
 \alias{banctable_update_rows}
+\alias{banctable_move_to_bigdata}
 \alias{banctable_append_rows}
 \title{Read and write to the seatable for draft BANC annotations}
 \usage{
@@ -42,9 +43,20 @@ banctable_update_rows(
   ...
 )
 
+banctable_move_to_bigdata(
+  table = "banc_meta",
+  base = "banc_meta",
+  url = "https://cloud.seatable.io/",
+  workspace_id = "57832",
+  token_name = "BANCTABLE_TOKEN",
+  where = "`region` = 'optic'",
+  invert = FALSE
+)
+
 banctable_append_rows(
   df,
   table,
+  bigdata = FALSE,
   base = NULL,
   chunksize = 1000L,
   workspace_id = "57832",
@@ -91,6 +103,12 @@ column that can identify each row in the remote table.}
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
 \item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
+
+\item{where}{Optional SQL-like where clause to filter rows (default: NULL moves all rows)}
+
+\item{invert}{whether to send the specified rows (\code{where}) to big data storage (\code{FALSE}) or from storage to the 'normal' table (\code{FALSE}.)}
+
+\item{bigdata}{logical, if \code{TRUE} new rows are added to the bigdata archive rather than the 'normal' seatable.}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows

@@ -41,6 +41,9 @@
 #' @param append_allowed Logical. Whether rows without row identifiers can be appended.
 #' @param chunksize To split large requests into smaller ones with max this many rows.
 #' @param token_name The name of the token in your .Renviron file, should be \code{BANCTABLE_TOKEN}.
+#' @param where Optional SQL-like where clause to filter rows (default: NULL moves all rows)
+#' @param bigdata logical, if `TRUE` new rows are added to the bigdata archive rather than the 'normal' seatable.
+#' @param invert whether to send the specified rows (`where`) to big data storage (`FALSE`) or from storage to the 'normal' table (`FALSE`.)
 #' @param ... Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.
 #'
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
@@ -281,8 +284,93 @@ banctable_base_impl <- function (base_name = "banc_meta",
 
 #' @export
 #' @rdname banctable_query
+banctable_move_to_bigdata <- function(table = "banc_meta",
+                                      base = "banc_meta",
+                                      url = "https://cloud.seatable.io/",
+                                      workspace_id = "57832",
+                                      token_name = "BANCTABLE_TOKEN",
+                                      where = "`region` = 'optic'",
+                                      invert = FALSE){
+
+  # get base
+  ac <- banctable_login(token_name=token_name)
+  base <- banctable_base_impl(table = table,
+                              base_name = base,
+                              url = url,
+                              workspace_id = workspace_id)
+  base_uuid <- base$dtable_uuid
+  token <- base$jwt_token
+
+  # Remove any protocol prefix if present
+  server <- gsub("^https?://", "", base$server_url)
+  server <- gsub("/$", "", server)
+
+  # Construct the URL
+  if(invert){
+    movement <- "unarchive"
+  }else{
+    movement <- "archive-view"
+  }
+  endpoint <- sprintf("https://%s/api-gateway/api/v2/dtables/%s/%s/", server, base_uuid, movement)
+
+  # Prepare the request body
+  body <- list(table_name = table)
+
+  # Add where clause if provided
+  if (!is.null(where)) {
+    body$where <- where
+  }
+
+  # Make the request
+  response <- httr2::request(endpoint) %>%
+    httr2::req_headers(
+      "Authorization" = sprintf("Bearer %s", token),
+      "Accept" = "application/json",
+      "Content-Type" = "application/json"
+    ) %>%
+    httr2::req_body_json(body) %>%
+    httr2::req_error(is_error = function(resp) FALSE) %>%  # This allows us to handle errors manually
+    httr2::req_perform()
+
+  # Check for successful response
+  if (httr2::resp_status(response) != 200) {
+      # Try to get error message from response body
+      error_msg <- tryCatch({
+        if (httr2::resp_content_type(response) == "application/json") {
+          error_content <- httr2::resp_body_json(response)
+        } else {
+          # If not JSON, get the raw text
+          httr2::resp_body_string(response)
+        }
+      }, error = function(e) {
+        "Could not parse error message"
+    })
+   stop(error_msg)
+  }
+
+  # Return the response
+  invisible()
+}
+
+# ## in python:
+# url = "https://cloud.seatable.io/api-gateway/api/v2/dtables/397da290-5aec-44dc-8a05-e2f58254d84a/archive-view/"
+# headers = {
+#   "accept": "application/json",
+#   "content-type": "application/json",
+#   "authorization": "Bearer MY_TOKEN"
+# }
+# body = {
+#   "table_name": "banc_meta",
+#   "where": "`cell_class` = 'glia'"
+# }
+# response = requests.post(url, headers=headers, json=body)
+# print(response.text)
+
+#' @export
+#' @rdname banctable_query
 banctable_append_rows <- function (df,
                                    table,
+                                   bigdata = FALSE,
                                    base = NULL,
                                    chunksize = 1000L,
                                    workspace_id = "57832",
@@ -306,7 +394,11 @@ banctable_append_rows <- function (df,
     return(all(oks))
   }
   pyl = fafbseg:::df2appendpayload(df)
-  res = base$batch_append_rows(table_name = table, rows_data = pyl)
+  if(bigdata){
+    res = base$batch_append_rows(table_name = table, rows_data = pyl)
+  }else{
+    res = base$big_data_insert_rows(table_name = table, rows_data = pyl)
+  }
   ok = isTRUE(all.equal(res[["inserted_row_count"]], nx))
   return(ok)
 }
@@ -438,7 +530,10 @@ banctable_updateids <- function(){
     dplyr::select(-pt_root_id,-pt_position)
 
   # Update root IDs directly where needed
-  bc.new <- banc_updateids(bc.new, root.column = "root_id", supervoxel.column = "supervoxel_id")
+  bc.new <- banc_updateids(bc.new,
+                           root.column = "root_id",
+                           supervoxel.column = "supervoxel_id",
+                           position.column = "position")
 
   # Make sure supervoxel and root position information that is missing, is filled in
   bc.new <- bc.new %>%

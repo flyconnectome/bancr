@@ -33,6 +33,7 @@ Imports:
     rgl,
     bit64,
     httr,
+    httr2,
     jsonlite,
     pbapply,
     dplyr,
