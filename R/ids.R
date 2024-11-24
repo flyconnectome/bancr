@@ -182,14 +182,16 @@ banc_updateids <- function(x,
   if(is.data.frame(x)){
 
     # Update supervoxel IDs
-    if(all(c(position.column,supervoxel.column)%in%colnames(x))){
-      no.sp <- is.na(x[[supervoxel.column]])|x[[supervoxel.column]]=="0"
-      if(sum(no.sp)){
-        cat('determining missing supervoxel_ids ...\n')
-        x[no.sp,][[supervoxel.column]] <- unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
-          tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = FALSE, ...)),
-                   error = function(e) NA)
-        }))
+    if(!is.null(position.column)){
+      if(all(c(position.column,supervoxel.column)%in%colnames(x))){
+        no.sp <- is.na(x[[supervoxel.column]])|x[[supervoxel.column]]=="0"
+        if(sum(no.sp)){
+          cat('determining missing supervoxel_ids ...\n')
+          x[no.sp,][[supervoxel.column]] <- unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
+            tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = FALSE, ...)),
+                     error = function(e) NA)
+          }))
+        }
       }
     }
 
@@ -209,29 +211,33 @@ banc_updateids <- function(x,
     }
 
     # update based on supervoxels
-    if(supervoxel.column%in%colnames(x)){
-      cat('updating root_ids with a supervoxel_id...\n')
-      update <- unname(pbapply::pbsapply(x[old,][[supervoxel.column]], banc_rootid, ...))
-      bad <- is.na(update)|update=="0"
-      update <- update[!bad]
-      if(length(update)) x[old,][[root.column]][!bad] <- update
-      old[!bad] <- FALSE
+    if(!is.null(supervoxel.column)){
+      if(supervoxel.column%in%colnames(x)){
+        cat('updating root_ids with a supervoxel_id...\n')
+        update <- unname(pbapply::pbsapply(x[old,][[supervoxel.column]], banc_rootid, ...))
+        bad <- is.na(update)|update=="0"
+        update <- update[!bad]
+        if(length(update)) x[old,][[root.column]][!bad] <- update
+        old[!bad] <- FALSE
+      }
+      old[is.na(old)] <- TRUE
     }
-    old[is.na(old)] <- TRUE
 
     # update based on position
-    if(any(c("position","pt_position")%in%colnames(x)) && sum(old)){
-      cat('updating root_ids with a position ...\n')
-      update <- unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
-        tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = TRUE, ...)),
-                 error = function(e) NA)
-      }))
-      bad <- is.na(update)|update=="0"
-      update <- update[!bad]
-      if(length(update)) x[old,][[root.column]][!bad] <- update
-      old[!bad] <- FALSE
+    if(!is.null(position.column)){
+      if(any(position.column%in%colnames(x)) && sum(old)){
+        cat('updating root_ids with a position ...\n')
+        update <- unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
+          tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = TRUE, ...)),
+                   error = function(e) NA)
+        }))
+        bad <- is.na(update)|update=="0"
+        update <- update[!bad]
+        if(length(update)) x[old,][[root.column]][!bad] <- update
+        old[!bad] <- FALSE
+      }
+      old[is.na(old)] <- TRUE
     }
-    old[is.na(old)] <- TRUE
 
     # update based on root Ids
     if(root.column%in%colnames(x) && sum(old)){
