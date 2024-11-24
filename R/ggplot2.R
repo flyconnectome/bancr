@@ -617,8 +617,8 @@ geom_neuron.synapticneuron <- function(x = NULL,
                                  inherit.aes = inherit.aes,
                                  ...)
   if(!is.null(x$connectors)){
-    syns.in <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==1))
-    syns.out <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==0))
+    syns.in <- nat::xyzmatrix(x$connectors[x$connectors$prepost == 1,])
+    syns.out <- nat::xyzmatrix(x$connectors[x$connectors$prepost == 0,])
     if(!is.null(rotation_matrix)){
       syns.in <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.in)))
       syns.in <- syns.in[,-4]
@@ -765,8 +765,8 @@ geom_neuron.splitneuron <- function(x = NULL,
 
   # And synapses?
   if(!is.null(x$connectors)){
-    syns.in <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==1))
-    syns.out <- nat::xyzmatrix(subset(x$connectors, x$connectors$prepost==0))
+    syns.in <- nat::xyzmatrix(x$connectors[x$connectors$prepost == 1,])
+    syns.out <- nat::xyzmatrix(x$connectors[x$connectors$prepost == 0,])
     if(!is.null(rotation_matrix)){
       syns.in <- as.data.frame(t(rotation_matrix[,1:3] %*% t(syns.in)))
       syns.in <- syns.in[,-4]
