@@ -171,7 +171,6 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
 banc_cave_cell_types <- function(){
   banc.cell.info <- banc_cell_info(rawcoords = TRUE)
   banc.cell.info$pt_position <- sapply(banc.cell.info$pt_position, paste, collapse=", ")
-  ni <- subset(banc.cell.info, grepl("central neuron", tag2))
   banc.cell.info.mod <- banc.cell.info %>%
     dplyr::rowwise() %>%
     dplyr::mutate(pt_position = paste0(pt_position,collapse=",")) %>%
@@ -201,8 +200,8 @@ banc_cave_cell_types <- function(){
       grepl("ascending|descending|descending|ascending", tag) ~ tag,
       grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag,
       grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag2,
-      grepl("motor neuron", cell_class) ~ "motor",
-      grepl("endocrine", cell_class) ~ "endocrine",
+      grepl("motor neuron", tag) ~ "motor",
+      grepl("endocrine", tag) ~ "endocrine",
       grepl("central neuron", tag2) ~ tag,
       grepl("^innervates|^intersegmental", tag) ~ tag,
       TRUE ~ NA
