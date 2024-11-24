@@ -166,3 +166,69 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
   }
   df
 }
+
+# hidden
+banc_cave_cell_types <- function(){
+  banc.cell.info <- banc_cell_info(rawcoords = TRUE)
+  banc.cell.info$pt_position <- sapply(banc.cell.info$pt_position, paste, collapse=", ")
+  ni <- subset(banc.cell.info, grepl("central neuron", tag2))
+  banc.cell.info.mod <- banc.cell.info %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(pt_position = paste0(pt_position,collapse=",")) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(pt_root_id) %>%
+    dplyr::arrange(pt_position, tag2, tag) %>%
+    dplyr::mutate(side =  dplyr::case_when(
+      grepl("^soma side",tag2) ~ gsub("soma on |soma on ","",tag),
+      TRUE ~ NA
+    )) %>%
+    dplyr::mutate(cell_type = dplyr::case_when(
+      grepl("neuron identity", tag2) ~ tag,
+      grepl("^DN|^AMMC|^PDN|^LH|^il|^T1|^T5|^T4|^TY4|^IN|^il|^HS|^Mi|^PS|^CB|^FB|^AL|
+            ^FET|^bCS|SEZ-NSC-Hugin|^MDN|^OA|^PS|^ovi|giant fiber|^m-NSC|^l-NSC-ITP
+            |^OA|^LH|^CSD|^BDN|^AN|^AL|^AV|^AN|^MN|^SA|^Mi|^LH|^L1|^BDN|^LAL",tag) ~ tag,
+      TRUE ~ NA
+    )) %>%
+    dplyr::mutate(user_id = dplyr::case_when(
+      grepl("neuron identity", tag2) ~ user_id,
+      grepl("^DN|^AMMC|^PDN|^LH|^il|^T1|^T5|^T4|^TY4|^IN|^il|^HS|^Mi|^PS|^CB|^FB|^AL|
+            ^FET|^bCS|SEZ-NSC-Hugin|^MDN|^OA|^PS|^ovi|giant fiber|^m-NSC|^l-NSC-ITP
+            |^OA|^LH|^CSD|^BDN|^AN|^AL|^AV|^AN|^MN|^SA|^Mi|^LH|^L1|^BDN|^LAL",tag) ~ user_id,
+      TRUE ~ NA
+    )) %>%
+    dplyr::mutate(cell_type = gsub("\\\n.*|\\*.*","",cell_type)) %>%
+    dplyr::mutate(cell_class = dplyr::case_when(
+      grepl("ascending|descending|descending|ascending", tag) ~ tag,
+      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag,
+      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag2,
+      grepl("motor neuron", cell_class) ~ "motor",
+      grepl("endocrine", cell_class) ~ "endocrine",
+      grepl("central neuron", tag2) ~ tag,
+      grepl("^innervates|^intersegmental", tag) ~ tag,
+      TRUE ~ NA
+    )) %>%
+    dplyr::mutate(super_class = dplyr::case_when(
+      grepl("ascend", cell_class) ~ "ascending",
+      grepl("descend", cell_class) ~ "descending",
+      grepl("sensory neuron", cell_class) ~ "sensory",
+      grepl("motor neuron", cell_class) ~ "motor",
+      grepl("endocrine", cell_class) ~ "endocrine",
+      grepl("efferent", cell_class) ~ "efferent",
+      grepl("optic", cell_class) ~ "optic",
+      grepl("optic", tag) ~ "optic",
+      grepl("optic", tag2) ~ "optic",
+      grepl("central", cell_class) ~ "intrinsic",
+      grepl("glia", cell_class) ~ "glia",
+      TRUE ~ NA
+    )) %>%
+    dplyr::mutate(notes = paste(unique(na.omit(sort(tag))), collapse = ", "),
+                  cell_class = paste(unique(na.omit(sort(cell_class))), collapse = ", "),
+                  super_class = paste(unique(na.omit(sort(super_class))), collapse = ", "),
+                  cell_type = paste(unique(na.omit(sort(cell_type))), collapse = ", "),
+                  side = paste(unique(na.omit(sort(side))), collapse = ", ")) %>%
+    dplyr::ungroup() %>%
+    dplyr::rename(cell_id = id, root_id = pt_root_id, supervoxel_id = pt_supervoxel_id, position = pt_position) %>%
+    dplyr::distinct(root_id, supervoxel_id, side, super_class, cell_class, cell_type, .keep_all = TRUE) %>%
+    dplyr::select(cell_id, root_id, supervoxel_id, position, side, super_class, cell_class, cell_type, user_id, notes)
+  banc.cell.info.mod
+}
