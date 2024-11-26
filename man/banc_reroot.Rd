@@ -19,8 +19,8 @@ banc_reroot(x, id = NULL, roots = NULL, estimate = TRUE, ...)
 frame. If NULL, it will be taken from the \code{x$root_id} slot.}
 
 \item{roots}{A data frame containing information about root points, i.e. nuclei
-obtained using \code{bancr::roots()}. This data frame is assumed to have
-columns named \code{root_id} and \code{pt_position}, where \code{pt_position}
+obtained using \code{bancr:::banc_roots()}. This data frame is assumed to have
+columns named \code{root_id} and \code{root_position_nm}, where \code{root_position_nm}
 specifies the 3D coordinates of the soma for each \code{root_id}.}
 
 \item{estimate}{if \code{TRUE} and nucleus position is not in \code{roots},

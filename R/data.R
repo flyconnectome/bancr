@@ -200,4 +200,29 @@
 #' `banc_brain_neuropil.surf$RegionList`
 "banc_volumes.df"
 
+#' User information (name + CAVE ID) for active BANC users
+#'
+#' @name banc_users
+#' @docType data
+#' @description The purpose of this table is to map CAVE users IDs to names, in order to credit annotation work done in BANC CAVE.
+#' This information is based on \href{https://docs.google.com/spreadsheets/d/1UFmeWr2uF9jTLVMw3bD6nM3ejM-b-HDZz6sQBPTEoZ8/edit?gid=1163959922#gid=1163959922}{google sheet}.
+#'
+#' @examples
+#' \dontrun{
+#' View(banc_users)
+#' }
+"banc_users"
+
+# banc_users <- googlesheets4::read_sheet("1UFmeWr2uF9jTLVMw3bD6nM3ejM-b-HDZz6sQBPTEoZ8")
+# colnames(banc_users) <- snakecase::to_snake_case(colnames(banc_users))
+# banc_users <- banc_users %>%
+#   dplyr::select(name, pi_lab, cave_id) %>%
+#   dplyr::mutate(name = gsub("\\(.*","",name)) %>%
+#   dplyr::mutate(pi_lab = gsub("\\(.*","",pi_lab)) %>%
+#   dplyr::mutate(pi_lab = ifelse(is.na(pi_lab),name,pi_lab)) %>%
+#   dplyr::mutate(pi_lab = ifelse(pi_lab=="PI",paste0(name," lab"),pi_lab)) %>%
+#   dplyr::arrange(pi_lab, name) %>%
+#   dplyr::distinct(cave_id, .keep_all = TRUE) %>%
+#   dplyr::filter(!is.na(pi_lab))
+# usethis::use_data(banc_users, overwrite = TRUE)
 

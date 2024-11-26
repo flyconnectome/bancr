@@ -92,8 +92,8 @@ banc_read_l2skel <- function(id, OmitFailures=TRUE, dataset=NULL, ...) {
 #' @param id (Optional) The `root_id` of the neuron in the `roots` data
 #' frame. If NULL, it will be taken from the `x$root_id` slot.
 #' @param roots A data frame containing information about root points, i.e. nuclei
-#' obtained using `bancr::roots()`. This data frame is assumed to have
-#' columns named `root_id` and `pt_position`, where `pt_position`
+#' obtained using `bancr:::banc_roots()`. This data frame is assumed to have
+#' columns named `root_id` and `root_position_nm`, where `root_position_nm`
 #' specifies the 3D coordinates of the soma for each `root_id`.
 #' @param estimate if \code{TRUE} and nucleus position is not in `roots`,
 #' then root is estimated as a leaf node furthest outside of the brain neuropil.
@@ -122,9 +122,18 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
   if(is.null(id)){
     stop("a root_id in roots must be given")
   }
-  df <- subset(roots, roots$root_id==id & !is.na(roots$pt_position))
+  if("root_position_nm"%in%colnames(roots)){
+    if("root_position"%in%colnames(roots)){
+      warning("root_position_nm, converting root_position to root_position_nm")
+      roots$root_position_nm <- apply(banc_raw2nm(roots$root_position),1, paste_coords)
+      roots$root_position_nm  <- gsub("\\(|\\)","",roots$root_position_nm)
+    }else{
+      stop("root_position_nm not found in roots")
+    }
+  }
+  df <- subset(roots, roots$root_id==id & !is.na(roots$root_position_nm))
   if(nrow(df)){
-    soma <- nat::xyzmatrix(df$pt_position)[1,]
+    soma <- nat::xyzmatrix(df$root_position_nm)[1,]
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x)
   }else if (estimate){ # As best we can
@@ -161,21 +170,42 @@ banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, 
   if(is.null(roots)){
     roots <- banc_roots()
   }
+  if("root_position_nm"%in%colnames(roots)){
+    if("root_position"%in%colnames(roots)){
+      warning("root_position_nm, converting root_position to root_position_nm")
+      roots$root_position_nm <- apply(banc_raw2nm(roots$root_position),1, paste_coords)
+      roots$root_position_nm  <- gsub("\\(|\\)","",roots$root_position_nm)
+    }else{
+      stop("root_position_nm not found in roots")
+    }
+  }
   x <- add_field_seq(x, entries=id, field="id")
   nat::nlapply(x, FUN = banc_reroot.neuron, roots = roots, id = id, estimate = estimate, ...)
 }
 
 # hidden
-banc_roots <- function(rawcoords = FALSE){
-  roots <- bancr::banc_nuclei(rawcoords = rawcoords)
-  roots$pt_position <- roots$nucleus_position_nm
-  info <- banc_cell_info(rawcoords = rawcoords)
+banc_roots <- function(){
+  # Get roots from nuclei table
+  roots <- banc_nuclei(rawcoords = FALSE)
+  roots$root_position_nm <- roots$nucleus_position_nm
+  # Neurons with no nuclei are mostly sensory, their roots are usually their tracked point
+  info <- banc_cell_info(rawcoords = FALSE)
   info$root_id <-info$pt_root_id
   xyz <- nat::xyzmatrix(info$pt_position)
   p <- nat::pointsinside(xyz,surf=bancr::banc_brain_neuropil.surf)
   info <- info[!p,]
-  roots <- rbind(roots[,c("root_id","pt_position")],info[,c("root_id","pt_position")])
+  info$root_position_nm <- info$pt_position
+  # Compile
+  roots <- rbind(roots[,c("root_id","root_position_nm")],
+                 info[,c("root_id","root_position_nm")])
+  roots$root_position <- apply(banc_nm2raw(roots$root_position_nm),1, paste_coords)
+  roots$root_position  <- gsub("\\(|\\)","",roots$root_position)
   roots
+}
+
+# hidden
+paste_coords <- function (xyz, sep = ", ", brackets = TRUE) {
+  paste0(ifelse(brackets, "(", NULL), paste(xyz, sep = sep,collapse = sep), ifelse(brackets, ")", NULL))
 }
 
 # hidden
