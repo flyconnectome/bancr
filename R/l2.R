@@ -122,7 +122,7 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
   if(is.null(id)){
     stop("a root_id in roots must be given")
   }
-  if("root_position_nm"%in%colnames(roots)){
+  if(!"root_position_nm"%in%colnames(roots)){
     if("root_position"%in%colnames(roots)){
       warning("root_position_nm, converting root_position to root_position_nm")
       roots$root_position_nm <- apply(banc_raw2nm(roots$root_position),1, paste_coords)
