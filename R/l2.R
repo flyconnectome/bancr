@@ -170,7 +170,7 @@ banc_reroot.neuronlist <- function(x, id = NULL, roots = NULL, estimate = TRUE, 
   if(is.null(roots)){
     roots <- banc_roots()
   }
-  if("root_position_nm"%in%colnames(roots)){
+  if(!"root_position_nm"%in%colnames(roots)){
     if("root_position"%in%colnames(roots)){
       warning("root_position_nm, converting root_position to root_position_nm")
       roots$root_position_nm <- apply(banc_raw2nm(roots$root_position),1, paste_coords)
