@@ -159,6 +159,7 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' @param root.column when `x` is a `data.frame`, the `root_id` column you wish to update
 #' @param supervoxel.column when `x` is a `data.frame`, the `supervoxel_id` column you wish to use to update `root.column`
 #' @param position.column when `x` is a `data.frame`, the `position` column with xyz values you wish to use to update `supervoxel.column`
+#' @param use.cave read from the best established CAVE tables and join by `pt_supervoxel_id` to update `root_id`
 #' @param serial if TRUE and x is a vector, calls `banc_updateids` on each ID in sequence to bufffer against connection failures. Slower.
 #' @export
 #' @seealso \code{\link{banc_islatest}}
@@ -177,9 +178,37 @@ banc_updateids <- function(x,
                            root.column = "root_id",
                            supervoxel.column = "supervoxel_id",
                            position.column = "position",
+                           use.cave = TRUE,
                            serial = FALSE,
                            ...){
   if(is.data.frame(x)){
+
+    # Use CAVE tables to join by supervoxel_id
+    if(use.cave&!is.null(supervoxel.column)){
+      if(supervoxel.column%in%colnames(x)){
+        cat('joining to CAVE tables ...\n')
+        proofed <- banc_backbone_proofread() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
+        info <- banc_cell_info()  %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
+        nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = root_id, pt_supervoxel_id)
+        nerves <- banc_peripheral_nerves() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
+        seeds <- banc_neck_connective_neurons() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
+        cave.tables <- proofed %>%
+          rbind(info) %>%
+          rbind(nuclei) %>%
+          rbind(nerves) %>%
+          rbind(seeds) %>%
+          dplyr::mutate(cave_pt_root_id=as.character(pt_root_id),
+                        cave_pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
+          dplyr::distinct(cave_pt_root_id, cave_pt_supervoxel_id) %>%
+          as.data.frame()
+        x$cave_pt_supervoxel_id = x[[supervoxel.column]]
+        x <- x %>%
+          dplyr::left_join(cave.tables, by = "cave_pt_supervoxel_id")
+        x[[root.column]] <- ifelse(is.na(x$cave_pt_root_id)|x$cave_pt_root_id=="0",x[[root.column]],x$cave_pt_root_id)
+        x <- x %>%
+          dplyr::select(-cave_pt_root_id, -cave_pt_supervoxel_id)
+      }
+    }
 
     # Update supervoxel IDs
     if(!is.null(position.column)){
@@ -206,6 +235,7 @@ banc_updateids <- function(x,
       old <- rep(TRUE,nrow(x))
     }
     old[is.na(old)] <- TRUE
+    message("old root_ids: ",sum(old),"\n")
     if(!sum(old)){
       return(x)
     }

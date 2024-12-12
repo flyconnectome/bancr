@@ -18,6 +18,7 @@ banc_updateids(
   root.column = "root_id",
   supervoxel.column = "supervoxel_id",
   position.column = "position",
+  use.cave = TRUE,
   serial = FALSE,
   ...
 )
@@ -47,6 +48,8 @@ Else a vector of \code{BANC} root IDs.}
 \item{supervoxel.column}{when \code{x} is a \code{data.frame}, the \code{supervoxel_id} column you wish to use to update \code{root.column}}
 
 \item{position.column}{when \code{x} is a \code{data.frame}, the \code{position} column with xyz values you wish to use to update \code{supervoxel.column}}
+
+\item{use.cave}{read from the best established CAVE tables and join by \code{pt_supervoxel_id} to update \code{root_id}}
 
 \item{serial}{if TRUE and x is a vector, calls \code{banc_updateids} on each ID in sequence to bufffer against connection failures. Slower.}
 }
