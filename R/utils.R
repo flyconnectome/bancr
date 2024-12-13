@@ -18,7 +18,7 @@ euclidean_distances <- function(A, B) {
 }
 
 # Helper
-express_lane <- function(base_dir, symlink = TRUE) {
+express_lane <- function(base_dir, symlink = FALSE) {
   todo_dir <- base_dir #fs::path(base_dir, "todo")
   if (fs::dir_exists(todo_dir)) {
     express_dir <- fs::path(base_dir, "express")
