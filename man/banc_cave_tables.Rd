@@ -2,6 +2,8 @@
 % Please edit documentation in R/cave-tables.R
 \name{banc_cave_tables}
 \alias{banc_cave_tables}
+\alias{banc_edgelist}
+\alias{banc_cave_views}
 \alias{banc_nuclei}
 \alias{banc_cell_info}
 \alias{banc_cell_ids}
@@ -11,6 +13,10 @@
 \title{Read BANC CAVE-tables, good sources of metadata}
 \usage{
 banc_cave_tables(datastack_name = NULL, select = NULL)
+
+banc_edgelist(...)
+
+banc_cave_views(datastack_name = NULL, select = NULL)
 
 banc_nuclei(
   rootids = NULL,
@@ -38,6 +44,9 @@ banc_backbone_proofread(rootids = NULL)
 
 \item{select}{A regex term for the name of the table you want}
 
+\item{...}{Additional arguments passed to
+\code{fafbseg::\link{flywire_cave_query}}}
+
 \item{rootids}{#' @param rootids Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
@@ -47,9 +56,6 @@ to pass in data.frames, BANC URLs or simple ids.}
 \item{table}{Possible alternative tables for the sort of data frame the function returns. One must be chosen.}
 
 \item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
-
-\item{...}{Additional arguments passed to
-\code{fafbseg::\link{flywire_cave_query}}}
 }
 \value{
 A \code{data.frame} describing a CAVE-table related to the BANC project.

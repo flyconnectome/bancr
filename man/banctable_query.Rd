@@ -6,6 +6,7 @@
 \alias{banctable_login}
 \alias{banctable_update_rows}
 \alias{banctable_move_to_bigdata}
+\alias{franken_meta}
 \alias{banctable_append_rows}
 \title{Read and write to the seatable for draft BANC annotations}
 \usage{
@@ -52,6 +53,8 @@ banctable_move_to_bigdata(
   where = "`region` = 'optic'",
   invert = FALSE
 )
+
+franken_meta(sql = "SELECT * FROM franken_meta", base = "cns_meta", ...)
 
 banctable_append_rows(
   df,

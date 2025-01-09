@@ -368,6 +368,15 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 
 #' @export
 #' @rdname banctable_query
+franken_meta <- function(sql = "SELECT * FROM franken_meta",
+                         base = "cns_meta", ...){
+  df <- banctable_query(sql=sql, base=base, ...) %>%
+    dplyr::select(-dplyr::starts_with(c("FAFB_", "MANC_")))
+  df
+}
+
+#' @export
+#' @rdname banctable_query
 banctable_append_rows <- function (df,
                                    table,
                                    bigdata = FALSE,
@@ -390,11 +399,12 @@ banctable_append_rows <- function (df,
     chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
     chunks = split(df, chunkids)
     oks = pbapply::pbsapply(chunks, banctable_append_rows,
-                            table = table, base = base, chunksize = Inf, ...)
+                            table = table, base = base, chunksize = Inf, bigdata = bigdata,
+                            ...)
     return(all(oks))
   }
   pyl = fafbseg:::df2appendpayload(df)
-  if(bigdata){
+  if(!bigdata){
     res = base$batch_append_rows(table_name = table, rows_data = pyl)
   }else{
     res = base$big_data_insert_rows(table_name = table, rows_data = pyl)
@@ -612,6 +622,9 @@ banctable_updateids <- function(){
 
   # Update
   cat('updating banc meta seatable...\n')
+  bc.new <- bc.new %>%
+    dplyr::filter(!is.na(`_id`)) %>%
+    dplyr::distinct(`_id`, .keep_all = TRUE)
   bc.new[is.na(bc.new)] <- ''
   bc.new[bc.new=="0"] <- ''
   banctable_update_rows(df = bc.new,
@@ -702,4 +715,7 @@ banctable_annotate <- function(root_ids,
 
 }
 
+
+#' @export
+#' @rdname banctable_query
 
