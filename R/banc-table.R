@@ -370,8 +370,9 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 #' @rdname banctable_query
 franken_meta <- function(sql = "SELECT * FROM franken_meta",
                          base = "cns_meta", ...){
-  df <- banctable_query(sql=sql, base=base, ...) %>%
-    dplyr::select(-dplyr::starts_with(c("FAFB_", "MANC_")))
+  # df <- banctable_query(sql=sql, base=base, ...) %>%
+  #   dplyr::select(-dplyr::starts_with(c("FAFB_", "MANC_")))
+  df <- banctable_query(sql=sql, base=base, ...)
   df
 }
 
