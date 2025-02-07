@@ -207,8 +207,17 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
 }
 
 # hidden
-banc_cave_cell_types <- function(user_id = NULL){
+banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE){
   banc.cell.info <- banc_cell_info(rawcoords = TRUE)
+  if(!is.null(cave_id)){
+    if(invert){
+      banc.cell.info <- banc.cell.info %>%
+        dplyr::filter(!user_id %in% cave_id)
+    }else{
+      banc.cell.info <- banc.cell.info %>%
+        dplyr::filter(user_id %in% cave_id)
+    }
+  }
   banc.cell.info$pt_position <- sapply(banc.cell.info$pt_position, paste, collapse=", ")
   banc.cell.info.mod <- banc.cell.info %>%
     dplyr::filter(valid == 't') %>%
