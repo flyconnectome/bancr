@@ -18,7 +18,7 @@ euclidean_distances <- function(A, B) {
 }
 
 # Helper
-express_lane <- function(base_dir, symlink = FALSE) {
+express_lane <- function(base_dir, search = "^1_", symlink = FALSE) {
   todo_dir <- base_dir #fs::path(base_dir, "todo")
   if (fs::dir_exists(todo_dir)) {
     express_dir <- fs::path(base_dir, "express")
@@ -30,7 +30,7 @@ express_lane <- function(base_dir, symlink = FALSE) {
 
     # Get all PNG files in todo directory that start with '1'
     png_files <- fs::dir_ls(todo_dir, recurse = TRUE, glob = "*.png")
-    png_files<- png_files[grepl("^1_", fs::path_file(png_files))]
+    png_files<- png_files[grepl(search, fs::path_file(png_files))]
 
     # Create symlinks
     purrr::walk(png_files, function(file) {

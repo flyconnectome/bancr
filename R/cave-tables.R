@@ -223,9 +223,7 @@ banc_cave_cell_types <- function(user_id = NULL){
     )) %>%
     dplyr::mutate(cell_type = dplyr::case_when(
       grepl("neuron identity", tag2) ~ tag,
-      grepl("^DN|^AMMC|^PDN|^LH|^il|^T1|^T5|^T4|^TY4|^IN|^il|^HS|^Mi|^PS|^CB|^FB|^AL|
-            ^FET|^bCS|SEZ-NSC-Hugin|^MDN|^OA|^PS|^ovi|giant fiber|^m-NSC|^l-NSC-ITP
-            |^OA|^LH|^CSD|^BDN|^AN|^AL|^AV|^AN|^MN|^SA|^Mi|^LH|^L1|^BDN|^LAL",tag) ~ tag,
+      !grepl(",",tag) ~ tag,
       TRUE ~ NA
     )) %>%
     dplyr::mutate(user_id = dplyr::case_when(
