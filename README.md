@@ -32,7 +32,7 @@ If you have access, you can view *BANC* data in this helpful
 [neuroglancer scene](https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912).
 
 The BANC project uses [CAVE tables](https://global.daf-apis.com/info/) to store many sorts of annotation information. 
-You can see the available CAVE tables for BANC [here](https://cave.fanc-fly.com/annotation/views/aligned_volume/brain_and_nerve_cord).
+You can see the available CAVE tables for BANC [here](https://cave.fanc-fly.com/annotation/views/aligned_volume/brain_and_nerve_cord). CAVE tables can be joined into useful [CAVE views](https://cave.fanc-fly.com/materialize/views/datastack/brain_and_nerve_cord) pinned to a materialisation, which can provide very useful objects such as the whole BANC edgelist. 
 
 ## Installation
 
