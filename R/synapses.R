@@ -22,13 +22,15 @@
 #' \dontrun{
 #' syns <- banc_all_synapses()
 #' }
-banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df",
+banc_all_synapses <- function(path = c("gs://lee-lab_brain-and-nerve-cord-fly-connectome/synapses/v2.0/final_edgelist.csv",
+                                       "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df"),
                               overwrite = FALSE,
                               n_max = 2000,
                               details = FALSE,
                               min_size = 10,
                               rawcoords = FALSE){
   # Correct path to de-authenticate it, use https
+  path <- match.arg(path)
   path <- gsub("^gs\\:\\/","https://storage.googleapis.com",path)
 
   # Check if the file exists, if not, create it
@@ -67,7 +69,9 @@ banc_all_synapses <- function(path = "gs://zetta_lee_fly_cns_001_synapse/240623_
     postsyn_z = readr::col_integer(),
     clefthash = readr::col_number(),
     partnerhash = readr::col_integer(),
-    size = readr::col_number()
+    size = readr::col_number(),
+    clefthash = readr::col_number(),
+    partnerhash = readr::col_number()
   )
 
   # Are we just sampling or going for the full thing?
