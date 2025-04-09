@@ -7,6 +7,7 @@
 #'   to pass in data.frames, BANC URLs or simple ids.
 #' @param datastack_name An optional CAVE \code{datastack_name}. If unset a
 #'   sensible default is chosen.
+#' @param synapse_table Character, the name of the synapse CAVE table you wish to use. Defaults to the latest.
 #' @inheritParams fafbseg::flywire_partner_summary
 #'
 #' @return a data.frame
@@ -28,14 +29,17 @@
 #'   slice_max(weight, n = 20) %>%
 #'   banc_scene(open=TRUE)
 #' }
+#' synapses_250226
 #' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
+                                 synapse_table = c("synapses_250226", "synapses_v1"),
                                  threshold = 0,
                                  remove_autapses = TRUE,
                                  cleft.threshold = 0,
                                  datastack_name=NULL,
                                  ...) {
+  synapse_table <- match.arg(synapse_table)
   if(is.null(datastack_name))
     datastack_name = banc_datastack_name()
   with_banc(
@@ -47,6 +51,8 @@ banc_partner_summary <- function(rootids,
       datastack_name = datastack_name,
       remove_autapses = remove_autapses,
       cleft.threshold = cleft.threshold,
+      synapse_table=synapse_table,
+      method = "cave",
       ...
     )
   )
@@ -89,15 +95,19 @@ banc_datastack_name <- memoise::memoise(function() {
 #' }
 #' @export
 #' @rdname banc_partner_summary
-banc_partners <- function(rootids, partners=c("input", "output"), ...) {
+banc_partners <- function(rootids,
+                          partners=c("input", "output"),
+                          synapse_table = c("synapses_250226", "synapses_v1"),
+                          ...) {
+  synapse_table = match.arg(synapse_table)
   partners=match.arg(partners)
   rootids=banc_ids(rootids)
   fcc=banc_cave_client()
   pyids=fafbseg:::rids2pyint(rootids)
   res=if(partners=='input') {
-    reticulate::py_call(fcc$materialize$synapse_query, post_ids=pyids, ...)
+    reticulate::py_call(fcc$materialize$synapse_query, post_ids=pyids, synapse_table=synapse_table, ...)
   } else {
-    reticulate::py_call(fcc$materialize$synapse_query, pre_ids=pyids, ...)
+    reticulate::py_call(fcc$materialize$synapse_query, pre_ids=pyids, synapse_table=synapse_table, ...)
   }
   fafbseg:::pandas2df(res)
 }

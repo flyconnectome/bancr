@@ -7,7 +7,8 @@
 #' @param rawcoords Logical, whether or not to convert from raw coordinates into nanometers. Default is `FALSE`.
 #' @param select A regex term for the name of the table you want
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
-#' @param table Possible alternative tables for the sort of data frame the function returns. One must be chosen.
+#' @param table Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.
+#' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
 #' @param ... Additional arguments passed to
 #'   \code{fafbseg::\link{flywire_cave_query}}
 #'
@@ -49,8 +50,11 @@ banc_cave_tables <- function(datastack_name = NULL,
 
 #' @rdname banc_cave_tables
 #' @export
-banc_edgelist <- function(...){
-  el <- with_banc(cave_view_query("synapses_v1_backbone_proofread_counts", fetch_all_rows= TRUE, ...))
+banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_counts",
+                                            "synapses_v1_backbone_proofread_counts"),
+                          ...){
+  edgelist_view <- match.arg(edgelist_view)
+  el <- with_banc(cave_view_query(edgelist_view, fetch_all_rows= TRUE, ...))
   el <- el %>%
     dplyr::arrange(dplyr::desc(n))
   el

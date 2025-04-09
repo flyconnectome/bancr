@@ -18,7 +18,9 @@ banctable_query(
   convert = TRUE,
   ac = NULL,
   token_name = "BANCTABLE_TOKEN",
-  workspace_id = "57832"
+  workspace_id = "57832",
+  retries = 10,
+  table.max = 10000L
 )
 
 banctable_set_token(
@@ -51,7 +53,8 @@ banctable_move_to_bigdata(
   workspace_id = "57832",
   token_name = "BANCTABLE_TOKEN",
   where = "`region` = 'optic'",
-  invert = FALSE
+  invert = FALSE,
+  row_ids = NULL
 )
 
 franken_meta(sql = "SELECT * FROM franken_meta", base = "cns_meta", ...)
@@ -89,6 +92,10 @@ debugging purposes. NB this imposes a requirement of seatable_api >=2.4.0.}
 \item{token_name}{The name of the token in your .Renviron file, should be \code{BANCTABLE_TOKEN}.}
 
 \item{workspace_id}{A numeric id specifying the workspace. Advanced use only}
+
+\item{retries}{if a request to the seatable API fails, the number of times to re-try with a 0.1 second pause.}
+
+\item{table.max}{the maximum number of rows to read from the seatable at one time, which is capped at 10000L by seatable.}
 
 \item{user, pwd}{banctable user and password used by \code{banctable_set_token}
 to obtain a token}

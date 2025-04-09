@@ -8,6 +8,7 @@
 banc_partner_summary(
   rootids,
   partners = c("outputs", "inputs"),
+  synapse_table = c("synapses_250226", "synapses_v1"),
   threshold = 0,
   remove_autapses = TRUE,
   cleft.threshold = 0,
@@ -15,7 +16,12 @@ banc_partner_summary(
   ...
 )
 
-banc_partners(rootids, partners = c("input", "output"), ...)
+banc_partners(
+  rootids,
+  partners = c("input", "output"),
+  synapse_table = c("synapses_250226", "synapses_v1"),
+  ...
+)
 }
 \arguments{
 \item{rootids}{Character vector specifying one or more BANC rootids. As a
@@ -23,6 +29,8 @@ convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 
 \item{partners}{Whether to fetch input or output synapses or both.}
+
+\item{synapse_table}{Character, the name of the synapse CAVE table you wish to use. Defaults to the latest.}
 
 \item{threshold}{For \code{flywire_partner_summary} only return partners with
 greater than this number of connections to the query neuron(s) (default of
@@ -64,6 +72,7 @@ banc_partner_summary(banc_latestid("720575941478275714"), partners='inputs') \%>
   slice_max(weight, n = 20) \%>\%
   banc_scene(open=TRUE)
 }
+synapses_250226
 \dontrun{
 # plot input and output synapses of a neuron
 nclear3d()

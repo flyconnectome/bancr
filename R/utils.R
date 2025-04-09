@@ -18,7 +18,8 @@ euclidean_distances <- function(A, B) {
 }
 
 # Helper
-express_lane <- function(base_dir, search = "^1_", symlink = FALSE) {
+express_lane <- function(base_dir, search = "^1_", link = c("move","symlink","copy")) {
+  link <- match.arg(link)
   todo_dir <- base_dir #fs::path(base_dir, "todo")
   if (fs::dir_exists(todo_dir)) {
     express_dir <- fs::path(base_dir, "express")
@@ -48,8 +49,10 @@ express_lane <- function(base_dir, search = "^1_", symlink = FALSE) {
       }
 
       # Create symlink
-      if(symlink){
+      if(link=="symlink"){
         fs::link_create(file, symlink_path)
+      }else if(link=="move"){
+        fs::file_move(file,symlink_path)
       }else{
         fs::file_copy(file,symlink_path)
       }
@@ -58,7 +61,7 @@ express_lane <- function(base_dir, search = "^1_", symlink = FALSE) {
     remove_empty_dirs(base_dir)
     cat("Symlink creation completed.\n")
   }else{
-    cat("No 'todo' folder from which to symlink.\n")
+    cat("No 'todo' folder from which to connect\n")
   }
   invisible()
 }
