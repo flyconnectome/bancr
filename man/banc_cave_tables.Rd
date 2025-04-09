@@ -14,7 +14,11 @@
 \usage{
 banc_cave_tables(datastack_name = NULL, select = NULL)
 
-banc_edgelist(...)
+banc_edgelist(
+  edgelist_view = c("synapses_250226_backbone_proofread_counts",
+    "synapses_v1_backbone_proofread_counts"),
+  ...
+)
 
 banc_cave_views(datastack_name = NULL, select = NULL)
 
@@ -44,6 +48,8 @@ banc_backbone_proofread(rootids = NULL)
 
 \item{select}{A regex term for the name of the table you want}
 
+\item{edgelist_view}{Character, name of prepared CAVE view that computes the proofread-neuron edgelist.}
+
 \item{...}{Additional arguments passed to
 \code{fafbseg::\link{flywire_cave_query}}}
 
@@ -53,7 +59,7 @@ to pass in data.frames, BANC URLs or simple ids.}
 
 \item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
 
-\item{table}{Possible alternative tables for the sort of data frame the function returns. One must be chosen.}
+\item{table}{Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.}
 
 \item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 }
