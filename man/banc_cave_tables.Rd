@@ -15,8 +15,8 @@
 banc_cave_tables(datastack_name = NULL, select = NULL)
 
 banc_edgelist(
-  edgelist_view = c("synapses_250226_backbone_proofread_counts",
-    "synapses_v1_backbone_proofread_counts"),
+  edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+    "synapses_250226_backbone_proofread_counts", "synapses_v1_backbone_proofread_counts"),
   ...
 )
 
@@ -30,18 +30,19 @@ banc_nuclei(
   ...
 )
 
-banc_cell_info(rootids = NULL, rawcoords = FALSE)
+banc_cell_info(rootids = NULL, rawcoords = FALSE, ...)
 
-banc_cell_ids(rootids = NULL)
+banc_cell_ids(rootids = NULL, ...)
 
 banc_neck_connective_neurons(
   rootids = NULL,
-  table = c("neck_connective_y92500", "neck_connective_y121000")
+  table = c("neck_connective_y92500", "neck_connective_y121000"),
+  ...
 )
 
-banc_peripheral_nerves(rootids = NULL)
+banc_peripheral_nerves(rootids = NULL, ...)
 
-banc_backbone_proofread(rootids = NULL)
+banc_backbone_proofread(rootids = NULL, ...)
 }
 \arguments{
 \item{datastack_name}{Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.}
@@ -51,7 +52,7 @@ banc_backbone_proofread(rootids = NULL)
 \item{edgelist_view}{Character, name of prepared CAVE view that computes the proofread-neuron edgelist.}
 
 \item{...}{Additional arguments passed to
-\code{fafbseg::\link{flywire_cave_query}}}
+\code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.}
 
 \item{rootids}{#' @param rootids Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you

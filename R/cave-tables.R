@@ -545,10 +545,10 @@ banc_validate_positions <- function(positions,
 #' banc_annotate_backbone_proofread(c(117105, 240526, 5122), user_id = 355, units = "raw")
 #'
 #' # Add an annotation to a point in nm
-#' banc_annotate_backbone_proofread(c(468420 962104 230490), user_id = 355, units = "nm")
+#' banc_annotate_backbone_proofread(c(468420, 962104 ,230490), user_id = 355, units = "nm")
 #'
 #' # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
-#' banc_deannotate_backbone_proofread(c(468420 962104 230490), user_id = 355, units = "nm")
+#' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
 banc_annotate_backbone_proofread <- function(positions,
                                              user_id,
                                              units = c("raw","nm"),
@@ -564,11 +564,28 @@ banc_annotate_backbone_proofread <- function(positions,
   pd = reticulate::import("pandas")
   client = banc_service_account(datastack_name)
 
+  # Current state
+  annotations <- banc_backbone_proofread(live=2) %>%
+    dplyr::filter(proofread==eval(proofread))
+  if(!nrow(annotations)){
+    stop("no annotations collected")
+  }
+  curr.positions <- do.call(rbind,annotations$pt_position)
+  curr.positions <- as.data.frame(curr.positions)
+  colnames(curr.positions) <- c("X","Y","Z")
+  curr.positions$id <- annotations$id
+
   # Stage
-  stage = client$annotation$stage_annotations('backbone_proofread')
+  stage <- client$annotation$stage_annotations('backbone_proofread')
   if(is.data.frame(positions)){
 
-    # Validat root IDs
+    # Validate root IDs
+    positions.orig <- positions
+    positions <- dplyr::anti_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
+    cat(nrow(positions.orig)-nrow(positions), "already in back_bone proofread")
+    if(!nrow(positions)){
+      stop("all positions already marked:", nrow(positions.orig))
+    }
     valid_ids = banc_xyz2id(positions, rawcoords = TRUE)
     valid_ids_not_0 = valid_ids[valid_ids!="0"]
     positions = positions[valid_ids!="0",]
@@ -593,6 +610,11 @@ banc_annotate_backbone_proofread <- function(positions,
     ))
     stage$add_dataframe(annotation_df)
   }else{
+    matching_rows <- which(apply(curr.positions[,1:3], 1, function(row) all(row == positions)))
+    point_exists <- length(matching_rows) > 0
+    if(point_exists){
+      stop("position already marked")
+    }
     valid_id = banc_xyz2id(positions, rawcoords = TRUE)
     if(valid_id=="0"){
       stop("given position does not return a valid root_id")
@@ -641,7 +663,7 @@ banc_deannotate_backbone_proofread <- function(positions,
     point_exists <- length(matching_rows) > 0
     annotation_ids <- annotations$id[matching_rows]
   }
-  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points")
+  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points \n")
   if(length(annotation_ids)){
     # get table
     client <- banc_service_account(datastack_name=datastack_name)
@@ -656,7 +678,7 @@ banc_deannotate_backbone_proofread <- function(positions,
     if(nrow(annotations.new)){
       warning('not all given positions removed from : missing annotation_ids')
     }
-    cat("deannotated", length(result), "entities, valid set to FALSE")
+    cat("deannotated", length(result), "entities, valid set to FALSE \n")
     return(result)
   }else{
     invisible()

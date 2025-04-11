@@ -5,7 +5,9 @@
 \title{Download all of the BANC synapses as a .sqlite file that you can read lazily from later}
 \usage{
 banc_all_synapses(
-  path = "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df",
+  path =
+    c("gs://lee-lab_brain-and-nerve-cord-fly-connectome/synapses/v2.0/final_edgelist.csv",
+    "gs://zetta_lee_fly_cns_001_synapse/240623_run/assignment/final_edgelist.df"),
   overwrite = FALSE,
   n_max = 2000,
   details = FALSE,
