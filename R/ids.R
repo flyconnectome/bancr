@@ -107,13 +107,20 @@ banc_xyz2id <- function(xyz,
                      ...)
   }
   if (isFALSE(rawcoords) && sum(res == 0) > 0.25 * length(res)) {
-    if (all(is_rawcoord(xyz))) {
+    if (all(banc_is_rawcoord(xyz))) {
       warning("It looks like you may be passing in raw coordinates. If so, use rawcoords=TRUE")
     }
   }
   if (integer64)
     bit64::as.integer64(res)
   else as.character(res)
+}
+
+# hidden
+banc_is_rawcoord <- function (xyz){
+  rawbb = structure(c(19848.22, 241544.98, 8881.11, 282792.41, -1.4, 7010.37
+  ), dim = 2:3, class = "boundingbox")
+  pointsinside(xyz, rawbb)
 }
 
 # rawxyz=cbind(34496, 82782, 1954)

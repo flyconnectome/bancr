@@ -10,7 +10,7 @@
 #' @param table Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.
 #' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
 #' @param ... Additional arguments passed to
-#'   \code{fafbseg::\link{flywire_cave_query}}
+#'   \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
 #'
 #' @return A \code{data.frame} describing a CAVE-table related to the BANC project.
 #' In the case of \code{banc_cave_tables}, a vector is returned containing the names of
@@ -50,7 +50,8 @@ banc_cave_tables <- function(datastack_name = NULL,
 
 #' @rdname banc_cave_tables
 #' @export
-banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_counts",
+banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+                                            "synapses_250226_backbone_proofread_counts",
                                             "synapses_v1_backbone_proofread_counts"),
                           ...){
   edgelist_view <- match.arg(edgelist_view)
@@ -157,9 +158,9 @@ banc_nuclei <- function (rootids = NULL,
 #' @export
 #' @importFrom dplyr mutate ends_with across
 #' @importFrom nat xyzmatrix2str
-banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
+banc_cell_info <- function(rootids = NULL, rawcoords = FALSE, ...){
   table <- "cell_info"
-  res <- with_banc(get_cave_table_data(table))
+  res <- with_banc(get_cave_table_data(table, ...))
   if (isTRUE(rawcoords))
     res
   else {
@@ -170,28 +171,29 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE){
 
 #' @rdname banc_cave_tables
 #' @export
-banc_cell_ids <- function(rootids = NULL){
-  with_banc(get_cave_table_data('cell_ids', rootids))
+banc_cell_ids <- function(rootids = NULL,  ...){
+  with_banc(get_cave_table_data('cell_ids', rootids, ...))
 }
 
 #' @rdname banc_cave_tables
 #' @export
 banc_neck_connective_neurons <- function(rootids = NULL,
-                                         table = c("neck_connective_y92500", "neck_connective_y121000")){
+                                         table = c("neck_connective_y92500", "neck_connective_y121000"),
+                                         ...){
   table <- match.arg(table)
-  with_banc(get_cave_table_data(table, rootids))
+  with_banc(get_cave_table_data(table, rootids, ...))
 }
 
 #' @rdname banc_cave_tables
 #' @export
-banc_peripheral_nerves <- function(rootids = NULL){
-  with_banc(get_cave_table_data("peripheral_nerves", rootids))
+banc_peripheral_nerves <- function(rootids = NULL, ...){
+  with_banc(get_cave_table_data("peripheral_nerves", rootids, ...))
 }
 
 #' @rdname banc_cave_tables
 #' @export
-banc_backbone_proofread <- function(rootids = NULL){
-  with_banc(get_cave_table_data("backbone_proofread", rootids))
+banc_backbone_proofread <- function(rootids = NULL, ...){
+  with_banc(get_cave_table_data("backbone_proofread", rootids, ...))
 }
 
 # hidden
@@ -211,8 +213,8 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
 }
 
 # hidden
-banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE){
-  banc.cell.info <- banc_cell_info(rawcoords = TRUE)
+banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
+  banc.cell.info <- banc_cell_info(rawcoords = TRUE, ...)
   if(!is.null(cave_id)){
     if(invert){
       banc.cell.info <- banc.cell.info %>%
@@ -476,4 +478,196 @@ cave_view_query <- function(table,
   }
   res
 }
+
+
+# hidden
+banc_service_account <- function(datastack_name=banc_datastack_name()){
+  if(is.null(datastack_name)){
+    datastack_name=banc_datastack_name()
+  }
+  cavec = fafbseg:::check_cave()
+  client = try(cavec$CAVEclient(datastack_name=datastack_name, auth_token_key='banc_service_account'))
+  if (inherits(client, "try-error")) {
+    stop("There seems to be a problem connecting to datastack as banc_service_account: ",
+         datastack_name)
+  }
+  client
+}
+
+# Validtate positions
+banc_validate_positions <- function(positions,
+                                    units = c("raw","nm")){
+  # Input validation
+  units <- match.arg(units)
+  if(is.null(positions)) {
+    stop("The 'positions' parameter cannot be NULL. Please provide 3D coordinates.")
+  }
+
+  # Validate positions format
+  positions <- nat::xyzmatrix(positions)
+  if(is.data.frame(positions)) {
+    # For dataframes, check for X,Y,Z columns
+    req_cols <- c("X", "Y", "Z")
+    if(!all(tolower(colnames(positions)) %in% tolower(req_cols))) {
+      stop("When providing a dataframe, it must contain columns named 'X', 'Y', 'Z' ")
+    }
+  } else if(is.vector(positions) && is.numeric(positions)) {
+    # For vectors, check length
+    if(length(positions) != 3) {
+      stop("When providing a numeric vector, it must have exactly 3 elements (X,Y,Z)")
+    }
+  } else if(is.matrix(positions) && is.numeric(positions)) {
+    # For matrices, check dimensions
+    if(ncol(positions) != 3) {
+      stop("When providing a matrix, it must have exactly 3 columns (X,Y,Z)")
+    }
+    positions <- as.data.frame(positions)
+  } else {
+    stop("'positions' must be either a dataframe with X,Y,Z columns, a numeric vector of length 3,
+         or a matrix with 3 columns")
+  }
+  if(!is.null(nrow(positions))){
+    positions <- unlist(c(positions))
+  }else if(nrow(positions)==1){
+    positions <- unlist(c(positions))
+  }
+
+  # convert
+  if(units=="nm"){
+    positions = banc_nm2raw(positions)
+  }
+  positions
+}
+
+# hidden
+#' @examples
+#' # Add an annotation to a point in raw voxel space
+#' banc_annotate_backbone_proofread(c(117105, 240526, 5122), user_id = 355, units = "raw")
+#'
+#' # Add an annotation to a point in nm
+#' banc_annotate_backbone_proofread(c(468420 962104 230490), user_id = 355, units = "nm")
+#'
+#' # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
+#' banc_deannotate_backbone_proofread(c(468420 962104 230490), user_id = 355, units = "nm")
+banc_annotate_backbone_proofread <- function(positions,
+                                             user_id,
+                                             units = c("raw","nm"),
+                                             proofread = TRUE,
+                                             datastack_name = NULL){
+
+  # Validate positions
+  positions <- banc_validate_positions(positions=positions, units=units)
+
+  # get table
+  cavec = fafbseg:::check_cave()
+  np = reticulate::import("numpy")
+  pd = reticulate::import("pandas")
+  client = banc_service_account(datastack_name)
+
+  # Stage
+  stage = client$annotation$stage_annotations('backbone_proofread')
+  if(is.data.frame(positions)){
+
+    # Validat root IDs
+    valid_ids = banc_xyz2id(positions, rawcoords = TRUE)
+    valid_ids_not_0 = valid_ids[valid_ids!="0"]
+    positions = positions[valid_ids!="0",]
+    if(sum(valid_ids=="0")){
+      warning("number of positions with invalid root_id: ", sum(valid_ids=="0"))
+    }
+    if(!nrow(positions)){
+      stop("no valid positions given")
+    }
+
+    # Create a pandas dataframe with all required columns
+    pos_list <- lapply(1:nrow(positions), function(i) {
+      np$array(positions[i,])
+    })
+    n_points <- nrow(positions)
+    annotation_df <- pd$DataFrame(data = list(
+      pt_position = reticulate::r_to_py(pos_list),
+      valid = rep(TRUE, n_points),
+      user_id = rep(user_id, n_points),
+      valid_id = as.numeric(valid_ids_not_0),
+      proofread = rep(proofread, n_points)
+    ))
+    stage$add_dataframe(annotation_df)
+  }else{
+    valid_id = banc_xyz2id(positions, rawcoords = TRUE)
+    if(valid_id=="0"){
+      stop("given position does not return a valid root_id")
+    }
+    stage$add(valid = TRUE,
+              pt_position = np$array(positions),
+              user_id = as.integer(user_id),
+              valid_id = as.numeric(valid_id),
+              proofread = proofread)
+  }
+
+  # Upload the staged annotations
+  result <- client$annotation$upload_staged_annotations(stage)
+
+  # Read table and check annotations are added
+  annotations <- banc_backbone_proofread(live=2)
+  annotations.new <- annotations %>%
+    dplyr::filter(id %in% result)
+  cat("annotated", nrow(annotations.new), "entities with backbone proofread:", proofread,"\n")
+  return(annotations.new)
+}
+
+# hidden
+banc_deannotate_backbone_proofread <- function(positions,
+                                               user_id = NULL,
+                                               units = c("raw","nm")){
+
+  # Validate positions
+  positions <- banc_validate_positions(positions=positions, units=units)
+
+  # Read table and check annotations are added
+  annotations <- banc_backbone_proofread(live=2)
+  if(!is.null(user_id)){
+    annotations <- annotations %>%
+      dplyr::filter(user_id %in% !!user_id)
+  }
+  curr.positions <- do.call(rbind,annotations$pt_position)
+  if(is.data.frame(positions)){
+    curr.positions <- as.data.frame(curr.positions)
+    colnames(curr.positions) <- c("X","Y","Z")
+    curr.positions$id <- annotations$id
+    matches <- dplyr::left_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
+    annotation_ids <- c(na.omit(matches$id))
+  }else{
+    matching_rows <- which(apply(curr.positions, 1, function(row) all(row == positions)))
+    point_exists <- length(matching_rows) > 0
+    annotation_ids <- annotations$id[matching_rows]
+  }
+  cat("pt_positions backbone_proofread in that match given points:", length(annotation_ids), "with user_id: ", user_id,"\n")
+  if(length(annotation_ids)){
+    # get table
+    client <- banc_service_account(datastack_name=datastack_name)
+
+    # Delete specified IDs
+    result <- client$annotation$delete_annotation("backbone_proofread", annotation_ids)
+
+    # Read table and check annotations are added
+    annotations <- banc_backbone_proofread(live=2)
+    annotations.new <- annotations %>%
+      dplyr::filter(id %in% annotation_ids)
+    if(nrow(annotations.new)){
+      warning('not all given positions removed from : missing annotation_ids')
+    }
+    cat("deannotated", length(result), "entities, valid set to FALSE")
+    return(result)
+  }else{
+    invisible()
+  }
+}
+
+
+
+
+
+
+
+
 
