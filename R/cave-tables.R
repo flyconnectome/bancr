@@ -641,7 +641,8 @@ banc_annotate_backbone_proofread <- function(positions,
 # hidden
 banc_deannotate_backbone_proofread <- function(positions,
                                                user_id = NULL,
-                                               units = c("raw","nm")){
+                                               units = c("raw","nm"),
+                                               datastack_name = NULL){
 
   # Validate positions
   positions <- banc_validate_positions(positions=positions, units=units)
