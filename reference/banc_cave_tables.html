@@ -43,8 +43,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_cave_tables</span><span class="op">(</span>datastack_name <span class="op">=</span> <span class="cn">NULL</span>, select <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">banc_edgelist</span><span class="op">(</span></span>
-<span>  edgelist_view <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_250226_backbone_proofread_counts"</span>,</span>
-<span>    <span class="st">"synapses_v1_backbone_proofread_counts"</span><span class="op">)</span>,</span>
+<span>  edgelist_view <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_250226_backbone_proofread_and_peripheral_nerves_counts"</span>,</span>
+<span>    <span class="st">"synapses_250226_backbone_proofread_counts"</span>, <span class="st">"synapses_v1_backbone_proofread_counts"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -58,18 +58,19 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_cell_info</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, rawcoords <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">banc_cell_info</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, rawcoords <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_cell_ids</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">banc_cell_ids</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">banc_neck_connective_neurons</span><span class="op">(</span></span>
 <span>  rootids <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"neck_connective_y92500"</span>, <span class="st">"neck_connective_y121000"</span><span class="op">)</span></span>
+<span>  table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"neck_connective_y92500"</span>, <span class="st">"neck_connective_y121000"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_peripheral_nerves</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">banc_peripheral_nerves</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_backbone_proofread</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">banc_backbone_proofread</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -90,7 +91,7 @@
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to
-<code>fafbseg::<a href="https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html" class="external-link">flywire_cave_query</a></code></p></dd>
+<code>fafbseg::<a href="https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html" class="external-link">flywire_cave_query</a></code> or <code>bancr:::get_cave_table_data</code>.</p></dd>
 
 
 <dt id="arg-rootids">rootids<a class="anchor" aria-label="anchor" href="#arg-rootids"></a></dt>
