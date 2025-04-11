@@ -583,7 +583,7 @@ banc_annotate_backbone_proofread <- function(positions,
     # Validate root IDs
     positions.orig <- positions
     positions <- dplyr::anti_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
-    cat("given positions already in back_bone proofread:",nrow(positions.orig)-nrow(positions),"\n")
+    cat("given positions already in backbone_proofread:",nrow(positions.orig)-nrow(positions),"\n")
     if(!nrow(positions)){
       stop("all positions already marked:", nrow(positions.orig))
     }
