@@ -641,7 +641,7 @@ banc_deannotate_backbone_proofread <- function(positions,
     point_exists <- length(matching_rows) > 0
     annotation_ids <- annotations$id[matching_rows]
   }
-  cat("pt_positions backbone_proofread in that match given points:", length(annotation_ids), "with user_id: ", user_id,"\n")
+  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points")
   if(length(annotation_ids)){
     # get table
     client <- banc_service_account(datastack_name=datastack_name)
