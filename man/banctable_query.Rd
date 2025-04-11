@@ -118,6 +118,8 @@ column that can identify each row in the remote table.}
 
 \item{invert}{whether to send the specified rows (\code{where}) to big data storage (\code{FALSE}) or from storage to the 'normal' table (\code{FALSE}.)}
 
+\item{row_ids}{Character, seatable row IDs}
+
 \item{bigdata}{logical, if \code{TRUE} new rows are added to the bigdata archive rather than the 'normal' seatable.}
 }
 \value{

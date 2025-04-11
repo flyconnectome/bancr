@@ -549,6 +549,7 @@ banc_validate_positions <- function(positions,
 #'
 #' # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
 #' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
+
 banc_annotate_backbone_proofread <- function(positions,
                                              user_id,
                                              units = c("raw","nm"),
@@ -582,7 +583,7 @@ banc_annotate_backbone_proofread <- function(positions,
     # Validate root IDs
     positions.orig <- positions
     positions <- dplyr::anti_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
-    cat(nrow(positions.orig)-nrow(positions), "already in back_bone proofread")
+    cat("given positions already in back_bone proofread:",nrow(positions.orig)-nrow(positions),"\n")
     if(!nrow(positions)){
       stop("all positions already marked:", nrow(positions.orig))
     }
@@ -590,7 +591,7 @@ banc_annotate_backbone_proofread <- function(positions,
     valid_ids_not_0 = valid_ids[valid_ids!="0"]
     positions = positions[valid_ids!="0",]
     if(sum(valid_ids=="0")){
-      warning("number of positions with invalid root_id: ", sum(valid_ids=="0"))
+      warning("given positions with invalid root_id: ", sum(valid_ids=="0"))
     }
     if(!nrow(positions)){
       stop("no valid positions given")
@@ -613,7 +614,7 @@ banc_annotate_backbone_proofread <- function(positions,
     matching_rows <- which(apply(curr.positions[,1:3], 1, function(row) all(row == positions)))
     point_exists <- length(matching_rows) > 0
     if(point_exists){
-      stop("position already marked")
+      stop("given position already marked")
     }
     valid_id = banc_xyz2id(positions, rawcoords = TRUE)
     if(valid_id=="0"){

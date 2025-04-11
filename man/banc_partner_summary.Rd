@@ -72,7 +72,6 @@ banc_partner_summary(banc_latestid("720575941478275714"), partners='inputs') \%>
   slice_max(weight, n = 20) \%>\%
   banc_scene(open=TRUE)
 }
-synapses_250226
 \dontrun{
 # plot input and output synapses of a neuron
 nclear3d()

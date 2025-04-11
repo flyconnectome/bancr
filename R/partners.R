@@ -29,7 +29,6 @@
 #'   slice_max(weight, n = 20) %>%
 #'   banc_scene(open=TRUE)
 #' }
-#' synapses_250226
 #' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),

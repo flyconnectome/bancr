@@ -45,6 +45,7 @@
 #' @param bigdata logical, if `TRUE` new rows are added to the bigdata archive rather than the 'normal' seatable.
 #' @param invert whether to send the specified rows (`where`) to big data storage (`FALSE`) or from storage to the 'normal' table (`FALSE`.)
 #' @param table.max the maximum number of rows to read from the seatable at one time, which is capped at 10000L by seatable.
+#' @param row_ids Character, seatable row IDs
 #' @param ... Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.
 #' @param retries if a request to the seatable API fails, the number of times to re-try with a 0.1 second pause.
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
