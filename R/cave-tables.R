@@ -559,7 +559,7 @@ banc_annotate_backbone_proofread <- function(positions,
                                              user_id,
                                              units = c("raw", "nm"),
                                              proofread = TRUE,
-                                            datastack_name = NULL) {
+                                             datastack_name = NULL) {
   positions <- bancr:::banc_validate_positions(positions = positions,
                                                units = units)
   cavec = fafbseg:::check_cave()
