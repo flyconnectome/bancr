@@ -58,6 +58,9 @@ banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_
   el <- with_banc(cave_view_query(edgelist_view, fetch_all_rows= TRUE, ...))
   el <- el %>%
     dplyr::arrange(dplyr::desc(n))
+  if(nrow(el)==500000|nrow(el)==1000000){
+    warning("edgelist is exactly ", nrow(el), " rows, which is suspicious")
+  }
   el
 }
 
@@ -393,8 +396,9 @@ cave_view_query <- function(table,
   }
   now = fafbseg:::flywire_timestamp(timestamp = "now", convert = FALSE)
   if(timetravel) {
-    timestamp2 = fafbseg:::flywire_timestamp(version, timestamp = timestamp,
-                                   datastack_name = datastack_name)
+    timestamp2 = fafbseg:::flywire_timestamp(version,
+                                             timestamp = timestamp,
+                                             datastack_name = datastack_name)
     timestamp = now
     version = NULL
     live = 2L
@@ -526,7 +530,7 @@ banc_validate_positions <- function(positions,
     stop("'positions' must be either a dataframe with X,Y,Z columns, a numeric vector of length 3,
          or a matrix with 3 columns")
   }
-  if(!is.null(nrow(positions))){
+  if(is.null(nrow(positions))){
     positions <- unlist(c(positions))
   }else if(nrow(positions)==1){
     positions <- unlist(c(positions))
@@ -534,7 +538,7 @@ banc_validate_positions <- function(positions,
 
   # convert
   if(units=="nm"){
-    positions = banc_nm2raw(positions)
+    positions <- banc_nm2raw(positions)
   }
   positions
 }
