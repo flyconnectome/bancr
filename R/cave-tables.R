@@ -634,6 +634,12 @@ banc_annotate_backbone_proofread <- function(positions,
               proofread = proofread)
     result_ind <- client$annotation$upload_staged_annotations(stage)
   }
+  # Add a pause of 0.1 seconds per row in positions
+  if (is.data.frame(positions)) {
+    pause_seconds <- nrow(positions) * 0.1
+  } else {
+    pause_seconds <- 0.1  # For a single position
+  }
   annotations <- banc_backbone_proofread(live = 2)
   annotations.new <- annotations %>% dplyr::filter(id %in%
                                                      result_ind)
