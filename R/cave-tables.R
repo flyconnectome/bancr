@@ -554,91 +554,91 @@ banc_validate_positions <- function(positions,
 #' # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
 #' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
 
+
 banc_annotate_backbone_proofread <- function(positions,
                                              user_id,
-                                             units = c("raw","nm"),
+                                             units = c("raw", "nm"),
                                              proofread = TRUE,
-                                             datastack_name = NULL){
-
-  # Validate positions
-  positions <- banc_validate_positions(positions=positions, units=units)
-
-  # get table
+                                            datastack_name = NULL) {
+  positions <- bancr:::banc_validate_positions(positions = positions,
+                                               units = units)
   cavec = fafbseg:::check_cave()
   np = reticulate::import("numpy")
   pd = reticulate::import("pandas")
-  client = banc_service_account(datastack_name)
-
-  # Current state
-  annotations <- banc_backbone_proofread(live=2) %>%
-    dplyr::filter(proofread==eval(proofread))
-  if(!nrow(annotations)){
+  client = bancr:::banc_service_account(datastack_name)
+  annotations <- banc_backbone_proofread(live = 2) %>% dplyr::filter(proofread ==
+                                                                       eval(proofread))
+  if (!nrow(annotations)) {
     stop("no annotations collected")
   }
-  curr.positions <- do.call(rbind,annotations$pt_position)
+  curr.positions <- do.call(rbind, annotations$pt_position)
   curr.positions <- as.data.frame(curr.positions)
-  colnames(curr.positions) <- c("X","Y","Z")
+  colnames(curr.positions) <- c("X", "Y", "Z")
   curr.positions$id <- annotations$id
-
-  # Stage
-  stage <- client$annotation$stage_annotations('backbone_proofread')
-  if(is.data.frame(positions)){
-
-    # Validate root IDs
+  stage <- client$annotation$stage_annotations("backbone_proofread")
+  if (is.data.frame(positions)) {
     positions.orig <- positions
-    positions <- dplyr::anti_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
-    cat("given positions already in backbone_proofread:",nrow(positions.orig)-nrow(positions),"\n")
-    if(!nrow(positions)){
+    positions <- dplyr::anti_join(positions, as.data.frame(curr.positions),
+                                  by = c("X", "Y", "Z"))
+    cat("given positions already in backbone_proofread:",
+        nrow(positions.orig) - nrow(positions), "\n")
+    if (!nrow(positions)) {
       stop("all positions already marked:", nrow(positions.orig))
     }
     valid_ids = banc_xyz2id(positions, rawcoords = TRUE)
-    valid_ids_not_0 = valid_ids[valid_ids!="0"]
-    positions = positions[valid_ids!="0",]
-    if(sum(valid_ids=="0")){
-      warning("given positions with invalid root_id: ", sum(valid_ids=="0"))
+    valid_ids_not_0 = valid_ids[valid_ids != "0"]
+    positions = positions[valid_ids != "0", ]
+    if (sum(valid_ids == "0")) {
+      warning("given positions with invalid root_id: ",
+              sum(valid_ids == "0"))
     }
-    if(!nrow(positions)){
+    if (!nrow(positions)) {
       stop("no valid positions given")
     }
+    result_ind <- numeric(0)
 
-    # Create a pandas dataframe with all required columns
-    pos_list <- lapply(1:nrow(positions), function(i) {
-      np$array(positions[i,])
-    })
-    n_points <- nrow(positions)
-    annotation_df <- pd$DataFrame(data = list(
-      pt_position = reticulate::r_to_py(pos_list),
-      valid = rep(TRUE, n_points),
-      user_id = rep(user_id, n_points),
-      valid_id = as.numeric(valid_ids_not_0),
-      proofread = rep(proofread, n_points)
-    ))
-    stage$add_dataframe(annotation_df)
-  }else{
-    matching_rows <- which(apply(curr.positions[,1:3], 1, function(row) all(row == positions)))
+    # Create a progress bar
+    pb <- progress::progress_bar$new(
+      format = "[:bar] :percent | ETA: :eta | :current/:total positions",
+      total = nrow(positions),
+      clear = FALSE,
+      width = 80
+    )
+
+    for (i in 1:nrow(positions)) {
+      # Update progress bar
+      pb$tick()
+      this_pos <- unlist(positions[i, ])
+      this_id <- as.numeric(valid_ids_not_0[i])
+      stage$add(valid = TRUE, pt_position = np$array(this_pos),
+                user_id = as.integer(user_id), valid_id = this_id,
+                proofread = proofread)
+      this_result <- client$annotation$upload_staged_annotations(stage)
+      result_ind <<- c(result_ind, this_result)
+      stage$clear_annotations()
+    }
+  }
+  else {
+    matching_rows <- which(apply(curr.positions[, 1:3], 1,
+                                 function(row) all(row == positions)))
     point_exists <- length(matching_rows) > 0
-    if(point_exists){
+    if (point_exists) {
       stop("given position already marked")
     }
     valid_id = banc_xyz2id(positions, rawcoords = TRUE)
-    if(valid_id=="0"){
+    if (valid_id == "0") {
       stop("given position does not return a valid root_id")
     }
-    stage$add(valid = TRUE,
-              pt_position = np$array(positions),
-              user_id = as.integer(user_id),
-              valid_id = as.numeric(valid_id),
+    stage$add(valid = TRUE, pt_position = np$array(positions),
+              user_id = as.integer(user_id), valid_id = as.numeric(valid_id),
               proofread = proofread)
+    result_ind <- client$annotation$upload_staged_annotations(stage)
   }
-
-  # Upload the staged annotations
-  result <- client$annotation$upload_staged_annotations(stage)
-
-  # Read table and check annotations are added
-  annotations <- banc_backbone_proofread(live=2)
-  annotations.new <- annotations %>%
-    dplyr::filter(id %in% result)
-  cat("annotated", nrow(annotations.new), "entities with backbone proofread:", proofread,"\n")
+  annotations <- banc_backbone_proofread(live = 2)
+  annotations.new <- annotations %>% dplyr::filter(id %in%
+                                                     result_ind)
+  cat("annotated", nrow(annotations.new), "entities with backbone proofread:",
+      proofread, "\n")
   return(annotations.new)
 }
 
