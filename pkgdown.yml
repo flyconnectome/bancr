@@ -1,8 +1,8 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-04-18T23:18Z
+last_built: 2025-05-20T21:48Z
 urls:
   reference: https://flyconnectome.github.io/bancr/reference
   article: https://flyconnectome.github.io/bancr/articles
