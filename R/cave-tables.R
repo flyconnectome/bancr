@@ -48,26 +48,11 @@ banc_cave_tables <- function(datastack_name = NULL,
   }
 }
 
-#' @rdname banc_cave_tables
-#' @export
-banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
-                                            "synapses_250226_backbone_proofread_counts",
-                                            "synapses_v1_backbone_proofread_counts"),
-                          ...){
-  edgelist_view <- match.arg(edgelist_view)
-  el <- with_banc(cave_view_query(edgelist_view, fetch_all_rows= TRUE, ...))
-  el <- el %>%
-    dplyr::arrange(dplyr::desc(n))
-  if(nrow(el)==500000|nrow(el)==1000000){
-    warning("edgelist is exactly ", nrow(el), " rows, which is suspicious")
-  }
-  el
-}
 
 #' @rdname banc_cave_tables
 #' @export
 banc_cave_views <- function(datastack_name = NULL,
-                             select = NULL){
+                            select = NULL){
   if(is.null(datastack_name))
     datastack_name=banc_datastack_name()
   fac <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
@@ -88,6 +73,26 @@ banc_cave_views <- function(datastack_name = NULL,
     return(tt)
   }
 }
+
+### edgelist ###
+
+#' @rdname banc_cave_tables
+#' @export
+banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+                                            "synapses_250226_backbone_proofread_counts",
+                                            "synapses_v1_backbone_proofread_counts"),
+                          ...){
+  edgelist_view <- match.arg(edgelist_view)
+  el <- with_banc(cave_view_query(edgelist_view, fetch_all_rows= TRUE, ...))
+  el <- el %>%
+    dplyr::arrange(dplyr::desc(n))
+  if(nrow(el)==500000|nrow(el)==1000000){
+    warning("edgelist is exactly ", nrow(el), " rows, which is suspicious")
+  }
+  el
+}
+
+### nuclei ###
 
 #' @rdname banc_cave_tables
 #' @export
@@ -157,6 +162,8 @@ banc_nuclei <- function (rootids = NULL,
   res
 }
 
+### neuron meta data ###
+
 #' @rdname banc_cave_tables
 #' @export
 #' @importFrom dplyr mutate ends_with across
@@ -197,22 +204,6 @@ banc_peripheral_nerves <- function(rootids = NULL, ...){
 #' @export
 banc_backbone_proofread <- function(rootids = NULL, ...){
   with_banc(get_cave_table_data("backbone_proofread", rootids, ...))
-}
-
-# hidden
-get_cave_table_data <- function(table, rootids = NULL, ...){
-  if (!is.null(rootids)) {
-    rootids <- flywire_ids(rootids)
-    df <- if (length(rootids) < 200) {
-      fafbseg::flywire_cave_query(table =  table,
-                         filter_in_dict = list(pt_root_id=rootids), ...)
-    } else {
-      fafbseg::flywire_cave_query(table =  table, live = TRUE, ...)
-    }
-  } else {
-    df <- fafbseg::flywire_cave_query(table =  table , ...)
-  }
-  df
 }
 
 # hidden
@@ -350,153 +341,27 @@ banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
 #                       chunksize = 1000)
 
 
-# hidden
-cave_view_query <- function(table,
-                            datastack_name = getOption("fafbseg.cave.datastack_name","flywire_fafb_production"),
-                            version = NULL,
-                            timestamp = NULL,
-                            live = is.null(version),
-                            timetravel = FALSE,
-                            filter_in_dict = NULL, filter_out_dict = NULL, filter_regex_dict = NULL,
-                            filter_equal_dict=NULL, filter_greater_dict=NULL, filter_less_dict=NULL,
-                            filter_greater_equal_dict=NULL, filter_less_equal_dict=NULL, filter_spatial_dict=NULL,
-                            select_columns = NULL, offset = 0L, limit = NULL, fetch_all_rows = FALSE,
-                            ...) {
-  if (isTRUE(live) && !is.null(version))
-    warning("live=TRUE so ignoring materialization version")
-  if (is.null(live) && !is.null(timestamp))
-    live = TRUE
-  if (isFALSE(live) && is.null(version)) {
-    warning("Defaulting to latest materialisation version since live=FALSE\n",
-            "Specify `version='latest' instead to avoid this warning")
-    version = flywire_version("latest", datastack_name = datastack_name)
+### neurotransmitters ###
+
+#' @rdname banc_cave_tables
+#' @export
+#' @importFrom dplyr mutate ends_with across
+#' @importFrom nat xyzmatrix2str
+banc_nt_prediction <- function(rootids = NULL, rawcoords = FALSE, ...){
+  table <- "synapses_250226_nt_prediction_35"
+  res <- with_banc(get_cave_table_data(table, ...))
+  if(nrow(res)==500000|nrow(res)==1000000){
+    warning("nt table is exactly ", nrow(res), " rows, which is suspicious")
   }
-  if (!is.null(timestamp) && !is.null(version))
-    stop("You can only supply one of timestamp and materialization version")
-  check_package_available("arrow")
-  fac = flywire_cave_client(datastack_name = datastack_name)
-  offset = checkmate::asInt(offset, lower = 0L)
-  if (!is.null(limit))
-    limit = checkmate::asInt(limit, lower = 0L)
-  is_view = table %in% fafbseg:::cave_views(fac)
-  version = fafbseg:::flywire_version(version, datastack_name = datastack_name)
-  if (!is.null(version)) {
-    available = version %in% fafbseg:::flywire_version("available", datastack_name = datastack_name)
-    if (!available) {
-      if (is_view)
-        stop("Sorry! Views only work with unexpired materialisation versions.\n",
-             "See https://flywire-forum.slack.com/archives/C01M4LP2Y2D/p1697956174773839 for info.")
-      timestamp = fafbseg:::flywire_timestamp(version, datastack_name = datastack_name,
-                                    convert = F)
-      message("Materialisation version no longer available. Falling back to (slower) timestamp!")
-      if (isFALSE(live))
-        live = TRUE
-      version = NULL
-    }
+  if (isTRUE(rawcoords))
+    res
+  else {
+    res %>% mutate(across(ends_with("position"),
+                          function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
-  now = fafbseg:::flywire_timestamp(timestamp = "now", convert = FALSE)
-  if(timetravel) {
-    timestamp2 = fafbseg:::flywire_timestamp(version,
-                                             timestamp = timestamp,
-                                             datastack_name = datastack_name)
-    timestamp = now
-    version = NULL
-    live = 2L
-  }
-  filter_in_dict = fafbseg:::cavedict_rtopy(filter_in_dict, wrap_table = if (isTRUE(live == 2))
-    table
-    else NULL)
-  filter_out_dict = fafbseg:::cavedict_rtopy(filter_out_dict)
-  filter_equal_dict = fafbseg:::cavedict_rtopy(filter_equal_dict)
-  filter_greater_dict = fafbseg:::cavedict_rtopy(filter_greater_dict)
-  filter_less_dict = fafbseg:::cavedict_rtopy(filter_less_dict)
-  filter_greater_equal_dict = fafbseg:::cavedict_rtopy(filter_greater_equal_dict)
-  filter_less_equal_dict = fafbseg:::cavedict_rtopy(filter_less_equal_dict)
-  filter_spatial_dict = fafbseg:::cavedict_rtopy(filter_spatial_dict)
-  if (!is.null(filter_regex_dict)) {
-    was_char = is.character(filter_regex_dict)
-    if (was_char) {
-      filter_regex_dict = as.list(filter_regex_dict)
-      if (isTRUE(live == 2)) {
-        warning("When live==2 / timetravel=T filter_regex_dict should be a list of form: ",
-                "`list(<table_name>=c(<colname>='<regex>'))`",
-                "\n", "I'm going to try and format your input correctly.")
-        filter_regex_dict = list(filter_regex_dict)
-        names(filter_regex_dict) = table
-      }
-    }
-  }
-  if (!is.null(select_columns)) {
-    if (isTRUE(live == 2) && is.character(select_columns)) {
-      warning("When live==2 / timetravel=T select_columns should be a list of form: ",
-              "`list(<table_name>=c('col1', 'col2'))`", "\n",
-              "I'm going to try and format your input correctly.")
-      select_columns = list(select_columns)
-      names(select_columns) = table
-    }
-  }
-  annotdfs = list()
-  while (offset >= 0) {
-    pymsg <- reticulate::py_capture_output({
-      annotdf <- if (is_view) {
-        if (!is.null(timestamp))
-          stop("Sorry! You cannot specify a timestamp when querying a view.\n",
-               "You can specify older timepoints by using unexpired materialisation versions.\n",
-               "See https://flywire-forum.slack.com/archives/C01M4LP2Y2D/p1697956174773839 for info.")
-        reticulate::py_call(fac$materialize$query_view,
-                            view_name = table, materialization_version = version,
-                            filter_in_dict = filter_in_dict, filter_out_dict = filter_out_dict,
-                            filter_equal_dict=filter_equal_dict,
-                            #filter_greater_dict=filter_equal_dict,
-                            #filter_less_dict=filter_less_dict,filter_greater_equal_dict=filter_greater_equal_dict,
-                            #filter_less_equal_dict=filter_less_equal_dict, filter_spatial_dict=filter_spatial_dict,
-                            filter_regex_dict = filter_regex_dict, select_columns = select_columns,
-                            offset = offset, limit = limit, ...)
-      }else{
-        stop("Sorry, no valid view specified")
-      }
-      annotdf <- fafbseg:::pandas2df(annotdf)
-    })
-    annotdfs[[length(annotdfs) + 1]] = annotdf
-    limited_query = isTRUE(grepl("Limited query to", pymsg))
-    if (limited_query && is.null(limit) && !fetch_all_rows)
-      warning(paste(pymsg, "\nUse fetch_all_rows=T or set an explicit limit to avoid warning!"))
-    else if (!limited_query && nzchar(pymsg)) {
-      warning(pymsg)
-    }
-    offset <- if (fetch_all_rows && limited_query)
-      offset + nrow(annotdf)
-    else -1L
-  }
-  res <- if (length(annotdfs) == 1)
-    annotdfs[[1]]
-  else dplyr::bind_rows(annotdfs)
-  if (timetravel) {
-    if (!all(c("pt_supervoxel_id", "pt_root_id") %in% colnames(res)))
-      stop("Sorry I do not know how to time travel dataframes without `pt_supervoxel_id`, `pt_root_id` columns!",
-           if (is.null(select_columns))
-             ""
-           else "\nPlease review your value of `select_columns`!")
-    res$pt_root_id = flywire_updateids(res$pt_root_id, svids = res$pt_supervoxel_id,
-                                       timestamp = timestamp2, cache = T, Verbose = F)
-  }
-  res
 }
 
-
-# hidden
-banc_service_account <- function(datastack_name=banc_datastack_name()){
-  if(is.null(datastack_name)){
-    datastack_name=banc_datastack_name()
-  }
-  cavec = fafbseg:::check_cave()
-  client = try(cavec$CAVEclient(datastack_name=datastack_name, auth_token_key='banc_service_account'))
-  if (inherits(client, "try-error")) {
-    stop("There seems to be a problem connecting to datastack as banc_service_account: ",
-         datastack_name)
-  }
-  client
-}
+### Make/edit cave tables ###
 
 # Validtate positions
 banc_validate_positions <- function(positions,
@@ -555,11 +420,9 @@ banc_validate_positions <- function(positions,
 #' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
 
 
-banc_annotate_backbone_proofread <- function(positions,
-                                             user_id,
-                                             units = c("raw", "nm"),
-                                             proofread = TRUE,
-                                             datastack_name = NULL) {
+banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw", "nm"), proofread = TRUE,
+                                              datastack_name = NULL)
+{
   positions <- bancr:::banc_validate_positions(positions = positions,
                                                units = units)
   cavec = fafbseg:::check_cave()
@@ -595,11 +458,12 @@ banc_annotate_backbone_proofread <- function(positions,
     if (!nrow(positions)) {
       stop("no valid positions given")
     }
-    result_ind <- numeric(0)
+
+    result_ind <- integer(0)
 
     # Create a progress bar
     pb <- progress::progress_bar$new(
-      format = "[:bar] :percent | ETA: :eta | :current/:total positions",
+      format = "[:bar] :percent | ETA: :eta | :current/:total positions | Elapsed: :elapsedfull",
       total = nrow(positions),
       clear = FALSE,
       width = 80
@@ -608,13 +472,15 @@ banc_annotate_backbone_proofread <- function(positions,
     for (i in 1:nrow(positions)) {
       # Update progress bar
       pb$tick()
+
       this_pos <- unlist(positions[i, ])
+      # this_pos <- np$array(positions[i, ])
       this_id <- as.numeric(valid_ids_not_0[i])
       stage$add(valid = TRUE, pt_position = np$array(this_pos),
                 user_id = as.integer(user_id), valid_id = this_id,
                 proofread = proofread)
       this_result <- client$annotation$upload_staged_annotations(stage)
-      result_ind <<- c(result_ind, this_result)
+      result_ind <- c(result_ind, this_result)
       stage$clear_annotations()
     }
   }
@@ -634,12 +500,15 @@ banc_annotate_backbone_proofread <- function(positions,
               proofread = proofread)
     result_ind <- client$annotation$upload_staged_annotations(stage)
   }
-  # Add a pause of 0.1 seconds per row in positions
+
   if (is.data.frame(positions)) {
     pause_seconds <- nrow(positions) * 0.1
-  } else {
-    pause_seconds <- 0.1  # For a single position
   }
+  else {
+    pause_seconds <- 0.1
+  }
+  Sys.sleep(pause_seconds)
+
   annotations <- banc_backbone_proofread(live = 2)
   annotations.new <- annotations %>% dplyr::filter(id %in%
                                                      result_ind)

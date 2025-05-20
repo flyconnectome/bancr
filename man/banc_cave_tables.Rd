@@ -2,25 +2,26 @@
 % Please edit documentation in R/cave-tables.R
 \name{banc_cave_tables}
 \alias{banc_cave_tables}
-\alias{banc_edgelist}
 \alias{banc_cave_views}
+\alias{banc_edgelist}
 \alias{banc_nuclei}
 \alias{banc_cell_info}
 \alias{banc_cell_ids}
 \alias{banc_neck_connective_neurons}
 \alias{banc_peripheral_nerves}
 \alias{banc_backbone_proofread}
+\alias{banc_nt_prediction}
 \title{Read BANC CAVE-tables, good sources of metadata}
 \usage{
 banc_cave_tables(datastack_name = NULL, select = NULL)
+
+banc_cave_views(datastack_name = NULL, select = NULL)
 
 banc_edgelist(
   edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
     "synapses_250226_backbone_proofread_counts", "synapses_v1_backbone_proofread_counts"),
   ...
 )
-
-banc_cave_views(datastack_name = NULL, select = NULL)
 
 banc_nuclei(
   rootids = NULL,
@@ -43,6 +44,8 @@ banc_neck_connective_neurons(
 banc_peripheral_nerves(rootids = NULL, ...)
 
 banc_backbone_proofread(rootids = NULL, ...)
+
+banc_nt_prediction(rootids = NULL, rawcoords = FALSE, ...)
 }
 \arguments{
 \item{datastack_name}{Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.}
