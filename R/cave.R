@@ -416,7 +416,7 @@ banc_delete_cave_table <- function(table_name = NULL, datastack_name = NULL)
       # Execute the deletion code here
       cat(sprintf("Deleting table '%s'...\n", table_name))
 
-      client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
+      client <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
 
       client$annotation$delete_table(table_name = table_name)
 
