@@ -9,6 +9,7 @@
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
 #' @param table Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.
 #' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
+#' @param fetch_all_rows Logical, whether or not to fetch all rows for a CAVE table.
 #' @param ... Additional arguments passed to
 #'   \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
 #'
@@ -92,11 +93,29 @@ banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_
   el
 }
 
+### mitochondria ###
+
+#' @rdname banc_cave_tables
+#' @export
+banc_mitochondria <- function(rootids = NULL, rawcoords = FALSE, fetch_all_rows=TRUE, ...){
+  table <- "mitochondria_v1"
+  res <- with_banc(get_cave_table_data(table, fetch_all_rows=fetch_all_rows, ...))
+  if(nrow(res)==500000|nrow(res)==1000000){
+    warning("dataframe is exactly ", nrow(el), " rows, which is suspicious")
+  }
+  if (isTRUE(rawcoords))
+    res
+  else {
+    res %>% mutate(across(ends_with("position"),
+                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+  }
+}
+
 ### nuclei ###
 
 #' @rdname banc_cave_tables
 #' @export
-banc_nuclei <- function (rootids = NULL,
+banc_nuclei <- function(rootids = NULL,
                          nucleus_ids = NULL,
                          table = c("both","somas_v1a","somas_v1b"),
                          rawcoords = FALSE,

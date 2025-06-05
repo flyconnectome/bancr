@@ -2,10 +2,19 @@
 % Please edit documentation in R/meshes.R
 \name{banc_read_neuron_meshes}
 \alias{banc_read_neuron_meshes}
+\alias{banc_read_mitochondria_mesh}
 \alias{banc_read_nuclei_mesh}
 \title{Read one or more BANC neuron and nuclei meshes}
 \usage{
 banc_read_neuron_meshes(ids, savedir = NULL, format = c("ply", "obj"), ...)
+
+banc_read_mitochondria_mesh(
+  ids,
+  lod = 0L,
+  savedir = NULL,
+  method = c("vf", "ply"),
+  ...
+)
 
 banc_read_nuclei_mesh(
   ids,

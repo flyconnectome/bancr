@@ -4,6 +4,7 @@
 \alias{banc_cave_tables}
 \alias{banc_cave_views}
 \alias{banc_edgelist}
+\alias{banc_mitochondria}
 \alias{banc_nuclei}
 \alias{banc_cell_info}
 \alias{banc_cell_ids}
@@ -20,6 +21,13 @@ banc_cave_views(datastack_name = NULL, select = NULL)
 banc_edgelist(
   edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
     "synapses_250226_backbone_proofread_counts", "synapses_v1_backbone_proofread_counts"),
+  ...
+)
+
+banc_mitochondria(
+  rootids = NULL,
+  rawcoords = FALSE,
+  fetch_all_rows = TRUE,
   ...
 )
 
@@ -61,11 +69,13 @@ banc_nt_prediction(rootids = NULL, rawcoords = FALSE, ...)
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 
+\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
+
+\item{fetch_all_rows}{Logical, whether or not to fetch all rows for a CAVE table.}
+
 \item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
 
 \item{table}{Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.}
-
-\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 }
 \value{
 A \code{data.frame} describing a CAVE-table related to the BANC project.
