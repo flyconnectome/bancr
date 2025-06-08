@@ -52,8 +52,8 @@
 <span></span>
 <span><span class="fu">banc_mitochondria</span><span class="op">(</span></span>
 <span>  rootids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"mitochondria_v1"</span>,</span>
 <span>  rawcoords <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  fetch_all_rows <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -79,7 +79,12 @@
 <span></span>
 <span><span class="fu">banc_backbone_proofread</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">banc_nt_prediction</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, rawcoords <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">banc_nt_prediction</span><span class="op">(</span></span>
+<span>  rootids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"synapses_250226_nt_prediction_35"</span>,</span>
+<span>  rawcoords <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -109,20 +114,20 @@ convenience this argument is passed to <code><a href="banc_ids.html">banc_ids</a
 to pass in data.frames, BANC URLs or simple ids.</p></dd>
 
 
+<dt id="arg-table">table<a class="anchor" aria-label="anchor" href="#arg-table"></a></dt>
+<dd><p>Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.</p></dd>
+
+
 <dt id="arg-rawcoords">rawcoords<a class="anchor" aria-label="anchor" href="#arg-rawcoords"></a></dt>
 <dd><p>Logical, whether or not to convert from raw coordinates into nanometers. Default is <code>FALSE</code>.</p></dd>
-
-
-<dt id="arg-fetch-all-rows">fetch_all_rows<a class="anchor" aria-label="anchor" href="#arg-fetch-all-rows"></a></dt>
-<dd><p>Logical, whether or not to fetch all rows for a CAVE table.</p></dd>
 
 
 <dt id="arg-nucleus-ids">nucleus_ids<a class="anchor" aria-label="anchor" href="#arg-nucleus-ids"></a></dt>
 <dd><p>Character vector specifying one or more BANC nucleus ids.</p></dd>
 
 
-<dt id="arg-table">table<a class="anchor" aria-label="anchor" href="#arg-table"></a></dt>
-<dd><p>Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.</p></dd>
+<dt id="arg-fetch-all-rows">fetch_all_rows<a class="anchor" aria-label="anchor" href="#arg-fetch-all-rows"></a></dt>
+<dd><p>Logical, whether or not to fetch all rows for a CAVE table.</p></dd>
 
 </dl></div>
     <div class="section level2">
