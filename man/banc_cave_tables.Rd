@@ -26,8 +26,8 @@ banc_edgelist(
 
 banc_mitochondria(
   rootids = NULL,
+  table = "mitochondria_v1",
   rawcoords = FALSE,
-  fetch_all_rows = TRUE,
   ...
 )
 
@@ -53,7 +53,12 @@ banc_peripheral_nerves(rootids = NULL, ...)
 
 banc_backbone_proofread(rootids = NULL, ...)
 
-banc_nt_prediction(rootids = NULL, rawcoords = FALSE, ...)
+banc_nt_prediction(
+  rootids = NULL,
+  table = "synapses_250226_nt_prediction_35",
+  rawcoords = FALSE,
+  ...
+)
 }
 \arguments{
 \item{datastack_name}{Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.}
@@ -69,13 +74,13 @@ banc_nt_prediction(rootids = NULL, rawcoords = FALSE, ...)
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 
-\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
+\item{table}{Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.}
 
-\item{fetch_all_rows}{Logical, whether or not to fetch all rows for a CAVE table.}
+\item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 
 \item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
 
-\item{table}{Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.}
+\item{fetch_all_rows}{Logical, whether or not to fetch all rows for a CAVE table.}
 }
 \value{
 A \code{data.frame} describing a CAVE-table related to the BANC project.

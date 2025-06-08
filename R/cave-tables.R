@@ -97,16 +97,23 @@ banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_
 
 #' @rdname banc_cave_tables
 #' @export
-banc_mitochondria <- function(rootids = NULL, rawcoords = FALSE, fetch_all_rows=TRUE, ...){
-  table <- "mitochondria_v1"
-  res <- with_banc(get_cave_table_data(table, fetch_all_rows=fetch_all_rows, ...))
-  if(nrow(res)==500000|nrow(res)==1000000){
-    warning("dataframe is exactly ", nrow(el), " rows, which is suspicious")
+banc_mitochondria <- function(rootids = NULL,
+                              table = "mitochondria_v1",
+                              rawcoords = FALSE, ...){
+  cavec <- fafbseg:::check_cave()
+  client <- try(cavec$CAVEclient(datastack_name=banc_datastack_name()))
+  if(is.null(rootids)){
+    res <- with_banc(get_cave_table_data(table, fetch_all_rows = TRUE, ...))
+    if(nrow(res)==500000|nrow(res)==1000000){
+      warning("dataframe is exactly ", nrow(res), " rows, which is suspicious")
+    }
+  }else{
+    res <- client$materialize$tables[[table]](pt_root_id=rootids)$query()
   }
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% mutate(across(ends_with("position"),
+    res %>% dplyr::mutate(across(ends_with("position"),
                           function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
 }
@@ -366,17 +373,24 @@ banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
 #' @export
 #' @importFrom dplyr mutate ends_with across
 #' @importFrom nat xyzmatrix2str
-banc_nt_prediction <- function(rootids = NULL, rawcoords = FALSE, ...){
-  table <- "synapses_250226_nt_prediction_35"
-  res <- with_banc(get_cave_table_data(table, ...))
-  if(nrow(res)==500000|nrow(res)==1000000){
-    warning("nt table is exactly ", nrow(res), " rows, which is suspicious")
+banc_nt_prediction <- function(rootids = NULL,
+                               table = "synapses_250226_nt_prediction_35",
+                               rawcoords = FALSE, ...){
+  cavec <- fafbseg:::check_cave()
+  client <- try(cavec$CAVEclient(datastack_name=banc_datastack_name()))
+  if(is.null(rootids)){
+    res <- with_banc(get_cave_table_data(table, fetch_all_rows = TRUE, ...))
+    if(nrow(res)==500000|nrow(res)==1000000){
+      warning("dataframe is exactly ", nrow(res), " rows, which is suspicious")
+    }
+  }else{
+    res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
   }
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% mutate(across(ends_with("position"),
-                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+    res %>% dplyr::mutate(across(ends_with("position"),
+                                 function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
 }
 
