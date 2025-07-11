@@ -81,8 +81,9 @@
 <span></span>
 <span><span class="fu">banc_nt_prediction</span><span class="op">(</span></span>
 <span>  rootids <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  table <span class="op">=</span> <span class="st">"synapses_250226_nt_prediction_35"</span>,</span>
-<span>  rawcoords <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"synapses_250226_nt_prediction_5"</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rawcoords <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -126,6 +127,10 @@ to pass in data.frames, BANC URLs or simple ids.</p></dd>
 <dd><p>Character vector specifying one or more BANC nucleus ids.</p></dd>
 
 
+<dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
+<dd><p>logical, if <code>TRUE</code> then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.</p></dd>
+
+
 <dt id="arg-fetch-all-rows">fetch_all_rows<a class="anchor" aria-label="anchor" href="#arg-fetch-all-rows"></a></dt>
 <dd><p>Logical, whether or not to fetch all rows for a CAVE table.</p></dd>
 
@@ -145,7 +150,7 @@ all query-able cave tables.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">all_banc_soma_positions</span> <span class="op">&lt;-</span> <span class="fu">banc_nuclei</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/reference/primitives.html" class="external-link">points3d</a></span><span class="op">(</span><span class="fu">nat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/nat/man/xyzmatrix.html" class="external-link">xyzmatrix</a></span><span class="op">(</span><span class="va">all_banc_soma_positions</span><span class="op">$</span><span class="va">pt_position</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/primitives.html" class="external-link">points3d</a></span><span class="op">(</span><span class="fu">nat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/nat/man/xyzmatrix.html" class="external-link">xyzmatrix</a></span><span class="op">(</span><span class="va">all_banc_soma_positions</span><span class="op">$</span><span class="va">pt_position</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
