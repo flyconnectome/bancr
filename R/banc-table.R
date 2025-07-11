@@ -190,7 +190,7 @@ banctable_update_rows <- function (df,
   df <- as.data.frame(df)
   if (is.character(base) || is.null(base))
     base = banctable_base(base_name = base, table = table, workspace_id = workspace_id, token_name = token_name)
-  nx = nrow(df)
+  nx <- nrow(df)
   if (!isTRUE(nx > 0)) {
     warning("No rows to update in `df`!")
     return(TRUE)
@@ -235,7 +235,7 @@ banctable_update_rows <- function (df,
 }
 
 # hidden
-banctable_base <- function (base_name = "banc_meta",
+banctable_base <- function(base_name = "banc_meta",
                             table = NULL,
                             url = "https://cloud.seatable.io/",
                             token_name = "BANCTABLE_TOKEN",
@@ -749,6 +749,37 @@ banctable_annotate <- function(root_ids,
 }
 
 
-#' @export
-#' @rdname banctable_query
+# hidden
+banctable_snapshots <- function(token_name = "BANCTABLE_TOKEN",
+                                base_name = "banc_meta",
+                                workspace_id = "57832"){
+  # Build the URL
+  url <- sprintf(
+    "https://cloud.seatable.io/api/v2.1/workspace/%s/dtable/%s/snapshots/",
+    workspace_id, base_name
+  )
+
+  # Set headers
+  token <- Sys.getenv(token_name, unset = NA_character_)
+  headers <- add_headers(
+    accept = "application/json",
+    authorization = paste("Bearer", token)
+  )
+
+  # Perform the GET request
+  response <- httr::GET(url, headers)
+
+  # Given content_text:
+  content_text <- content(response, as = "text", encoding = "UTF-8")
+  json_result <- jsonlite::fromJSON(content_text)
+
+  # To get just the snapshot list as a data.frame:
+  snapshot_list <- json_result$snapshot_list
+
+  # See the first few rows:
+  snapshot_list
+}
+
+
+
 

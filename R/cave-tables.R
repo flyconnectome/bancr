@@ -9,6 +9,7 @@
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
 #' @param table Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.
 #' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
+#' @param simplify logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.
 #' @param fetch_all_rows Logical, whether or not to fetch all rows for a CAVE table.
 #' @param ... Additional arguments passed to
 #'   \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
@@ -113,7 +114,7 @@ banc_mitochondria <- function(rootids = NULL,
   if (isTRUE(rawcoords))
     res
   else {
-    res %>% dplyr::mutate(across(ends_with("position"),
+    res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"),
                           function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
 }
@@ -374,8 +375,9 @@ banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
 #' @importFrom dplyr mutate ends_with across
 #' @importFrom nat xyzmatrix2str
 banc_nt_prediction <- function(rootids = NULL,
-                               table = "synapses_250226_nt_prediction_35",
-                               rawcoords = FALSE, ...){
+                               table = "synapses_250226_nt_prediction_5",
+                               simplify = TRUE,
+                               rawcoords = TRUE, ...){
   cavec <- fafbseg:::check_cave()
   client <- try(cavec$CAVEclient(datastack_name=banc_datastack_name()))
   if(is.null(rootids)){
@@ -392,6 +394,42 @@ banc_nt_prediction <- function(rootids = NULL,
     res %>% dplyr::mutate(across(ends_with("position"),
                                  function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
+  res <- res %>%
+    dplyr::mutate(pre_pt_supervoxel_id = as.character(pre_pt_supervoxel_id),
+                  pre_pt_root_id = as.character(pre_pt_root_id),
+                  post_pt_supervoxel_id = as.character(post_pt_supervoxel_id),
+                  post_pt_root_id = as.character(post_pt_root_id))
+  if(simplify){
+    nt.cols <- c("gaba", "serotonin", "acetylcholine", "dopamine", "octopamine", "glutamate", "histamine", "tyramine")
+    res <- res %>%
+      dplyr::filter(valid_ref == 't', valid == 't') %>%
+      dplyr::arrange(dplyr::desc(value)) %>%
+      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%
+      dplyr::group_by(pre_pt_root_id, tag) %>%
+      dplyr::summarise(n = dplyr::n(), .groups = "drop_last") %>%
+      dplyr::mutate(total = sum(n), prop = n / total) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(pre_pt_root_id, tag, prop) %>%
+      dplyr::mutate(prop = round(prop, 4)) %>%
+      tidyr::pivot_wider(
+        names_from = tag,
+        values_from = prop,
+        values_fill = 0
+      )
+    missing_nt_cols <- setdiff(nt.cols, names(res))
+    if(length(missing_nt_cols) > 0) {
+      res[missing_nt_cols] <- 0
+    }
+    res <- res %>%
+      dplyr::select(pre_pt_root_id, dplyr::all_of(nt.cols), dplyr::everything()) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        top_nt_p = max(dplyr::c_across(dplyr::all_of(nt.cols)), na.rm = TRUE),
+        top_nt = nt.cols[which.max(dplyr::c_across(dplyr::all_of(nt.cols)))]
+      ) %>%
+      dplyr::ungroup()
+  }
+  res
 }
 
 ### Make/edit cave tables ###

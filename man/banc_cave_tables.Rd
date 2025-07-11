@@ -55,8 +55,9 @@ banc_backbone_proofread(rootids = NULL, ...)
 
 banc_nt_prediction(
   rootids = NULL,
-  table = "synapses_250226_nt_prediction_35",
-  rawcoords = FALSE,
+  table = "synapses_250226_nt_prediction_5",
+  simplify = FALSE,
+  rawcoords = TRUE,
   ...
 )
 }
@@ -79,6 +80,8 @@ to pass in data.frames, BANC URLs or simple ids.}
 \item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 
 \item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
+
+\item{simplify}{logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.}
 
 \item{fetch_all_rows}{Logical, whether or not to fetch all rows for a CAVE table.}
 }
