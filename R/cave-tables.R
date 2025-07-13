@@ -381,14 +381,18 @@ banc_nt_prediction <- function(rootids = NULL,
   cavec <- fafbseg:::check_cave()
   client <- try(cavec$CAVEclient(datastack_name=banc_datastack_name()))
   if(is.null(rootids)){
-    res <- with_banc(get_cave_table_data(table, fetch_all_rows = TRUE, ...))
+    res <- with_banc(get_cave_table_data(table,
+                                         rootids = rootids,
+                                         fetch_all_rows = TRUE, ...))
     if(nrow(res)==500000|nrow(res)==1000000){
       warning("dataframe is exactly ", nrow(res), " rows, which is suspicious")
     }
   }else{
+    res <- data.frame()
     for(rootid in rootids){
       res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
       res$pre_pt_root_id <- rootid
+      res <- plyr::rbind.fill(res, res)
     }
   }
   if (isTRUE(rawcoords))
