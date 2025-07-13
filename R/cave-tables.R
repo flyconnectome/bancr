@@ -386,7 +386,10 @@ banc_nt_prediction <- function(rootids = NULL,
       warning("dataframe is exactly ", nrow(res), " rows, which is suspicious")
     }
   }else{
-    res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
+    for(rootid in rootids){
+      res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
+      res$pre_pt_root_id <- rootid
+    }
   }
   if (isTRUE(rawcoords))
     res
@@ -432,7 +435,7 @@ banc_nt_prediction <- function(rootids = NULL,
   res
 }
 
-### Make/edit cave tables ###
+### Make/edit cave tables ###\
 
 # Validtate positions
 banc_validate_positions <- function(positions,
