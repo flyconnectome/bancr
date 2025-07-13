@@ -239,6 +239,8 @@ banc_cave_valid_schemas <- function(datastack_name = NULL)
 
 # function banc_annotate_bound_double_tag_user
 # function to upload new annotations to CAVE tables of schema bound_double_tag_user
+
+# hidden
 banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
                                                  table_name = NULL, datastack_name = NULL, use_admin_creds = FALSE)
 {
@@ -253,7 +255,7 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
   }
 
   # check that table is of bound_double_tag_user schema
-  this_schema <- banc_cave_schema(select = table_name,
+  this_schema <- banc_cave_schema(table_name = table_name,
                                   datastack_name = datastack_name)
   if (this_schema != "bound_double_tag_user") {
     stop(sprintf("'%s' is not of schema bound_double_tag_user", table_name))
@@ -333,7 +335,6 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
   cat("added ", nrow(annotations.new), "new annotations to ", table_name, "\n")
   return(annotations.new)
 }
-
 
 # function banc_cave_new_table
 # function to create new CAVE table, non reference types only
