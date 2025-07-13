@@ -644,9 +644,101 @@ banc_deannotate_backbone_proofread <- function(positions,
   }
 }
 
+# hidden
+banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
+                                                 table_name = NULL, datastack_name = NULL, use_admin_creds = FALSE)
+{
+  if (is.null(datastack_name))
+    datastack_name = bancr:::banc_datastack_name()
 
+  # check that table to write to exists
+  all_tables <- banc_cave_tables(datastack_name = datastack_name)
+  if (!(table_name %in% all_tables)) {
+    stop(sprintf("I cannot find a '%s' table for datastack: ", table_name),
+         datastack_name)
+  }
 
+  # check that table is of bound_double_tag_user schema
+  this_schema <- banc_cave_schema(table_name = table_name,
+                                  datastack_name = datastack_name)
+  if (this_schema != "bound_double_tag_user") {
+    stop(sprintf("'%s' is not of schema bound_double_tag_user", table_name))
+  }
 
+  # check that data is a dataframe that contains the columns pt_position,
+  #  tag, tag2, and user_id
+  # Check if data is a dataframe
+  if (!is.data.frame(data)) {
+    stop("data must be a dataframe")
+  }
+
+  # Check for required columns
+  required_columns <- c("pt_position", "tag", "tag2", "user_id")
+  missing_columns <- required_columns[!required_columns %in% colnames(data)]
+
+  if (length(missing_columns) > 0) {
+    stop(paste("data is missing required columns:",
+               paste(missing_columns, collapse = ", ")))
+  }
+
+  # validate positions and convert to dataframe of X,Y,Z
+  positions <- bancr:::banc_validate_positions(positions = data$pt_position,
+                                               units = units)
+
+  # check for valid IDs; remove rows where pt_position corresponds to invalid ID
+  valid_ids = banc_xyz2id(positions, rawcoords = TRUE)
+  valid_ids_not_0 = valid_ids[valid_ids != "0"]
+  positions = positions[valid_ids != "0", ]
+  data = data[valid_ids != "0", ]
+  if (sum(valid_ids == "0")) {
+    warning("given positions with invalid root_id: ",
+            sum(valid_ids == "0"))
+  }
+  if (!nrow(positions)) {
+    stop("no valid positions given")
+  }
+
+  # check CAVE
+  cavec = fafbseg:::check_cave()
+  # initialize python packages
+  np = reticulate::import("numpy")
+  pd = reticulate::import("pandas")
+
+  # instantiate CAVE client
+  if (use_admin_creds) {
+    client = bancr:::banc_service_account(datastack_name)
+  }
+  else {
+    client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
+  }
+
+  stage <- client$annotation$stage_annotations(table_name)
+
+  result_ind <- integer(0)
+  pb <- progress::progress_bar$new(format = "[:bar] :percent | ETA: :eta | :current/:total rows | Elapsed: :elapsedfull",
+                                   total = nrow(data), clear = FALSE, width = 80)
+  for (i in 1:nrow(data)) {
+    pb$tick()
+    this_pos <- unlist(positions[i, ])
+    this_tag <- data$tag[i]
+    this_tag2 <- data$tag2[i]
+    this_user_id <- data$user_id[i]
+    stage$add(valid = TRUE, pt_position = np$array(this_pos),
+              tag = this_tag, tag2 = this_tag2,
+              user_id = as.integer(this_user_id))
+    this_result <- client$annotation$upload_staged_annotations(stage)
+    result_ind <- c(result_ind, this_result)
+    stage$clear_annotations()
+  }
+  pause_seconds <- nrow(data) * 0.2
+  Sys.sleep(pause_seconds)
+
+  annotations <- banc_cave_query(table_name, live = 2)
+  annotations.new <- annotations %>%
+    dplyr::filter(id %in% result_ind)
+  cat("added ", nrow(annotations.new), "new annotations to ", table_name, "\n")
+  return(annotations.new)
+}
 
 
 
