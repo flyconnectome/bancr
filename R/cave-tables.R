@@ -414,9 +414,9 @@ banc_nt_prediction <- function(rootids = NULL,
       dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%
       dplyr::group_by(pre_pt_root_id, tag) %>%
       dplyr::summarise(n = dplyr::n(), .groups = "drop_last") %>%
-      dplyr::mutate(total = sum(n), prop = n / total) %>%
+      dplyr::mutate(count = sum(n), prop = n / count) %>%
       dplyr::ungroup() %>%
-      dplyr::select(pre_pt_root_id, tag, prop) %>%
+      dplyr::select(pre_pt_root_id, count, tag, prop) %>%
       dplyr::mutate(prop = round(prop, 4)) %>%
       tidyr::pivot_wider(
         names_from = tag,
@@ -539,7 +539,7 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
 
     result_ind <- integer(0)
 
-    # Create a progress bar
+    # Create a progress barn
     pb <- progress::progress_bar$new(
       format = "[:bar] :percent | ETA: :eta | :current/:total positions | Elapsed: :elapsedfull",
       total = nrow(positions),
