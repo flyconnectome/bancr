@@ -393,6 +393,12 @@ banc_nt_prediction <- function(rootids = NULL,
       res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
       res$pre_pt_root_id <- rootid
       res <- plyr::rbind.fill(res, res)
+      # ids = rids2pyint(x[chunks == i])
+      # pyres <- if (method == "cave")
+      #   reticulate::py_call(vol$chunkedgraph$get_roots, supervoxel_ids = ids,
+      #                       ...)
+      # else reticulate::py_call(vol$get_roots, ids, ...)
+      # res[[length(res) + 1]] = pyids2bit64(pyres, as_character = !integer64)
     }
   }
   if (isTRUE(rawcoords))
@@ -411,7 +417,7 @@ banc_nt_prediction <- function(rootids = NULL,
     res <- res %>%
       dplyr::filter(valid_ref == 't', valid == 't') %>%
       dplyr::arrange(dplyr::desc(value)) %>%
-      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%
+      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%banc_xyz2id
       dplyr::group_by(pre_pt_root_id, tag) %>%
       dplyr::summarise(n = dplyr::n(), .groups = "drop_last") %>%
       dplyr::mutate(count = sum(n), prop = n / count) %>%
@@ -641,5 +647,70 @@ banc_deannotate_backbone_proofread <- function(positions,
     return(result)
   }else{
     invisible()
+  }
+}
+
+#' Read BANC-FlyWireCodex annotation table
+#'
+#' @param rootids #' @param rootids Character vector specifying one or more BANC rootids. As a
+#'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
+#'   to pass in data.frames, BANC URLs or simple ids.
+#' @param live logical, get the most recent data or pull from the latest materialisation
+#' @param ... method passed to \code{\link{banc_cave_query}}.
+#'
+#' @return A \code{data.frame} describing that should be similar to what you find for BANC
+#' in FlyWireCodex.
+#'
+#' @seealso \code{\link{banc_cave_tables}}
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' banc.meta <- banc_codex_annotations()
+#' }
+banc_codex_annotations <- function(live = TRUE,
+                                   ...) {
+  table_name <- "codex_annotations"
+  codex_annotations_part_1 <- banc_cave_query(table_name,
+                                              live = live,
+                                              limit = 850000,
+                                              ...)
+  codex_annotations_part_2 <- banc_cave_query(table_name,
+                                              live = live,
+                                              offset = 850000,
+                                              ...)
+  codex_annotations_part_2 <- codex_annotations_part_2 %>%
+    dplyr::mutate(cell_type = as.character(cell_type))
+  codex_annotations <- dplyr::bind_rows(codex_annotations_part_1, codex_annotations_part_2)
+  # live 2 does not have pt_root_id, pt_supervoxel_id, pt_position because it's
+  #  a reference table and there is no materialization
+  if(live == 2) {
+    codex_annotations_flat_table <- codex_annotations %>%
+      # First, collapse multiple cell_type values for same target_id + classification_system
+      dplyr::group_by(target_id, classification_system) %>%
+      dplyr::summarise(
+        cell_type_combined = paste(unique(cell_type), collapse = ", "),
+        .groups = "drop"
+      ) %>%
+      # Pivot to wide format
+      tidyr::pivot_wider(
+        names_from = classification_system,
+        values_from = cell_type_combined,
+        values_fill = NA_character_
+      )
+  } else{
+    codex_annotations_flat_table <- codex_annotations %>%
+      # First, collapse multiple cell_type values for same target_id + classification_system
+      dplyr::group_by(target_id, classification_system, pt_supervoxel_id, pt_root_id, pt_position) %>%
+      dplyr::summarise(
+        cell_type_combined = paste(unique(cell_type), collapse = ", "),
+        .groups = "drop"
+      ) %>%
+      # Pivot to wide format
+      tidyr::pivot_wider(
+        names_from = classification_system,
+        values_from = cell_type_combined,
+        values_fill = NA_character_
+      )
   }
 }

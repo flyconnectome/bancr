@@ -56,7 +56,7 @@ banc_backbone_proofread(rootids = NULL, ...)
 banc_nt_prediction(
   rootids = NULL,
   table = "synapses_250226_nt_prediction_5",
-  simplify = FALSE,
+  simplify = TRUE,
   rawcoords = TRUE,
   ...
 )

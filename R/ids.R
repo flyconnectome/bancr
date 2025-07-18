@@ -11,17 +11,34 @@
 #' \donttest{
 #' banc_rootid("73186243730767724")
 #' }
-banc_rootid <- function(x, integer64 = FALSE, ...) {
+banc_rootid <- function(x,
+                        integer64 = FALSE,
+                        version = NULL,
+                        timestamp = NULL,
+                        ...) {
+  if(!is.null(version)){
+    timestamp <- with_banc(fafbseg:::flywire_timestamp(version = version,
+                                                      convert = FALSE))
+  }
   rid = flywire_rootid(
     x = x,
     integer64 = integer64,
     method = "cloudvolume",
     # agglomerate = T,
+    timestamp = timestamp,
     cloudvolume.url = banc_cloudvolume_url(),
     ...
   )
   rid
 }
+# timestamp = with_banc(fafbseg:::flywire_timestamp(version = "612",
+#                                                   timestamp = NULL,
+#                                                   convert = FALSE))
+# with_banc(fafbseg:::flywire_roots_helper("76562155939424493", method = "cloudvolume",
+#                                          cloudvolume.url =  banc_cloudvolume_url(),
+#                                          integer64 = FALSE,
+#                                          timestamp = timestamp,
+#                                          stop_layer = NULL))
 
 #' Find the supervoxel identifiers of a banc neuron
 #'
@@ -61,8 +78,14 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #' @importFrom nat xyzmatrix
 #' @examples
 #' \dontrun{
-#' # a point from neuroglancer, should map to 648518346498932033
-#' banc_xyz2id(cbind(438976,985856,215955), rawcoords=FALSE)
+#' # a point from neuroglancer, should map to 720575941623125868
+#' banc_xyz2id(cbind(438976,985856,215955),  version="282", rawcoords=FALSE)
+#'
+#' # Get root ID for an older materialization
+#' banc_xyz2id(cbind(462572, 370000, 134955), version="612", root=TRUE)
+#'
+#' # Get the most recent root ID
+#' banc_xyz2id(cbind(462572, 370000, 134955),root=TRUE)
 #' }
 banc_xyz2id <- function(xyz,
                         rawcoords = FALSE,
@@ -70,16 +93,17 @@ banc_xyz2id <- function(xyz,
                         integer64 = FALSE,
                         fast_root = TRUE,
                         method = c("cloudvolume", "spine"),
+                        version = NULL,
                         ...) {
   fafbseg:::check_cloudvolume_reticulate()
   voxdims <- banc_voxdims()
-  method = match.arg(method)
+  method <- match.arg(method)
   if (isTRUE(is.numeric(xyz) && is.vector(xyz) && length(xyz) ==
              3)) {
-    xyz = matrix(xyz, ncol = 3)
+    xyz <- matrix(xyz, ncol = 3)
   }
   else {
-    xyz = xyzmatrix(xyz)
+    xyz <- xyzmatrix(xyz)
   }
   if (isTRUE(rawcoords)) {
     xyz <- scale(xyz, scale = 1/voxdims, center = FALSE)
@@ -89,9 +113,9 @@ banc_xyz2id <- function(xyz,
     res <- banc_supervoxels(xyz, voxdims=voxdims)
   }
   else {
-    cv = banc_cloudvolume()
-    pycode = sprintf("\nfrom cloudvolume import Vec\n\ndef py_flywire_xyz2id(cv, xyz, agglomerate):\n  pt = Vec(*xyz) // cv.meta.resolution(0)\n  img = cv.download_point(pt, mip=0, size=1, agglomerate=agglomerate)\n  return str(img[0,0,0,0])\n")
-    pydict = reticulate::py_run_string(pycode)
+    cv <- banc_cloudvolume()
+    pycode <- sprintf("\nfrom cloudvolume import Vec\n\ndef py_flywire_xyz2id(cv, xyz, agglomerate):\n  pt = Vec(*xyz) // cv.meta.resolution(0)\n  img = cv.download_point(pt, mip=0, size=1, agglomerate=agglomerate)\n  return str(img[0,0,0,0])\n")
+    pydict <- reticulate::py_run_string(pycode)
     safexyz2id <- function(pt) {
       tryCatch(pydict$py_flywire_xyz2id(cv, pt, agglomerate = root &&
                                           !fast_root), error = function(e) {
@@ -104,6 +128,7 @@ banc_xyz2id <- function(xyz,
   if (fast_root && root) {
     res = banc_rootid(res,
                      integer64 = integer64,
+                     version = version,
                      ...)
   }
   if (isFALSE(rawcoords) && sum(res == 0) > 0.25 * length(res)) {

@@ -11,6 +11,7 @@ banc_xyz2id(
   integer64 = FALSE,
   fast_root = TRUE,
   method = c("cloudvolume", "spine"),
+  version = NULL,
   ...
 )
 }
@@ -36,6 +37,9 @@ has only been retained for validation purposes.}
 transform-service} API or cloudvolume for lookup. \code{"auto"} is
 presently a synonym for \code{"spine"}.}
 
+\item{version}{An optional CAVE materialisation version number. See details
+and examples.}
+
 \item{...}{additional arguments passed to \code{pbapply} when looking up
 multiple positions.}
 }
@@ -55,8 +59,14 @@ voxel coordinates must be set to 4.25 in x-y to give the correct answers.
 }
 \examples{
 \dontrun{
-# a point from neuroglancer, should map to 648518346498932033
-banc_xyz2id(cbind(438976,985856,215955), rawcoords=FALSE)
+# a point from neuroglancer, should map to 720575941623125868
+banc_xyz2id(cbind(438976,985856,215955),  version="282", rawcoords=FALSE)
+
+# Get root ID for an older materialization
+banc_xyz2id(cbind(462572, 370000, 134955), version="612", root=TRUE)
+
+# Get the most recent root ID
+banc_xyz2id(cbind(462572, 370000, 134955),root=TRUE)
 }
 }
 \seealso{

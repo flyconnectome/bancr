@@ -4,13 +4,19 @@
 \alias{banc_rootid}
 \title{Find the root identifier of a banc neuron}
 \usage{
-banc_rootid(x, integer64 = FALSE, ...)
+banc_rootid(x, integer64 = FALSE, version = NULL, timestamp = NULL, ...)
 }
 \arguments{
 \item{x}{One or more FlyWire segment ids}
 
 \item{integer64}{Whether to return ids as integer64 type (more compact but a
 little fragile) rather than character (default \code{FALSE}).}
+
+\item{version}{An optional CAVE materialisation version number. See details
+and examples.}
+
+\item{timestamp}{An optional timestamp as a string or POSIXct, interpreted as
+UTC when no timezone is specified.}
 
 \item{...}{Additional arguments passed to \code{pbapply::pbsapply} and
 eventually to Python \code{cv$CloudVolume} object.}
