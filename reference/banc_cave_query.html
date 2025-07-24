@@ -90,15 +90,13 @@ Live queries</b> for details.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span><span class="va">cell_info</span><span class="op">=</span><span class="fu">banc_cave_query</span><span class="op">(</span><span class="st">'cell_info'</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>path[1]="/home/runner/.cache/R/reticulate/uv/cache/builds-v0/.tmp8ocKrI/bin": No such file or directory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in python_config_impl(python) : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Error running '/home/runner/.cache/R/reticulate/uv/cache/builds-v0/.tmp8ocKrI/bin/python': No such file.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>using default setting</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in py_call_impl(callable, call_args$unnamed, call_args$named) : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   requests.exceptions.SSLError: HTTPSConnectionPool(host='global.daf-apis.com', port=443): Max retries exceeded with url: /info/api/v2/datastack/full/brain_and_nerve_cord (Caused by SSLError("Can't connect to HTTPS URL because the SSL module is not available."))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">•</span> Please run dr_fafbseg() to help diagnose.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (datastack_name = getOption("fafbseg.cave.datastack_name",     "flywire_fafb_production")) {    cavec = check_cave()    client = try(cavec$CAVEclient(datastack_name))    if (inherits(client, "try-error")) {        ui_todo("\nPlease run dr_fafbseg() to help diagnose.")        stop("There seems to be a problem connecting to datastack: ",             datastack_name)    }    client})(datastack_name = datastack_name):</span> There seems to be a problem connecting to datastack: brain_and_nerve_cord</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Please install the python caveclient package:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>  This should normally work:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>  fafbseg::simple_python()</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>  For more details see ?simple_python</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> No module named 'caveclient'</span>
 <span class="r-in"><span><span class="va">cell_info</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tag2</span><span class="op">==</span><span class="st">'anterior-posterior projection pattern'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">tag</span><span class="op">)</span></span></span>
