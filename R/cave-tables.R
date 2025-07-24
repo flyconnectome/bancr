@@ -417,7 +417,7 @@ banc_nt_prediction <- function(rootids = NULL,
     res <- res %>%
       dplyr::filter(valid_ref == 't', valid == 't') %>%
       dplyr::arrange(dplyr::desc(value)) %>%
-      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%banc_xyz2id
+      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%
       dplyr::group_by(pre_pt_root_id, tag) %>%
       dplyr::summarise(n = dplyr::n(), .groups = "drop_last") %>%
       dplyr::mutate(count = sum(n), prop = n / count) %>%
