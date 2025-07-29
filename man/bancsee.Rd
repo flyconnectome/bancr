@@ -6,6 +6,7 @@
 \usage{
 bancsee(
   banc_ids = NULL,
+  banc_static_ids = NULL,
   fafb_ids = NULL,
   hemibrain_ids = NULL,
   manc_ids = NULL,
@@ -23,6 +24,8 @@ bancsee(
 }
 \arguments{
 \item{banc_ids}{A vector of neuron IDs from the BANC dataset. Default is NULL.}
+
+\item{banc_static_ids}{A vector of neuron IDs from the static v626 BANC release Default is NULL.}
 
 \item{fafb_ids}{A vector of neuron IDs from the FAFB dataset. Default is NULL.}
 

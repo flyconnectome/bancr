@@ -64,6 +64,7 @@ banc_scene <- function(ids=NULL,
 #'
 #' @param url a spelunker neuroglancer URL.
 #' @param banc_ids A vector of neuron IDs from the BANC dataset. Default is NULL.
+#' @param banc_static_ids A vector of neuron IDs from the static v626 BANC release Default is NULL.
 #' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
 #' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
@@ -121,6 +122,7 @@ banc_scene <- function(ids=NULL,
 #'
 #' @export
 bancsee <- function(banc_ids = NULL,
+                    banc_static_ids = NULL,
                     fafb_ids = NULL,
                     hemibrain_ids = NULL,
                     manc_ids = NULL,
@@ -157,6 +159,15 @@ bancsee <- function(banc_ids = NULL,
   }else{
     sc1 = fafbseg::ngl_decode_scene(banc_scene(url = url))
     banc_ngl_segments(sc1) <- NULL
+  }
+
+  if(length(banc_static_ids)){
+    url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4773219390193664"
+    u2=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "v626 neurons")
+    colourdf2 = data.frame(ids = banc_static_ids,
+                           col=grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
+    sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "v626 neurons")
+    fafbseg::ngl_layers(sc1)$`v626 neurons` <- fafbseg::ngl_layers(sc2)$`v626 neurons`
   }
 
   if(length(fafb_ids)){

@@ -390,14 +390,15 @@ banc_nt_prediction <- function(rootids = NULL,
   }else{
     res <- data.frame()
     for(rootid in rootids){
-      res <- client$materialize$tables[[table]](pre_pt_root_id=rootids)$query()
+      res <- client$materialize$tables[[table]](pre_pt_root_id=rootid)$query()
       res$pre_pt_root_id <- rootid
       res <- plyr::rbind.fill(res, res)
-      # ids = rids2pyint(x[chunks == i])
+      #ids <- fafbseg:::rids2pyint(rootid)
       # pyres <- if (method == "cave")
       #   reticulate::py_call(vol$chunkedgraph$get_roots, supervoxel_ids = ids,
       #                       ...)
       # else reticulate::py_call(vol$get_roots, ids, ...)
+      #
       # res[[length(res) + 1]] = pyids2bit64(pyres, as_character = !integer64)
     }
   }
