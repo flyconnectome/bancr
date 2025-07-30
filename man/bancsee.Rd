@@ -18,8 +18,8 @@ bancsee(
   hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
   manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
   nulcei.col = "#FC6882",
-  url =
-    "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+  url = NULL,
+  shorturl = TRUE
 )
 }
 \arguments{
@@ -50,6 +50,8 @@ bancsee(
 \item{nulcei.col}{Hex code for the colour in which nuclei will be plotted. Default is pink.}
 
 \item{url}{a spelunker neuroglancer URL.}
+
+\item{shorturl}{Logical, whether or not to return a shortened URL}
 }
 \value{
 If \code{open = FALSE}, returns a character string containing the URL for the Neuroglancer scene.

@@ -4,7 +4,7 @@ Title: R Client Access to the Brain And Nerve Cord (BANC) Dataset
 Version: 0.1.0
 Date: 2024-07-11
 Authors@R: 
-    c(person(given = "Alexnder",
+    c(person(given = "Alexander",
            family = "Bates",
            role = c("aut", "cre"),
            email = "alexander.shakeel.bates@gmail.com",

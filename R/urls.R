@@ -76,6 +76,7 @@ banc_scene <- function(ids=NULL,
 #' @param hemibrain.mirrored.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.
 #' @param manc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.
 #' @param nulcei.col Hex code for the colour in which nuclei will be plotted. Default is pink.
+#' @param shorturl Logical, whether or not to return a shortened URL
 #'
 #' @return
 #' If `open = FALSE`, returns a character string containing the URL for the Neuroglancer scene.
@@ -134,7 +135,19 @@ bancsee <- function(banc_ids = NULL,
                     hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
                     manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
                     nulcei.col = "#FC6882",
-                    url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"){
+                    url=NULL,
+                    shorturl=TRUE){
+
+  # public
+  url <- sub("#!middleauth+", "?", "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4773219390193664", fixed = T)
+  parts <- unlist(strsplit(url, "?", fixed = T))
+  json <- try(fafbseg::flywire_fetch(parts[2], token = bancr:::banc_token(),
+                                    return = "text", cache = TRUE))
+  url.public = ngl_encode_url(json, baseurl = parts[1])
+  url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+  if(is.null(url)){
+    url <- url.standard
+  }
 
   # Do not get the neuroglancer warnings
   old_warn <- options(warn = -1)  # Suppress all warnings
@@ -152,22 +165,28 @@ bancsee <- function(banc_ids = NULL,
 
   # Get BANC IDs
   if(length(banc_ids)){
+    if(is.null(url)){
+      url <- url.standard
+    }
     u1=banc_scene(url = url, ids = banc_ids, open=F, layer = "segmentation proofreading")
     colourdf1 = data.frame(ids = banc_ids,
                            col=grDevices::colorRampPalette(banc.cols)(length(banc_ids)))
     sc1<-fafbseg::ngl_add_colours(u1, colourdf1, layer = "segmentation proofreading")
   }else{
+    if(is.null(url)){
+      url <- url.public
+      shorturl <- FALSE
+    }
     sc1 = fafbseg::ngl_decode_scene(banc_scene(url = url))
     banc_ngl_segments(sc1) <- NULL
   }
 
   if(length(banc_static_ids)){
-    url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4773219390193664"
-    u2=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "v626 neurons")
-    colourdf2 = data.frame(ids = banc_static_ids,
+    u7=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "v626 neurons")
+    colourdf7 = data.frame(ids = banc_static_ids,
                            col=grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
-    sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "v626 neurons")
-    fafbseg::ngl_layers(sc1)$`v626 neurons` <- fafbseg::ngl_layers(sc2)$`v626 neurons`
+    sc7<-fafbseg::ngl_add_colours(u7, colourdf7, layer = "v626 neurons")
+    fafbseg::ngl_layers(sc1)$`v626 neurons` <- fafbseg::ngl_layers(sc7)$`v626 neurons`
   }
 
   if(length(fafb_ids)){
@@ -175,7 +194,7 @@ bancsee <- function(banc_ids = NULL,
     colourdf2 = data.frame(ids = fafb_ids,
                            col=grDevices::colorRampPalette(fafb.cols)(length(fafb_ids)))
     sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "fafb v783 imported")
-    fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc2)$`fafb v783 imported`
+    fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc7)$`fafb v783 imported`
   }
 
   if(length(hemibrain_ids)){
@@ -213,7 +232,11 @@ bancsee <- function(banc_ids = NULL,
     utils::browseURL(u)
     invisible(u)
   } else {
-    banc_shorturl(u)
+    if(shorturl){
+      banc_shorturl(u)
+    }else{
+      u
+    }
   }
 }
 
