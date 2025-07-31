@@ -7,8 +7,137 @@
 bancr
 ===========
 
-The goal of **bancr** is to support analysis of the Brain And
-Nerve Cord data set (*BANC*), especially auto-segmentation data. 
+## An Important Connectome Dataset
+
+The **bancr** package provides R access to the first unified brain-and-nerve-cord connectome of a limbed animal - the Brain And Nerve Cord dataset (*BANC*) of *Drosophila melanogaster*. This important dataset represents a significant advance in our understanding of neural circuits, revealing how the brain and nerve cord work together as an integrated system to control behavior.
+
+### Scientific Significance
+
+The BANC connectome is the first complete connectome to include both brain and ventral nerve cord (VNC) of a limbed animal, comprising approximately 160,000 neurons across the entire central nervous system. This unprecedented scope reveals:
+
+- **Distributed control architecture**: Motor control involves both brain circuits and local VNC networks working in parallel
+- **Local feedback loops**: VNC circuits can modulate sensory information before it reaches the brain
+- **Behavior-centric neural modules**: Functionally related circuits are organized across brain-VNC boundaries
+- **Descending and ascending pathways**: Complete characterization of information flow between brain and nerve cord
+
+### Key Features
+
+- **Complete connectivity**: Full synaptic resolution across brain and VNC
+- **Cell type annotations**: Comprehensive cell type classification system
+- **Rich metadata**: Extensive annotations including neurotransmitter predictions
+- **Research-ready tools**: Streamlined access to connectome data and analysis functions
+
+### Research Applications
+
+This dataset enables important research into:
+- **Sensorimotor integration**: How sensory information is processed and translated into motor commands
+- **Distributed neural computation**: How the brain and nerve cord share computational load
+- **Behavioral circuit analysis**: Mapping complete neural pathways underlying specific behaviors
+- **Comparative connectomics**: Understanding how nervous system organization relates to behavioral complexity
+
+## Quick Start Examples
+
+Here's how to get started with analyzing descending neurons (DNs) that connect brain to nerve cord:
+
+```r
+library(bancr)
+library(ggplot2)
+library(dplyr)
+
+# Get all BANC cell type annotations
+annotations <- banc_codex_annotations()
+
+# Focus on DNa02 descending neurons
+dna02_neurons <- annotations %>%
+  filter(cell_type == "DNa02")
+
+# Extract their root IDs
+dna02_ids <- dna02_neurons$pt_root_id
+
+# Get connectivity data for these neurons
+el <- banc_edgelist()
+
+# Subset connectivity by our neurons of interest
+dna02_connections <- el %>%
+  filter(pt_root_id %in% dna02_ids)
+
+# Visualize connection strength distribution
+ggplot(dna02_connections, aes(x = n)) +
+  geom_histogram(binwidth = 1, alpha = 0.7, color = "black", fill = "steelblue") +
+  labs(title = "Connection Strength Distribution for DNa02 Neurons",
+       x = "Number of Synapses",
+       y = "Frequency") +
+  theme_minimal()
+```
+
+## Annotation Systems
+
+The BANC dataset provides two complementary annotation systems for neuron classification:
+
+### Centralized Annotations
+**`banc_codex_annotations()`** provides access to standardized cell type annotations curated by the BANC core team. These official classifications are:
+- Displayed on [FlyWireCodex](https://codex.flywire.ai/?dataset=banc)
+- Standardized and consistent across the dataset
+- Serve as the authoritative reference for BANC cell types
+- Ideal for comparative studies and standardized analyses
+
+### Community Annotations  
+**`banc_cell_info()`** accesses non-centralized annotations from the broader research community. These annotations:
+- Represent diverse contributions from researchers studying specific circuits
+- Provide specialized knowledge about particular cell types
+- Offer detailed insights from domain experts
+- Complement the standardized classifications with research-specific perspectives
+
+Both systems work together to provide comprehensive neuron characterization, combining standardized reference classifications with specialized research insights.
+
+## BANC Metadata
+
+The BANC connectome uses a comprehensive controlled vocabulary and annotation taxonomy to ensure consistent classification across all ~160,000 neurons. This standardized system enables systematic analysis of neural circuits and facilitates data integration across research groups.
+
+### Annotation Hierarchy
+
+The BANC annotation system employs a hierarchical classification structure:
+
+| Level | Description | Examples | Count |
+|-------|-------------|----------|--------|
+| **flow** | CNS-wide perspective | `afferent`, `efferent`, `intrinsic` | 3 |
+| **super_class** | Coarse functional division | `ascending`, `descending`, `motor`, `sensory` | 13 |
+| **cell_class** | Anatomical/functional types | `olfactory_receptor_neuron`, `antennal_lobe_projection_neuron` | 106 |
+| **cell_sub_class** | Specific neural subtypes | `antenna_olfactory_receptor_neuron`, `multiglomerular_projection_neuron` | 176 |
+| **cell_type** | Individual neuron names | `ORN_DM6`, `ORN_VA1v`, `DNge110` | 244 |
+
+### Key Annotation Categories
+
+**Anatomical Properties:**
+- **region**: CNS region (`brain`, `central_brain`, `optic_lobe`, `ventral_nerve_cord`, `neck_connective`)
+- **side**: Laterality (`L`=left, `R`=right, `S`=central, `?`=undefined)
+- **nerve**: Entry/exit nerve (`left_antennal_nerve`, `right_mesothoracic_leg_nerve`, etc.)
+
+**Functional Properties:**
+- **cell_function**: Brief functional description (`antenna_motor`, `leg_motor`, `anti_diuresis`, etc.)
+- **peripheral_target_type**: Target sensor/effector (`accessory_tibia_flexor_muscle`, `chordotonal_organ`, etc.)
+- **body_part_sensory/effector**: Body regions innervated (`abdomen`, `antenna`, `wing`, etc.)
+
+**Molecular Properties:**
+- **neurotransmitter_verified**: Literature-confirmed neurotransmitters from unpublished literature review (https://github.com/funkelab/drosophila_neurotransmitters/tree/main) (`acetylcholine`, `dopamine`, `gaba`, `dopamine`, `serotonin`, `ocotopamine`, `tyramine`, `histamine`, `some negative results`)
+- **neurotransmitter_predicted**: CNN-predicted neurotransmitters
+- **neuropeptide_verified**: Literature-confirmed neuropeptides (`AstA`, `CCAP`, `dNPF`, etc.)
+
+**Cross-Dataset Integration:**
+- **fafb_783_match_id**: Corresponding FAFB v783 neuron IDs
+- **manc_121_match_id**: Corresponding MANC v1.2.1 neuron IDs
+- **hemilineage**: Developmental lineage classification (`00A`, `ALad1`, `LB7`, etc.)
+
+This systematic annotation framework enables:
+- **Consistent terminology** across all BANC analyses
+- **Hierarchical organization** from broad categories to specific cell types
+- **Cross-dataset integration** with other *Drosophila* connectomes (FAFB, MANC)
+- **Multi-modal characterization** combining anatomy, function, and molecular properties
+
+For the complete annotation taxonomy with all 244 terms and detailed descriptions, see [`data-raw/banc_codex_annotations_system.md`](data-raw/banc_codex_annotations_system.md).
+
+## Access and Setup
+
 Those data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
 Anyone can request access to the data [here](https://flywire.ai/banc_access).

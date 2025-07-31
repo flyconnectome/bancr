@@ -71,7 +71,7 @@ banc_nt_prediction(
 \item{...}{Additional arguments passed to
 \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.}
 
-\item{rootids}{#' @param rootids Character vector specifying one or more BANC rootids. As a
+\item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 
@@ -79,7 +79,9 @@ to pass in data.frames, BANC URLs or simple ids.}
 
 \item{rawcoords}{Logical, whether or not to convert from raw coordinates into nanometers. Default is \code{FALSE}.}
 
-\item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.}
+\item{nucleus_ids}{Character vector specifying one or more BANC nucleus ids.
+The nucleus (\url{https://en.wikipedia.org/wiki/Cell_nucleus}) contains
+the cell body and provides a stable reference point for neuron identification.}
 
 \item{simplify}{logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.}
 
@@ -91,7 +93,22 @@ In the case of \code{banc_cave_tables}, a vector is returned containing the name
 all query-able cave tables.
 }
 \description{
-Read BANC CAVE-tables, good sources of metadata
+CAVE tables query functions that track neurons across segmentation changes
+so that annotations and neuron entities can be stably tracked together.
+The Brain And Nerve Cord (BANC) dataset represents the first complete
+connectome including both brain and ventral nerve cord of a limbed animal,
+comprising approximately 160,000 neurons across the entire central nervous system.
+}
+\details{
+CAVE tables store rich metadata supporting analysis of distributed neural
+control across the entire central nervous system. For more information about
+CAVE infrastructure, see \url{https://www.caveconnecto.me/CAVEclient/}.
+
+\code{banc_edgelist} returns a data frame of neuron-neuron connections where
+the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron.
+This edgelist contains synaptic connectivity data crucial for understanding
+distributed neural control and behavior-centric neural modules across the
+brain-VNC boundary.
 }
 \examples{
 \dontrun{

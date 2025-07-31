@@ -25,7 +25,8 @@ bancsee(
 \arguments{
 \item{banc_ids}{A vector of neuron IDs from the BANC dataset. Default is NULL.}
 
-\item{banc_static_ids}{A vector of neuron IDs from the static v626 BANC release Default is NULL.}
+\item{banc_static_ids}{A vector of neuron IDs from the static v626 BANC release.
+This dataset version represents the snapshot for our preprint. Default is NULL.}
 
 \item{fafb_ids}{A vector of neuron IDs from the FAFB dataset. Default is NULL.}
 

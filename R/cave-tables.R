@@ -1,9 +1,17 @@
 #' Read BANC CAVE-tables, good sources of metadata
 #'
-#' @param rootids #' @param rootids Character vector specifying one or more BANC rootids. As a
+#' CAVE tables query functions that track neurons across segmentation changes 
+#' so that annotations and neuron entities can be stably tracked together. 
+#' The Brain And Nerve Cord (BANC) dataset represents the first complete 
+#' connectome including both brain and ventral nerve cord of a limbed animal, 
+#' comprising approximately 160,000 neurons across the entire central nervous system.
+#'
+#' @param rootids Character vector specifying one or more BANC rootids. As a
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
 #'   to pass in data.frames, BANC URLs or simple ids.
 #' @param nucleus_ids Character vector specifying one or more BANC nucleus ids.
+#'   The nucleus (\url{https://en.wikipedia.org/wiki/Cell_nucleus}) contains 
+#'   the cell body and provides a stable reference point for neuron identification.
 #' @param rawcoords Logical, whether or not to convert from raw coordinates into nanometers. Default is `FALSE`.
 #' @param select A regex term for the name of the table you want
 #' @param datastack_name  Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.
@@ -17,6 +25,11 @@
 #' @return A \code{data.frame} describing a CAVE-table related to the BANC project.
 #' In the case of \code{banc_cave_tables}, a vector is returned containing the names of
 #' all query-able cave tables.
+#'
+#' @details
+#' CAVE tables store rich metadata supporting analysis of distributed neural 
+#' control across the entire central nervous system. For more information about 
+#' CAVE infrastructure, see \url{https://www.caveconnecto.me/CAVEclient/}.
 #'
 #' @seealso \code{fafbseg::\link{flywire_cave_query}}
 #'
@@ -79,6 +92,12 @@ banc_cave_views <- function(datastack_name = NULL,
 ### edgelist ###
 
 #' @rdname banc_cave_tables
+#' @details
+#' \code{banc_edgelist} returns a data frame of neuron-neuron connections where 
+#' the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron. 
+#' This edgelist contains synaptic connectivity data crucial for understanding 
+#' distributed neural control and behavior-centric neural modules across the 
+#' brain-VNC boundary.
 #' @export
 banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
                                             "synapses_250226_backbone_proofread_counts",
@@ -192,6 +211,11 @@ banc_nuclei <- function(rootids = NULL,
 ### neuron meta data ###
 
 #' @rdname banc_cave_tables
+#' @details
+#' \code{banc_cell_info} accesses the cell_info CAVE table containing non-centralized 
+#' annotations from the research community for connectome neurons. These annotations 
+#' represent diverse contributions from researchers studying specific neural circuits 
+#' and cell types in the BANC dataset.
 #' @export
 #' @importFrom dplyr mutate ends_with across
 #' @importFrom nat xyzmatrix2str
@@ -653,7 +677,12 @@ banc_deannotate_backbone_proofread <- function(positions,
 
 #' Read BANC-FlyWireCodex annotation table
 #'
-#' @param rootids #' @param rootids Character vector specifying one or more BANC rootids. As a
+#' Provides access to centralized cell type annotations from the BANC core team, 
+#' which are the official annotations available on FlyWireCodex. These standardized 
+#' annotations ensure consistency across the dataset and serve as the authoritative 
+#' cell type classifications for the BANC connectome.
+#'
+#' @param rootids Character vector specifying one or more BANC rootids. As a
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
 #'   to pass in data.frames, BANC URLs or simple ids.
 #' @param live logical, get the most recent data or pull from the latest materialisation
@@ -662,56 +691,50 @@ banc_deannotate_backbone_proofread <- function(positions,
 #' @return A \code{data.frame} describing that should be similar to what you find for BANC
 #' in FlyWireCodex.
 #'
-#' @seealso \code{\link{banc_cave_tables}}
+#' @details
+#' This function accesses centralized cell type annotations curated by the BANC core 
+#' team, in contrast to \code{\link{banc_cell_info}} which contains non-centralized 
+#' annotations from the broader research community. The centralized annotations provide 
+#' standardized cell type classifications that are displayed on FlyWireCodex and serve 
+#' as the official reference for BANC cell types.
+#'
+#' @seealso \code{\link{banc_cave_tables}}, \code{\link{banc_cell_info}}
 #'
 #' @export
 #' @examples
 #' \dontrun{
 #' banc.meta <- banc_codex_annotations()
 #' }
-banc_codex_annotations <- function(live = TRUE,
-                                   ...) {
+banc_codex_annotations <- function (live = TRUE, ...){
   table_name <- "codex_annotations"
-  codex_annotations_part_1 <- banc_cave_query(table_name,
-                                              live = live,
-                                              limit = 850000,
-                                              ...)
-  codex_annotations_part_2 <- banc_cave_query(table_name,
-                                              live = live,
-                                              offset = 850000,
-                                              ...)
+  codex_annotations_part_1 <- banc_cave_query(table_name, live = live,
+                                              limit = 500000, ...)
+  codex_annotations_part_2 <- banc_cave_query(table_name, live = live,
+                                              offset = 500000, limit = 350000, ...)
+  codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
+                                              offset = 850000, ...)
+  codex_annotations_part_1 <- codex_annotations_part_1 %>%
+    dplyr::mutate(cell_type = as.character(cell_type))
   codex_annotations_part_2 <- codex_annotations_part_2 %>%
     dplyr::mutate(cell_type = as.character(cell_type))
-  codex_annotations <- dplyr::bind_rows(codex_annotations_part_1, codex_annotations_part_2)
-  # live 2 does not have pt_root_id, pt_supervoxel_id, pt_position because it's
-  #  a reference table and there is no materialization
-  if(live == 2) {
+  codex_annotations_part_3 <- codex_annotations_part_3 %>%
+    dplyr::mutate(cell_type = as.character(cell_type))
+  codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
+                                        codex_annotations_part_2,
+                                        codex_annotations_part_3)
+  if (live == 2) {
     codex_annotations_flat_table <- codex_annotations %>%
-      # First, collapse multiple cell_type values for same target_id + classification_system
       dplyr::group_by(target_id, classification_system) %>%
-      dplyr::summarise(
-        cell_type_combined = paste(unique(cell_type), collapse = ", "),
-        .groups = "drop"
-      ) %>%
-      # Pivot to wide format
-      tidyr::pivot_wider(
-        names_from = classification_system,
-        values_from = cell_type_combined,
-        values_fill = NA_character_
-      )
-  } else{
+      dplyr::summarise(cell_type_combined = paste(unique(cell_type),
+                                                  collapse = ", "), .groups = "drop") %>% tidyr::pivot_wider(names_from = classification_system,
+                                                                                                             values_from = cell_type_combined, values_fill = NA_character_)
+  }
+  else {
     codex_annotations_flat_table <- codex_annotations %>%
-      # First, collapse multiple cell_type values for same target_id + classification_system
-      dplyr::group_by(target_id, classification_system, pt_supervoxel_id, pt_root_id, pt_position) %>%
-      dplyr::summarise(
-        cell_type_combined = paste(unique(cell_type), collapse = ", "),
-        .groups = "drop"
-      ) %>%
-      # Pivot to wide format
-      tidyr::pivot_wider(
-        names_from = classification_system,
-        values_from = cell_type_combined,
-        values_fill = NA_character_
-      )
+      dplyr::group_by(target_id, classification_system,
+                      pt_supervoxel_id, pt_root_id, pt_position) %>%
+      dplyr::summarise(cell_type_combined = paste(unique(cell_type),
+                                                  collapse = ", "), .groups = "drop") %>% tidyr::pivot_wider(names_from = classification_system,
+                                                                                                             values_from = cell_type_combined, values_fill = NA_character_)
   }
 }

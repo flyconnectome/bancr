@@ -38,6 +38,12 @@ The input object with transformed 3D points.
 \description{
 This function transforms 3D points between the BANC (Buhmann et al. Adult Neural Connectome)
 coordinate system and the D. melanogaster template brain JRC2018F coordinate system.
+Transforming to JRC2018F helps move data from BANC into a more standard reference
+space for comparison with light level data. JRC2018F is used by Janelia Research
+Campus for their light-level registered data, including with Neuronbridge
+(\url{https://neuronbridge.janelia.org/}). This transformation is a first step
+in enabling users to match BANC connectome reconstructions with genetic resources
+for wetlab experimentation.
 }
 \details{
 This function applies either an Elastix transform or a thin-plate spline registration to convert

@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alexnder Bates \email{alexander.shakeel.bates@gmail.com} (\href{https://orcid.org/0000-0002-1195-0445}{ORCID})
+\strong{Maintainer}: Alexander Bates \email{alexander.shakeel.bates@gmail.com} (\href{https://orcid.org/0000-0002-1195-0445}{ORCID})
 
 Authors:
 \itemize{

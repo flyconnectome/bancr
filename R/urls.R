@@ -64,7 +64,8 @@ banc_scene <- function(ids=NULL,
 #'
 #' @param url a spelunker neuroglancer URL.
 #' @param banc_ids A vector of neuron IDs from the BANC dataset. Default is NULL.
-#' @param banc_static_ids A vector of neuron IDs from the static v626 BANC release Default is NULL.
+#' @param banc_static_ids A vector of neuron IDs from the static v626 BANC release. 
+#'   This dataset version represents the snapshot for our preprint. Default is NULL.
 #' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
 #' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
@@ -143,7 +144,7 @@ bancsee <- function(banc_ids = NULL,
   parts <- unlist(strsplit(url, "?", fixed = T))
   json <- try(fafbseg::flywire_fetch(parts[2], token = bancr:::banc_token(),
                                     return = "text", cache = TRUE))
-  url.public = ngl_encode_url(json, baseurl = parts[1])
+  url.public <- ngl_encode_url(json, baseurl = parts[1])
   url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
   if(is.null(url)){
     url <- url.standard
