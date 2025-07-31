@@ -5,3 +5,4 @@
 ^_pkgdown\.yml$
 ^vignettes/articles$
 ^data-raw$
+^\.claude$
