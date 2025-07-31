@@ -64,7 +64,7 @@
 <li>
 <strong>Local feedback loops</strong>: VNC circuits can modulate sensory information before it reaches the brain</li>
 <li>
-<strong>Behavior-centric neural modules</strong>: Functionally related circuits are organized across brain-VNC boundaries</li>
+<strong>Behaviour-centric neural modules</strong>: Functionally related circuits are organised across brain-VNC boundaries</li>
 <li>
 <strong>Descending and ascending pathways</strong>: Complete characterization of information flow between brain and nerve cord</li>
 </ul>
@@ -86,7 +86,7 @@
 <div class="section level3">
 <h3 id="research-applications">Research Applications<a class="anchor" aria-label="anchor" href="#research-applications"></a>
 </h3>
-<p>This dataset enables important research into: - <strong>Sensorimotor integration</strong>: How sensory information is processed and translated into motor commands - <strong>Distributed neural computation</strong>: How the brain and nerve cord share computational load - <strong>Behavioral circuit analysis</strong>: Mapping complete neural pathways underlying specific behaviors - <strong>Comparative connectomics</strong>: Understanding how nervous system organization relates to behavioral complexity</p>
+<p>This dataset enables important research into: - <strong>Sensorimotor integration</strong>: How sensory information is processed and translated into motor commands - <strong>Distributed neural computation</strong>: How the brain and nerve cord share computational load - <strong>Behavioural circuit analysis</strong>: Mapping complete neural pathways underlying specific behaviours - <strong>Comparative connectomics</strong>: Understanding how nervous system organisation relates to behavioural complexity</p>
 </div>
 </div>
 <div class="section level2">
@@ -109,11 +109,12 @@
 <span><span class="va">dna02_ids</span> <span class="op">&lt;-</span> <span class="va">dna02_neurons</span><span class="op">$</span><span class="va">pt_root_id</span></span>
 <span></span>
 <span><span class="co"># Get connectivity data for these neurons</span></span>
+<span><span class="co">## This is a large download, may take ~10-20 mins</span></span>
 <span><span class="va">el</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/banc_cave_tables.html">banc_edgelist</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Subset connectivity by our neurons of interest</span></span>
 <span><span class="va">dna02_connections</span> <span class="op">&lt;-</span> <span class="va">el</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pt_root_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">dna02_ids</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pre_pt_root_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">dna02_ids</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize connection strength distribution</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dna02_connections</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -128,21 +129,21 @@
 </h2>
 <p>The BANC dataset provides two complementary annotation systems for neuron classification:</p>
 <div class="section level3">
-<h3 id="centralized-annotations">Centralized Annotations<a class="anchor" aria-label="anchor" href="#centralized-annotations"></a>
+<h3 id="centralised-annotations">Centralised Annotations<a class="anchor" aria-label="anchor" href="#centralised-annotations"></a>
 </h3>
-<p><strong><code><a href="reference/banc_codex_annotations.html">banc_codex_annotations()</a></code></strong> provides access to standardized cell type annotations curated by the BANC core team. These official classifications are: - Displayed on <a href="https://codex.flywire.ai/?dataset=banc" class="external-link">FlyWireCodex</a> - Standardized and consistent across the dataset - Serve as the authoritative reference for BANC cell types - Ideal for comparative studies and standardized analyses</p>
+<p><strong><code><a href="reference/banc_codex_annotations.html">banc_codex_annotations()</a></code></strong> provides access to standardised cell type annotations curated by the BANC core team. These official classifications are: - Displayed on <a href="https://codex.flywire.ai/?dataset=banc" class="external-link">FlyWireCodex</a> - Standardised and consistent across the dataset - Serve as the authoritative reference for BANC cell types - Ideal for comparative studies and standardised analyses</p>
 </div>
 <div class="section level3">
 <h3 id="community-annotations">Community Annotations<a class="anchor" aria-label="anchor" href="#community-annotations"></a>
 </h3>
-<p><strong><code><a href="reference/banc_cave_tables.html">banc_cell_info()</a></code></strong> accesses non-centralized annotations from the broader research community. These annotations: - Represent diverse contributions from researchers studying specific circuits - Provide specialized knowledge about particular cell types - Offer detailed insights from domain experts - Complement the standardized classifications with research-specific perspectives</p>
-<p>Both systems work together to provide comprehensive neuron characterization, combining standardized reference classifications with specialized research insights.</p>
+<p><strong><code><a href="reference/banc_cave_tables.html">banc_cell_info()</a></code></strong> accesses non-centralised annotations from the broader research community. These annotations: - Represent diverse contributions from researchers studying specific circuits - Provide specialized knowledge about particular cell types - Offer detailed insights from domain experts - Complement the standardised classifications with research-specific perspectives</p>
+<p>Both systems work together to provide comprehensive neuron characterisation, combining standardised reference classifications with specialised research insights.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="banc-metadata">BANC Metadata<a class="anchor" aria-label="anchor" href="#banc-metadata"></a>
 </h2>
-<p>The BANC connectome uses a comprehensive controlled vocabulary and annotation taxonomy to ensure consistent classification across all ~160,000 neurons. This standardized system enables systematic analysis of neural circuits and facilitates data integration across research groups.</p>
+<p>The BANC connectome uses a comprehensive controlled vocabulary and annotation taxonomy to ensure consistent classification across all ~160,000 neurons. This standardised system enables systematic analysis of neural circuits and facilitates data integration across research groups.</p>
 <div class="section level3">
 <h3 id="annotation-hierarchy">Annotation Hierarchy<a class="anchor" aria-label="anchor" href="#annotation-hierarchy"></a>
 </h3>
@@ -211,7 +212,7 @@
 <p><strong>Functional Properties:</strong> - <strong>cell_function</strong>: Brief functional description (<code>antenna_motor</code>, <code>leg_motor</code>, <code>anti_diuresis</code>, etc.) - <strong>peripheral_target_type</strong>: Target sensor/effector (<code>accessory_tibia_flexor_muscle</code>, <code>chordotonal_organ</code>, etc.) - <strong>body_part_sensory/effector</strong>: Body regions innervated (<code>abdomen</code>, <code>antenna</code>, <code>wing</code>, etc.)</p>
 <p><strong>Molecular Properties:</strong> - <strong>neurotransmitter_verified</strong>: Literature-confirmed neurotransmitters from unpublished literature review (<a href="https://github.com/funkelab/drosophila_neurotransmitters/tree/main" class="external-link uri">https://github.com/funkelab/drosophila_neurotransmitters/tree/main</a>) (<code>acetylcholine</code>, <code>dopamine</code>, <code>gaba</code>, <code>dopamine</code>, <code>serotonin</code>, <code>ocotopamine</code>, <code>tyramine</code>, <code>histamine</code>, <code>some negative results</code>) - <strong>neurotransmitter_predicted</strong>: CNN-predicted neurotransmitters - <strong>neuropeptide_verified</strong>: Literature-confirmed neuropeptides (<code>AstA</code>, <code>CCAP</code>, <code>dNPF</code>, etc.)</p>
 <p><strong>Cross-Dataset Integration:</strong> - <strong>fafb_783_match_id</strong>: Corresponding FAFB v783 neuron IDs - <strong>manc_121_match_id</strong>: Corresponding MANC v1.2.1 neuron IDs - <strong>hemilineage</strong>: Developmental lineage classification (<code>00A</code>, <code>ALad1</code>, <code>LB7</code>, etc.)</p>
-<p>This systematic annotation framework enables: - <strong>Consistent terminology</strong> across all BANC analyses - <strong>Hierarchical organization</strong> from broad categories to specific cell types - <strong>Cross-dataset integration</strong> with other <em>Drosophila</em> connectomes (FAFB, MANC) - <strong>Multi-modal characterization</strong> combining anatomy, function, and molecular properties</p>
+<p>This systematic annotation framework enables: - <strong>Consistent terminology</strong> across all BANC analyses - <strong>Hierarchical organisation</strong> from broad categories to specific cell types - <strong>Cross-dataset integration</strong> with other <em>Drosophila</em> connectomes (FAFB, MANC) - <strong>Multi-modal characterisation</strong> combining anatomy, function, and molecular properties</p>
 <p>For the complete annotation taxonomy with all (except all cell_type) terms and detailed descriptions, see <a href="data-raw/banc_codex_annotations_system.html"><code>data-raw/banc_codex_annotations_system.md</code></a>.</p>
 </div>
 </div>
