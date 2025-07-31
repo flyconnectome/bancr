@@ -104,7 +104,7 @@ The BANC annotation system employs a hierarchical classification structure:
 | **super_class** | Coarse functional division | `ascending`, `descending`, `motor`, `sensory` | 13 |
 | **cell_class** | Anatomical/functional types | `olfactory_receptor_neuron`, `antennal_lobe_projection_neuron` | 106 |
 | **cell_sub_class** | Specific neural subtypes | `antenna_olfactory_receptor_neuron`, `multiglomerular_projection_neuron` | 176 |
-| **cell_type** | Individual neuron names | `ORN_DM6`, `ORN_VA1v`, `DNge110` | 244 |
+| **cell_type** | Individual neuron names | `ORN_DM6`, `ORN_VA1v`, `DNge110` | X |
 
 ### Key Annotation Categories
 
@@ -134,11 +134,11 @@ This systematic annotation framework enables:
 - **Cross-dataset integration** with other *Drosophila* connectomes (FAFB, MANC)
 - **Multi-modal characterization** combining anatomy, function, and molecular properties
 
-For the complete annotation taxonomy with all 244 terms and detailed descriptions, see [`data-raw/banc_codex_annotations_system.md`](data-raw/banc_codex_annotations_system.md).
+For the complete annotation taxonomy with all (except all cell_type) terms and detailed descriptions, see [`data-raw/banc_codex_annotations_system.md`](data-raw/banc_codex_annotations_system.md).
 
 ## Access and Setup
 
-Those data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
+These data are made available by the *BANC* project led by Wei-Chung Allen Lee (Harvard) 
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
 Anyone can request access to the data [here](https://flywire.ai/banc_access).
 Learn more on the [BANC wiki](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/).
@@ -172,7 +172,7 @@ remotes::install_github('flyconnectome/bancr')
 ```
 
 To do anything useful with the bancr package, you need authorisation to access
-banc resources. To prove your authorisation for programmatic access you must
+banc resources - anyone can ask for access [here](https://flywire.ai/banc_access). To prove your authorisation for programmatic access you must
 generate and store a token in your web browser after logging in to an approved
 Google account. This should be streamlined by running the following command in R
 (which will also set you up for Pythonic access via cloudvolume).
