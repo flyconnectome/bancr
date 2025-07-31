@@ -199,7 +199,7 @@
 <td>
 <code>ORN_DM6</code>, <code>ORN_VA1v</code>, <code>DNge110</code>
 </td>
-<td>244</td>
+<td>X</td>
 </tr>
 </tbody>
 </table>
@@ -212,13 +212,13 @@
 <p><strong>Molecular Properties:</strong> - <strong>neurotransmitter_verified</strong>: Literature-confirmed neurotransmitters from unpublished literature review (<a href="https://github.com/funkelab/drosophila_neurotransmitters/tree/main" class="external-link uri">https://github.com/funkelab/drosophila_neurotransmitters/tree/main</a>) (<code>acetylcholine</code>, <code>dopamine</code>, <code>gaba</code>, <code>dopamine</code>, <code>serotonin</code>, <code>ocotopamine</code>, <code>tyramine</code>, <code>histamine</code>, <code>some negative results</code>) - <strong>neurotransmitter_predicted</strong>: CNN-predicted neurotransmitters - <strong>neuropeptide_verified</strong>: Literature-confirmed neuropeptides (<code>AstA</code>, <code>CCAP</code>, <code>dNPF</code>, etc.)</p>
 <p><strong>Cross-Dataset Integration:</strong> - <strong>fafb_783_match_id</strong>: Corresponding FAFB v783 neuron IDs - <strong>manc_121_match_id</strong>: Corresponding MANC v1.2.1 neuron IDs - <strong>hemilineage</strong>: Developmental lineage classification (<code>00A</code>, <code>ALad1</code>, <code>LB7</code>, etc.)</p>
 <p>This systematic annotation framework enables: - <strong>Consistent terminology</strong> across all BANC analyses - <strong>Hierarchical organization</strong> from broad categories to specific cell types - <strong>Cross-dataset integration</strong> with other <em>Drosophila</em> connectomes (FAFB, MANC) - <strong>Multi-modal characterization</strong> combining anatomy, function, and molecular properties</p>
-<p>For the complete annotation taxonomy with all 244 terms and detailed descriptions, see <a href="data-raw/banc_codex_annotations_system.html"><code>data-raw/banc_codex_annotations_system.md</code></a>.</p>
+<p>For the complete annotation taxonomy with all (except all cell_type) terms and detailed descriptions, see <a href="data-raw/banc_codex_annotations_system.html"><code>data-raw/banc_codex_annotations_system.md</code></a>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="access-and-setup">Access and Setup<a class="anchor" aria-label="anchor" href="#access-and-setup"></a>
 </h2>
-<p>Those data are made available by the <em>BANC</em> project led by Wei-Chung Allen Lee (Harvard) and collaborators including Zetta.ai and the FlyWire team at Princeton. Anyone can request access to the data <a href="https://flywire.ai/banc_access" class="external-link">here</a>. Learn more on the <a href="https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/" class="external-link">BANC wiki</a>.</p>
+<p>These data are made available by the <em>BANC</em> project led by Wei-Chung Allen Lee (Harvard) and collaborators including Zetta.ai and the FlyWire team at Princeton. Anyone can request access to the data <a href="https://flywire.ai/banc_access" class="external-link">here</a>. Learn more on the <a href="https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/" class="external-link">BANC wiki</a>.</p>
 <p>To access banc resources, you must have permissions to access the <a href="https://fanc-reconstruction.slack.com/archives/C01RZP5JH9C/p1616522511001900" class="external-link">banc autosegmentation dataset</a> and have <a href="https://fanc-reconstruction.slack.com/archives/C01RZP5JH9C/p1617404290005300" class="external-link">confirmed your acceptance</a> of the banc proofreading and data ownership guidelines. At this point you should have a linked Google account that will be authorised (see below) for access to banc online resources.</p>
 <p>Broadly speaking the <strong>bancr</strong> package is largely a wrapper over the <a href="https://github.com/natverse/fafbseg" class="external-link">fafbseg</a> package setting up necessary default paths etc. It is based on another wrapper for a separate project, <a href="https://github.com/flyconnectome/fancr" class="external-link">fancr</a>.</p>
 <p>If you have access, you can view <em>BANC</em> data in this helpful <a href="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4753860997414912" class="external-link">neuroglancer scene</a>.</p>
@@ -230,7 +230,7 @@
 <p>You can install the development version of <code>bancr</code> from github:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'flyconnectome/bancr'</span><span class="op">)</span></span></code></pre></div>
-<p>To do anything useful with the bancr package, you need authorisation to access banc resources. To prove your authorisation for programmatic access you must generate and store a token in your web browser after logging in to an approved Google account. This should be streamlined by running the following command in R (which will also set you up for Pythonic access via cloudvolume).</p>
+<p>To do anything useful with the bancr package, you need authorisation to access banc resources - anyone can ask for access <a href="https://flywire.ai/banc_access" class="external-link">here</a>. To prove your authorisation for programmatic access you must generate and store a token in your web browser after logging in to an approved Google account. This should be streamlined by running the following command in R (which will also set you up for Pythonic access via cloudvolume).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set up token - will open your browser to generate a new token</span></span>
 <span><span class="fu"><a href="reference/banc_set_token.html">banc_set_token</a></span><span class="op">(</span><span class="op">)</span></span>
