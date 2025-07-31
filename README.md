@@ -111,7 +111,7 @@ The BANC annotation system employs a hierarchical classification structure:
 
 **Anatomical Properties:**
 - **region**: CNS region (`brain`, `central_brain`, `optic_lobe`, `ventral_nerve_cord`, `neck_connective`)
-- **side**: Laterality (`L`=left, `R`=right, `S`=central, `?`=undefined)
+- **side**: Laterality (`L`=left, `R`=right)
 - **nerve**: Entry/exit nerve (`left_antennal_nerve`, `right_mesothoracic_leg_nerve`, etc.)
 
 **Functional Properties:**
