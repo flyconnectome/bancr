@@ -26,7 +26,7 @@ A data.frame
 Query banc tables in the CAVE annotation system
 }
 \examples{
-\donttest{
+\dontrun{
 library(dplyr)
 cell_info=banc_cave_query('cell_info')
 cell_info \%>\%

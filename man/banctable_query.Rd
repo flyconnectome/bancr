@@ -112,7 +112,7 @@ column that can identify each row in the remote table.}
 
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
-\item{...}{Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.}
+\item{...}{Additional arguments passed to the underlying parallel processing functions which might include cl=2 to specify a number of parallel jobs to run.}
 
 \item{where}{Optional SQL-like where clause to filter rows (default: NULL moves all rows)}
 

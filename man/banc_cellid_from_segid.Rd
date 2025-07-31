@@ -76,13 +76,12 @@ slack} and
 wiki}.
 }
 \examples{
-\donttest{
+\dontrun{
  banc_cellid_from_segid(banc_latestid("720575941626035769"))
 }
 \dontrun{
-\donttest{
 banc_cellid_from_segid(banc_latestid("720575941480769421"))
-}}
+}
 }
 \seealso{
 Other banc-ids: 

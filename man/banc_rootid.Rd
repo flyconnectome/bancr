@@ -18,7 +18,7 @@ and examples.}
 \item{timestamp}{An optional timestamp as a string or POSIXct, interpreted as
 UTC when no timezone is specified.}
 
-\item{...}{Additional arguments passed to \code{pbapply::pbsapply} and
+\item{...}{Additional arguments passed to the underlying functions and
 eventually to Python \code{cv$CloudVolume} object.}
 }
 \value{
@@ -28,7 +28,7 @@ A vector of root ids (by default character)
 Find the root identifier of a banc neuron
 }
 \examples{
-\donttest{
+\dontrun{
 banc_rootid("73186243730767724")
 }
 }

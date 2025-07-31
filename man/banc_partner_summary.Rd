@@ -28,24 +28,20 @@ banc_partners(
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 
-\item{partners}{Whether to fetch input or output synapses or both.}
+\item{partners}{Character vector, either "outputs" or "inputs" to specify the direction of synaptic connections to retrieve.}
 
 \item{synapse_table}{Character, the name of the synapse CAVE table you wish to use. Defaults to the latest.}
 
-\item{threshold}{For \code{flywire_partner_summary} only return partners with
-greater than this number of connections to the query neuron(s) (default of
-0 returns all connections)}
+\item{threshold}{Integer threshold for minimum number of synapses (default 0).}
 
-\item{remove_autapses}{For \code{flywire_partner_summary} whether to remove
-autapses (defaults to TRUE)}
+\item{remove_autapses}{Logical, whether to remove self-connections (default TRUE).}
 
-\item{cleft.threshold}{A threshold for the cleft score calculated by Buhmann
-et al 2019 (default 0, we have used 30-100 to increase specificity)}
+\item{cleft.threshold}{Numeric threshold for cleft filtering (default 0).}
 
 \item{datastack_name}{An optional CAVE \code{datastack_name}. If unset a
 sensible default is chosen.}
 
-\item{...}{Additional arguments passed to \code{\link{pbsapply}}}
+\item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_partner_summary}}}
 }
 \value{
 a data.frame
