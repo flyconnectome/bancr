@@ -72,10 +72,9 @@ cave_view_query <- function(table,
   if (is.null(live) && !is.null(timestamp))
     live = TRUE
   if (isFALSE(live) && is.null(version)) {
-    warning("Defaulting to latest materialisation version since live=FALSE
-",
+    warning("Defaulting to latest materialisation version since live=FALSE",
             "Specify `version='latest' instead to avoid this warning")
-    version = flywire_version("latest", datastack_name = datastack_name)
+    version = fafbseg:::flywire_version("latest", datastack_name = datastack_name)
   }
   if (!is.null(timestamp) && !is.null(version))
     stop("You can only supply one of timestamp and materialization version")
@@ -93,8 +92,7 @@ cave_view_query <- function(table,
     available = version %in% fafbseg:::flywire_version("available", datastack_name = datastack_name)
     if (!available) {
       if (is_view)
-        stop("Sorry! Views only work with unexpired materialisation versions.
-",
+        stop("Sorry! Views only work with unexpired materialisation versions.",
              "See https://flywire-forum.slack.com/archives/C01M4LP2Y2D/p1697956174773839 for info.")
       timestamp = fafbseg::flywire_timestamp(version, datastack_name = datastack_name,
                                               convert = F)
@@ -345,7 +343,7 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
 
   annotations <- banc_cave_query(table_name, live = 2)
   annotations.new <- annotations %>%
-    dplyr::filter(id %in% result_ind)
+    dplyr::filter(.data$id %in% result_ind)
   cat("added ", nrow(annotations.new), "new annotations to ", table_name, "
 ")
   return(annotations.new)
@@ -401,7 +399,7 @@ banc_cave_new_table <- function(table_name, schema_name, description = NULL,
   # check that table was created
   all_tables <- banc_cave_tables(datastack_name = datastack_name)
   if ((table_name %in% all_tables)) {
-    cat(table_name, "created 
+    cat(table_name, "created
 ")
   }
 }

@@ -1,3 +1,15 @@
+#' @importFrom stats na.omit
+#' @importFrom utils capture.output
+#' @importFrom fafbseg flywire_version
+#' @importFrom nat pointsinside rootpoints  
+#' @importFrom httr add_headers content
+NULL
+
+# Global variables are now handled using .data pronoun in dplyr operations
+# This is more explicit and safer than using utils::globalVariables()
+# Only suppress legitimate data objects that R CMD check can't detect:
+utils::globalVariables("banc_users")
+
 # hidden
 check_package_available <- function(pkg, repo=c("CRAN", "Bioconductor")) {
   if(!requireNamespace(pkg, quietly = TRUE)) {

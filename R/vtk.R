@@ -129,13 +129,13 @@ write_neuron_to_vtk_paired <- function(neuron, file) {
 
   # Prepare LINES section
   line_data <- neuron$d %>%
-    dplyr::mutate(Parent = Parent,
-                  PointNo  = PointNo) %>%
+    dplyr::mutate(Parent = .data$Parent,
+                  PointNo  = .data$PointNo) %>%
     dplyr::mutate(from = (1:dplyr::n())-1,
-                  to = from[match(Parent,PointNo)],
+                  to = .data$from[match(.data$Parent, .data$PointNo)],
                   pair = 2) %>%
-    dplyr::filter(!is.na(to)) %>%
-    dplyr::select(pair, to, from)
+    dplyr::filter(!is.na(.data$to)) %>%
+    dplyr::select(.data$pair, .data$to, .data$from)
   num_pairs <- nrow(line_data)
 
   # Write LINES section

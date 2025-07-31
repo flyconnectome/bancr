@@ -216,7 +216,7 @@ banc_add_synapses.neuron <- function(x,
                       pre_svid = .data$pre_pt_supervoxel_id,
                       post_id = .data$post_pt_root_id,
                       post_svid = .data$post_pt_supervoxel_id) %>%
-        dplyr::filter(size>size.threshold) %>%
+        dplyr::filter(.data$size>size.threshold) %>%
         dplyr::mutate(prepost = 1) %>%
         dplyr::select(.data$connector_id,
                       .data$pre_id, .data$post_id, .data$prepost,

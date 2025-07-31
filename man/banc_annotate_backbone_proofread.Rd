@@ -30,6 +30,7 @@ Data frame of added annotations
 Mark specific positions as backbone proofread in the CAVE annotation system.
 }
 \examples{
+\dontrun{
 # Add an annotation to a point in raw voxel space
 banc_annotate_backbone_proofread(c(117105, 240526, 5122), user_id = 355, units = "raw")
 
@@ -38,4 +39,5 @@ banc_annotate_backbone_proofread(c(468420, 962104 ,230490), user_id = 355, units
 
 # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
 banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
+}
 }

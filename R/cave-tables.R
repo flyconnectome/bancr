@@ -107,7 +107,7 @@ banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_
   edgelist_view <- match.arg(edgelist_view)
   el <- with_banc(cave_view_query(edgelist_view, fetch_all_rows= TRUE, ...))
   el <- el %>%
-    dplyr::arrange(dplyr::desc(n))
+    dplyr::arrange(dplyr::desc(.data$n))
   if(nrow(el)==500000|nrow(el)==1000000){
     warning("edgelist is exactly ", nrow(el), " rows, which is suspicious")
   }
@@ -264,72 +264,72 @@ banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
   if(!is.null(cave_id)){
     if(invert){
       banc.cell.info <- banc.cell.info %>%
-        dplyr::filter(!user_id %in% cave_id)
+        dplyr::filter(!(.data$user_id %in% cave_id))
     }else{
       banc.cell.info <- banc.cell.info %>%
-        dplyr::filter(user_id %in% cave_id)
+        dplyr::filter(.data$user_id %in% cave_id)
     }
   }
   banc.cell.info$pt_position <- sapply(banc.cell.info$pt_position, paste, collapse=", ")
   banc.cell.info.mod <- banc.cell.info %>%
-    dplyr::filter(valid == 't') %>%
+    dplyr::filter(.data$valid == 't') %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(pt_position = paste0(pt_position,collapse=",")) %>%
+    dplyr::mutate(pt_position = paste0(.data$pt_position,collapse=",")) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(pt_root_id) %>%
-    dplyr::arrange(pt_position, tag2, tag) %>%
+    dplyr::group_by(.data$pt_root_id) %>%
+    dplyr::arrange(.data$pt_position, .data$tag2, .data$tag) %>%
     dplyr::mutate(side =  dplyr::case_when(
-      grepl("^soma side",tag2) ~ gsub("soma on |soma on ","",tag),
+      grepl("^soma side",.data$tag2) ~ gsub("soma on |soma on ","",.data$tag),
       TRUE ~ NA
     )) %>%
     dplyr::mutate(cell_type = dplyr::case_when(
-      grepl("neuron identity", tag2) ~ tag,
-      !grepl(",",tag) ~ tag,
+      grepl("neuron identity", .data$tag2) ~ .data$tag,
+      !grepl(",",.data$tag) ~ .data$tag,
       TRUE ~ NA
     )) %>%
     dplyr::mutate(user_id = dplyr::case_when(
-      !is.na(cell_type) ~ user_id,
+      !is.na(.data$cell_type) ~ .data$user_id,
       TRUE ~ NA
     )) %>%
     dplyr::mutate(cell_type = gsub("\\
-.*|\\*.*","",cell_type)) %>%
+.*|\\*.*","",.data$cell_type)) %>%
     dplyr::mutate(cell_class = dplyr::case_when(
-      grepl("ascending|descending|descending|ascending", tag) ~ tag,
-      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag,
-      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag2,
-      grepl("motor neuron", tag) ~ "motor",
-      grepl("endocrine", tag) ~ "endocrine",
-      grepl("central neuron", tag2) ~ tag,
-      grepl("^innervates|^intersegmental", tag) ~ tag,
+      grepl("ascending|descending|descending|ascending", .data$tag) ~ .data$tag,
+      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", .data$tag) ~ .data$tag,
+      grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", .data$tag) ~ .data$tag2,
+      grepl("motor neuron", .data$tag) ~ "motor",
+      grepl("endocrine", .data$tag) ~ "endocrine",
+      grepl("central neuron", .data$tag2) ~ .data$tag,
+      grepl("^innervates|^intersegmental", .data$tag) ~ .data$tag,
       TRUE ~ NA
     )) %>%
     dplyr::mutate(super_class = dplyr::case_when(
-      grepl("ascend", cell_class) ~ "ascending",
-      grepl("descend", cell_class) ~ "descending",
-      grepl("sensory neuron", cell_class) ~ "sensory",
-      grepl("motor neuron", cell_class) ~ "motor",
-      grepl("endocrine", cell_class) ~ "endocrine",
-      grepl("efferent", cell_class) ~ "efferent",
-      grepl("optic", cell_class) ~ "optic",
-      grepl("optic", tag) ~ "optic",
-      grepl("optic", tag2) ~ "optic",
-      grepl("central", cell_class) ~ "intrinsic",
-      grepl("glia", cell_class) ~ "glia",
+      grepl("ascend", .data$cell_class) ~ "ascending",
+      grepl("descend", .data$cell_class) ~ "descending",
+      grepl("sensory neuron", .data$cell_class) ~ "sensory",
+      grepl("motor neuron", .data$cell_class) ~ "motor",
+      grepl("endocrine", .data$cell_class) ~ "endocrine",
+      grepl("efferent", .data$cell_class) ~ "efferent",
+      grepl("optic", .data$cell_class) ~ "optic",
+      grepl("optic", .data$tag) ~ "optic",
+      grepl("optic", .data$tag2) ~ "optic",
+      grepl("central", .data$cell_class) ~ "intrinsic",
+      grepl("glia", .data$cell_class) ~ "glia",
       TRUE ~ NA
     )) %>%
-    dplyr::mutate(notes = paste(unique(na.omit(sort(tag))), collapse = ", "),
-                  cell_class = paste(unique(na.omit(sort(cell_class))), collapse = ", "),
-                  super_class = paste(unique(na.omit(sort(super_class))), collapse = ", "),
-                  cell_type = paste(unique(na.omit(sort(cell_type))), collapse = ", "),
-                  side = paste(unique(na.omit(sort(side))), collapse = ", "),
-                  user_id = paste(unique(na.omit(sort(user_id))), collapse = ", ")) %>%
+    dplyr::mutate(notes = paste(unique(na.omit(sort(.data$tag))), collapse = ", "),
+                  cell_class = paste(unique(na.omit(sort(.data$cell_class))), collapse = ", "),
+                  super_class = paste(unique(na.omit(sort(.data$super_class))), collapse = ", "),
+                  cell_type = paste(unique(na.omit(sort(.data$cell_type))), collapse = ", "),
+                  side = paste(unique(na.omit(sort(.data$side))), collapse = ", "),
+                  user_id = paste(unique(na.omit(sort(.data$user_id))), collapse = ", ")) %>%
     dplyr::ungroup() %>%
-    dplyr::rename(cell_id = id, root_id = pt_root_id, supervoxel_id = pt_supervoxel_id, position = pt_position) %>%
-    dplyr::distinct(root_id, supervoxel_id, side, super_class, cell_class, cell_type, .keep_all = TRUE) %>%
-    dplyr::select(cell_id, root_id, supervoxel_id, position, side, super_class, cell_class, cell_type, user_id,notes) %>%
-    dplyr::left_join(banc_users %>% dplyr::distinct(pi_lab,cave_id) %>% dplyr::mutate(cave_id=as.character(cave_id)),
+    dplyr::rename(cell_id = .data$id, root_id = .data$pt_root_id, supervoxel_id = .data$pt_supervoxel_id, position = .data$pt_position) %>%
+    dplyr::distinct(.data$root_id, .data$supervoxel_id, .data$side, .data$super_class, .data$cell_class, .data$cell_type, .keep_all = TRUE) %>%
+    dplyr::select(.data$cell_id, .data$root_id, .data$supervoxel_id, .data$position, .data$side, .data$super_class, .data$cell_class, .data$cell_type, .data$user_id, .data$notes) %>%
+    dplyr::left_join(banc_users %>% dplyr::distinct(.data$pi_lab, .data$cave_id) %>% dplyr::mutate(cave_id=as.character(.data$cave_id)),
                      by=c("user_id"="cave_id")) %>%
-    dplyr::rename(cell_type_source = pi_lab)
+    dplyr::rename(cell_type_source = .data$pi_lab)
   banc.cell.info.mod
 }
 
@@ -435,22 +435,22 @@ banc_nt_prediction <- function(rootids = NULL,
                                  function(x) xyzmatrix2str(banc_raw2nm(x))))
   }
   res <- res %>%
-    dplyr::mutate(pre_pt_supervoxel_id = as.character(pre_pt_supervoxel_id),
-                  pre_pt_root_id = as.character(pre_pt_root_id),
-                  post_pt_supervoxel_id = as.character(post_pt_supervoxel_id),
-                  post_pt_root_id = as.character(post_pt_root_id))
+    dplyr::mutate(pre_pt_supervoxel_id = as.character(.data$pre_pt_supervoxel_id),
+                  pre_pt_root_id = as.character(.data$pre_pt_root_id),
+                  post_pt_supervoxel_id = as.character(.data$post_pt_supervoxel_id),
+                  post_pt_root_id = as.character(.data$post_pt_root_id))
   if(simplify){
     nt.cols <- c("gaba", "serotonin", "acetylcholine", "dopamine", "octopamine", "glutamate", "histamine", "tyramine")
     res <- res %>%
-      dplyr::filter(valid_ref == 't', valid == 't') %>%
-      dplyr::arrange(dplyr::desc(value)) %>%
-      dplyr::distinct(pre_pt_root_id, id_ref, .keep_all = TRUE) %>%
-      dplyr::group_by(pre_pt_root_id, tag) %>%
+      dplyr::filter(.data$valid_ref == 't', .data$valid == 't') %>%
+      dplyr::arrange(dplyr::desc(.data$value)) %>%
+      dplyr::distinct(.data$pre_pt_root_id, .data$id_ref, .keep_all = TRUE) %>%
+      dplyr::group_by(.data$pre_pt_root_id, .data$tag) %>%
       dplyr::summarise(n = dplyr::n(), .groups = "drop_last") %>%
-      dplyr::mutate(count = sum(n), prop = n / count) %>%
+      dplyr::mutate(count = sum(.data$n), prop = .data$n / .data$count) %>%
       dplyr::ungroup() %>%
-      dplyr::select(pre_pt_root_id, count, tag, prop) %>%
-      dplyr::mutate(prop = round(prop, 4))
+      dplyr::select(.data$pre_pt_root_id, .data$count, .data$tag, .data$prop) %>%
+      dplyr::mutate(prop = round(.data$prop, 4))
 
     if (!requireNamespace("tidyr", quietly = TRUE)) {
       stop("Package 'tidyr' is required for this function. Please install it with: install.packages('tidyr')")
@@ -458,8 +458,8 @@ banc_nt_prediction <- function(rootids = NULL,
 
     res <- res %>%
       tidyr::pivot_wider(
-        names_from = tag,
-        values_from = prop,
+        names_from = .data$tag,
+        values_from = .data$prop,
         values_fill = 0
       )
     missing_nt_cols <- setdiff(nt.cols, names(res))
@@ -467,7 +467,7 @@ banc_nt_prediction <- function(rootids = NULL,
       res[missing_nt_cols] <- 0
     }
     res <- res %>%
-      dplyr::select(pre_pt_root_id, dplyr::all_of(nt.cols), dplyr::everything()) %>%
+      dplyr::select(.data$pre_pt_root_id, dplyr::all_of(nt.cols), dplyr::everything()) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
         top_nt_p = max(dplyr::c_across(dplyr::all_of(nt.cols)), na.rm = TRUE),
@@ -556,7 +556,7 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
   np = reticulate::import("numpy")
   pd = reticulate::import("pandas")
   client = banc_service_account(datastack_name)
-  annotations <- banc_backbone_proofread(live = 2) %>% dplyr::filter(proofread ==
+  annotations <- banc_backbone_proofread(live = 2) %>% dplyr::filter(.data$proofread ==
                                                                        eval(proofread))
   if (!nrow(annotations)) {
     stop("no annotations collected")
@@ -641,7 +641,7 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
   Sys.sleep(pause_seconds)
 
   annotations <- banc_backbone_proofread(live = 2)
-  annotations.new <- annotations %>% dplyr::filter(id %in%
+  annotations.new <- annotations %>% dplyr::filter(.data$id %in%
                                                      result_ind)
   cat("annotated", nrow(annotations.new), "entities with backbone proofread:",
       proofread, "
@@ -662,7 +662,7 @@ banc_deannotate_backbone_proofread <- function(positions,
   annotations <- banc_backbone_proofread(live=2)
   if(!is.null(user_id)){
     annotations <- annotations %>%
-      dplyr::filter(user_id %in% !!user_id)
+      dplyr::filter(.data$user_id %in% !!user_id)
   }
   curr.positions <- do.call(rbind,annotations$pt_position)
   if(is.data.frame(positions)){
@@ -688,7 +688,7 @@ banc_deannotate_backbone_proofread <- function(positions,
     # Read table and check annotations are added
     annotations <- banc_backbone_proofread(live=2)
     annotations.new <- annotations %>%
-      dplyr::filter(id %in% annotation_ids)
+      dplyr::filter(.data$id %in% annotation_ids)
     if(nrow(annotations.new)){
       warning('not all given positions removed from : missing annotation_ids')
     }
@@ -750,7 +750,7 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
       codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
                                             codex_annotations_part_2,
                                             codex_annotations_part_3) %>%
-        dplyr::filter(pt_root_id %in% rootids)
+        dplyr::filter(.data$pt_root_id %in% rootids)
     }
   } else {
     # Get all data if no rootids specified
@@ -766,7 +766,7 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
   }
 
   codex_annotations <- codex_annotations %>%
-    dplyr::mutate(cell_type = as.character(cell_type))
+    dplyr::mutate(cell_type = as.character(.data$cell_type))
 
   if (!requireNamespace("tidyr", quietly = TRUE)) {
     stop("Package 'tidyr' is required for this function. Please install it with: install.packages('tidyr')")
@@ -774,20 +774,20 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
 
   if (live == 2) {
     codex_annotations_flat_table <- codex_annotations %>%
-      dplyr::group_by(target_id, classification_system) %>%
-      dplyr::summarise(cell_type_combined = paste(unique(cell_type),
+      dplyr::group_by(.data$target_id, .data$classification_system) %>%
+      dplyr::summarise(cell_type_combined = paste(unique(.data$cell_type),
                                                   collapse = ", "), .groups = "drop") %>%
-      tidyr::pivot_wider(names_from = classification_system,
-                         values_from = cell_type_combined, values_fill = NA_character_)
+      tidyr::pivot_wider(names_from = .data$classification_system,
+                         values_from = .data$cell_type_combined, values_fill = NA_character_)
   }
   else {
     codex_annotations_flat_table <- codex_annotations %>%
-      dplyr::group_by(target_id, classification_system,
-                      pt_supervoxel_id, pt_root_id, pt_position) %>%
-      dplyr::summarise(cell_type_combined = paste(unique(cell_type),
+      dplyr::group_by(.data$target_id, .data$classification_system,
+                      .data$pt_supervoxel_id, .data$pt_root_id, .data$pt_position) %>%
+      dplyr::summarise(cell_type_combined = paste(unique(.data$cell_type),
                                                   collapse = ", "), .groups = "drop") %>%
-      tidyr::pivot_wider(names_from = classification_system,
-                         values_from = cell_type_combined, values_fill = NA_character_)
+      tidyr::pivot_wider(names_from = .data$classification_system,
+                         values_from = .data$cell_type_combined, values_fill = NA_character_)
   }
 
   return(codex_annotations_flat_table)

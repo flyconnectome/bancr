@@ -567,26 +567,26 @@ banctable_updateids <- function(){
   cat('reading cell info cave table...
 ')
   info <- banc_cell_info(rawcoords = TRUE)  %>%
-    dplyr::mutate(pt_position = xyzmatrix2str(pt_position)) %>%
-    dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
+    dplyr::mutate(pt_position = xyzmatrix2str(.data$pt_position)) %>%
+    dplyr::select(.data$pt_root_id, .data$pt_supervoxel_id, .data$pt_position) %>%
     rbind(banc_backbone_proofread() %>%
-            dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
-            dplyr::mutate(pt_position = xyzmatrix2str(pt_position))) %>%
+            dplyr::select(.data$pt_root_id, .data$pt_supervoxel_id, .data$pt_position) %>%
+            dplyr::mutate(pt_position = xyzmatrix2str(.data$pt_position))) %>%
     rbind(banc_neck_connective_neurons() %>%
-            dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
-            dplyr::mutate(pt_position = xyzmatrix2str(pt_position))) %>%
-    dplyr::mutate(pt_root_id=as.character(pt_root_id),
-                  pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
-    dplyr::distinct(pt_supervoxel_id, .keep_all = TRUE) %>%
+            dplyr::select(.data$pt_root_id, .data$pt_supervoxel_id, .data$pt_position) %>%
+            dplyr::mutate(pt_position = xyzmatrix2str(.data$pt_position))) %>%
+    dplyr::mutate(pt_root_id=as.character(.data$pt_root_id),
+                  pt_supervoxel_id=as.character(.data$pt_supervoxel_id)) %>%
+    dplyr::distinct(.data$pt_supervoxel_id, .keep_all = TRUE) %>%
     dplyr::rowwise()
 
   # Get current table
   cat('reading banc meta seatable...
 ')
   bc <- banctable_query(sql = 'select _id, root_id, supervoxel_id, position, banc_match, banc_match_supervoxel_id, banc_png_match, banc_png_match_supervoxel_id, banc_nblast_match, banc_nblast_match_supervoxel_id from banc_meta') %>%
-    dplyr::select(root_id, supervoxel_id, position,
-                  banc_match, banc_match_supervoxel_id, banc_png_match, banc_png_match_supervoxel_id, banc_nblast_match, banc_nblast_match_supervoxel_id,
-                  `_id`)
+    dplyr::select(.data$root_id, .data$supervoxel_id, .data$position,
+                  .data$banc_match, .data$banc_match_supervoxel_id, .data$banc_png_match, .data$banc_png_match_supervoxel_id, .data$banc_nblast_match, .data$banc_nblast_match_supervoxel_id,
+                  .data$`_id`)
   bc[bc=="0"] <- NA
   bc[bc==""] <- NA
 
@@ -596,9 +596,9 @@ banctable_updateids <- function(){
   bc.new <- bc %>%
     dplyr::left_join(info,
                      by = c("supervoxel_id"="pt_supervoxel_id")) %>%
-    dplyr::mutate(root_id = ifelse(is.na(pt_root_id),root_id,pt_root_id)) %>%
-    dplyr::mutate(position = ifelse(is.na(position),pt_position,position)) %>%
-    dplyr::select(-pt_root_id,-pt_position)
+    dplyr::mutate(root_id = ifelse(is.na(.data$pt_root_id), .data$root_id, .data$pt_root_id)) %>%
+    dplyr::mutate(position = ifelse(is.na(.data$position), .data$pt_position, .data$position)) %>%
+    dplyr::select(-.data$pt_root_id, -.data$pt_position)
 
   # Update root IDs directly where needed
   bc.new <- banc_updateids(bc.new,
@@ -608,39 +608,39 @@ banctable_updateids <- function(){
 
   # Make sure supervoxel and root position information that is missing, is filled in
   bc.new <- bc.new %>%
-    dplyr::left_join(info %>% dplyr::distinct(pt_root_id, .keep_all = TRUE),
+    dplyr::left_join(info %>% dplyr::distinct(.data$pt_root_id, .keep_all = TRUE),
                      by = c("root_id"="pt_root_id")) %>%
-    dplyr::mutate(supervoxel_id = ifelse(is.na(supervoxel_id),pt_supervoxel_id,supervoxel_id)) %>%
-    dplyr::mutate(position = ifelse(is.na(position),pt_position,position)) %>%
-    dplyr::select(-pt_supervoxel_id,-pt_position)
+    dplyr::mutate(supervoxel_id = ifelse(is.na(.data$supervoxel_id), .data$pt_supervoxel_id, .data$supervoxel_id)) %>%
+    dplyr::mutate(position = ifelse(is.na(.data$position), .data$pt_position, .data$position)) %>%
+    dplyr::select(-.data$pt_supervoxel_id, -.data$pt_position)
 
   # Update match columns
   lookup <- bc.new %>%
-    dplyr::select(root_id, supervoxel_id) %>%
-    dplyr::rename(lookup_root_id=root_id,
-                  lookup_supervoxel_id=supervoxel_id) %>%
-    dplyr::filter(!is.na(lookup_supervoxel_id), lookup_supervoxel_id!="0",
-                  !is.na(lookup_root_id), lookup_root_id!="0") %>%
-    dplyr::distinct(lookup_root_id,lookup_supervoxel_id)
+    dplyr::select(.data$root_id, .data$supervoxel_id) %>%
+    dplyr::rename(lookup_root_id=.data$root_id,
+                  lookup_supervoxel_id=.data$supervoxel_id) %>%
+    dplyr::filter(!is.na(.data$lookup_supervoxel_id), .data$lookup_supervoxel_id!="0",
+                  !is.na(.data$lookup_root_id), .data$lookup_root_id!="0") %>%
+    dplyr::distinct(.data$lookup_root_id, .data$lookup_supervoxel_id)
   bc.new <- bc.new %>%
     dplyr::left_join(lookup, by = c("banc_match_supervoxel_id"="lookup_supervoxel_id")) %>%
     dplyr::mutate(banc_match = dplyr::case_when(
-      !is.na(lookup_root_id) ~ lookup_root_id,
-      TRUE ~ banc_match
+      !is.na(.data$lookup_root_id) ~ .data$lookup_root_id,
+      TRUE ~ .data$banc_match
     )) %>%
-    dplyr::select(-lookup_root_id) %>%
+    dplyr::select(-.data$lookup_root_id) %>%
     dplyr::left_join(lookup, by = c("banc_png_match_supervoxel_id"="lookup_supervoxel_id")) %>%
     dplyr::mutate(banc_png_match = dplyr::case_when(
-      !is.na(lookup_root_id) ~ lookup_root_id,
-      TRUE ~ banc_png_match
+      !is.na(.data$lookup_root_id) ~ .data$lookup_root_id,
+      TRUE ~ .data$banc_png_match
     )) %>%
-    dplyr::select(-lookup_root_id) %>%
+    dplyr::select(-.data$lookup_root_id) %>%
     dplyr::left_join(lookup, by = c("banc_nblast_match_supervoxel_id"="lookup_supervoxel_id")) %>%
     dplyr::mutate(banc_nblast_match = dplyr::case_when(
-      !is.na(lookup_root_id) ~ lookup_root_id,
-      TRUE ~ banc_nblast_match
+      !is.na(.data$lookup_root_id) ~ .data$lookup_root_id,
+      TRUE ~ .data$banc_nblast_match
     )) %>%
-    dplyr::select(-lookup_root_id)
+    dplyr::select(-.data$lookup_root_id)
 
   # Update directly
   cat('updating column: banc_match ...
@@ -662,34 +662,34 @@ banctable_updateids <- function(){
                                                        supervoxel.column = "banc_nblast_match_supervoxel_id",
                                                        position.column = "banc_nblast_match_position")
   bc.new <- bc.new %>%
-    dplyr::left_join(lookup %>%dplyr::distinct(lookup_root_id, .keep_all=TRUE),
+    dplyr::left_join(lookup %>%dplyr::distinct(.data$lookup_root_id, .keep_all=TRUE),
                      by = c("banc_match"="lookup_root_id")) %>%
     dplyr::mutate(banc_match_supervoxel_id = dplyr::case_when(
-      is.na(banc_match_supervoxel_id)&!is.na(lookup_supervoxel_id) ~ lookup_supervoxel_id,
-      TRUE ~ banc_match_supervoxel_id
+      is.na(.data$banc_match_supervoxel_id)&!is.na(.data$lookup_supervoxel_id) ~ .data$lookup_supervoxel_id,
+      TRUE ~ .data$banc_match_supervoxel_id
     )) %>%
-    dplyr::select(-lookup_supervoxel_id) %>%
-    dplyr::left_join(lookup %>%dplyr::distinct(lookup_root_id, .keep_all=TRUE),
+    dplyr::select(-.data$lookup_supervoxel_id) %>%
+    dplyr::left_join(lookup %>%dplyr::distinct(.data$lookup_root_id, .keep_all=TRUE),
                      by = c("banc_png_match"="lookup_root_id")) %>%
     dplyr::mutate(banc_png_match_supervoxel_id = dplyr::case_when(
-      is.na(banc_png_match_supervoxel_id)&!is.na(lookup_supervoxel_id) ~ lookup_supervoxel_id,
-      TRUE ~ banc_png_match_supervoxel_id
+      is.na(.data$banc_png_match_supervoxel_id)&!is.na(.data$lookup_supervoxel_id) ~ .data$lookup_supervoxel_id,
+      TRUE ~ .data$banc_png_match_supervoxel_id
     )) %>%
-    dplyr::select(-lookup_supervoxel_id) %>%
-    dplyr::left_join(lookup %>%dplyr::distinct(lookup_root_id, .keep_all=TRUE),
+    dplyr::select(-.data$lookup_supervoxel_id) %>%
+    dplyr::left_join(lookup %>%dplyr::distinct(.data$lookup_root_id, .keep_all=TRUE),
                      by = c("banc_nblast_match"="lookup_root_id")) %>%
     dplyr::mutate(banc_nblast_match_supervoxel_id = dplyr::case_when(
-      is.na(banc_nblast_match_supervoxel_id)&!is.na(lookup_supervoxel_id) ~ lookup_supervoxel_id,
-      TRUE ~ banc_nblast_match_supervoxel_id
+      is.na(.data$banc_nblast_match_supervoxel_id)&!is.na(.data$lookup_supervoxel_id) ~ .data$lookup_supervoxel_id,
+      TRUE ~ .data$banc_nblast_match_supervoxel_id
     )) %>%
-    dplyr::select(-lookup_supervoxel_id)
+    dplyr::select(-.data$lookup_supervoxel_id)
 
   # Update
   cat('updating banc meta seatable...
 ')
   bc.new <- bc.new %>%
-    dplyr::filter(!is.na(`_id`)) %>%
-    dplyr::distinct(`_id`, .keep_all = TRUE)
+    dplyr::filter(!is.na(.data$`_id`)) %>%
+    dplyr::distinct(.data$`_id`, .keep_all = TRUE)
   bc.new[is.na(bc.new)] <- ''
   bc.new[bc.new=="0"] <- ''
   banctable_update_rows(df = bc.new,

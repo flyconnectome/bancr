@@ -233,26 +233,26 @@ banc_updateids <- function(x,
       if(supervoxel.column%in%colnames(x)){
         cat('joining to CAVE tables ...
 ')
-        proofed <- banc_backbone_proofread() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
-        info <- banc_cell_info()  %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
-        nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = root_id, pt_supervoxel_id)
-        nerves <- banc_peripheral_nerves() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
-        seeds <- banc_neck_connective_neurons() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
+        proofed <- banc_backbone_proofread() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
+        info <- banc_cell_info()  %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
+        nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = .data$root_id, .data$pt_supervoxel_id)
+        nerves <- banc_peripheral_nerves() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
+        seeds <- banc_neck_connective_neurons() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
         cave.tables <- proofed %>%
           rbind(info) %>%
           rbind(nuclei) %>%
           rbind(nerves) %>%
           rbind(seeds) %>%
-          dplyr::mutate(cave_pt_root_id=as.character(pt_root_id),
-                        cave_pt_supervoxel_id=as.character(pt_supervoxel_id)) %>%
-          dplyr::distinct(cave_pt_root_id, cave_pt_supervoxel_id) %>%
+          dplyr::mutate(cave_pt_root_id=as.character(.data$pt_root_id),
+                        cave_pt_supervoxel_id=as.character(.data$pt_supervoxel_id)) %>%
+          dplyr::distinct(.data$cave_pt_root_id, .data$cave_pt_supervoxel_id) %>%
           as.data.frame()
         x$cave_pt_supervoxel_id = x[[supervoxel.column]]
         x <- x %>%
           dplyr::left_join(cave.tables, by = "cave_pt_supervoxel_id")
         x[[root.column]] <- ifelse(is.na(x$cave_pt_root_id)|x$cave_pt_root_id=="0",x[[root.column]],x$cave_pt_root_id)
         x <- x %>%
-          dplyr::select(-cave_pt_root_id, -cave_pt_supervoxel_id)
+          dplyr::select(-.data$cave_pt_root_id, -.data$cave_pt_supervoxel_id)
       }
     }
 
@@ -267,7 +267,7 @@ banc_updateids <- function(x,
             stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
           }
           x[no.sp,][[supervoxel.column]] <- unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
-            tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = FALSE, ...)),
+            tryCatch(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = FALSE, ...),
                      error = function(e) NA)
           }))
         }
@@ -318,7 +318,7 @@ banc_updateids <- function(x,
           stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
         }
         update <- unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
-          tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = TRUE, ...)),
+          tryCatch(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = TRUE, ...),
                    error = function(e) NA)
         }))
         bad <- is.na(update)|update=="0"
@@ -346,7 +346,7 @@ banc_updateids <- function(x,
       if (!requireNamespace("pbapply", quietly = TRUE)) {
         stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
       }
-      x <- pbapply::pbsapply(x, function(x) try(quiet_function(banc_updateids, serial = FALSE)))
+      x <- pbapply::pbsapply(x, function(x) try(quiet_function(banc_updateids, x, serial = FALSE)))
     }else{
       cat('updating root_ids directly ...
 ')
@@ -369,11 +369,11 @@ banc_updateids <- function(x,
 }
 
 # hidden
-quiet_function <- function(...) {
+quiet_function <- function(func, ...) {
   suppressMessages(
     suppressWarnings(
       capture.output(
-        original_function(...),
+        func(...),
         file = nullfile()
       )
     )
