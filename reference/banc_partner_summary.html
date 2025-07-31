@@ -85,7 +85,7 @@ to pass in data.frames, BANC URLs or simple ids.</p></dd>
 
 
 <dt id="arg-partners">partners<a class="anchor" aria-label="anchor" href="#arg-partners"></a></dt>
-<dd><p>Whether to fetch input or output synapses or both.</p></dd>
+<dd><p>Character vector, either "outputs" or "inputs" to specify the direction of synaptic connections to retrieve.</p></dd>
 
 
 <dt id="arg-synapse-table">synapse_table<a class="anchor" aria-label="anchor" href="#arg-synapse-table"></a></dt>
@@ -93,19 +93,15 @@ to pass in data.frames, BANC URLs or simple ids.</p></dd>
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>For <code>flywire_partner_summary</code> only return partners with
-greater than this number of connections to the query neuron(s) (default of
-0 returns all connections)</p></dd>
+<dd><p>Integer threshold for minimum number of synapses (default 0).</p></dd>
 
 
 <dt id="arg-remove-autapses">remove_autapses<a class="anchor" aria-label="anchor" href="#arg-remove-autapses"></a></dt>
-<dd><p>For <code>flywire_partner_summary</code> whether to remove
-autapses (defaults to TRUE)</p></dd>
+<dd><p>Logical, whether to remove self-connections (default TRUE).</p></dd>
 
 
 <dt id="arg-cleft-threshold">cleft.threshold<a class="anchor" aria-label="anchor" href="#arg-cleft-threshold"></a></dt>
-<dd><p>A threshold for the cleft score calculated by Buhmann
-et al 2019 (default 0, we have used 30-100 to increase specificity)</p></dd>
+<dd><p>Numeric threshold for cleft filtering (default 0).</p></dd>
 
 
 <dt id="arg-datastack-name">datastack_name<a class="anchor" aria-label="anchor" href="#arg-datastack-name"></a></dt>
@@ -114,7 +110,7 @@ sensible default is chosen.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code>pbsapply</code></p></dd>
+<dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/fafbseg/man/flywire_partners.html" class="external-link">flywire_partner_summary</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
