@@ -42,7 +42,7 @@ Creates URLs for the FlyWireCodex interactive connectivity browser, allowing
 users to visualize neural network diagrams and explore connectivity patterns
 in the Brain And Nerve Cord (BANC) connectome. The BANC dataset represents
 the first unified brain-and-nerve-cord connectome of a limbed animal, revealing
-distributed control architecture and behavior-centric neural modules across
+distributed control architecture and behaviour-centric neural modules across
 the entire central nervous system.
 }
 \details{

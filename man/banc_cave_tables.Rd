@@ -107,8 +107,13 @@ CAVE infrastructure, see \url{https://www.caveconnecto.me/CAVEclient/}.
 \code{banc_edgelist} returns a data frame of neuron-neuron connections where
 the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron.
 This edgelist contains synaptic connectivity data crucial for understanding
-distributed neural control and behavior-centric neural modules across the
+distributed neural control and behaviour-centric neural modules across the
 brain-VNC boundary.
+
+\code{banc_cell_info} accesses the cell_info CAVE table containing non-centralised
+annotations from the research community for connectome neurones. These annotations
+represent diverse contributions from researchers studying specific neural circuits
+and cell types in the BANC dataset.
 }
 \examples{
 \dontrun{

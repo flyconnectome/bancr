@@ -11,7 +11,7 @@ banc_codex_annotations(live = TRUE, ...)
 
 \item{...}{method passed to \code{\link{banc_cave_query}}.}
 
-\item{rootids}{#' @param rootids Character vector specifying one or more BANC rootids. As a
+\item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
 }
@@ -20,7 +20,17 @@ A \code{data.frame} describing that should be similar to what you find for BANC
 in FlyWireCodex.
 }
 \description{
-Read BANC-FlyWireCodex annotation table
+Provides access to centralised cell type annotations from the BANC core team,
+which are the official annotations available on FlyWireCodex. These standardised
+annotations ensure consistency across the dataset and serve as the authoritative
+cell type classifications for the BANC connectome.
+}
+\details{
+This function accesses centralised cell type annotations curated by the BANC core
+team, in contrast to \code{\link{banc_cell_info}} which contains non-centralised
+annotations from the broader research community. The centralised annotations provide
+standardised cell type classifications that are displayed on FlyWireCodex and serve
+as the official reference for BANC cell types.
 }
 \examples{
 \dontrun{
@@ -28,5 +38,5 @@ banc.meta <- banc_codex_annotations()
 }
 }
 \seealso{
-\code{\link{banc_cave_tables}}
+\code{\link{banc_cave_tables}}, \code{\link{banc_cell_info}}
 }

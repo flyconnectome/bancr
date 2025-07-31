@@ -54,7 +54,7 @@ a data.frame
 Returns synaptically connected partners for specified neurons. Understanding
 synaptic partnerships is crucial for analyzing neural circuits in the Brain And
 Nerve Cord (BANC) connectome, revealing how distributed control architecture
-coordinates behavior across brain and ventral nerve cord regions.
+coordinates behaviour across brain and ventral nerve cord regions.
 
 \code{banc_partners} returns details of each unitary synaptic
 connection (including its xyz location).

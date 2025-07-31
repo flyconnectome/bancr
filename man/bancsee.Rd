@@ -38,9 +38,9 @@ This dataset version represents the snapshot for our preprint. Default is NULL.}
 
 \item{open}{Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.}
 
-\item{banc.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are cyan-purple.}
+\item{banc.cols}{Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are cyan-purple.}
 
-\item{fafb.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are red hues.}
+\item{fafb.cols}{Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are red hues.}
 
 \item{hemibrain.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.}
 

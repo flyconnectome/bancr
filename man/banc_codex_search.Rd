@@ -15,7 +15,7 @@ banc_codex_search(
 \arguments{
 \item{cell.types}{Character vector of cell type names to search for.
 Cell types represent functionally and morphologically distinct neuron classes
-in the BANC connectome (e.g., "DNa02" for specific descending neurons).}
+in the BANC connectome (e.g., "DNa02" for specific descending neurones).}
 
 \item{ids}{Character vector of neuron root IDs to search for.
 These are unique identifiers for individual neurons in the dataset.}

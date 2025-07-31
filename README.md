@@ -60,7 +60,7 @@ el <- banc_edgelist()
 
 # Subset connectivity by our neurons of interest
 dna02_connections <- el %>%
-  filter(pt_root_id %in% dna02_ids)
+  filter(pre_pt_root_id %in% dna02_ids)
 
 # Visualize connection strength distribution
 ggplot(dna02_connections, aes(x = n)) +
