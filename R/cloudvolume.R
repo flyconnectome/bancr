@@ -10,7 +10,6 @@ banc_cloudvolume_url <- function() {
   sub("graphene://middleauth+", "graphene://", rr, fixed = TRUE)
 }
 
-
 # hidden
 banc_api_url <- function(endpoint="") {
   fafbseg:::flywire_api_url(endpoint=endpoint,
@@ -45,39 +44,48 @@ banc_token_available <- function() {
 
 #' Print information about your BANC setup including tokens and python modules
 #'
-#' @export
 #' @seealso \code{\link{dr_fafbseg}}
 #' @examples
 #' \dontrun{
 #' dr_banc()
 #' }
+#' @export
 dr_banc <- function() {
   banc_api_report()
-  cat("\n\n")
+  cat("
+
+")
   res = fafbseg:::py_report()
-  cat("\n")
+  cat("
+")
   try(fafbseg:::check_cloudvolume_reticulate(min_version = "8.32.1"))
   invisible(res)
 }
 
 # hidden
 banc_api_report <- function(with_dataset = bancr::with_banc) {
-  message("Neuroglancer / CAVE API access\n----")
+  message("Neuroglancer / CAVE API access
+----")
   token=try(banc_token(cached = F), silent = FALSE)
   if(inherits(token, "try-error")) {
     FUN=if(requireNamespace('usethis', quietly = T)) usethis::ui_todo else message
-    FUN(paste('No valid banc API token found. Set your token by doing:\n',
+    FUN(paste('No valid banc API token found. Set your token by doing:
+',
                   "{ui_code('*_set_token()')}"))
   } else{
-    cat("Valid banc API ChunkedGraph token is set!\n")
+    cat("Valid banc API ChunkedGraph token is set!
+")
   }
   ff=dir(fafbseg:::cv_secretdir(), pattern = '-secret\\.json$')
   if(length(ff)){
-    cat(length(ff), "CloudVolume credential files available at\n",
-        fafbseg:::cv_secretdir(),"\n")
+    cat(length(ff), "CloudVolume credential files available at
+",
+        fafbseg:::cv_secretdir(),"
+")
     print(ff)
   }
   u=with_dataset(fafbseg:::check_cloudvolume_url(set = F))
-  cat("\nZetta cloudvolume URL:", u)
+  cat("
+Zetta cloudvolume URL:", u)
 }
 

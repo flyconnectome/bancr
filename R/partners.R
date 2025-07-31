@@ -10,10 +10,14 @@
 #' @param rootids Character vector specifying one or more BANC rootids. As a
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
 #'   to pass in data.frames, BANC URLs or simple ids.
+#' @param partners Character vector, either "outputs" or "inputs" to specify the direction of synaptic connections to retrieve.
+#' @param threshold Integer threshold for minimum number of synapses (default 0).
+#' @param remove_autapses Logical, whether to remove self-connections (default TRUE).
+#' @param cleft.threshold Numeric threshold for cleft filtering (default 0).
 #' @param datastack_name An optional CAVE \code{datastack_name}. If unset a
 #'   sensible default is chosen.
 #' @param synapse_table Character, the name of the synapse CAVE table you wish to use. Defaults to the latest.
-#' @inheritParams fafbseg::flywire_partner_summary
+#' @param ... Additional arguments passed to \code{\link[fafbseg]{flywire_partner_summary}}
 #'
 #' @return a data.frame
 #' @seealso \code{\link{flywire_partner_summary}}, \code{\link{banc_latestid}}
@@ -72,7 +76,15 @@ banc_partner_summary <- function(rootids,
 }
 
 ### TODO ####
-banc_datastack_name <- memoise::memoise(function() {
+banc_datastack_name <- function() {
+  if (requireNamespace("memoise", quietly = TRUE)) {
+    return(memoise::memoise(banc_datastack_name_impl)())
+  } else {
+    return(banc_datastack_name_impl())
+  }
+}
+
+banc_datastack_name_impl <- function() {
   banc_name <- tryCatch({
     cac=fafbseg::flywire_cave_client(NULL)
     datastacks=cac$info$get_datastacks()
@@ -80,10 +92,12 @@ banc_datastack_name <- memoise::memoise(function() {
     if(length(seldatastack)==0)
       stop("Could not identify a banc production datastack amongst: ",
            paste(datastacks, collapse=','),
-           "\nHave you been granted access to banc production?")
+           "
+Have you been granted access to banc production?")
     if(length(seldatastack)>1)
       warning("Multiple banc datastacks available; ",
-              paste(seldatastack, collapse = ","),"\n",
+              paste(seldatastack, collapse = ","),"
+",
               "choosing: ", seldatastack[1])
     seldatastack[1]
   }, error = function(e){
@@ -91,7 +105,7 @@ banc_datastack_name <- memoise::memoise(function() {
     "brain_and_nerve_cord"
   })
   banc_name
-})
+}
 
 #' @description \code{banc_partners} returns details of each unitary synaptic
 #' connection (including its xyz location).

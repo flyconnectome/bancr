@@ -5,9 +5,12 @@ check_package_available <- function(pkg, repo=c("CRAN", "Bioconductor")) {
     installmsg=switch(repo,
                       CRAN=paste0("install.packages('",pkg,"')"),
                       Bioconductor=paste0('if (!require("BiocManager", quietly = TRUE))',
-                                          '\n  install.packages("BiocManager")',
-                                          '\nBiocManager::install("',pkg,'")'))
-    stop("Please install suggested package: ", pkg, " by doing\n",
+                                          '
+  install.packages("BiocManager")',
+                                          '
+BiocManager::install("',pkg,'")'))
+    stop("Please install suggested package: ", pkg, " by doing
+",
          installmsg, call. = F)
   }
 }
@@ -56,12 +59,15 @@ express_lane <- function(base_dir, search = "^1_", link = c("move","symlink","co
       }else{
         fs::file_copy(file,symlink_path)
       }
-      cat("Created symlink:", symlink_path, "->", file, "\n")
+      cat("Created symlink:", symlink_path, "->", file, "
+")
     })
     remove_empty_dirs(base_dir)
-    cat("Symlink creation completed.\n")
+    cat("Symlink creation completed.
+")
   }else{
-    cat("No 'todo' folder from which to connect\n")
+    cat("No 'todo' folder from which to connect
+")
   }
   invisible()
 }
@@ -74,7 +80,8 @@ remove_empty_dirs <- function(base_dir) {
   purrr::walk(dirs, function(dir) {
     if (length(fs::dir_ls(dir)) == 0) {
       fs::dir_delete(dir)
-      cat("Removed empty directory:", dir, "\n")
+      cat("Removed empty directory:", dir, "
+")
     }
   })
 }

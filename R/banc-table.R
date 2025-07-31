@@ -46,7 +46,7 @@
 #' @param invert whether to send the specified rows (`where`) to big data storage (`FALSE`) or from storage to the 'normal' table (`FALSE`.)
 #' @param table.max the maximum number of rows to read from the seatable at one time, which is capped at 10000L by seatable.
 #' @param row_ids Character, seatable row IDs
-#' @param ... Additional arguments passed to pbsapply which might include cl=2 to specify a number of parallel jobs to run.
+#' @param ... Additional arguments passed to the underlying parallel processing functions which might include cl=2 to specify a number of parallel jobs to run.
 #' @param retries if a request to the seatable API fails, the number of times to re-try with a 0.1 second pause.
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
 #'   matched query.
@@ -80,7 +80,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
     offset <- 0
     df <- data.frame()
     while(offset<limit){
-      cat("reading from row: ", offset,"\n")
+      cat("reading from row: ", offset,"
+")
       sql.new <- sprintf("%s LIMIT %d OFFSET %d", sql, table.max, offset)
       tries <- retries
       bc <- data.frame()
@@ -99,19 +100,28 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
       df <- rbind(df,bc)
       offset <- offset+nrow(bc)
       if(!length(bc)|nrow(bc)<table.max){
-        cat("read rows: ",nrow(df), " read columns:", ncol(df),"\n")
+        cat("read rows: ",nrow(df), " read columns:", ncol(df),"
+")
         return(df)
       }
     }
-    cat("read rows: ",nrow(df), " read columns:", ncol(df),"\n")
+    cat("read rows: ",nrow(df), " read columns:", ncol(df),"
+")
     return(df)
+  }
+  if (!requireNamespace("checkmate", quietly = TRUE)) {
+    stop("Package 'checkmate' is required for this function. Please install it with: install.packages('checkmate')")
+  }
+  if (!requireNamespace("stringr", quietly = TRUE)) {
+    stop("Package 'stringr' is required for this function. Please install it with: install.packages('stringr')")
   }
   checkmate::assert_character(sql, len = 1, pattern = "select",
                               ignore.case = T)
   res = stringr::str_match(sql, stringr::regex("\\s+FROM\\s+[']{0,1}([^, ']+).*",
                                                ignore_case = T))
   if (any(is.na(res)[, 2]))
-    stop("Cannot identify a table name in your sql statement!\n")
+    stop("Cannot identify a table name in your sql statement!
+")
   table = res[, 2]
   if (is.null(base)) {
     base = try(banctable_base(table = table, workspace_id = workspace_id, token_name = token_name))
@@ -129,7 +139,8 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
                                                                        sql, convert = convert), silent = T))
   if (inherits(ll, "try-error")) {
     warning(paste("No rows returned by banctable", pyout,
-                  collapse = "\n"))
+                  collapse = "
+"))
     return(NULL)
   }
   pd = reticulate::import("pandas")
@@ -163,7 +174,8 @@ banctable_set_token <- function(user,
                             password = pwd, server_url = url)
   ac$auth()
   Sys.setenv(banctable_TOKEN = ac$token)
-  cat(token_name,"='", ac$token, "'\n", sep = "", append = TRUE,
+  cat(token_name,"='", ac$token, "'
+", sep = "", append = TRUE,
       file = path.expand("~/.Renviron"))
   return(invisible(NULL))
 }
@@ -211,6 +223,9 @@ banctable_update_rows <- function (df,
     nchunks = ceiling(nx/chunksize)
     chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
     chunks = split(df, chunkids)
+    if (!requireNamespace("pbapply", quietly = TRUE)) {
+      stop("Package pbapply is required for this function. Please install it with: install.packages('pbapply')")
+    }
     oks = pbapply::pbsapply(chunks, banctable_update_rows,
                             table = table, base = base, chunksize = Inf, append_allowed = FALSE,
                             ...)
@@ -243,8 +258,11 @@ banctable_base <- function(base_name = "banc_meta",
                             cached = TRUE,
                             ac = NULL) {
   if(is.null(ac)) ac <- banctable_login(token_name=token_name)
-  if (!cached)
-    memoise::forget(banctable_base_impl)
+  if (!cached) {
+    if (requireNamespace("memoise", quietly = TRUE)) {
+      memoise::forget(banctable_base_impl)
+    }
+  }
   base = try({
     banctable_base_impl(table = table, base_name = base_name,
                        url = url, workspace_id = workspace_id)
@@ -254,7 +272,9 @@ banctable_base <- function(base_name = "banc_meta",
   retry = (cached && inherits(base, "try-error")) || stale_token
   if (!retry)
     return(base)
-  memoise::forget(banctable_base_impl)
+  if (requireNamespace("memoise", quietly = TRUE)) {
+    memoise::forget(banctable_base_impl)
+  }
   banctable_base_impl(table = table,
                       base_name = base_name,
                       url = url,
@@ -281,10 +301,12 @@ banctable_base_impl <- function (base_name = "banc_meta",
       wsdf.sel = subset(wsdf, wsdf$name == base_name)
       if (nrow(wsdf.sel) == 0)
         stop("Unable to find a workspace containing basename:",
-             base_name, "\nCheck basename and/or access permissions.")
+             base_name, "
+Check basename and/or access permissions.")
       if (nrow(wsdf.sel) > 1)
         stop("Multiple workspaces containing basename:",
-             base_name, "\nYou must use banctable_base() specifying a workspace_id to resolve this ambiguity.")
+             base_name, "
+You must use banctable_base() specifying a workspace_id to resolve this ambiguity.")
       workspace_id = wsdf.sel[["workspace_id"]]
     }
     base = reticulate::py_call(ac$get_base, workspace_id = workspace_id,
@@ -431,6 +453,9 @@ banctable_append_rows <- function (df,
     nchunks = ceiling(nx/chunksize)
     chunkids = rep(seq_len(nchunks), rep(chunksize, nchunks))[seq_len(nx)]
     chunks = split(df, chunkids)
+    if (!requireNamespace("pbapply", quietly = TRUE)) {
+      stop("Package pbapply is required for this function. Please install it with: install.packages('pbapply')")
+    }
     oks = pbapply::pbsapply(chunks, banctable_append_rows,
                             table = table, base = base, chunksize = Inf, bigdata = bigdata,
                             ...)
@@ -539,7 +564,8 @@ banc_update_status <- function(df,
 banctable_updateids <- function(){
 
   # Get cell info table
-  cat('reading cell info cave table...\n')
+  cat('reading cell info cave table...
+')
   info <- banc_cell_info(rawcoords = TRUE)  %>%
     dplyr::mutate(pt_position = xyzmatrix2str(pt_position)) %>%
     dplyr::select(pt_root_id, pt_supervoxel_id,pt_position) %>%
@@ -555,7 +581,8 @@ banctable_updateids <- function(){
     dplyr::rowwise()
 
   # Get current table
-  cat('reading banc meta seatable...\n')
+  cat('reading banc meta seatable...
+')
   bc <- banctable_query(sql = 'select _id, root_id, supervoxel_id, position, banc_match, banc_match_supervoxel_id, banc_png_match, banc_png_match_supervoxel_id, banc_nblast_match, banc_nblast_match_supervoxel_id from banc_meta') %>%
     dplyr::select(root_id, supervoxel_id, position,
                   banc_match, banc_match_supervoxel_id, banc_png_match, banc_png_match_supervoxel_id, banc_nblast_match, banc_nblast_match_supervoxel_id,
@@ -564,7 +591,8 @@ banctable_updateids <- function(){
   bc[bc==""] <- NA
 
   # Update
-  cat('updating column: root_id ...\n')
+  cat('updating column: root_id ...
+')
   bc.new <- bc %>%
     dplyr::left_join(info,
                      by = c("supervoxel_id"="pt_supervoxel_id")) %>%
@@ -615,17 +643,20 @@ banctable_updateids <- function(){
     dplyr::select(-lookup_root_id)
 
   # Update directly
-  cat('updating column: banc_match ...\n')
+  cat('updating column: banc_match ...
+')
   bc.new[!is.na(bc.new$banc_match),] <- banc_updateids(bc.new[!is.na(bc.new$banc_match),],
                                                        root.column = "banc_match",
                                                        supervoxel.column = "banc_match_supervoxel_id",
                                                        position.column = "banc_match_position")
-  cat('updating column: banc_png_match ...\n')
+  cat('updating column: banc_png_match ...
+')
   bc.new[!is.na(bc.new$banc_png_match),] <- banc_updateids(bc.new[!is.na(bc.new$banc_png_match),],
                                                        root.column = "banc_png_match",
                                                        supervoxel.column = "banc_png_match_supervoxel_id",
                                                        position.column = "banc_png_match_position")
-  cat('updating column: banc_nblast_match ...\n')
+  cat('updating column: banc_nblast_match ...
+')
   bc.new[!is.na(bc.new$banc_nblast_match),] <- banc_updateids(bc.new[!is.na(bc.new$banc_nblast_match),],
                                                        root.column = "banc_nblast_match",
                                                        supervoxel.column = "banc_nblast_match_supervoxel_id",
@@ -654,7 +685,8 @@ banctable_updateids <- function(){
     dplyr::select(-lookup_supervoxel_id)
 
   # Update
-  cat('updating banc meta seatable...\n')
+  cat('updating banc meta seatable...
+')
   bc.new <- bc.new %>%
     dplyr::filter(!is.na(`_id`)) %>%
     dplyr::distinct(`_id`, .keep_all = TRUE)
@@ -679,7 +711,8 @@ banctable_annotate <- function(root_ids,
 
 
   # Get current table
-  cat('reading banc meta seatable...\n')
+  cat('reading banc meta seatable...
+')
   bc <- banctable_query(sql = sprintf('select _id, root_id, supervoxel_id, %s from banc_meta',column)) %>%
     dplyr::filter(.data$root_id %in% root_ids)
   if(!nrow(bc)){
@@ -690,7 +723,8 @@ banctable_annotate <- function(root_ids,
   bc[bc==""] <- NA
 
   # Update
-  cat('updating column: root_id ...\n')
+  cat('updating column: root_id ...
+')
   bc.new <- bc
   if(overwrite){
     bc.new[[column]] <- NA
@@ -718,13 +752,16 @@ banctable_annotate <- function(root_ids,
 
   # Summarise update
   message("Changed ", changed, " rows")
-  cat(sprintf("%s before update: \n",column))
+  cat(sprintf("%s before update:
+",column))
   if(nrow(bc.new)==1){
     cat(bc[[column]])
   }else{
     cat(sort(table(bc[[column]])))
   }
-  cat(sprintf("\n %s after update: \n",column))
+  cat(sprintf("
+ %s after update:
+",column))
   if(nrow(bc.new)==1){
     cat(bc.new[[column]])
   }else{
@@ -732,7 +769,8 @@ banctable_annotate <- function(root_ids,
   }
 
   # Update
-  cat('updating banc meta seatable...\n')
+  cat('updating banc meta seatable...
+')
   bc.new <- as.data.frame(bc.new)
   bc.new[is.na(bc.new)] <- ''
   bc.new[bc.new=="0"] <- ''

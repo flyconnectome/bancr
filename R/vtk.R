@@ -17,8 +17,10 @@ write_mesh3d_to_vtk <- function(mesh, filename, simplify = TRUE, percent = 0.1) 
   vertices <- t(mesh$vb[1:3,])
   faces <- t(mesh$it)
 
-  cat("Vertex count:", nrow(vertices), "\n")
-  cat("Face count:", nrow(faces), "\n")
+  cat("Vertex count:", nrow(vertices), "
+")
+  cat("Face count:", nrow(faces), "
+")
 
   con <- file(filename, "w")
   on.exit(close(con))
@@ -35,10 +37,12 @@ write_mesh3d_to_vtk <- function(mesh, filename, simplify = TRUE, percent = 0.1) 
   face_data <- cbind(3, faces - 1)
   utils::write.table(face_data, con, row.names = FALSE, col.names = FALSE, quote = FALSE)
 
-  cat("Mesh successfully written to", filename, "\n")
+  cat("Mesh successfully written to", filename, "
+")
 
   # Check file content
-  cat("First few lines of the VTK file:\n")
+  cat("First few lines of the VTK file:
+")
   system(sprintf("head -n 10 %s", filename))
 }
 
@@ -54,18 +58,21 @@ write_mesh3d_to_obj <- function(mesh, filename) {
 
   # Write vertices
   vertices <- t(mesh$vb[1:3, ] / mesh$vb[4, ])
-  write(paste("v", vertices[,1], vertices[,2], vertices[,3]), con, sep = "\n")
+  write(paste("v", vertices[,1], vertices[,2], vertices[,3]), con, sep = "
+")
 
   # Write texture coordinates if present
   if (!is.null(mesh$texcoords)) {
     texcoords <- t(mesh$texcoords)
-    write(paste("vt", texcoords[,1], texcoords[,2]), con, sep = "\n")
+    write(paste("vt", texcoords[,1], texcoords[,2]), con, sep = "
+")
   }
 
   # Write normals if present
   if (!is.null(mesh$normals)) {
     normals <- t(mesh$normals[1:3, ] / mesh$normals[4, ])
-    write(paste("vn", normals[,1], normals[,2], normals[,3]), con, sep = "\n")
+    write(paste("vn", normals[,1], normals[,2], normals[,3]), con, sep = "
+")
   }
 
   # Write faces
@@ -75,25 +82,30 @@ write_mesh3d_to_obj <- function(mesh, filename) {
     write(paste("f",
                 paste(faces[,1], faces[,1], faces[,1], sep="/"),
                 paste(faces[,2], faces[,2], faces[,2], sep="/"),
-                paste(faces[,3], faces[,3], faces[,3], sep="/")), con, sep = "\n")
+                paste(faces[,3], faces[,3], faces[,3], sep="/")), con, sep = "
+")
   } else if (!is.null(mesh$texcoords)) {
     # Faces with vertex/texture indices
     write(paste("f",
                 paste(faces[,1], faces[,1], sep="/"),
                 paste(faces[,2], faces[,2], sep="/"),
-                paste(faces[,3], faces[,3], sep="/")), con, sep = "\n")
+                paste(faces[,3], faces[,3], sep="/")), con, sep = "
+")
   } else if (!is.null(mesh$normals)) {
     # Faces with vertex//normal indices
     write(paste("f",
                 paste(faces[,1], "", faces[,1], sep="/"),
                 paste(faces[,2], "", faces[,2], sep="/"),
-                paste(faces[,3], "", faces[,3], sep="/")), con, sep = "\n")
+                paste(faces[,3], "", faces[,3], sep="/")), con, sep = "
+")
   } else {
     # Faces with only vertex indices
-    write(paste("f", faces[,1], faces[,2], faces[,3]), con, sep = "\n")
+    write(paste("f", faces[,1], faces[,2], faces[,3]), con, sep = "
+")
   }
 
-  cat("OBJ file written successfully:", filename, "\n")
+  cat("OBJ file written successfully:", filename, "
+")
 }
 
 # hidden
@@ -132,5 +144,6 @@ write_neuron_to_vtk_paired <- function(neuron, file) {
 
   # Close the file
   close(con)
-  cat(sprintf("VTK file written to: %s\n", file))
+  cat(sprintf("VTK file written to: %s
+", file))
 }

@@ -84,8 +84,6 @@ The nucleus (\url{https://en.wikipedia.org/wiki/Cell_nucleus}) contains
 the cell body and provides a stable reference point for neuron identification.}
 
 \item{simplify}{logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.}
-
-\item{fetch_all_rows}{Logical, whether or not to fetch all rows for a CAVE table.}
 }
 \value{
 A \code{data.frame} describing a CAVE-table related to the BANC project.

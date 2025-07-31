@@ -197,6 +197,9 @@ banc_in_neuropil.mesh3d <- function(x,
 
   # Step 5: Update the faces (triangles)
   message("calculating faces ...")
+  if (!requireNamespace("pbapply", quietly = TRUE)) {
+    stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+  }
   valid_faces <- pbapply::pbapply(C$it, 2, function(face) all(face %in% vertices_to_keep))
   C$it <- C$it[, valid_faces, drop = FALSE]
   message("calculating vertex map ...")
@@ -234,6 +237,9 @@ banc_read_neuroglancer_mesh <- function(x = 1,
                                           "&neuroglancer=610000b05b6497edcf20b78f29516970"
                                         ),
                                         ...){
+  if (!requireNamespace("glue", quietly = TRUE)) {
+    stop("Package 'glue' is required for this function. Please install it with: install.packages('glue')")
+  }
   completed_url <- glue::glue(url, x=x)
   res <- httr::GET(completed_url, ...)
   httr::stop_for_status(res)

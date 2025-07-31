@@ -10,7 +10,6 @@
 #' @return a \code{data.frame} See \code{fabseg::\link{flywire_change_log}} for
 #'   details
 #' @export
-#' @importFrom pbapply pbsapply
 #' @inheritParams fafbseg::flywire_change_log
 #' @examples
 #' \donttest{
@@ -31,6 +30,9 @@ banc_change_log_zetta <- function(x, ...) {
   baseurl=banc_api_url(endpoint = "root/")
   x=fafbseg::ngl_segments(x, as_character = T)
   if(length(x)>1) {
+    if (!requireNamespace("pbapply", quietly = TRUE)) {
+      stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+    }
     res=pbapply::pbsapply(x, banc_change_log_zetta, ..., simplify = FALSE)
     user_info=dplyr::bind_rows(sapply(res, "[[", "user_info", simplify = F),
                                .id = 'root_id')

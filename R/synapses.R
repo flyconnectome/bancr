@@ -35,6 +35,9 @@ banc_all_synapses <- function(path = c("gs://lee-lab_brain-and-nerve-cord-fly-co
 
   # Check if the file exists, if not, create it
   file_path <- file.path(system.file(package = "bancr"), "data", "banc_data.sqlite")
+  if (!requireNamespace("DBI", quietly = TRUE) || !requireNamespace("RSQLite", quietly = TRUE)) {
+    stop("Packages 'DBI' and 'RSQLite' are required for this function. Please install them with: install.packages(c('DBI', 'RSQLite'))")
+  }
   if (!file.exists(file_path)) {
     con <- DBI::dbConnect(RSQLite::SQLite(), file_path)
     DBI::dbDisconnect(con)
@@ -46,6 +49,9 @@ banc_all_synapses <- function(path = c("gs://lee-lab_brain-and-nerve-cord-fly-co
     table_exists <- "synapses" %in% DBI::dbListTables(con)
   }
 
+  if (!requireNamespace("readr", quietly = TRUE)) {
+    stop("Package 'readr' is required for this function. Please install it with: install.packages('readr')")
+  }
   # The column types for our read
   col.types <- readr::cols(
     .default = readr::col_character(),

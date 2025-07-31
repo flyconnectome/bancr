@@ -1,16 +1,16 @@
 #' Read BANC CAVE-tables, good sources of metadata
 #'
-#' CAVE tables query functions that track neurons across segmentation changes 
-#' so that annotations and neuron entities can be stably tracked together. 
-#' The Brain And Nerve Cord (BANC) dataset represents the first complete 
-#' connectome including both brain and ventral nerve cord of a limbed animal, 
+#' CAVE tables query functions that track neurons across segmentation changes
+#' so that annotations and neuron entities can be stably tracked together.
+#' The Brain And Nerve Cord (BANC) dataset represents the first complete
+#' connectome including both brain and ventral nerve cord of a limbed animal,
 #' comprising approximately 160,000 neurons across the entire central nervous system.
 #'
 #' @param rootids Character vector specifying one or more BANC rootids. As a
 #'   convenience this argument is passed to \code{\link{banc_ids}} allowing you
 #'   to pass in data.frames, BANC URLs or simple ids.
 #' @param nucleus_ids Character vector specifying one or more BANC nucleus ids.
-#'   The nucleus (\url{https://en.wikipedia.org/wiki/Cell_nucleus}) contains 
+#'   The nucleus (\url{https://en.wikipedia.org/wiki/Cell_nucleus}) contains
 #'   the cell body and provides a stable reference point for neuron identification.
 #' @param rawcoords Logical, whether or not to convert from raw coordinates into nanometers. Default is `FALSE`.
 #' @param select A regex term for the name of the table you want
@@ -18,7 +18,6 @@
 #' @param table Character, possible alternative tables for the sort of data frame the function returns. One must be chosen.
 #' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
 #' @param simplify logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.
-#' @param fetch_all_rows Logical, whether or not to fetch all rows for a CAVE table.
 #' @param ... Additional arguments passed to
 #'   \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
 #'
@@ -27,8 +26,8 @@
 #' all query-able cave tables.
 #'
 #' @details
-#' CAVE tables store rich metadata supporting analysis of distributed neural 
-#' control across the entire central nervous system. For more information about 
+#' CAVE tables store rich metadata supporting analysis of distributed neural
+#' control across the entire central nervous system. For more information about
 #' CAVE infrastructure, see \url{https://www.caveconnecto.me/CAVEclient/}.
 #'
 #' @seealso \code{fafbseg::\link{flywire_cave_query}}
@@ -51,7 +50,8 @@ banc_cave_tables <- function(datastack_name = NULL,
     chosen_tables <- grep(select, tt)
     if (length(chosen_tables) == 0)
       stop(sprintf("I cannot find a '%s' table for datastack: ", select),
-           datastack_name, "\nPlease ask for help on #annotation_infrastructure https://flywire-forum.slack.com/archives/C01M4LP2Y2D")
+           datastack_name, "
+Please ask for help on #annotation_infrastructure https://flywire-forum.slack.com/archives/C01M4LP2Y2D")
     if (length(chosen_tables) == 1)
       return(tt[chosen_tables])
     chosen <- tt[rev(chosen_tables)[1]]
@@ -77,7 +77,8 @@ banc_cave_views <- function(datastack_name = NULL,
     chosen_tables <- grep(select, tt)
     if (length(chosen_tables) == 0)
       stop(sprintf("I cannot find a '%s' view for datastack: ", select),
-           datastack_name, "\nPlease ask for help on #annotation_infrastructure https://flywire-forum.slack.com/archives/C01M4LP2Y2D")
+           datastack_name, "
+Please ask for help on #annotation_infrastructure https://flywire-forum.slack.com/archives/C01M4LP2Y2D")
     if (length(chosen_tables) == 1)
       return(tt[chosen_tables])
     chosen <- tt[rev(chosen_tables)[1]]
@@ -93,10 +94,10 @@ banc_cave_views <- function(datastack_name = NULL,
 
 #' @rdname banc_cave_tables
 #' @details
-#' \code{banc_edgelist} returns a data frame of neuron-neuron connections where 
-#' the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron. 
-#' This edgelist contains synaptic connectivity data crucial for understanding 
-#' distributed neural control and behaviour-centric neural modules across the 
+#' \code{banc_edgelist} returns a data frame of neuron-neuron connections where
+#' the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron.
+#' This edgelist contains synaptic connectivity data crucial for understanding
+#' distributed neural control and behaviour-centric neural modules across the
 #' brain-VNC boundary.
 #' @export
 banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
@@ -212,9 +213,9 @@ banc_nuclei <- function(rootids = NULL,
 
 #' @rdname banc_cave_tables
 #' @details
-#' \code{banc_cell_info} accesses the cell_info CAVE table containing non-centralised 
-#' annotations from the research community for connectome neurones. These annotations 
-#' represent diverse contributions from researchers studying specific neural circuits 
+#' \code{banc_cell_info} accesses the cell_info CAVE table containing non-centralised
+#' annotations from the research community for connectome neurones. These annotations
+#' represent diverse contributions from researchers studying specific neural circuits
 #' and cell types in the BANC dataset.
 #' @export
 #' @importFrom dplyr mutate ends_with across
@@ -290,7 +291,8 @@ banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
       !is.na(cell_type) ~ user_id,
       TRUE ~ NA
     )) %>%
-    dplyr::mutate(cell_type = gsub("\\\n.*|\\*.*","",cell_type)) %>%
+    dplyr::mutate(cell_type = gsub("\\
+.*|\\*.*","",cell_type)) %>%
     dplyr::mutate(cell_class = dplyr::case_when(
       grepl("ascending|descending|descending|ascending", tag) ~ tag,
       grepl("sensory neuron|motor neuron|^trachea|^glia|^endocrine", tag) ~ tag,
@@ -448,7 +450,13 @@ banc_nt_prediction <- function(rootids = NULL,
       dplyr::mutate(count = sum(n), prop = n / count) %>%
       dplyr::ungroup() %>%
       dplyr::select(pre_pt_root_id, count, tag, prop) %>%
-      dplyr::mutate(prop = round(prop, 4)) %>%
+      dplyr::mutate(prop = round(prop, 4))
+
+    if (!requireNamespace("tidyr", quietly = TRUE)) {
+      stop("Package 'tidyr' is required for this function. Please install it with: install.packages('tidyr')")
+    }
+
+    res <- res %>%
       tidyr::pivot_wider(
         names_from = tag,
         values_from = prop,
@@ -517,7 +525,15 @@ banc_validate_positions <- function(positions,
   positions
 }
 
-# hidden
+#' Annotate positions as backbone proofread
+#'
+#' @description Mark specific positions as backbone proofread in the CAVE annotation system.
+#' @param positions 3D coordinates in BANC space
+#' @param user_id Integer user ID for the annotation
+#' @param units Character, coordinate units - either "raw" or "nm"
+#' @param proofread Logical, whether to mark as proofread (default TRUE)
+#' @param datastack_name Optional datastack name
+#' @return Data frame of added annotations
 #' @examples
 #' # Add an annotation to a point in raw voxel space
 #' banc_annotate_backbone_proofread(c(117105, 240526, 5122), user_id = 355, units = "raw")
@@ -532,12 +548,12 @@ banc_validate_positions <- function(positions,
 banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw", "nm"), proofread = TRUE,
                                               datastack_name = NULL)
 {
-  positions <- bancr:::banc_validate_positions(positions = positions,
+  positions <- banc_validate_positions(positions = positions,
                                                units = units)
   cavec = fafbseg:::check_cave()
   np = reticulate::import("numpy")
   pd = reticulate::import("pandas")
-  client = bancr:::banc_service_account(datastack_name)
+  client = banc_service_account(datastack_name)
   annotations <- banc_backbone_proofread(live = 2) %>% dplyr::filter(proofread ==
                                                                        eval(proofread))
   if (!nrow(annotations)) {
@@ -553,7 +569,8 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
     positions <- dplyr::anti_join(positions, as.data.frame(curr.positions),
                                   by = c("X", "Y", "Z"))
     cat("given positions already in backbone_proofread:",
-        nrow(positions.orig) - nrow(positions), "\n")
+        nrow(positions.orig) - nrow(positions), "
+")
     if (!nrow(positions)) {
       stop("all positions already marked:", nrow(positions.orig))
     }
@@ -571,6 +588,9 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
     result_ind <- integer(0)
 
     # Create a progress barn
+    if (!requireNamespace("progress", quietly = TRUE)) {
+      stop("Package 'progress' is required for this function. Please install it with: install.packages('progress')")
+    }
     pb <- progress::progress_bar$new(
       format = "[:bar] :percent | ETA: :eta | :current/:total positions | Elapsed: :elapsedfull",
       total = nrow(positions),
@@ -622,7 +642,8 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
   annotations.new <- annotations %>% dplyr::filter(id %in%
                                                      result_ind)
   cat("annotated", nrow(annotations.new), "entities with backbone proofread:",
-      proofread, "\n")
+      proofread, "
+")
   return(annotations.new)
 }
 
@@ -653,7 +674,8 @@ banc_deannotate_backbone_proofread <- function(positions,
     point_exists <- length(matching_rows) > 0
     annotation_ids <- annotations$id[matching_rows]
   }
-  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points \n")
+  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points
+")
   if(length(annotation_ids)){
     # get table
     client <- banc_service_account(datastack_name=datastack_name)
@@ -668,7 +690,8 @@ banc_deannotate_backbone_proofread <- function(positions,
     if(nrow(annotations.new)){
       warning('not all given positions removed from : missing annotation_ids')
     }
-    cat("deannotated", length(result), "entities, valid set to FALSE \n")
+    cat("deannotated", length(result), "entities, valid set to FALSE
+")
     return(result)
   }else{
     invisible()
@@ -677,9 +700,9 @@ banc_deannotate_backbone_proofread <- function(positions,
 
 #' Read BANC-FlyWireCodex annotation table
 #'
-#' Provides access to centralised cell type annotations from the BANC core team, 
-#' which are the official annotations available on FlyWireCodex. These standardised 
-#' annotations ensure consistency across the dataset and serve as the authoritative 
+#' Provides access to centralised cell type annotations from the BANC core team,
+#' which are the official annotations available on FlyWireCodex. These standardised
+#' annotations ensure consistency across the dataset and serve as the authoritative
 #' cell type classifications for the BANC connectome.
 #'
 #' @param rootids Character vector specifying one or more BANC rootids. As a
@@ -692,10 +715,10 @@ banc_deannotate_backbone_proofread <- function(positions,
 #' in FlyWireCodex.
 #'
 #' @details
-#' This function accesses centralised cell type annotations curated by the BANC core 
-#' team, in contrast to \code{\link{banc_cell_info}} which contains non-centralised 
-#' annotations from the broader research community. The centralised annotations provide 
-#' standardised cell type classifications that are displayed on FlyWireCodex and serve 
+#' This function accesses centralised cell type annotations curated by the BANC core
+#' team, in contrast to \code{\link{banc_cell_info}} which contains non-centralised
+#' annotations from the broader research community. The centralised annotations provide
+#' standardised cell type classifications that are displayed on FlyWireCodex and serve
 #' as the official reference for BANC cell types.
 #'
 #' @seealso \code{\link{banc_cave_tables}}, \code{\link{banc_cell_info}}
@@ -705,36 +728,65 @@ banc_deannotate_backbone_proofread <- function(positions,
 #' \dontrun{
 #' banc.meta <- banc_codex_annotations()
 #' }
-banc_codex_annotations <- function (live = TRUE, ...){
+banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
   table_name <- "codex_annotations"
-  codex_annotations_part_1 <- banc_cave_query(table_name, live = live,
-                                              limit = 500000, ...)
-  codex_annotations_part_2 <- banc_cave_query(table_name, live = live,
-                                              offset = 500000, limit = 350000, ...)
-  codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
-                                              offset = 850000, ...)
-  codex_annotations_part_1 <- codex_annotations_part_1 %>%
+
+  if (!is.null(rootids)) {
+    # If rootids are specified, query for those specific rootids
+    rootids <- banc_ids(rootids)
+    if (length(rootids) < 200) {
+      codex_annotations <- banc_cave_query(table_name, live = live,
+                                          filter_in_dict = list(pt_root_id = rootids), ...)
+    } else {
+      # For large numbers of rootids, get all data and filter
+      codex_annotations_part_1 <- banc_cave_query(table_name, live = live,
+                                                  limit = 500000, ...)
+      codex_annotations_part_2 <- banc_cave_query(table_name, live = live,
+                                                  offset = 500000, limit = 350000, ...)
+      codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
+                                                  offset = 850000, ...)
+      codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
+                                            codex_annotations_part_2,
+                                            codex_annotations_part_3) %>%
+        dplyr::filter(pt_root_id %in% rootids)
+    }
+  } else {
+    # Get all data if no rootids specified
+    codex_annotations_part_1 <- banc_cave_query(table_name, live = live,
+                                                limit = 500000, ...)
+    codex_annotations_part_2 <- banc_cave_query(table_name, live = live,
+                                                offset = 500000, limit = 350000, ...)
+    codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
+                                                offset = 850000, ...)
+    codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
+                                          codex_annotations_part_2,
+                                          codex_annotations_part_3)
+  }
+
+  codex_annotations <- codex_annotations %>%
     dplyr::mutate(cell_type = as.character(cell_type))
-  codex_annotations_part_2 <- codex_annotations_part_2 %>%
-    dplyr::mutate(cell_type = as.character(cell_type))
-  codex_annotations_part_3 <- codex_annotations_part_3 %>%
-    dplyr::mutate(cell_type = as.character(cell_type))
-  codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
-                                        codex_annotations_part_2,
-                                        codex_annotations_part_3)
+
+  if (!requireNamespace("tidyr", quietly = TRUE)) {
+    stop("Package 'tidyr' is required for this function. Please install it with: install.packages('tidyr')")
+  }
+
   if (live == 2) {
     codex_annotations_flat_table <- codex_annotations %>%
       dplyr::group_by(target_id, classification_system) %>%
       dplyr::summarise(cell_type_combined = paste(unique(cell_type),
-                                                  collapse = ", "), .groups = "drop") %>% tidyr::pivot_wider(names_from = classification_system,
-                                                                                                             values_from = cell_type_combined, values_fill = NA_character_)
+                                                  collapse = ", "), .groups = "drop") %>%
+      tidyr::pivot_wider(names_from = classification_system,
+                         values_from = cell_type_combined, values_fill = NA_character_)
   }
   else {
     codex_annotations_flat_table <- codex_annotations %>%
       dplyr::group_by(target_id, classification_system,
                       pt_supervoxel_id, pt_root_id, pt_position) %>%
       dplyr::summarise(cell_type_combined = paste(unique(cell_type),
-                                                  collapse = ", "), .groups = "drop") %>% tidyr::pivot_wider(names_from = classification_system,
-                                                                                                             values_from = cell_type_combined, values_fill = NA_character_)
+                                                  collapse = ", "), .groups = "drop") %>%
+      tidyr::pivot_wider(names_from = classification_system,
+                         values_from = cell_type_combined, values_fill = NA_character_)
   }
+
+  return(codex_annotations_flat_table)
 }

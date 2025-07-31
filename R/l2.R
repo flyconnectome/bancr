@@ -137,7 +137,8 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
     x <- nat::reroot(x = x, point = c(soma))
     x$tags$soma <- nat::rootpoints(x)
   }else if (estimate){ # As best we can
-    warning(sprintf("no valid nucleus ID detecting for %s, estimating root point \n",id))
+    warning(sprintf("no valid nucleus ID detecting for %s, estimating root point 
+",id))
     leaves <- nat::endpoints(x)
     npoints1 <- nat::xyzmatrix(x)[leaves,]
     if(nrow(npoints1)){npoints=npoints1}
@@ -155,7 +156,8 @@ banc_reroot.neuron <- function(x, id = NULL, roots = NULL, estimate = TRUE, ...)
     soma <-nat::xyzmatrix(npoints)[which.max(nearest$nn.dists),]
     x <- nat::reroot(x = x, point = c(soma))
   }else{
-    warning(sprintf("no valid nucleus ID detecting for %s, no action taken \n",id))
+    warning(sprintf("no valid nucleus ID detecting for %s, no action taken 
+",id))
   }
   x
 }
@@ -232,11 +234,13 @@ add_field_seq <- function (x, entries, field = "id", ...) {
 add_field <- function (x, entry, field = "bodyid", ...)
   UseMethod("add_field")
 
+#' @export
 add_field.neuron <- function (x, entry, field = "id", ...) {
   x[[field]] = entry
   x
 }
 
+#' @export
 add_field.neuronlist <- function (x, entry, field = "id", ...) {
   nat::nlapply(x, add_field.neuron, entry, field = "id",
                ...)

@@ -219,7 +219,9 @@ check_if_possible <- function(file, on_error = "raise") {
 #' @keywords internal
 #' @importFrom utils write.table
 write_elastix_input_file <- function(points, filepath) {
-  cat("point\n", nrow(points), "\n", file = filepath)
+  cat("point
+", nrow(points), "
+", file = filepath)
   utils::write.table(points, filepath, append = TRUE, col.names = FALSE,
               row.names = FALSE, sep = " ")
 }

@@ -11,7 +11,7 @@
 #' @export
 #' @seealso \code{\link[fafbseg]{flywire_cave_query}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(dplyr)
 #' cell_info=banc_cave_query('cell_info')
 #' cell_info %>%
@@ -72,7 +72,8 @@ cave_view_query <- function(table,
   if (is.null(live) && !is.null(timestamp))
     live = TRUE
   if (isFALSE(live) && is.null(version)) {
-    warning("Defaulting to latest materialisation version since live=FALSE\n",
+    warning("Defaulting to latest materialisation version since live=FALSE
+",
             "Specify `version='latest' instead to avoid this warning")
     version = flywire_version("latest", datastack_name = datastack_name)
   }
@@ -80,6 +81,9 @@ cave_view_query <- function(table,
     stop("You can only supply one of timestamp and materialization version")
   check_package_available("arrow")
   fac = flywire_cave_client(datastack_name = datastack_name)
+  if (!requireNamespace("checkmate", quietly = TRUE)) {
+    stop("Package 'checkmate' is required for this function. Please install it with: install.packages('checkmate')")
+  }
   offset = checkmate::asInt(offset, lower = 0L)
   if (!is.null(limit))
     limit = checkmate::asInt(limit, lower = 0L)
@@ -89,9 +93,10 @@ cave_view_query <- function(table,
     available = version %in% fafbseg:::flywire_version("available", datastack_name = datastack_name)
     if (!available) {
       if (is_view)
-        stop("Sorry! Views only work with unexpired materialisation versions.\n",
+        stop("Sorry! Views only work with unexpired materialisation versions.
+",
              "See https://flywire-forum.slack.com/archives/C01M4LP2Y2D/p1697956174773839 for info.")
-      timestamp = fafbseg:::flywire_timestamp(version, datastack_name = datastack_name,
+      timestamp = fafbseg::flywire_timestamp(version, datastack_name = datastack_name,
                                               convert = F)
       message("Materialisation version no longer available. Falling back to (slower) timestamp!")
       if (isFALSE(live))
@@ -99,9 +104,9 @@ cave_view_query <- function(table,
       version = NULL
     }
   }
-  now = fafbseg:::flywire_timestamp(timestamp = "now", convert = FALSE)
+  now = fafbseg::flywire_timestamp(timestamp = "now", convert = FALSE)
   if(timetravel) {
-    timestamp2 = fafbseg:::flywire_timestamp(version,
+    timestamp2 = fafbseg::flywire_timestamp(version,
                                              timestamp = timestamp,
                                              datastack_name = datastack_name)
     timestamp = now
@@ -125,7 +130,8 @@ cave_view_query <- function(table,
       if (isTRUE(live == 2)) {
         warning("When live==2 / timetravel=T filter_regex_dict should be a list of form: ",
                 "`list(<table_name>=c(<colname>='<regex>'))`",
-                "\n", "I'm going to try and format your input correctly.")
+                "
+", "I'm going to try and format your input correctly.")
         filter_regex_dict = list(filter_regex_dict)
         names(filter_regex_dict) = table
       }
@@ -134,7 +140,8 @@ cave_view_query <- function(table,
   if (!is.null(select_columns)) {
     if (isTRUE(live == 2) && is.character(select_columns)) {
       warning("When live==2 / timetravel=T select_columns should be a list of form: ",
-              "`list(<table_name>=c('col1', 'col2'))`", "\n",
+              "`list(<table_name>=c('col1', 'col2'))`", "
+",
               "I'm going to try and format your input correctly.")
       select_columns = list(select_columns)
       names(select_columns) = table
@@ -145,8 +152,10 @@ cave_view_query <- function(table,
     pymsg <- reticulate::py_capture_output({
       annotdf <- if (is_view) {
         if (!is.null(timestamp))
-          stop("Sorry! You cannot specify a timestamp when querying a view.\n",
-               "You can specify older timepoints by using unexpired materialisation versions.\n",
+          stop("Sorry! You cannot specify a timestamp when querying a view.
+",
+               "You can specify older timepoints by using unexpired materialisation versions.
+",
                "See https://flywire-forum.slack.com/archives/C01M4LP2Y2D/p1697956174773839 for info.")
         reticulate::py_call(fac$materialize$query_view,
                             view_name = table, materialization_version = version,
@@ -165,7 +174,8 @@ cave_view_query <- function(table,
     annotdfs[[length(annotdfs) + 1]] = annotdf
     limited_query = isTRUE(grepl("Limited query to", pymsg))
     if (limited_query && is.null(limit) && !fetch_all_rows)
-      warning(paste(pymsg, "\nUse fetch_all_rows=T or set an explicit limit to avoid warning!"))
+      warning(paste(pymsg, "
+Use fetch_all_rows=T or set an explicit limit to avoid warning!"))
     else if (!limited_query && nzchar(pymsg)) {
       warning(pymsg)
     }
@@ -181,7 +191,8 @@ cave_view_query <- function(table,
       stop("Sorry I do not know how to time travel dataframes without `pt_supervoxel_id`, `pt_root_id` columns!",
            if (is.null(select_columns))
              ""
-           else "\nPlease review your value of `select_columns`!")
+           else "
+Please review your value of `select_columns`!")
     res$pt_root_id = flywire_updateids(res$pt_root_id, svids = res$pt_supervoxel_id,
                                        timestamp = timestamp2, cache = T, Verbose = F)
   }
@@ -208,7 +219,7 @@ banc_service_account <- function(datastack_name=banc_datastack_name()){
 banc_cave_schema <- function(table_name = NULL, datastack_name = NULL)
 {
   if (is.null(datastack_name))
-    datastack_name = bancr:::banc_datastack_name()
+    datastack_name = banc_datastack_name()
   fac <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
   dsinfo <- fac$info$get_datastack_info()
   tt <- fac$annotation$get_tables()
@@ -228,7 +239,7 @@ banc_cave_schema <- function(table_name = NULL, datastack_name = NULL)
 banc_cave_valid_schemas <- function(datastack_name = NULL)
 {
   if (is.null(datastack_name))
-    datastack_name = bancr:::banc_datastack_name()
+    datastack_name = banc_datastack_name()
   fac <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
 
   schema_types <- fac$schema$get_schemas()
@@ -245,7 +256,7 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
                                                  table_name = NULL, datastack_name = NULL, use_admin_creds = FALSE)
 {
   if (is.null(datastack_name))
-    datastack_name = bancr:::banc_datastack_name()
+    datastack_name = banc_datastack_name()
 
   # check that table to write to exists
   all_tables <- banc_cave_tables(datastack_name = datastack_name)
@@ -278,7 +289,7 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
   }
 
   # validate positions and convert to dataframe of X,Y,Z
-  positions <- bancr:::banc_validate_positions(positions = data$pt_position,
+  positions <- banc_validate_positions(positions = data$pt_position,
                                                units = units)
 
   # check for valid IDs; remove rows where pt_position corresponds to invalid ID
@@ -302,7 +313,7 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
 
   # instantiate CAVE client
   if (use_admin_creds) {
-    client = bancr:::banc_service_account(datastack_name)
+    client = banc_service_account(datastack_name)
   }
   else {
     client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
@@ -311,6 +322,9 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
   stage <- client$annotation$stage_annotations(table_name)
 
   result_ind <- integer(0)
+  if (!requireNamespace("progress", quietly = TRUE)) {
+    stop("Package 'progress' is required for this function. Please install it with: install.packages('progress')")
+  }
   pb <- progress::progress_bar$new(format = "[:bar] :percent | ETA: :eta | :current/:total rows | Elapsed: :elapsedfull",
                                    total = nrow(data), clear = FALSE, width = 80)
   for (i in 1:nrow(data)) {
@@ -332,7 +346,8 @@ banc_annotate_bound_double_tag_user <- function (data, units = c("raw", "nm"),
   annotations <- banc_cave_query(table_name, live = 2)
   annotations.new <- annotations %>%
     dplyr::filter(id %in% result_ind)
-  cat("added ", nrow(annotations.new), "new annotations to ", table_name, "\n")
+  cat("added ", nrow(annotations.new), "new annotations to ", table_name, "
+")
   return(annotations.new)
 }
 
@@ -345,7 +360,7 @@ banc_cave_new_table <- function(table_name, schema_name, description = NULL,
                                 user_id = NULL, datastack_name = NULL)
 {
   if (is.null(datastack_name))
-    datastack_name = bancr:::banc_datastack_name()
+    datastack_name = banc_datastack_name()
 
   # check that table_name does not already exist
   all_tables <- banc_cave_tables(datastack_name = datastack_name)
@@ -386,7 +401,8 @@ banc_cave_new_table <- function(table_name, schema_name, description = NULL,
   # check that table was created
   all_tables <- banc_cave_tables(datastack_name = datastack_name)
   if ((table_name %in% all_tables)) {
-    cat(table_name, "created \n")
+    cat(table_name, "created 
+")
   }
 }
 
@@ -396,7 +412,7 @@ banc_cave_new_table <- function(table_name, schema_name, description = NULL,
 banc_delete_cave_table <- function(table_name = NULL, datastack_name = NULL)
 {
   if (is.null(datastack_name))
-    datastack_name = bancr:::banc_datastack_name()
+    datastack_name = banc_datastack_name()
 
   # check that table to delete to exists
   all_tables <- banc_cave_tables(datastack_name = datastack_name)
@@ -415,7 +431,8 @@ banc_delete_cave_table <- function(table_name = NULL, datastack_name = NULL)
 
     if (second_confirm == table_name) {
       # Execute the deletion code here
-      cat(sprintf("Deleting table '%s'...\n", table_name))
+      cat(sprintf("Deleting table '%s'...
+", table_name))
 
       client <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
 
@@ -423,16 +440,20 @@ banc_delete_cave_table <- function(table_name = NULL, datastack_name = NULL)
 
       all_tables <- banc_cave_tables(datastack_name = datastack_name)
       if (!(table_name %in% all_tables)) {
-        cat("Table deleted successfully.\n")
+        cat("Table deleted successfully.
+")
       }
       else {
-        cat("Table marked for deletion.\n")
+        cat("Table marked for deletion.
+")
       }
     } else {
-      cat("Table name confirmation failed. Deletion cancelled.\n")
+      cat("Table name confirmation failed. Deletion cancelled.
+")
     }
   } else {
-    cat("Deletion cancelled.\n")
+    cat("Deletion cancelled.
+")
   }
 }
 

@@ -32,7 +32,8 @@ banc_scene <- function(ids=NULL,
   parts=unlist(strsplit(url, "?", fixed = T))
   json=try(fafbseg::flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
   if(inherits(json, 'try-error')) {
-    badtoken=paste0("You have a token but it doesn't seem to be authorised for banc.\n",
+    badtoken=paste0("You have a token but it doesn't seem to be authorised for banc.
+",
                     "Have you definitely used `banc_set_token()` to make a token for the banc dataset?")
     if(grepl(500, json))
       stop("There seems to be a (temporary?) problem with the zetta server!")
@@ -142,7 +143,7 @@ bancsee <- function(banc_ids = NULL,
   # public
   url <- sub("#!middleauth+", "?", "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4773219390193664", fixed = T)
   parts <- unlist(strsplit(url, "?", fixed = T))
-  json <- try(fafbseg::flywire_fetch(parts[2], token = bancr:::banc_token(),
+  json <- try(fafbseg::flywire_fetch(parts[2], token = banc_token(),
                                     return = "text", cache = TRUE))
   url.public <- ngl_encode_url(json, baseurl = parts[1])
   url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
@@ -255,6 +256,9 @@ banc_shorturl <- function (x,
   else {
     stopifnot(is.character(x))
     if (length(x) > 1) {
+      if (!requireNamespace("pbapply", quietly = TRUE)) {
+        stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+      }
       res = pbapply::pbsapply(x,
                               banc_shorturl,
                               baseurl = baseurl,

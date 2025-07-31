@@ -1,14 +1,14 @@
 #' Find the root identifier of a banc neuron
 #'
 #' @inheritParams fafbseg::flywire_rootid
-#' @param ... Additional arguments passed to \code{pbapply::pbsapply} and
+#' @param ... Additional arguments passed to the underlying functions and
 #'   eventually to Python \code{cv$CloudVolume} object.
 #' @return A vector of root ids (by default character)
 #' @export
 #' @family banc-ids
 #' @seealso \code{\link{flywire_rootid}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' banc_rootid("73186243730767724")
 #' }
 banc_rootid <- function(x,
@@ -17,7 +17,7 @@ banc_rootid <- function(x,
                         timestamp = NULL,
                         ...) {
   if(!is.null(version)){
-    timestamp <- with_banc(fafbseg:::flywire_timestamp(version = version,
+    timestamp <- with_banc(fafbseg::flywire_timestamp(version = version,
                                                       convert = FALSE))
   }
   rid = flywire_rootid(
@@ -108,13 +108,23 @@ banc_xyz2id <- function(xyz,
   if (isTRUE(rawcoords)) {
     xyz <- scale(xyz, scale = 1/voxdims, center = FALSE)
   }
+  if (!requireNamespace("checkmate", quietly = TRUE)) {
+    stop("Package 'checkmate' is required for this function. Please install it with: install.packages('checkmate')")
+  }
   checkmate::assertNumeric(xyz)
   if (method %in% c("spine")) {
     res <- banc_supervoxels(xyz, voxdims=voxdims)
   }
   else {
     cv <- banc_cloudvolume()
-    pycode <- sprintf("\nfrom cloudvolume import Vec\n\ndef py_flywire_xyz2id(cv, xyz, agglomerate):\n  pt = Vec(*xyz) // cv.meta.resolution(0)\n  img = cv.download_point(pt, mip=0, size=1, agglomerate=agglomerate)\n  return str(img[0,0,0,0])\n")
+    pycode <- sprintf("
+from cloudvolume import Vec
+
+def py_flywire_xyz2id(cv, xyz, agglomerate):
+  pt = Vec(*xyz) // cv.meta.resolution(0)
+  img = cv.download_point(pt, mip=0, size=1, agglomerate=agglomerate)
+  return str(img[0,0,0,0])
+")
     pydict <- reticulate::py_run_string(pycode)
     safexyz2id <- function(pt) {
       tryCatch(pydict$py_flywire_xyz2id(cv, pt, agglomerate = root &&
@@ -122,6 +132,9 @@ banc_xyz2id <- function(xyz,
                                             warning(e)
                                             NA_character_
                                           })
+    }
+    if (!requireNamespace("pbapply", quietly = TRUE)) {
+      stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
     }
     res = pbapply::pbapply(xyz, 1, safexyz2id, ...)
   }
@@ -218,7 +231,8 @@ banc_updateids <- function(x,
     # Use CAVE tables to join by supervoxel_id
     if(use.cave&!is.null(supervoxel.column)){
       if(supervoxel.column%in%colnames(x)){
-        cat('joining to CAVE tables ...\n')
+        cat('joining to CAVE tables ...
+')
         proofed <- banc_backbone_proofread() %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
         info <- banc_cell_info()  %>% dplyr::distinct(pt_root_id, pt_supervoxel_id)
         nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = root_id, pt_supervoxel_id)
@@ -247,7 +261,11 @@ banc_updateids <- function(x,
       if(all(c(position.column,supervoxel.column)%in%colnames(x))){
         no.sp <- is.na(x[[supervoxel.column]])|x[[supervoxel.column]]=="0"
         if(sum(no.sp)){
-          cat('determining missing supervoxel_ids ...\n')
+          cat('determining missing supervoxel_ids ...
+')
+          if (!requireNamespace("pbapply", quietly = TRUE)) {
+            stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+          }
           x[no.sp,][[supervoxel.column]] <- unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
             tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = FALSE, ...)),
                      error = function(e) NA)
@@ -261,13 +279,15 @@ banc_updateids <- function(x,
       root.column <- "root_id"
     }
     if(root.column%in%colnames(x)){
-      cat('determining old root_ids...\n')
+      cat('determining old root_ids...
+')
       old <- !banc_islatest(x[[root.column]], ...)
     }else{
       old <- rep(TRUE,nrow(x))
     }
     old[is.na(old)] <- TRUE
-    message("old root_ids: ",sum(old),"\n")
+    message("old root_ids: ",sum(old),"
+")
     if(!sum(old)){
       return(x)
     }
@@ -275,7 +295,11 @@ banc_updateids <- function(x,
     # update based on supervoxels
     if(!is.null(supervoxel.column)){
       if(supervoxel.column%in%colnames(x)){
-        cat('updating root_ids with a supervoxel_id...\n')
+        cat('updating root_ids with a supervoxel_id...
+')
+        if (!requireNamespace("pbapply", quietly = TRUE)) {
+          stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+        }
         update <- unname(pbapply::pbsapply(x[old,][[supervoxel.column]], banc_rootid, ...))
         bad <- is.na(update)|update=="0"
         update <- update[!bad]
@@ -288,7 +312,11 @@ banc_updateids <- function(x,
     # update based on position
     if(!is.null(position.column)){
       if(any(position.column%in%colnames(x)) && sum(old)){
-        cat('updating root_ids with a position ...\n')
+        cat('updating root_ids with a position ...
+')
+        if (!requireNamespace("pbapply", quietly = TRUE)) {
+          stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+        }
         update <- unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
           tryCatch(quiet_function(banc_xyz2id(row,rawcoords = TRUE, root = TRUE, ...)),
                    error = function(e) NA)
@@ -303,7 +331,8 @@ banc_updateids <- function(x,
 
     # update based on root Ids
     if(root.column%in%colnames(x) && sum(old)){
-      cat('updating root_ids without a supervoxel_id...\n')
+      cat('updating root_ids without a supervoxel_id...
+')
       update <- banc_latestid(x[old,][[root.column]], ...)
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
@@ -314,9 +343,13 @@ banc_updateids <- function(x,
 
   }else{
     if(serial){
+      if (!requireNamespace("pbapply", quietly = TRUE)) {
+        stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
+      }
       x <- pbapply::pbsapply(x, function(x) try(quiet_function(banc_updateids, serial = FALSE)))
     }else{
-      cat('updating root_ids directly ...\n')
+      cat('updating root_ids directly ...
+')
       old <- !banc_islatest(x, ...)
       old[is.na(old)] <- TRUE
       update <- banc_latestid(x[old], ...)
@@ -329,7 +362,8 @@ banc_updateids <- function(x,
 
   # return
   if(sum(old)){
-    warning("failed to update: ", sum(old),"\n")
+    warning("failed to update: ", sum(old),"
+")
   }
   x
 }
@@ -422,8 +456,8 @@ banc_ids <- function(x, integer64=NA) {
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' banc_cellid_from_segid(banc_latestid("720575941626035769"))
+#' \dontrun{
+#'  banc_cellid_from_segid(banc_latestid("720575941626035769"))
 #' }
 banc_cellid_from_segid <- function(rootids=NULL, timestamp=NULL, version=NULL, cellid_table = NULL, rval=c("ids", 'data.frame')) {
   rval=match.arg(rval)
@@ -454,7 +488,7 @@ banc_cellid_from_segid <- function(rootids=NULL, timestamp=NULL, version=NULL, c
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' banc_cellid_from_segid(banc_latestid("720575941480769421"))
 #' }
 banc_segid_from_cellid <- function(cellids=NULL, timestamp=NULL, version=NULL, rval=c("ids", 'data.frame'), integer64=FALSE, cellid_table = NULL) {
@@ -462,6 +496,9 @@ banc_segid_from_cellid <- function(cellids=NULL, timestamp=NULL, version=NULL, r
   if(is.null(cellid_table))
     cellid_table=banc_cellid_table()
   if(!is.null(cellids)) {
+    if (!requireNamespace("checkmate", quietly = TRUE)) {
+      stop("Package 'checkmate' is required for this function. Please install it with: install.packages('checkmate')")
+    }
     cellids <- checkmate::assert_integerish(cellids, coerce = T)
     idlist=list(id=cellids)
   } else idlist=NULL
@@ -483,12 +520,20 @@ banc_segid_from_cellid <- function(cellids=NULL, timestamp=NULL, version=NULL, r
 
 # private function to return the latest cellids table
 # this is a configurable option in the python package
-banc_cellid_table <- memoise::memoise(function(fac=banc_cave_client()) {
+banc_cellid_table <- function(fac=banc_cave_client()) {
+  if (requireNamespace("memoise", quietly = TRUE)) {
+    return(memoise::memoise(banc_cellid_table_impl)(fac))
+  } else {
+    return(banc_cellid_table_impl(fac))
+  }
+}
+
+banc_cellid_table_impl <- function(fac=banc_cave_client()) {
   tables=fac$materialize$tables
   tablenames=names(tables)
   seltable=rev(sort(grep("^cell_info", tablenames, value = T)))[1]
   return(seltable)
-})
+}
 
 # hideen
 banc_nucelus_id_to_rootid <- function(nucleus_ids){

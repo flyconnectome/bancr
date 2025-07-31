@@ -35,19 +35,10 @@ Imports:
     httr,
     httr2,
     jsonlite,
-    pbapply,
     dplyr,
     magrittr,
-    glue,
-    DBI,
-    RSQLite,
-    readr,
-    checkmate,
     utils,
-    reticulate,
-    ggplot2 (>= 3.5),
-    stringr,
-    memoise
+    reticulate
 Suggests: 
     testthat (>= 3.0.0),
     readobj,
@@ -64,7 +55,18 @@ Suggests:
     nabor,
     fs,
     purrr,
-    plyr
+    plyr,
+    progress,
+    tidyr,
+    readr,
+    checkmate,
+    memoise,
+    glue,
+    pbapply,
+    stringr,
+    ggplot2 (>= 3.5),
+    RSQLite,
+    DBI
 Remotes: 
     natverse/nat,
     natverse/fafbseg,

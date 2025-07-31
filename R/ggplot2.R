@@ -73,8 +73,12 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 
   # Get 3D spatial points
   region <- match.arg(region)
-  check_package_available('ggplot2')
-  check_package_available('ggpubr')
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("Package 'ggplot2' is required for this function. Please install it with: install.packages('ggplot2')")
+  }
+  if (!requireNamespace("ggpubr", quietly = TRUE)) {
+    stop("Package 'ggpubr' is required for this function. Please install it with: install.packages('ggpubr')")
+  }
   glist <- list()
   title.col <- "black"
   if(is.null(banc_brain_neuropil)) {banc_brain_neuropil <- bancr::banc_brain_neuropil.surf}

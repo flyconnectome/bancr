@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-bancr
+bancr <img src="man/figures/logo.png" align="right" height="139" alt="" />
 ===========
 
 ## An Important Connectome Dataset

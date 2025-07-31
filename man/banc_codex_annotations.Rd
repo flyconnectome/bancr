@@ -4,16 +4,16 @@
 \alias{banc_codex_annotations}
 \title{Read BANC-FlyWireCodex annotation table}
 \usage{
-banc_codex_annotations(live = TRUE, ...)
+banc_codex_annotations(rootids = NULL, live = TRUE, ...)
 }
 \arguments{
-\item{live}{logical, get the most recent data or pull from the latest materialisation}
-
-\item{...}{method passed to \code{\link{banc_cave_query}}.}
-
 \item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
 to pass in data.frames, BANC URLs or simple ids.}
+
+\item{live}{logical, get the most recent data or pull from the latest materialisation}
+
+\item{...}{method passed to \code{\link{banc_cave_query}}.}
 }
 \value{
 A \code{data.frame} describing that should be similar to what you find for BANC

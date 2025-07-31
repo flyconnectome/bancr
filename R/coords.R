@@ -12,9 +12,17 @@
 #'
 #' @examples
 #' banc_voxdims()
-banc_voxdims <- memoise::memoise(function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']]) {
+banc_voxdims <- function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']]) {
+  if (requireNamespace("memoise", quietly = TRUE)) {
+    return(memoise::memoise(banc_voxdims_impl)(url))
+  } else {
+    return(banc_voxdims_impl(url))
+  }
+}
+
+banc_voxdims_impl <- function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']]) {
   fafbseg::flywire_voxdims(url)
-})
+}
 # 4  4 45
 
 #' @param x 3D coordinates in any form compatible with \code{\link{xyzmatrix}}
