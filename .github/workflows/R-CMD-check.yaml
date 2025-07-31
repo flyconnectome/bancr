@@ -48,6 +48,7 @@ jobs:
       - name: Install fafbseg + python
         run: |
           pak::local_install()
+          library(bancr)
           library(fafbseg)
           simple_python()
           simple_python('none', pkgs='cloud-volume~=8.32.1')
