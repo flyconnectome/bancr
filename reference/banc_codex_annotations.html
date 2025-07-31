@@ -49,25 +49,25 @@ cell type classifications for the BANC connectome.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_codex_annotations</span><span class="op">(</span>live <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_codex_annotations</span><span class="op">(</span>rootids <span class="op">=</span> <span class="cn">NULL</span>, live <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-live">live<a class="anchor" aria-label="anchor" href="#arg-live"></a></dt>
+<dl><dt id="arg-rootids">rootids<a class="anchor" aria-label="anchor" href="#arg-rootids"></a></dt>
+<dd><p>Character vector specifying one or more BANC rootids. As a
+convenience this argument is passed to <code><a href="banc_ids.html">banc_ids</a></code> allowing you
+to pass in data.frames, BANC URLs or simple ids.</p></dd>
+
+
+<dt id="arg-live">live<a class="anchor" aria-label="anchor" href="#arg-live"></a></dt>
 <dd><p>logical, get the most recent data or pull from the latest materialisation</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>method passed to <code><a href="banc_cave_query.html">banc_cave_query</a></code>.</p></dd>
-
-
-<dt id="arg-rootids">rootids<a class="anchor" aria-label="anchor" href="#arg-rootids"></a></dt>
-<dd><p>Character vector specifying one or more BANC rootids. As a
-convenience this argument is passed to <code><a href="banc_ids.html">banc_ids</a></code> allowing you
-to pass in data.frames, BANC URLs or simple ids.</p></dd>
 
 </dl></div>
     <div class="section level2">
