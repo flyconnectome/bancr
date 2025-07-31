@@ -3,7 +3,7 @@
 #' Returns synaptically connected partners for specified neurons. Understanding 
 #' synaptic partnerships is crucial for analyzing neural circuits in the Brain And 
 #' Nerve Cord (BANC) connectome, revealing how distributed control architecture 
-#' coordinates behavior across brain and ventral nerve cord regions.
+#' coordinates behaviour across brain and ventral nerve cord regions.
 #'
 #' @details note that the rootids you pass in must be up to date. See example.
 #'

@@ -96,7 +96,7 @@ banc_cave_views <- function(datastack_name = NULL,
 #' \code{banc_edgelist} returns a data frame of neuron-neuron connections where 
 #' the pre (presynaptic) neuron is upstream of the post (postsynaptic) neuron. 
 #' This edgelist contains synaptic connectivity data crucial for understanding 
-#' distributed neural control and behavior-centric neural modules across the 
+#' distributed neural control and behaviour-centric neural modules across the 
 #' brain-VNC boundary.
 #' @export
 banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
@@ -212,8 +212,8 @@ banc_nuclei <- function(rootids = NULL,
 
 #' @rdname banc_cave_tables
 #' @details
-#' \code{banc_cell_info} accesses the cell_info CAVE table containing non-centralized 
-#' annotations from the research community for connectome neurons. These annotations 
+#' \code{banc_cell_info} accesses the cell_info CAVE table containing non-centralised 
+#' annotations from the research community for connectome neurones. These annotations 
 #' represent diverse contributions from researchers studying specific neural circuits 
 #' and cell types in the BANC dataset.
 #' @export
@@ -677,8 +677,8 @@ banc_deannotate_backbone_proofread <- function(positions,
 
 #' Read BANC-FlyWireCodex annotation table
 #'
-#' Provides access to centralized cell type annotations from the BANC core team, 
-#' which are the official annotations available on FlyWireCodex. These standardized 
+#' Provides access to centralised cell type annotations from the BANC core team, 
+#' which are the official annotations available on FlyWireCodex. These standardised 
 #' annotations ensure consistency across the dataset and serve as the authoritative 
 #' cell type classifications for the BANC connectome.
 #'
@@ -692,10 +692,10 @@ banc_deannotate_backbone_proofread <- function(positions,
 #' in FlyWireCodex.
 #'
 #' @details
-#' This function accesses centralized cell type annotations curated by the BANC core 
-#' team, in contrast to \code{\link{banc_cell_info}} which contains non-centralized 
-#' annotations from the broader research community. The centralized annotations provide 
-#' standardized cell type classifications that are displayed on FlyWireCodex and serve 
+#' This function accesses centralised cell type annotations curated by the BANC core 
+#' team, in contrast to \code{\link{banc_cell_info}} which contains non-centralised 
+#' annotations from the broader research community. The centralised annotations provide 
+#' standardised cell type classifications that are displayed on FlyWireCodex and serve 
 #' as the official reference for BANC cell types.
 #'
 #' @seealso \code{\link{banc_cave_tables}}, \code{\link{banc_cell_info}}

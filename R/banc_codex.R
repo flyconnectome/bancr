@@ -5,7 +5,7 @@
 #' users to visualize neural network diagrams and explore connectivity patterns 
 #' in the Brain And Nerve Cord (BANC) connectome. The BANC dataset represents 
 #' the first unified brain-and-nerve-cord connectome of a limbed animal, revealing 
-#' distributed control architecture and behavior-centric neural modules across 
+#' distributed control architecture and behaviour-centric neural modules across 
 #' the entire central nervous system.
 #'
 #' @param cell.types Character vector of cell type names to include in the network.
@@ -103,7 +103,7 @@ banc_codex_network <- function(cell.types = NULL,
 #'
 #' @param cell.types Character vector of cell type names to search for.
 #'   Cell types represent functionally and morphologically distinct neuron classes
-#'   in the BANC connectome (e.g., "DNa02" for specific descending neurons).
+#'   in the BANC connectome (e.g., "DNa02" for specific descending neurones).
 #' @param ids Character vector of neuron root IDs to search for.
 #'   These are unique identifiers for individual neurons in the dataset.
 #' @param codex.url Character string specifying the base FlyWireCodex search URL.

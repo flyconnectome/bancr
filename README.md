@@ -17,7 +17,7 @@ The BANC connectome is the first complete connectome to include both brain and v
 
 - **Distributed control architecture**: Motor control involves both brain circuits and local VNC networks working in parallel
 - **Local feedback loops**: VNC circuits can modulate sensory information before it reaches the brain
-- **Behavior-centric neural modules**: Functionally related circuits are organized across brain-VNC boundaries
+- **Behaviour-centric neural modules**: Functionally related circuits are organised across brain-VNC boundaries
 - **Descending and ascending pathways**: Complete characterization of information flow between brain and nerve cord
 
 ### Key Features
@@ -32,8 +32,8 @@ The BANC connectome is the first complete connectome to include both brain and v
 This dataset enables important research into:
 - **Sensorimotor integration**: How sensory information is processed and translated into motor commands
 - **Distributed neural computation**: How the brain and nerve cord share computational load
-- **Behavioral circuit analysis**: Mapping complete neural pathways underlying specific behaviors
-- **Comparative connectomics**: Understanding how nervous system organization relates to behavioral complexity
+- **Behavioural circuit analysis**: Mapping complete neural pathways underlying specific behaviours
+- **Comparative connectomics**: Understanding how nervous system organisation relates to behavioural complexity
 
 ## Quick Start Examples
 
@@ -55,6 +55,7 @@ dna02_neurons <- annotations %>%
 dna02_ids <- dna02_neurons$pt_root_id
 
 # Get connectivity data for these neurons
+## This is a large download, may take ~10-20 mins
 el <- banc_edgelist()
 
 # Subset connectivity by our neurons of interest
@@ -74,25 +75,25 @@ ggplot(dna02_connections, aes(x = n)) +
 
 The BANC dataset provides two complementary annotation systems for neuron classification:
 
-### Centralized Annotations
-**`banc_codex_annotations()`** provides access to standardized cell type annotations curated by the BANC core team. These official classifications are:
+### Centralised Annotations
+**`banc_codex_annotations()`** provides access to standardised cell type annotations curated by the BANC core team. These official classifications are:
 - Displayed on [FlyWireCodex](https://codex.flywire.ai/?dataset=banc)
-- Standardized and consistent across the dataset
+- Standardised and consistent across the dataset
 - Serve as the authoritative reference for BANC cell types
-- Ideal for comparative studies and standardized analyses
+- Ideal for comparative studies and standardised analyses
 
 ### Community Annotations  
-**`banc_cell_info()`** accesses non-centralized annotations from the broader research community. These annotations:
+**`banc_cell_info()`** accesses non-centralised annotations from the broader research community. These annotations:
 - Represent diverse contributions from researchers studying specific circuits
 - Provide specialized knowledge about particular cell types
 - Offer detailed insights from domain experts
-- Complement the standardized classifications with research-specific perspectives
+- Complement the standardised classifications with research-specific perspectives
 
-Both systems work together to provide comprehensive neuron characterization, combining standardized reference classifications with specialized research insights.
+Both systems work together to provide comprehensive neuron characterisation, combining standardised reference classifications with specialised research insights.
 
 ## BANC Metadata
 
-The BANC connectome uses a comprehensive controlled vocabulary and annotation taxonomy to ensure consistent classification across all ~160,000 neurons. This standardized system enables systematic analysis of neural circuits and facilitates data integration across research groups.
+The BANC connectome uses a comprehensive controlled vocabulary and annotation taxonomy to ensure consistent classification across all ~160,000 neurons. This standardised system enables systematic analysis of neural circuits and facilitates data integration across research groups.
 
 ### Annotation Hierarchy
 
@@ -130,9 +131,9 @@ The BANC annotation system employs a hierarchical classification structure:
 
 This systematic annotation framework enables:
 - **Consistent terminology** across all BANC analyses
-- **Hierarchical organization** from broad categories to specific cell types
+- **Hierarchical organisation** from broad categories to specific cell types
 - **Cross-dataset integration** with other *Drosophila* connectomes (FAFB, MANC)
-- **Multi-modal characterization** combining anatomy, function, and molecular properties
+- **Multi-modal characterisation** combining anatomy, function, and molecular properties
 
 For the complete annotation taxonomy with all (except all cell_type) terms and detailed descriptions, see [`data-raw/banc_codex_annotations_system.md`](data-raw/banc_codex_annotations_system.md).
 

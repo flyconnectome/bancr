@@ -71,8 +71,8 @@ banc_scene <- function(ids=NULL,
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
 #' @param nuclei_ids A vector of nuclei IDs for the BANC dataset. Default is NULL.
 #' @param open Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.
-#' @param banc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are cyan-purple.
-#' @param fafb.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are red hues.
+#' @param banc.cols Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are cyan-purple.
+#' @param fafb.cols Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are red hues.
 #' @param hemibrain.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.
 #' @param hemibrain.mirrored.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.
 #' @param manc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.
