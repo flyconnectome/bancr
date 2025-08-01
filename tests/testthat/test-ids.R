@@ -10,6 +10,10 @@ test_that("banc_xyz2id works", {
 })
 
 test_that("banc_islatest works", {
+  skip_if_not_installed("reticulate")
+  skip_if(!reticulate::py_module_available("caveclient"), "caveclient not available")
+  skip_on_ci() # Skip on continuous integration 
+  
   expect_false(banc_islatest("720575941480769421"))
   expect_false(isTRUE(all.equal(
     banc_latestid("720575941480769421"), "720575941480769421")))
