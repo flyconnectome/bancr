@@ -37,7 +37,7 @@ This dataset enables important research into:
 
 ## Quick Start Examples
 
-Here's how to get started with analyzing descending neurons (DNs) that connect brain to nerve cord:
+Here's how to get started with analyzing descending neurons (DNs) that connect brain to nerve cord in the fly connectome:
 
 ```r
 library(bancr)

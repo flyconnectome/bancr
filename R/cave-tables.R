@@ -737,8 +737,10 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
     # If rootids are specified, query for those specific rootids
     rootids <- banc_ids(rootids)
     if (length(rootids) < 200) {
-      codex_annotations <- banc_cave_query(table_name, live = live,
-                                          filter_in_dict = list(pt_root_id = rootids), ...)
+      codex_annotations <- banc_cave_query(table_name,
+                                           live = live,
+                                           filter_in_dict = list(pt_root_id = rootids),
+                                           ...)
     } else {
       # For large numbers of rootids, get all data and filter
       codex_annotations_part_1 <- banc_cave_query(table_name, live = live,
@@ -760,6 +762,12 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
                                                 offset = 500000, limit = 350000, ...)
     codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
                                                 offset = 850000, ...)
+    codex_annotations_part_1 <- codex_annotations_part_1 %>%
+      dplyr::mutate(cell_type = as.character(cell_type))
+    codex_annotations_part_2 <- codex_annotations_part_2 %>%
+      dplyr::mutate(cell_type = as.character(cell_type))
+    codex_annotations_part_3 <- codex_annotations_part_3 %>%
+      dplyr::mutate(cell_type = as.character(cell_type))
     codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
                                           codex_annotations_part_2,
                                           codex_annotations_part_3)
