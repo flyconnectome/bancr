@@ -1,8 +1,8 @@
 #' Summarise the connectivity of banc neurons
 #'
-#' Returns synaptically connected partners for specified neurons. Understanding 
-#' synaptic partnerships is crucial for analyzing neural circuits in the Brain And 
-#' Nerve Cord (BANC) connectome, revealing how distributed control architecture 
+#' Returns synaptically connected partners for specified neurons. Understanding
+#' synaptic partnerships is crucial for analyzing neural circuits in the Brain And
+#' Nerve Cord (BANC) connectome, revealing how distributed control architecture
 #' coordinates behaviour across brain and ventral nerve cord regions.
 #'
 #' @details note that the rootids you pass in must be up to date. See example.
@@ -32,16 +32,16 @@
 #'
 #' # Research application: Analyze descending neuron control circuits
 #' library(dplyr)
-#' 
+#'
 #' # Get DNa02 descending neurons that control walking behavior
 #' dna02_annotations <- banc_codex_annotations() %>%
 #'   filter(cell_type == "DNa02")
 #' dna02_id <- dna02_annotations$pt_root_id[1]
-#' 
+#'
 #' # Find their downstream targets in the VNC
 #' dna02_outputs <- banc_partner_summary(dna02_id, partners='outputs') %>%
 #'   slice_max(weight, n = 10)
-#' 
+#'
 #' # Visualize the circuit in neuroglancer
 #' banc_partner_summary(sample_id, partners='inputs') %>%
 #'   slice_max(weight, n = 20) %>%
@@ -64,7 +64,6 @@ banc_partner_summary <- function(rootids,
       rootids,
       threshold = threshold,
       partners=partners,
-      method = "cave",
       datastack_name = datastack_name,
       remove_autapses = remove_autapses,
       cleft.threshold = cleft.threshold,

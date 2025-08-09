@@ -806,3 +806,11 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
 
   return(codex_annotations_flat_table)
 }
+
+#' @rdname banc_cave_tables
+#' @export
+banc_version <- function() {
+  bcc=banc_cave_client()
+  ver=bcc$materialize$version
+  ver
+}

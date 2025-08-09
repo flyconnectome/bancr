@@ -1,7 +1,7 @@
 Type: Package
 Package: bancr
 Title: R Client Access to the Brain And Nerve Cord (BANC) Dataset
-Version: 0.1.0
+Version: 0.2.0
 Date: 2024-07-11
 Authors@R: 
     c(person(given = "Alexander",

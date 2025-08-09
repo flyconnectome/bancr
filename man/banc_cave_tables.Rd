@@ -12,6 +12,7 @@
 \alias{banc_peripheral_nerves}
 \alias{banc_backbone_proofread}
 \alias{banc_nt_prediction}
+\alias{banc_version}
 \title{Read BANC CAVE-tables, good sources of metadata}
 \usage{
 banc_cave_tables(datastack_name = NULL, select = NULL)
@@ -60,6 +61,8 @@ banc_nt_prediction(
   rawcoords = TRUE,
   ...
 )
+
+banc_version()
 }
 \arguments{
 \item{datastack_name}{Defaults to "brain_and_nerve_cord". See https://global.daf-apis.com/info/ for other options.}

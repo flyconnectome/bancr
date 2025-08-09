@@ -410,6 +410,20 @@ banc_ids <- function(x, integer64=NA) {
   else x
 }
 
+# extract numeric ids but pass on other character vectors such as queries
+# always returns bit64 so results are easy to spot
+extract_ids <- function(x) {
+  if(is.character(x) && length(x)==1 && !fafbseg:::valid_id(x, na.ok = T) && !grepl("http", x) && grepl("^\\s*(([a-z:]{1,3}){0,1}[0-9,\\s]+)+$",x, perl=T)) {
+    sx=gsub("[a-z:,\\s]+"," ", x, perl = T)
+    x=scan(text = trimws(sx), sep = ' ', what = '', quiet = T)
+    x <- id2int64(x)
+  }
+  if(is.numeric(x) || is.integer(x)) {
+    x <- id2int64(x)
+  }
+  x
+}
+
 #' Convert between BANC cell ids and root ids
 #'
 #' @description Converts between BANC cell ids (should survive most edits) and

@@ -57,7 +57,7 @@ get_cave_table_data <- function(table, rootids = NULL, ...){
 
 # hidden
 cave_view_query <- function(table,
-                            datastack_name = getOption("fafbseg.cave.datastack_name","flywire_fafb_production"),
+                            datastack_name = banc_datastack_name(),
                             version = NULL,
                             timestamp = NULL,
                             live = is.null(version),
@@ -74,7 +74,7 @@ cave_view_query <- function(table,
   if (isFALSE(live) && is.null(version)) {
     warning("Defaulting to latest materialisation version since live=FALSE",
             "Specify `version='latest' instead to avoid this warning")
-    version = fafbseg:::flywire_version("latest", datastack_name = datastack_name)
+    version = with_banc(fafbseg:::flywire_version("latest", datastack_name = datastack_name))
   }
   if (!is.null(timestamp) && !is.null(version))
     stop("You can only supply one of timestamp and materialization version")
@@ -87,9 +87,9 @@ cave_view_query <- function(table,
   if (!is.null(limit))
     limit = checkmate::asInt(limit, lower = 0L)
   is_view = table %in% fafbseg:::cave_views(fac)
-  version = fafbseg:::flywire_version(version, datastack_name = datastack_name)
+  version = with_banc(fafbseg:::flywire_version(version, datastack_name = datastack_name))
   if (!is.null(version)) {
-    available = version %in% fafbseg:::flywire_version("available", datastack_name = datastack_name)
+    available = version %in% with_banc(fafbseg:::flywire_version("available", datastack_name = datastack_name))
     if (!available) {
       if (is_view)
         stop("Sorry! Views only work with unexpired materialisation versions.",
@@ -102,11 +102,11 @@ cave_view_query <- function(table,
       version = NULL
     }
   }
-  now = fafbseg::flywire_timestamp(timestamp = "now", convert = FALSE)
+  now = with_banc(fafbseg::flywire_timestamp(timestamp = "now", convert = FALSE))
   if(timetravel) {
-    timestamp2 = fafbseg::flywire_timestamp(version,
+    timestamp2 = with_banc(fafbseg::flywire_timestamp(version,
                                              timestamp = timestamp,
-                                             datastack_name = datastack_name)
+                                             datastack_name = datastack_name))
     timestamp = now
     version = NULL
     live = 2L
@@ -191,8 +191,8 @@ Use fetch_all_rows=T or set an explicit limit to avoid warning!"))
              ""
            else "
 Please review your value of `select_columns`!")
-    res$pt_root_id = flywire_updateids(res$pt_root_id, svids = res$pt_supervoxel_id,
-                                       timestamp = timestamp2, cache = T, Verbose = F)
+    res$pt_root_id = with_banc(flywire_updateids(res$pt_root_id, svids = res$pt_supervoxel_id,
+                                       timestamp = timestamp2, cache = T, Verbose = F))
   }
   res
 }
