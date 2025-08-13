@@ -231,8 +231,7 @@ banc_updateids <- function(x,
     # Use CAVE tables to join by supervoxel_id
     if(use.cave&!is.null(supervoxel.column)){
       if(supervoxel.column%in%colnames(x)){
-        cat('joining to CAVE tables ...
-')
+        cat('joining to CAVE tables ...')
         proofed <- banc_backbone_proofread() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
         info <- banc_cell_info()  %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
         nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = .data$root_id, .data$pt_supervoxel_id)
@@ -261,15 +260,14 @@ banc_updateids <- function(x,
       if(all(c(position.column,supervoxel.column)%in%colnames(x))){
         no.sp <- is.na(x[[supervoxel.column]])|x[[supervoxel.column]]=="0"
         if(sum(no.sp)){
-          cat('determining missing supervoxel_ids ...
-')
+          cat('determining missing supervoxel_ids ...')
           if (!requireNamespace("pbapply", quietly = TRUE)) {
             stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
           }
-          x[no.sp,][[supervoxel.column]] <- unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
-            tryCatch(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = FALSE, ...),
+          x[no.sp,][[supervoxel.column]] <- unlist(unname(pbapply::pbsapply(x[no.sp,][[position.column]], function(row){
+            tryCatch(nullToNA(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = FALSE, ...)),
                      error = function(e) NA)
-          }))
+          })))
         }
       }
     }
@@ -279,15 +277,13 @@ banc_updateids <- function(x,
       root.column <- "root_id"
     }
     if(root.column%in%colnames(x)){
-      cat('determining old root_ids...
-')
+      cat('determining old root_ids...')
       old <- !banc_islatest(x[[root.column]], ...)
     }else{
       old <- rep(TRUE,nrow(x))
     }
     old[is.na(old)] <- TRUE
-    message("old root_ids: ",sum(old),"
-")
+    message("old root_ids: ",sum(old),"")
     if(!sum(old)){
       return(x)
     }
@@ -295,8 +291,7 @@ banc_updateids <- function(x,
     # update based on supervoxels
     if(!is.null(supervoxel.column)){
       if(supervoxel.column%in%colnames(x)){
-        cat('updating root_ids with a supervoxel_id...
-')
+        cat('updating root_ids with a supervoxel_id...')
         if (!requireNamespace("pbapply", quietly = TRUE)) {
           stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
         }
@@ -312,15 +307,14 @@ banc_updateids <- function(x,
     # update based on position
     if(!is.null(position.column)){
       if(any(position.column%in%colnames(x)) && sum(old)){
-        cat('updating root_ids with a position ...
-')
+        cat('updating root_ids with a position ...')
         if (!requireNamespace("pbapply", quietly = TRUE)) {
           stop("Package 'pbapply' is required for this function. Please install it with: install.packages('pbapply')")
         }
-        update <- unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
-          tryCatch(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = TRUE, ...),
+        update <- unlist(unname(pbapply::pbsapply(x[old,][[position.column]], function(row){
+          tryCatch(nullToNA(quiet_function(banc_xyz2id, row, rawcoords = TRUE, root = TRUE, ...)),
                    error = function(e) NA)
-        }))
+        })))
         bad <- is.na(update)|update=="0"
         update <- update[!bad]
         if(length(update)) x[old,][[root.column]][!bad] <- update
@@ -331,8 +325,7 @@ banc_updateids <- function(x,
 
     # update based on root Ids
     if(root.column%in%colnames(x) && sum(old)){
-      cat('updating root_ids without a supervoxel_id...
-')
+      cat('updating root_ids without a supervoxel_id...')
       update <- banc_latestid(x[old,][[root.column]], ...)
       bad <- is.na(update)|update=="0"
       update <- update[!bad]
@@ -348,8 +341,7 @@ banc_updateids <- function(x,
       }
       x <- pbapply::pbsapply(x, function(x) try(quiet_function(banc_updateids, x, serial = FALSE)))
     }else{
-      cat('updating root_ids directly ...
-')
+      cat('updating root_ids directly ...')
       old <- !banc_islatest(x, ...)
       old[is.na(old)] <- TRUE
       update <- banc_latestid(x[old], ...)
@@ -362,8 +354,7 @@ banc_updateids <- function(x,
 
   # return
   if(sum(old)){
-    warning("failed to update: ", sum(old),"
-")
+    warning("failed to update: ", sum(old),"")
   }
   x
 }
