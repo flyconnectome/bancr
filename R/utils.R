@@ -1,7 +1,7 @@
 #' @importFrom stats na.omit
 #' @importFrom utils capture.output
 #' @importFrom fafbseg flywire_version
-#' @importFrom nat pointsinside rootpoints  
+#' @importFrom nat pointsinside rootpoints
 #' @importFrom httr add_headers content
 NULL
 
@@ -98,4 +98,17 @@ remove_empty_dirs <- function(base_dir) {
   })
 }
 
-
+# hidden
+nullToNA <- function (x){
+  if (is.list(x)) {
+    x[sapply(x, is.null)] <- NA
+  }
+  else {
+    x = sapply(x, function(y) ifelse(is.null(y) | !length(y),
+                                     NA, y))
+    if (!length(x)) {
+      x = NA
+    }
+  }
+  x
+}
