@@ -1,4 +1,4 @@
-#' Summarise the connectivity of banc neurons
+#' Summarise the connectivity of BANC neurons
 #'
 #' Returns synaptically connected partners for specified neurons. Understanding
 #' synaptic partnerships is crucial for analyzing neural circuits in the Brain And

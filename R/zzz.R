@@ -13,5 +13,7 @@
 ',
     'Use dr_banc() to get a report on your installation.
 ',
+    'Use register_banc_coconat(showerror=FALSE) to register bancr with coconatfly.
+',
     'Trouble? Visit https://flyconnectome.github.io/bancr/SUPPORT.html or #code on banc Slack')
 }

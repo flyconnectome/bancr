@@ -66,7 +66,8 @@ Suggests:
     stringr,
     ggplot2 (>= 3.5),
     RSQLite,
-    DBI
+    DBI,
+    coconat
 Remotes: 
     natverse/nat,
     natverse/fafbseg,
@@ -77,7 +78,8 @@ Remotes:
     flyconnectome/fancr,
     kassambara/ggpubr,
     tidyverse/ggplot2,
-    eliocamp/ggnewscale
+    eliocamp/ggnewscale,
+    natverse/coconat
 Config/testthat/edition: 3
 LazyDataCompression: xz
 Encoding: UTF-8
