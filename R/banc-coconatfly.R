@@ -27,6 +27,7 @@
 #' result <- banc_meta() # use cache
 #'
 #' # use cache to quickly make plot
+#' library(coconatfly)
 #' register_banc_coconat()
 #' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 #' }
@@ -228,10 +229,10 @@ coconat_banc_partners <- function(ids,
 #'
 #' @examples
 #' \dontrun{
-#' library(coconat)
+#' library(coconatfly)
 #' banc_meta_create_cache(use_seatable=TRUE)
 #' register_banc_coconat()
-#' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain","flywire")))
+#' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 #' }
 register_banc_coconat <- function(showerror=TRUE){
   if (!requireNamespace("coconat", quietly = TRUE)) {

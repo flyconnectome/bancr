@@ -35,6 +35,7 @@ banc_meta_create_cache(use_seatable=TRUE) # create cache
 result <- banc_meta() # use cache
 
 # use cache to quickly make plot
+library(coconatfly)
 register_banc_coconat()
 cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 }
