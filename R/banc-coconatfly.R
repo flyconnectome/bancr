@@ -241,7 +241,7 @@ register_banc_coconat <- function(showerror=TRUE){
     coconat::register_dataset(
       name = 'banc',
       shortname = 'bc',
-      namespace = 'coconat',
+      namespace = 'coconatfly',
       metafun = coconat_banc_meta,
       idfun = coconat_banc_ids,
       partnerfun = coconat_banc_partners
