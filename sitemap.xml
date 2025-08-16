@@ -23,6 +23,8 @@
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_islatest.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_latestid.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_leaves.html</loc></url>
+<url><loc>https://flyconnectome.github.io/bancr/reference/banc_meta.html</loc></url>
+<url><loc>https://flyconnectome.github.io/bancr/reference/banc_meta_create_cache.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_mirror.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_mirror_tpsreg.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_neuron_comparison_plot.html</loc></url>
@@ -54,6 +56,7 @@
 <url><loc>https://flyconnectome.github.io/bancr/reference/index.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/navis_elastix_xform.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/read_elastix_output_file.html</loc></url>
+<url><loc>https://flyconnectome.github.io/bancr/reference/register_banc_coconat.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/write_elastix_input_file.html</loc></url>
 </urlset>
 
