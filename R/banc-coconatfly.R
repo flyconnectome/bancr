@@ -131,7 +131,7 @@ banc_meta <- local({
     },
     get_meta = function(ids = NULL) {
       if (is.null(.banc_meta_cache)){
-        warning("No BANC meta cache loaded. Creating with banc_meta_create_cache(use_seatable=FALSE)")
+        message("No BANC meta cache loaded. Creating with banc_meta_create_cache(use_seatable=FALSE)")
         banc_meta_create_cache(use_seatable=FALSE)
       }
       meta <- .banc_meta_cache
