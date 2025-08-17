@@ -203,6 +203,7 @@ coconat_banc_partners <- function(ids,
                                    threshold = threshold-1L,
                                    version=version,
                                    ...)
+  tres$side=substr(toupper(tres$side),1,1)
   partner_col=grep("_id", colnames(tres), value = T)
   for(pc in partner_col){
     tres[[pc]] <- as.character(tres[[pc]])
