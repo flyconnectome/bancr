@@ -207,9 +207,7 @@ coconat_banc_partners <- function(ids,
   for(pc in partner_col){
     tres[[pc]] <- as.character(tres[[pc]])
   }
-  metadf=banc_meta()
-  colnames(metadf)[[1]]=partner_col
-  tres=left_join(tres, metadf, by = partner_col)
+  # nb coconatfly can looks after adding metadata
   tres
 }
 
