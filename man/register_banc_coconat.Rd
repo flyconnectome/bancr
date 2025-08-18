@@ -21,7 +21,7 @@ a natverse R package for between and within dataset connectivity comparisons usi
 library(coconatfly)
 banc_meta_create_cache(use_seatable=TRUE)
 register_banc_coconat()
-cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain","flywire")))
+cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 }
 }
 \seealso{
