@@ -3,7 +3,7 @@
 \name{banc_partner_summary}
 \alias{banc_partner_summary}
 \alias{banc_partners}
-\title{Summarise the connectivity of banc neurons}
+\title{Summarise the connectivity of BANC neurons}
 \usage{
 banc_partner_summary(
   rootids,

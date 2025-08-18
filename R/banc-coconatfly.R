@@ -27,6 +27,7 @@
 #' result <- banc_meta() # use cache
 #'
 #' # use cache to quickly make plot
+#' library(coconatfly)
 #' register_banc_coconat()
 #' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 #' }
@@ -204,10 +205,6 @@ coconat_banc_partners <- function(ids,
                                    version=version,
                                    ...)
   tres$side=substr(toupper(tres$side),1,1)
-  partner_col=grep("_id", colnames(tres), value = T)
-  for(pc in partner_col){
-    tres[[pc]] <- as.character(tres[[pc]])
-  }
   # nb coconatfly can looks after adding metadata
   tres
 }
@@ -227,16 +224,16 @@ coconat_banc_partners <- function(ids,
 #'
 #' @examples
 #' \dontrun{
-#' library(coconat)
+#' library(coconatfly)
 #' banc_meta_create_cache(use_seatable=TRUE)
 #' register_banc_coconat()
-#' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain","flywire")))
+#' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 #' }
 register_banc_coconat <- function(showerror=TRUE){
   if (!requireNamespace("coconat", quietly = TRUE)) {
     stop("Package 'coconat' is required for this function. Please install it with: devtools::install_github(natverse/coconat)")
   }
-  if(requireNamespace('coconat', quietly = !showerror))
+  if(requireNamespace('coconatfly', quietly = !showerror))
     coconat::register_dataset(
       name = 'banc',
       shortname = 'bc',
