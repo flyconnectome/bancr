@@ -132,7 +132,7 @@ banc_meta <- local({
     },
     get_meta = function(ids = NULL) {
       if (is.null(.banc_meta_cache)){
-        warning("No BANC meta cache loaded. Creating with banc_meta_create_cache(use_seatable=FALSE)")
+        message("No BANC meta cache loaded. Creating with banc_meta_create_cache(use_seatable=FALSE)")
         banc_meta_create_cache(use_seatable=FALSE)
       }
       meta <- .banc_meta_cache
@@ -167,8 +167,8 @@ coconat_banc_ids <- function(ids=NULL) {
     if(isTRUE(ids=='all')) return(banc_ids(metadf$id, integer64 = F))
     if(isTRUE(ids=='neurons')) {
       ids <- metadf %>%
-        filter(is.na(class) | class!='glia') %>%
-        pull(id)
+        dplyr::filter(is.na(class) | class!='glia') %>%
+        dplyr::pull(id)
       return(banc_ids(ids, integer64 = F))
     }
     if(isTRUE(substr(ids, 1, 1)=="/"))
@@ -184,8 +184,8 @@ coconat_banc_ids <- function(ids=NULL) {
                 paste(colnames(metadf)[-1], collapse = ',')))
     }
     ids <- metadf %>%
-      filter(grepl(value, .data[[field]])) %>%
-      pull(id)
+      dplyr::filter(grepl(value, .data[[field]])) %>%
+      dplyr::pull(id)
   } else if(length(ids)>0) {
     # check they are valid for current materialisation
     banc_latestid(ids, version = banc_version())
