@@ -1,6 +1,5 @@
 #' @importFrom stats na.omit
 #' @importFrom utils capture.output
-#' @importFrom fafbseg flywire_version
 #' @importFrom nat pointsinside rootpoints
 #' @importFrom httr add_headers content
 NULL
