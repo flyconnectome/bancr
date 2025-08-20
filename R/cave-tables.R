@@ -233,6 +233,19 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE, ...){
 
 #' @rdname banc_cave_tables
 #' @export
+banc_proofreading_notes <- function(rootids = NULL, rawcoords = FALSE, ...){
+  table <- "proofreading_notes"
+  res <- with_banc(get_cave_table_data(table, ...))
+  if (isTRUE(rawcoords))
+    res
+  else {
+    res %>% mutate(across(ends_with("position"),
+                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+  }
+}
+
+#' @rdname banc_cave_tables
+#' @export
 banc_cell_ids <- function(rootids = NULL,  ...){
   with_banc(get_cave_table_data('cell_ids', rootids, ...))
 }
@@ -547,7 +560,10 @@ banc_validate_positions <- function(positions,
 #' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
 #' }
 
-banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw", "nm"), proofread = TRUE,
+banc_annotate_backbone_proofread <- function(positions,
+                                              user_id,
+                                              units = c("raw", "nm"),
+                                              proofread = TRUE,
                                               datastack_name = NULL)
 {
   positions <- banc_validate_positions(positions = positions,
@@ -639,27 +655,26 @@ banc_annotate_backbone_proofread <- function (positions, user_id, units = c("raw
     pause_seconds <- 0.1
   }
   Sys.sleep(pause_seconds)
-
   annotations <- banc_backbone_proofread(live = 2)
   annotations.new <- annotations %>% dplyr::filter(.data$id %in%
                                                      result_ind)
   cat("annotated", nrow(annotations.new), "entities with backbone proofread:",
-      proofread, "
-")
+      proofread, "")
   return(annotations.new)
 }
 
 # hidden
-banc_deannotate_backbone_proofread <- function(positions,
-                                               user_id = NULL,
-                                               units = c("raw","nm"),
-                                               datastack_name = NULL){
-
+banc_deannotate_cave_table <- function(positions,
+                                       table = "proofreading_notes",
+                                       user_id = NULL,
+                                       units = c("raw","nm"),
+                                       datastack_name = NULL,
+                                       use_admin_creds = FALSE){
   # Validate positions
   positions <- banc_validate_positions(positions=positions, units=units)
 
   # Read table and check annotations are added
-  annotations <- banc_backbone_proofread(live=2)
+  annotations <- with_banc(get_cave_table_data(table, live = 2))
   if(!is.null(user_id)){
     annotations <- annotations %>%
       dplyr::filter(.data$user_id %in% !!user_id)
@@ -676,28 +691,152 @@ banc_deannotate_backbone_proofread <- function(positions,
     point_exists <- length(matching_rows) > 0
     annotation_ids <- annotations$id[matching_rows]
   }
-  cat("pt_positions in backbone_proofread match to", length(annotation_ids), "given points
-")
+  cat("pt_positions in ",  table, " match to", length(annotation_ids), "given points")
   if(length(annotation_ids)){
     # get table
-    client <- banc_service_account(datastack_name=datastack_name)
+    if (use_admin_creds) {
+      client = banc_service_account(datastack_name)
+    }
+    else {
+      client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
+    }
 
     # Delete specified IDs
-    result <- client$annotation$delete_annotation("backbone_proofread", annotation_ids)
+    result <- client$annotation$delete_annotation(table, annotation_ids)
 
     # Read table and check annotations are added
     annotations <- banc_backbone_proofread(live=2)
-    annotations.new <- annotations %>%
+    annotations.new <- with_banc(get_cave_table_data(table, live = 2)) %>%
       dplyr::filter(.data$id %in% annotation_ids)
     if(nrow(annotations.new)){
       warning('not all given positions removed from : missing annotation_ids')
     }
-    cat("deannotated", length(result), "entities, valid set to FALSE
-")
+    cat("deannotated", length(result), "entities, valid set to FALSE")
     return(result)
   }else{
     invisible()
   }
+}
+
+# hidden
+# banc.meta <- banctable_query() %>%
+# dplyr::filter(grepl("DEBRIS",status),
+#               !is.na(position)
+# positions <- structure(list(X = c(167501L, 166837L, 99722L), Y = c(143868L,
+# 149546L, 239936L), Z = c(5456L, 2485L, 6792L)), row.names = c(NA,
+#                                                               3L), class = "data.frame")
+# banc_annotate_proofreading_notes(positions = positions,
+#                                  user_id = 355,
+#                                  label = "debris",
+#                                  units = "raw")
+banc_annotate_proofreading_notes <- function(positions,
+                                              user_id,
+                                              label,
+                                              units = c("raw", "nm"),
+                                              datastack_name = NULL,
+                                              use_admin_creds = FALSE){
+  positions <- banc_validate_positions(positions = positions,
+                                       units = units)
+  cavec <- fafbseg:::check_cave()
+  np <- reticulate::import("numpy")
+  pd <- reticulate::import("pandas")
+  annotations <- banc_proofreading_notes(live = 2) %>%
+    dplyr::filter(.data$tag == eval(label))
+  if(nrow(annotations)){
+    curr.positions <- do.call(rbind, annotations$pt_position)
+    curr.positions <- as.data.frame(curr.positions)
+    colnames(curr.positions) <- c("X", "Y", "Z")
+    curr.positions$id <- annotations$id
+  }
+  if (is.data.frame(positions)) {
+      positions.orig <- positions
+      positions <- dplyr::anti_join(positions, as.data.frame(curr.positions),
+                                    by = c("X", "Y", "Z"))
+      cat("given positions already present with the same tag:",
+          nrow(positions.orig) - nrow(positions), "")
+      if (!nrow(positions)) {
+        stop("all positions already marked:", nrow(positions.orig))
+      }
+  }
+  banc_annotate_bound_tag_user_cave_table(positions,
+                                          user_id=user_id,
+                                          column = "tag",
+                                          tag = label,
+                                          table = "proofreading_notes",
+                                          use_admin_creds = use_admin_creds)
+}
+
+# hidden
+banc_annotate_bound_tag_user_cave_table <- function(positions,
+                                     column,
+                                     tag,
+                                     table,
+                                     user_id,
+                                     datastack_name = NULL,
+                                     use_admin_creds = FALSE){
+  if (use_admin_creds) {
+    client = banc_service_account(datastack_name)
+  }
+  else {
+    client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
+  }
+  stage <- client$annotation$stage_annotations(table)
+  cat("checking ", nrow(positions),"positions....\n")
+  valid_ids <- banc_xyz2id(positions, rawcoords = TRUE)
+  valid_ids_not_0 <- valid_ids[valid_ids != "0"]
+  positions <- positions[valid_ids != "0", ]
+    if (sum(valid_ids == "0")) {
+      warning("given positions with invalid root_id: ",
+              sum(valid_ids == "0"))
+    }
+    if (!nrow(positions)) {
+      stop("no valid positions given")
+    }
+    result_ind <- integer(0)
+    # Create a progress bar
+    if (!requireNamespace("progress", quietly = TRUE)) {
+      stop("Package 'progress' is required for this function. Please install it with: install.packages('progress')")
+    }
+    pb <- progress::progress_bar$new(
+      format = "[:bar] :percent | ETA: :eta | :current/:total positions | Elapsed: :elapsedfull",
+      total = nrow(positions),
+      clear = FALSE,
+      width = 80
+    )
+    cat("updating ", table,  " ...\n")
+    for (i in 1:nrow(positions)) {
+      # Update progress bar
+      pb$tick()
+      this_pos <- unlist(positions[i, ])
+      # this_pos <- np$array(positions[i, ])
+      this_id <- as.numeric(valid_ids_not_0[i])
+      do.call(stage$add, c(
+        list(
+          valid = TRUE,
+          pt_position = np$array(this_pos),
+          #valid_id = this_id
+          user_id = as.integer(user_id)
+        ),
+        setNames(list(label), column)
+      ))
+      this_result <- client$annotation$upload_staged_annotations(stage)
+      result_ind <- c(result_ind, this_result)
+      stage$clear_annotations()
+    }
+  if (is.data.frame(positions)) {
+    pause_seconds <- nrow(positions) * 0.1
+  }
+  else {
+    pause_seconds <- 0.1
+  }
+  cat("checking result ...")
+  Sys.sleep(pause_seconds)
+  annotations <- with_banc(get_cave_table_data(table, live = 2))
+  annotations.new <- annotations %>% dplyr::filter(.data$id %in%
+                                                     result_ind)
+  cat("annotated", nrow(annotations.new), "entities with:",
+      tag, " for ", column)
+  return(annotations.new)
 }
 
 #' Read BANC-FlyWireCodex annotation table
