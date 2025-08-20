@@ -557,7 +557,7 @@ banc_validate_positions <- function(positions,
 #' banc_annotate_backbone_proofread(c(468420, 962104 ,230490), user_id = 355, units = "nm")
 #'
 #' # deannotate a point, only from points added with given user_id. Use user_id = NULL to remove from full pool
-#' banc_deannotate_backbone_proofread(c(468420, 962104, 230490), user_id = 355, units = "nm")
+#' banc_deannotate(c(468420, 962104, 230490), user_id = 355, units = "nm", table = "backbone_proofread")
 #' }
 
 banc_annotate_backbone_proofread <- function(positions,
@@ -664,34 +664,38 @@ banc_annotate_backbone_proofread <- function(positions,
 }
 
 # hidden
-banc_deannotate_cave_table <- function(positions,
+banc_deannotate_cave_table <- function(annotation_ids = NULL,
+                                       positions = NULL,
                                        table = "proofreading_notes",
                                        user_id = NULL,
                                        units = c("raw","nm"),
                                        datastack_name = NULL,
                                        use_admin_creds = FALSE){
   # Validate positions
-  positions <- banc_validate_positions(positions=positions, units=units)
-
-  # Read table and check annotations are added
-  annotations <- with_banc(get_cave_table_data(table, live = 2))
-  if(!is.null(user_id)){
-    annotations <- annotations %>%
-      dplyr::filter(.data$user_id %in% !!user_id)
+  if(!is.null(positions)){
+    positions <- banc_validate_positions(positions=positions, units=units)
+    # Read table and check annotations are added
+    annotations <- with_banc(get_cave_table_data(table, live = 2))
+    if(!is.null(user_id)){
+      annotations <- annotations %>%
+        dplyr::filter(.data$user_id %in% !!user_id)
+    }
+    curr.positions <- do.call(rbind,annotations$pt_position)
+    if(is.data.frame(positions)){
+      curr.positions <- as.data.frame(curr.positions)
+      colnames(curr.positions) <- c("X","Y","Z")
+      curr.positions$id <- annotations$id
+      matches <- dplyr::left_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
+      annotation_ids <- c(na.omit(matches$id))
+    }else{
+      matching_rows <- which(apply(curr.positions, 1, function(row) all(row == positions)))
+      point_exists <- length(matching_rows) > 0
+      annotation_ids <- annotations$id[matching_rows]
+    }
+    cat("pt_positions in ",  table, " match to", length(annotation_ids), "given points\n")
+  }else if(is.null(annotation_ids)){
+    stop("either annotation_ids or positions must be given")
   }
-  curr.positions <- do.call(rbind,annotations$pt_position)
-  if(is.data.frame(positions)){
-    curr.positions <- as.data.frame(curr.positions)
-    colnames(curr.positions) <- c("X","Y","Z")
-    curr.positions$id <- annotations$id
-    matches <- dplyr::left_join(positions, as.data.frame(curr.positions), by = c("X","Y","Z"))
-    annotation_ids <- c(na.omit(matches$id))
-  }else{
-    matching_rows <- which(apply(curr.positions, 1, function(row) all(row == positions)))
-    point_exists <- length(matching_rows) > 0
-    annotation_ids <- annotations$id[matching_rows]
-  }
-  cat("pt_positions in ",  table, " match to", length(annotation_ids), "given points")
   if(length(annotation_ids)){
     # get table
     if (use_admin_creds) {
@@ -705,13 +709,12 @@ banc_deannotate_cave_table <- function(positions,
     result <- client$annotation$delete_annotation(table, annotation_ids)
 
     # Read table and check annotations are added
-    annotations <- banc_backbone_proofread(live=2)
     annotations.new <- with_banc(get_cave_table_data(table, live = 2)) %>%
       dplyr::filter(.data$id %in% annotation_ids)
     if(nrow(annotations.new)){
       warning('not all given positions removed from : missing annotation_ids')
     }
-    cat("deannotated", length(result), "entities, valid set to FALSE")
+    cat("deannotated", length(result), "entities, valid set to FALSE\n")
     return(result)
   }else{
     invisible()
