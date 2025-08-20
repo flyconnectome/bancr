@@ -245,7 +245,6 @@ banc_cave_valid_schemas <- function(datastack_name = NULL)
   return(schema_types)
 }
 
-
 # function banc_annotate_bound_double_tag_user
 # function to upload new annotations to CAVE tables of schema bound_double_tag_user
 

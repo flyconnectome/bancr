@@ -7,6 +7,7 @@
 \alias{banc_mitochondria}
 \alias{banc_nuclei}
 \alias{banc_cell_info}
+\alias{banc_proofreading_notes}
 \alias{banc_cell_ids}
 \alias{banc_neck_connective_neurons}
 \alias{banc_peripheral_nerves}
@@ -41,6 +42,8 @@ banc_nuclei(
 )
 
 banc_cell_info(rootids = NULL, rawcoords = FALSE, ...)
+
+banc_proofreading_notes(rootids = NULL, rawcoords = FALSE, ...)
 
 banc_cell_ids(rootids = NULL, ...)
 
