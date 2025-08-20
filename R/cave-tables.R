@@ -740,7 +740,7 @@ banc_annotate_proofreading_notes <- function(positions,
   cavec <- fafbseg:::check_cave()
   np <- reticulate::import("numpy")
   pd <- reticulate::import("pandas")
-  annotations <- banc_proofreading_notes(live = 2) %>%
+  annotations <- banc_proofreading_notes(live = 2, rawcoords = TRUE) %>%
     dplyr::filter(.data$tag == eval(label))
   if(nrow(annotations)){
     curr.positions <- do.call(rbind, annotations$pt_position)
@@ -827,16 +827,21 @@ banc_annotate_bound_tag_user_cave_table <- function(positions,
     pause_seconds <- nrow(positions) * 0.1
   }
   else {
-    pause_seconds <- 0.1
+    pause_seconds <- 1
   }
   cat("checking result ...")
-  Sys.sleep(pause_seconds)
-  annotations <- with_banc(get_cave_table_data(table, live = 2))
-  annotations.new <- annotations %>% dplyr::filter(.data$id %in%
-                                                     result_ind)
-  cat("annotated", nrow(annotations.new), "entities with:",
-      tag, " for ", column)
-  return(annotations.new)
+  Sys.sleep(5+pause_seconds)
+  annotations <- try({with_banc(get_cave_table_data(table, live = 2))})
+  if(is.null(annotations)){
+    annotations.new <- annotations %>% dplyr::filter(.data$id %in%
+                                                       result_ind)
+    cat("annotated", nrow(annotations.new), "entities with:",
+        tag, " for ", column)
+    annotations.new
+  }else{
+    warning("could not check annotations were added, in a few mins try: bancr:::with_banc(get_cave_table_data(table, live = 2))")
+    NULL
+  }
 }
 
 #' Read BANC-FlyWireCodex annotation table
