@@ -16,19 +16,13 @@ banc_rootid <- function(x,
                         version = NULL,
                         timestamp = NULL,
                         ...) {
-  if(!is.null(version)){
-    timestamp <- with_banc(fafbseg::flywire_timestamp(version = version,
-                                                      convert = FALSE))
-  }
-  rid = flywire_rootid(
+  rid = with_banc(flywire_rootid(
     x = x,
     integer64 = integer64,
-    method = "cloudvolume",
-    # agglomerate = T,
     timestamp = timestamp,
-    cloudvolume.url = banc_cloudvolume_url(),
+    version = version,
     ...
-  )
+  ))
   rid
 }
 # timestamp = with_banc(fafbseg:::flywire_timestamp(version = "612",
