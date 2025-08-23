@@ -185,8 +185,8 @@ coconat_banc_ids <- function(ids=NULL) {
     field=qsplit[,2]
     value=qsplit[,3]
     if(!field %in% colnames(metadf)) {
-      stop(glue("BANC queries only work with these fields: ",
-                paste(colnames(metadf)[-1], collapse = ',')))
+      stop("BANC queries only work with these fields: ",
+                paste(colnames(metadf)[-1], collapse = ','))
     }
     ids <- metadf %>%
       dplyr::filter(grepl(value, .data[[field]])) %>%
