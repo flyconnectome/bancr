@@ -48,6 +48,7 @@ jobs:
       - name: Install fafbseg + python
         run: |
           pak::local_install()
+          pak::pak('natverse/coconatfly')
           library(bancr)
           library(fafbseg)
           simple_python()

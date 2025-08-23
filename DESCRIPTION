@@ -66,7 +66,8 @@ Suggests:
     ggplot2 (>= 3.5),
     RSQLite,
     DBI,
-    coconat,
+    coconat
+Enhances:
     coconatfly
 Remotes: 
     natverse/nat,

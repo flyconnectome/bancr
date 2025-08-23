@@ -8,6 +8,22 @@
 \description{
 Access to the BANC 'righty' EM dataset, focussing on support for BANC autosegmentation. Organised as a wrapper around the fafbseg package.
 }
+\section{Details}{
+ There are several online bancr resources in addition to the
+built-in R help documentation. These include:
+\itemize{
+
+\item \href{https://flyconnectome.github.io/bancr/}{Package README} including  \href{https://flyconnectome.github.io/bancr/#installation}{installation details} and an \href{https://flyconnectome.github.io/bancr/#ascending-neuron-vignette}{analysis full worked example}.
+
+\item \href{https://flyconnectome.github.io/bancr/reference/index.html}{Function reference}
+
+\item \href{https://flyconnectome.github.io/bancr/SUPPORT.html}{Getting help}
+
+}
+
+Please see below for github source code and issues links.
+}
+
 \seealso{
 Useful links:
 \itemize{

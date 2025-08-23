@@ -407,10 +407,14 @@ extract_ids <- function(x) {
   if(is.character(x) && length(x)==1 && !fafbseg:::valid_id(x, na.ok = T) && !grepl("http", x) && grepl("^\\s*(([a-z:]{1,3}){0,1}[0-9,\\s]+)+$",x, perl=T)) {
     sx=gsub("[a-z:,\\s]+"," ", x, perl = T)
     x=scan(text = trimws(sx), sep = ' ', what = '', quiet = T)
-    x <- id2int64(x)
+    x <- bit64::as.integer64(x)
   }
   if(is.numeric(x) || is.integer(x)) {
-    x <- id2int64(x)
+    if (is.numeric(x)) {
+      bad_doubles = x >= 2^53
+      x[bad_doubles] = NA
+    }
+    x <- bit64::as.integer64(x)
   }
   x
 }
