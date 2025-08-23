@@ -75,6 +75,7 @@ banc_meta <- local({
         ) %>%
         dplyr::mutate(id = as.character(id))
     } else {
+      message("Fetching banc_cell_info()")
       banc.community.meta <- banc_cell_info() %>%
         dplyr::filter(valid == 't') %>%
         dplyr::arrange(pt_root_id, tag) %>%
@@ -105,6 +106,7 @@ banc_meta <- local({
         ) %>%
         dplyr::mutate(class = gsub(" ","_", class))
 
+      message("Fetching banc_codex_annotations()")
       banc.codex.meta <- banc_codex_annotations() %>%
         dplyr::distinct(pt_root_id, .keep_all = TRUE) %>%
         dplyr::select(
