@@ -36,7 +36,13 @@ result <- banc_meta() # use cache
 
 # use cache to quickly make plot
 library(coconatfly)
+# only needed once per session
 register_banc_coconat()
 cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 }
 }
+\seealso{
+Other coconatfly: 
+\code{\link{register_banc_coconat}()}
+}
+\concept{coconatfly}

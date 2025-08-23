@@ -10,20 +10,40 @@ register_banc_coconat(showerror = TRUE)
 \item{showerror}{Logical: error-out silently or not.}
 }
 \description{
-Register the BANC dataset with \href{https://github.com/natverse/coconat}{coconat},
-a natverse R package for between and within dataset connectivity comparisons using cosine similarity.
+Register the BANC dataset for use with
+\href{https://natverse.org/coconatfly}{coconatfly} across dataset
+connectome analysis.
 }
 \details{
-\code{register_banc_coconat()} registers \code{bancr}-backed functionality for use with
+\code{register_banc_coconat()} registers \code{bancr}-backed functionality for
+use with \href{https://natverse.org/coconatfly}{coconatfly},
+\href{https://natverse.org}{natverse} R package providing a consistent
+interface to core connectome analysis functions across datasets. This
+includes within and between dataset connectivity comparisons using cosine
+similarity.
 }
 \examples{
 \dontrun{
 library(coconatfly)
-banc_meta_create_cache(use_seatable=TRUE)
+# once per session
 register_banc_coconat()
+
+# once per session or if you think there have been updates
+banc_meta_create_cache()
+# use_seatable if you have access/want the bleeding edge
+banc_meta_create_cache(use_seatable=TRUE)
+
+# examples of within dataset analysis
+dna02meta <- cf_meta(cf_ids(banc='/DNa02'))
+cf_partner_summary(dna02meta, partners = 'out', threshold = 10)
+cf_ids(banc='/type:DNa.+')
+
+# an example of across dataset cosine similarity plot
 cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 }
 }
 \seealso{
-\code{\link[=banc_meta_create_cache]{banc_meta_create_cache()}}
+Other coconatfly: 
+\code{\link{banc_meta_create_cache}()}
 }
+\concept{coconatfly}
