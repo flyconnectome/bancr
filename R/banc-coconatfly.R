@@ -153,7 +153,11 @@ banc_meta <- banc_meta$get_meta
 
 # banc_coconat.R
 coconat_banc_meta <- function(ids) {
-  banc_meta(ids)
+  ids <- extract_ids(ids)
+  if(is.character(ids) && length(ids)==1 && !fafbseg:::valid_id(ids))
+    ids <- coconat_banc_ids(ids)
+  tres=banc_meta(ids)
+  tres
 }
 
 # hidden
@@ -199,7 +203,8 @@ coconat_banc_partners <- function(ids,
                                         threshold,
                                         version=banc_version(),
                                         ...) {
-  tres=banc_partner_summary(banc_ids(ids),
+  ids=coconat_banc_ids(ids)
+  tres=banc_partner_summary(ids,
                                    partners = partners,
                                    threshold = threshold-1L,
                                    version=version,
