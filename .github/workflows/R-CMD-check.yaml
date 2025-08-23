@@ -38,7 +38,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::pkgdown, catmaid=natverse/rcatmaid, coconatfly=natverse/coconatfly
+          extra-packages: any::rcmdcheck, any::pkgdown, catmaid=natverse/rcatmaid
           needs: check
 
       - name: Fix Conda permissions on macOS
@@ -48,6 +48,7 @@ jobs:
       - name: Install fafbseg + python
         run: |
           pak::local_install()
+          pak::pak('natverse/coconatfly')
           library(bancr)
           library(fafbseg)
           simple_python()
