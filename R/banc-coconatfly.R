@@ -157,6 +157,7 @@ coconat_banc_meta <- function(ids) {
   if(is.character(ids) && length(ids)==1 && !fafbseg:::valid_id(ids))
     ids <- coconat_banc_ids(ids)
   tres=banc_meta(ids)
+  tres$side=substr(toupper(tres$side),1,1)
   tres
 }
 
@@ -209,7 +210,6 @@ coconat_banc_partners <- function(ids,
                                    threshold = threshold-1L,
                                    version=version,
                                    ...)
-  tres$side=substr(toupper(tres$side),1,1)
   # nb coconatfly can looks after adding metadata
   tres
 }
