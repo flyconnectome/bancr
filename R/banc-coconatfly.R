@@ -223,7 +223,7 @@ coconat_banc_partners <- function(ids,
 #' @details
 #' `register_banc_coconat()` registers `bancr`-backed functionality for use with
 #'
-#' @param showerror Logically, error-out silently or not.
+#' @param showerror Logical: error-out silently or not.
 #' @export
 #' @seealso [banc_meta_create_cache()]
 #'
@@ -235,16 +235,16 @@ coconat_banc_partners <- function(ids,
 #' cf_cosine_plot(cf_ids('/type:LAL0(08|09|10|42)', datasets = c("banc", "hemibrain")))
 #' }
 register_banc_coconat <- function(showerror=TRUE){
-  if (!requireNamespace("coconat", quietly = TRUE)) {
-    stop("Package 'coconat' is required for this function. Please install it with: devtools::install_github(natverse/coconat)")
+  if (!requireNamespace("coconatfly", quietly = showerror)) {
+    if(!showerror) return(invisible())
+    stop("Package 'coconatfly' is required for this function. Please install it with: devtools::install_github(natverse/coconat)")
   }
-  if(requireNamespace('coconatfly', quietly = !showerror))
-    coconat::register_dataset(
-      name = 'banc',
-      shortname = 'bc',
-      namespace = 'coconatfly',
-      metafun = coconat_banc_meta,
-      idfun = coconat_banc_ids,
-      partnerfun = coconat_banc_partners
-    )
+  coconat::register_dataset(
+    name = 'banc',
+    shortname = 'bc',
+    namespace = 'coconatfly',
+    metafun = coconat_banc_meta,
+    idfun = coconat_banc_ids,
+    partnerfun = coconat_banc_partners
+  )
 }

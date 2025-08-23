@@ -7,7 +7,7 @@
 register_banc_coconat(showerror = TRUE)
 }
 \arguments{
-\item{showerror}{Logically, error-out silently or not.}
+\item{showerror}{Logical: error-out silently or not.}
 }
 \description{
 Register the BANC dataset with \href{https://github.com/natverse/coconat}{coconat},
