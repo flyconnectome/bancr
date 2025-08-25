@@ -143,13 +143,7 @@ These data are made available by the *BANC* project led by Wei-Chung Allen Lee (
 and collaborators including Zetta.ai and the FlyWire team at Princeton. 
 Anyone can request access to the data [here](https://flywire.ai/banc_access).
 Learn more on the [BANC wiki](https://github.com/jasper-tms/the-BANC-fly-connectome/wiki/).
-
-To access banc resources, you must have permissions to access the [banc
-autosegmentation
-dataset](https://fanc-reconstruction.slack.com/archives/C01RZP5JH9C/p1616522511001900)
-and have [confirmed your
-acceptance](https://fanc-reconstruction.slack.com/archives/C01RZP5JH9C/p1617404290005300)
-of the banc proofreading and data ownership guidelines. At this point you should
+After this, you should
 have a linked Google account that will be authorised (see below) for access to
 banc online resources.
 
