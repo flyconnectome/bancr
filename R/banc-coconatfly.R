@@ -256,7 +256,7 @@ coconat_banc_partners <- function(ids,
 register_banc_coconat <- function(showerror=TRUE){
   if (!requireNamespace("coconatfly", quietly = showerror)) {
     if(!showerror) return(invisible())
-    stop("Package 'coconatfly' is required for this function. Please install it with: devtools::install_github(natverse/coconat)")
+    stop("Package 'coconatfly' is required for this function. Install it with:\n  devtools::install_github('natverse/coconatfly')")
   }
   coconat::register_dataset(
     name = 'banc',
