@@ -50,13 +50,12 @@
 #' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
-                                 synapse_table = c("synapses_250226", "synapses_v1"),
+                                 synapse_table = NULL,
                                  threshold = 0,
                                  remove_autapses = TRUE,
                                  cleft.threshold = 0,
                                  datastack_name=NULL,
                                  ...) {
-  synapse_table <- match.arg(synapse_table)
   if(is.null(datastack_name))
     datastack_name = banc_datastack_name()
   with_banc(
@@ -123,9 +122,8 @@ Have you been granted access to banc production?")
 #' @rdname banc_partner_summary
 banc_partners <- function(rootids,
                           partners=c("input", "output"),
-                          synapse_table = c("synapses_250226", "synapses_v1"),
+                          synapse_table = NULL,
                           ...) {
-  synapse_table = match.arg(synapse_table)
   partners=match.arg(partners)
   rootids=banc_ids(rootids)
   fcc=banc_cave_client()

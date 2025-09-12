@@ -8,7 +8,7 @@
 banc_partner_summary(
   rootids,
   partners = c("outputs", "inputs"),
-  synapse_table = c("synapses_250226", "synapses_v1"),
+  synapse_table = NULL,
   threshold = 0,
   remove_autapses = TRUE,
   cleft.threshold = 0,
@@ -19,7 +19,7 @@ banc_partner_summary(
 banc_partners(
   rootids,
   partners = c("input", "output"),
-  synapse_table = c("synapses_250226", "synapses_v1"),
+  synapse_table = NULL,
   ...
 )
 }
