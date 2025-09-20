@@ -669,7 +669,7 @@ geom_neuron.splitneuron <- function(x = NULL,
     x$tags$soma <- nat::rootpoints(x)
   }
   soma <- nat::xyzmatrix(x)[rootpoints(x),] # catmaid::soma(x)
-  soma = t(as.data.frame(soma))
+  soma <- t(as.data.frame(soma))
   if(!is.null(rotation_matrix)){
     soma <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(soma))))
     soma <- soma[,-4]
@@ -684,16 +684,16 @@ geom_neuron.splitneuron <- function(x = NULL,
 
   # Get cable
   dendrites <- tryCatch(nat::prune_vertices(x,
-                                           verticestoprune = as.integer(c(axon.v,p.d.v, p.n.v, null.v))),
+                                           verticestoprune = as.integer(setdiff(rownames(x$d),dendrites.v))),
                        error = function(e) NULL)
   axon <- tryCatch(nat::prune_vertices(x,
-                                      verticestoprune = as.integer(c(dendrites.v, p.d.v, p.n.v, null.v))),
+                                      verticestoprune = as.integer(setdiff(rownames(x$d),axon.v))),
                   error = function(e) NULL)
-  p.d <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.n.v, null.v))),
+  p.d <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(setdiff(rownames(x$d),p.d.v))),
                  error = function(e) NULL)
-  p.n <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, null.v))),
+  p.n <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(setdiff(rownames(x$d),p.n.v))),
                  error = function(e) NULL)
-  nulls <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(c(axon.v, dendrites.v, p.d.v, p.n.v))),
+  nulls <- tryCatch(nat::prune_vertices(x, verticestoprune = as.integer(setdiff(rownames(x$d),null.v))),
                  error = function(e) NULL)
 
   # Stitch subtree
