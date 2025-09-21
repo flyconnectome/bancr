@@ -658,7 +658,8 @@ geom_neuron.splitneuron <- function(x = NULL,
                                    rotation_matrix = NULL,
                                    root = 3,
                                    cols = c("navy", "turquoise"),
-                                   stat = "identity", position = "identity",
+                                   stat = "identity",
+                                   position = "identity",
                                    na.rm = FALSE,
                                    show.legend = NA,
                                    inherit.aes = FALSE,
@@ -697,12 +698,12 @@ geom_neuron.splitneuron <- function(x = NULL,
                  error = function(e) NULL)
 
   # Stitch subtree
-  dendrites <- tryCatch(nat::stitch_neurons_mst(dendrites), error = function(e) NULL)
-  axon <- tryCatch(nat::stitch_neurons_mst(axon), error = function(e) NULL)
-  p.d <- tryCatch(nat::stitch_neurons_mst(p.d), error = function(e) NULL)
-  p.n <- tryCatch(nat::stitch_neurons_mst(p.n), error = function(e) NULL)
+  dendrites <- tryCatch(nat::stitch_neurons_mst(dendrites, ...), error = function(e) NULL)
+  axon <- tryCatch(nat::stitch_neurons_mst(axon, ...), error = function(e) NULL)
+  p.d <- tryCatch(nat::stitch_neurons_mst(p.d, ...), error = function(e) NULL)
+  p.n <- tryCatch(nat::stitch_neurons_mst(p.n, ...), error = function(e) NULL)
 
-  # Make into a multi-segmen neuroblist
+  # Make into a multi-segment neuronlist
   nulls <- nat::nlapply(1:length(nulls$SubTrees), function(subt) tryCatch(nat::prune_vertices(nulls,
                                                                                 verticestoprune = unlist(nulls$SubTrees[[subt]]),
                                                                                 invert = TRUE),
