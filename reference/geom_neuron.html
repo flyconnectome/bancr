@@ -207,6 +207,7 @@ It supports 'neuron', 'neuronlist', and 'mesh3d' objects.</p>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  show.legend <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -255,6 +256,10 @@ by its index in <code>x</code> applied to <code>cols</code>.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Other arguments passed on to layer().</p></dd>
+
+
+<dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
+<dd><p>the minimum threshold for healing neuron skeletons for visualisation, using <code><a href="https://rdrr.io/pkg/nat/man/stitch_neurons_mst.html" class="external-link">nat::stitch_neurons_mst</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
