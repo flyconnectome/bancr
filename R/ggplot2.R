@@ -411,6 +411,7 @@ ggplot2_neuron_path.NULL <- function(x, rotation_matrix = NULL, ...) {
 #' @param na.rm If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed.
 #' @param show.legend logical. Should this layer be included in the legends? NA, the default, includes if any aesthetics are mapped.
 #' @param inherit.aes If FALSE, overrides the default aesthetics, rather than combining with them.
+#' @param threshold the minimum threshold for healing neuron skeletons for visualisation, using `nat::stitch_neurons_mst`.
 #' @param ... Other arguments passed on to layer().
 #'
 #' @return A list of ggplot2 geom layers for visualizing the neuron.
@@ -425,16 +426,32 @@ ggplot2_neuron_path.NULL <- function(x, rotation_matrix = NULL, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-geom_neuron <-function(x, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                       stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                       inherit.aes = FALSE, ...) UseMethod('geom_neuron')
+geom_neuron <- function(x = NULL,
+                       rotation_matrix = NULL,
+                       root = 3,
+                       cols = c("navy", "turquoise"),
+                       stat = "identity",
+                       position = "identity",
+                       na.rm = FALSE,
+                       show.legend = NA,
+                       inherit.aes = FALSE,
+                       threshold = Inf,
+                       ...) UseMethod('geom_neuron')
 
 #' @rdname geom_neuron
 #' @method geom_neuron neuron
 #' @export
-geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                               inherit.aes = FALSE, ...) {
+geom_neuron.neuron <- function(x = NULL,
+                               rotation_matrix = NULL,
+                               root = 3,
+                               cols = c("navy", "turquoise"),
+                               stat = "identity",
+                               position = "identity",
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = FALSE,
+                               threshold = Inf,
+                               ...) {
   check_package_available('ggnewscale')
   check_package_available('catmaid')
   if(root){
@@ -462,9 +479,17 @@ geom_neuron.neuron <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
 #' @rdname geom_neuron
 #' @method geom_neuron neuronlist
 #' @export
-geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                               inherit.aes = FALSE, ...) {
+geom_neuron.neuronlist <- function(x = NULL,
+                                   rotation_matrix = NULL,
+                                   root = 3,
+                                   cols = c("navy", "turquoise"),
+                                   stat = "identity",
+                                   position = "identity",
+                                   na.rm = FALSE,
+                                   show.legend = NA,
+                                   inherit.aes = FALSE,
+                                   threshold = Inf,
+                                   ...) {
   glist <- list()
   if(length(x)!=1){
     if(cols[1]=="rainbow"){
@@ -495,9 +520,17 @@ geom_neuron.neuronlist <- function(x = NULL, rotation_matrix = NULL, root = 3, c
 #' @rdname geom_neuron
 #' @method geom_neuron mesh3d
 #' @export
-geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                                   stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                                   inherit.aes = FALSE, ...) {
+geom_neuron.mesh3d <- function(x = NULL,
+                               rotation_matrix = NULL,
+                               root = 3,
+                               cols = c("navy", "turquoise"),
+                               stat = "identity",
+                               position = "identity",
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = FALSE,
+                               threshold = Inf,
+                               ...) {
   check_package_available('ggnewscale')
   x <- ggplot2_neuron_path.mesh3d(x, rotation_matrix = rotation_matrix)
   list(
@@ -513,9 +546,17 @@ geom_neuron.mesh3d <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
 #' @rdname geom_neuron
 #' @method geom_neuron hxsurf
 #' @export
-geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                               inherit.aes = FALSE, ...) {
+geom_neuron.hxsurf <- function(x = NULL,
+                               rotation_matrix = NULL,
+                               root = 3,
+                               cols = c("navy", "turquoise"),
+                               stat = "identity",
+                               position = "identity",
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = FALSE,
+                               threshold = Inf,
+                               ...) {
   x <- rgl::as.mesh3d(x)
   geom_neuron.mesh3d(x=x, rotation_matrix=rotation_matrix, cols=cols,
                      stat=stat, position=position, na.rm=na.rm, show.legend=show.legend, inherit.aes=inherit.aes,
@@ -525,9 +566,17 @@ geom_neuron.hxsurf <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
 #' @rdname geom_neuron
 #' @method geom_neuron NULL
 #' @export
-geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                               inherit.aes = FALSE, ...) {
+geom_neuron.NULL <- function(x = NULL,
+                             rotation_matrix = NULL,
+                             root = 3,
+                             cols = c("navy", "turquoise"),
+                             stat = "identity",
+                             position = "identity",
+                             na.rm = FALSE,
+                             show.legend = NA,
+                             inherit.aes = FALSE,
+                             threshold = Inf,
+                             ...) {
   list(
     ggplot2::geom_polygon(...)
   )
@@ -536,9 +585,17 @@ geom_neuron.NULL <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = 
 #' @rdname geom_neuron
 #' @method geom_neuron list
 #' @export
-geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                             stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                             inherit.aes = FALSE, ...) {
+geom_neuron.list <- function(x = NULL,
+                             rotation_matrix = NULL,
+                             root = 3,
+                             cols = c("navy", "turquoise"),
+                             stat = "identity",
+                             position = "identity",
+                             na.rm = FALSE,
+                             show.legend = NA,
+                             inherit.aes = FALSE,
+                             threshold = Inf,
+                             ...) {
 
   if(length(x)){
     geom_neuron.neuronlist(x=x, rotation_matrix=rotation_matrix, cols=cols,
@@ -552,9 +609,17 @@ geom_neuron.list <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = 
 #' @rdname geom_neuron
 #' @method geom_neuron matrix
 #' @export
-geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                             stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                             inherit.aes = FALSE, ...) {
+geom_neuron.matrix <- function(x = NULL,
+                               rotation_matrix = NULL,
+                               root = 3,
+                               cols = c("navy", "turquoise"),
+                               stat = "identity",
+                               position = "identity",
+                               na.rm = FALSE,
+                               show.legend = NA,
+                               inherit.aes = FALSE,
+                               threshold = Inf,
+                               ...) {
   x<-as.data.frame(nat::xyzmatrix(x))
   if(!is.null(rotation_matrix)){
     x <- as.data.frame(t(rotation_matrix[,1:3] %*% t(nat::xyzmatrix(x))))
@@ -572,9 +637,17 @@ geom_neuron.matrix <- function(x = NULL, rotation_matrix = NULL, root = 3, cols 
 #' @rdname geom_neuron
 #' @method geom_neuron data.frame
 #' @export
-geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                               stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                               inherit.aes = FALSE, ...) {
+geom_neuron.data.frame <- function(x = NULL,
+                                   rotation_matrix = NULL,
+                                   root = 3,
+                                   cols = c("navy", "turquoise"),
+                                   stat = "identity",
+                                   position = "identity",
+                                   na.rm = FALSE,
+                                   show.legend = NA,
+                                   inherit.aes = FALSE,
+                                   threshold = Inf,
+                                   ...) {
   geom_neuron.matrix(x, rotation_matrix = rotation_matrix, root = root,
                      low = cols[1], high = cols[length(cols)],
                      stat = stat, position = position,
@@ -586,9 +659,17 @@ geom_neuron.data.frame <- function(x = NULL, rotation_matrix = NULL, root = 3, c
 #' @rdname geom_neuron
 #' @method geom_neuron dotprops
 #' @export
-geom_neuron.dotprops <- function(x = NULL, rotation_matrix = NULL, root = 3, cols = c("navy", "turquoise"),
-                                   stat = "identity", position = "identity", na.rm = FALSE, show.legend = NA,
-                                   inherit.aes = FALSE, ...) {
+geom_neuron.dotprops <- function(x = NULL,
+                                 rotation_matrix = NULL,
+                                 root = 3,
+                                 cols = c("navy", "turquoise"),
+                                 stat = "identity",
+                                 position = "identity",
+                                 na.rm = FALSE,
+                                 show.legend = NA,
+                                 inherit.aes = FALSE,
+                                 threshold = Inf,
+                                 ...) {
   x<-as.data.frame(nat::xyzmatrix(x))
   geom_neuron.data.frame(x, rotation_matrix = rotation_matrix, root = root,
                      low = cols[1], high = cols[length(cols)],
@@ -605,10 +686,12 @@ geom_neuron.synapticneuron <- function(x = NULL,
                                        rotation_matrix = NULL,
                                        root = 3,
                                        cols = c("navy", "turquoise"),
-                                       stat = "identity", position = "identity",
+                                       stat = "identity",
+                                       position = "identity",
                                        na.rm = FALSE,
                                        show.legend = NA,
                                        inherit.aes = FALSE,
+                                       threshold = Inf,
                                        ...) {
   geomneuron<-geom_neuron.neuron(x = x,
                                  rotation_matrix = rotation_matrix,
@@ -663,6 +746,7 @@ geom_neuron.splitneuron <- function(x = NULL,
                                    na.rm = FALSE,
                                    show.legend = NA,
                                    inherit.aes = FALSE,
+                                   threshold = Inf,
                                    ...) {
 
   # Get parts
@@ -698,10 +782,10 @@ geom_neuron.splitneuron <- function(x = NULL,
                  error = function(e) NULL)
 
   # Stitch subtree
-  dendrites <- tryCatch(nat::stitch_neurons_mst(dendrites, ...), error = function(e) NULL)
-  axon <- tryCatch(nat::stitch_neurons_mst(axon, ...), error = function(e) NULL)
-  p.d <- tryCatch(nat::stitch_neurons_mst(p.d, ...), error = function(e) NULL)
-  p.n <- tryCatch(nat::stitch_neurons_mst(p.n, ...), error = function(e) NULL)
+  dendrites <- tryCatch(nat::stitch_neurons_mst(dendrites, threshold=threshold), error = function(e) NULL)
+  axon <- tryCatch(nat::stitch_neurons_mst(axon, threshold=threshold), error = function(e) NULL)
+  p.d <- tryCatch(nat::stitch_neurons_mst(p.d, threshold=threshold), error = function(e) NULL)
+  p.n <- tryCatch(nat::stitch_neurons_mst(p.n, threshold=threshold), error = function(e) NULL)
 
   # Make into a multi-segment neuronlist
   nulls <- nat::nlapply(1:length(nulls$SubTrees), function(subt) tryCatch(nat::prune_vertices(nulls,
