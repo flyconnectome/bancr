@@ -16,7 +16,7 @@
 \title{Create ggplot2 Geom Layer for Neuron Visualization}
 \usage{
 geom_neuron(
-  x,
+  x = NULL,
   rotation_matrix = NULL,
   root = 3,
   cols = c("navy", "turquoise"),
@@ -25,6 +25,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -38,6 +39,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -51,6 +53,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -64,6 +67,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -77,6 +81,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -90,6 +95,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -103,6 +109,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -116,6 +123,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -129,6 +137,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -142,6 +151,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -155,6 +165,7 @@ geom_neuron(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = FALSE,
+  threshold = Inf,
   ...
 )
 
@@ -193,9 +204,9 @@ by its index in \code{x} applied to \code{cols}.}
 
 \item{inherit.aes}{If FALSE, overrides the default aesthetics, rather than combining with them.}
 
-\item{...}{Other arguments passed on to layer().}
-
 \item{threshold}{the minimum threshold for healing neuron skeletons for visualisation, using \code{nat::stitch_neurons_mst}.}
+
+\item{...}{Other arguments passed on to layer().}
 }
 \value{
 A list of ggplot2 geom layers for visualizing the neuron.
