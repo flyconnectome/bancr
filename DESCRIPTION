@@ -25,7 +25,7 @@ Depends:
     nat.flybrains
 Imports: 
     fancr,
-    nat,
+    nat (>= 1.10.4),
     nat.templatebrains,
     malevnc,
     rlang,
