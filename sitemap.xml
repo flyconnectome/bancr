@@ -18,7 +18,6 @@
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_codex_network.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_codex_search.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_decapitate.html</loc></url>
-<url><loc>https://flyconnectome.github.io/bancr/reference/banc_ggneuron.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_ids.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_islatest.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/banc_latestid.html</loc></url>
@@ -50,9 +49,6 @@
 <url><loc>https://flyconnectome.github.io/bancr/reference/choose_banc.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/dr_banc.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/elastix_xform.html</loc></url>
-<url><loc>https://flyconnectome.github.io/bancr/reference/geom_neuron.html</loc></url>
-<url><loc>https://flyconnectome.github.io/bancr/reference/ggneuron.html</loc></url>
-<url><loc>https://flyconnectome.github.io/bancr/reference/ggplot2_neuron_path.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/index.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/navis_elastix_xform.html</loc></url>
 <url><loc>https://flyconnectome.github.io/bancr/reference/read_elastix_output_file.html</loc></url>
