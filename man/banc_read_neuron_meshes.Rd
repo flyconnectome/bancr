@@ -51,7 +51,7 @@ objects. See \code{nat::\link[nat]{read.neurons}} for details.
 Read one or more BANC neuron and nuclei meshes
 }
 \examples{
-\donttest{
+\dontrun{
 neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 plot3d(neuron.mesh, alpha = 0.1)
 nucleus.mesh <- banc_read_nuclei_mesh("72903876004544795")
