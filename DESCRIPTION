@@ -1,7 +1,7 @@
 Type: Package
 Package: bancr
 Title: R Client Access to the Brain And Nerve Cord (BANC) Dataset
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: 
     c(person(given = "Alexander",
            family = "Bates",
@@ -37,7 +37,8 @@ Imports:
     dplyr,
     magrittr,
     utils,
-    reticulate
+    reticulate,
+    nat.ggplot
 Suggests: 
     testthat (>= 3.0.0),
     readobj,
@@ -81,7 +82,8 @@ Remotes:
     tidyverse/ggplot2,
     eliocamp/ggnewscale,
     natverse/coconat,
-    natverse/coconatfly
+    natverse/coconatfly,
+    natverse/nat.ggplot
 Config/testthat/edition: 3
 LazyDataCompression: xz
 Encoding: UTF-8

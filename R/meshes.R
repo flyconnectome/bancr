@@ -17,7 +17,7 @@
 #' @export
 #' @seealso \code{fafbseg::\link{read_cloudvolume_meshes}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
 #' plot3d(neuron.mesh, alpha = 0.1)
 #' nucleus.mesh <- banc_read_nuclei_mesh("72903876004544795")
@@ -67,7 +67,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', '
 #' @param y.cut Numeric, the Y-axis cut point, in nanometers, in BANC space,
 #'  that separates the head from the neck and ventral nerve cord. For fitting to the
 #'  MANC data set, a cut height of `y.cut=5e05` seems good.
-#' @param invert if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.
+#' @param invert if \code{TRUE} returns brain points, if \code{FALSE} returns VNC points.
 #' @param ... Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}
 #'
 #' @return Remove points above or below the midsection of the neck connective of BANC.

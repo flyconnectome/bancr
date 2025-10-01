@@ -35,7 +35,7 @@ Points must be in native BANC space, i.e. plottable inside \code{banc.surf}.}
 that separates the head from the neck and ventral nerve cord. For fitting to the
 MANC data set, a cut height of \code{y.cut=5e05} seems good.}
 
-\item{invert}{if \code{FALSE} returns brain points, if \code{TRUE} returns VNC points.}
+\item{invert}{if \code{TRUE} returns brain points, if \code{FALSE} returns VNC points.}
 
 \item{...}{Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}}
 }

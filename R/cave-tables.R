@@ -100,7 +100,9 @@ Please ask for help on #annotation_infrastructure https://flywire-forum.slack.co
 #' distributed neural control and behaviour-centric neural modules across the
 #' brain-VNC boundary.
 #' @export
-banc_edgelist <- function(edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+banc_edgelist <- function(edgelist_view = c("synapses_v2_backbone_proofread_and_peripheral_nerves_counts",
+                                            "synapses_v2_backbone_proofread_counts",
+                                            "synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
                                             "synapses_250226_backbone_proofread_counts",
                                             "synapses_v1_backbone_proofread_counts"),
                           ...){

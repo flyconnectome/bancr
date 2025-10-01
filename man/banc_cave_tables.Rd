@@ -21,7 +21,9 @@ banc_cave_tables(datastack_name = NULL, select = NULL)
 banc_cave_views(datastack_name = NULL, select = NULL)
 
 banc_edgelist(
-  edgelist_view = c("synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+  edgelist_view = c("synapses_v2_backbone_proofread_and_peripheral_nerves_counts",
+    "synapses_v2_backbone_proofread_counts",
+    "synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
     "synapses_250226_backbone_proofread_counts", "synapses_v1_backbone_proofread_counts"),
   ...
 )
