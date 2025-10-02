@@ -6,8 +6,6 @@
 bancr <img src="man/figures/logo.png" align="right" height="139" alt="" />
 ===========
 
-## An Important Connectome Dataset
-
 The **bancr** package provides R access to the first unified brain-and-nerve-cord connectome of a limbed animal - the Brain And Nerve Cord dataset (*BANC*) of *Drosophila melanogaster*. This important dataset represents a significant advance in our understanding of neural circuits, revealing how the brain and nerve cord work together as an integrated system to control behavior.
 
 ### Scientific Significance
