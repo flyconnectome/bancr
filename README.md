@@ -5,6 +5,7 @@
 <!-- badges: end -->
 
 bancr <img src="man/figures/logo.png" align="right" height="139" alt="" />
+
 ===========
 
 ## An Important Connectome Dataset
