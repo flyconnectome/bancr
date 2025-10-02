@@ -1,10 +1,10 @@
+<img src="man/figures/logo.svg" align="right" height="139" />
 <!-- badges: start -->
 [![natverse](https://img.shields.io/badge/natverse-Part%20of%20the%20natverse-a241b6)](https://natverse.github.io)
 [![Docs](https://img.shields.io/badge/docs-100%25-brightgreen.svg)](https://flyconnectome.github.io/bancr/reference/)
 [![R-CMD-check](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/flyconnectome/bancr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-bancr <img src="man/figures/logo.png" align="right" height="139" alt="" />
 ===========
 
 ## An Important Connectome Dataset
