@@ -206,6 +206,7 @@ cloud-volume version, the solution may be to update cloud-volume, as so:
 
 ```r
 fafbseg::simple_python('none', pkgs='cloud-volume~=8.32.1')
+fafbseg::simple_python('none', pkgs='caveclient~=8.0.0')
 ```
 
 Use `with_banc()` to wrap many additional `fafbseg::flywire_*` functions 
