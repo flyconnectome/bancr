@@ -77,8 +77,14 @@ banc_meta <- local({
         dplyr::mutate(id = as.character(id))
     } else {
       message("Fetching banc_cell_info()")
-      banc.community.meta <- banc_cell_info() %>%
-        dplyr::filter(valid == 't') %>%
+      bci <- banc_cell_info()
+      # latest CAVEclient turns this into a logical value
+      bci <- if(is.logical(bci$valid))
+        bci %>% dplyr::filter(valid)
+      else
+        bci %>% dplyr::filter(valid == 't')
+
+      banc.community.meta <- bci %>%
         dplyr::arrange(pt_root_id, tag) %>%
         dplyr::distinct(pt_root_id, tag2, tag, .keep_all = TRUE) %>%
         dplyr::group_by(pt_root_id, tag2) %>%
