@@ -52,7 +52,9 @@ banctable_move_to_bigdata(
   url = "https://cloud.seatable.io/",
   workspace_id = "57832",
   token_name = "BANCTABLE_TOKEN",
-  where = "`region` = 'optic'",
+  view_name = "archive",
+  view_id = NULL,
+  where = NULL,
   invert = FALSE,
   row_ids = NULL
 )
@@ -114,11 +116,15 @@ column that can identify each row in the remote table.}
 
 \item{...}{Additional arguments passed to the underlying parallel processing functions which might include cl=2 to specify a number of parallel jobs to run.}
 
-\item{where}{Optional SQL-like where clause to filter rows (default: NULL moves all rows)}
+\item{view_name}{Character, the name of the view containing rows to archive (required for archive operation). Mutually exclusive with view_id.}
 
-\item{invert}{whether to send the specified rows (\code{where}) to big data storage (\code{FALSE}) or from storage to the 'normal' table (\code{FALSE}.)}
+\item{view_id}{Character, the ID of the view containing rows to archive (alternative to view_name). Mutually exclusive with view_name.}
 
-\item{row_ids}{Character, seatable row IDs}
+\item{where}{DEPRECATED. The API no longer supports WHERE clauses. Use view_name or view_id instead.}
+
+\item{invert}{Logical. If \code{FALSE} (default), archives rows from normal backend to big data backend (requires view_name or view_id). If \code{TRUE}, unarchives rows from big data backend back to normal backend (requires row_ids).}
+
+\item{row_ids}{Character vector of seatable row IDs. Required for unarchive operation (when invert=TRUE). These are the specific rows to move from big data backend back to normal backend. Use the table_id (not table_name) for unarchive operations.}
 
 \item{bigdata}{logical, if \code{TRUE} new rows are added to the bigdata archive rather than the 'normal' seatable.}
 }
@@ -141,6 +147,10 @@ to the Python
 \href{https://seatable.github.io/seatable-scripts/python/base/}{\code{Base}}
 API allowing a range of row/column manipulations.
 \code{banctable_update_rows} updates existing rows in a table, returning TRUE on success.
+\code{banctable_move_to_bigdata} moves rows between normal backend and big data backend.
+When \code{invert=FALSE} (archive), it moves all rows from a specified view to big data storage.
+When \code{invert=TRUE} (unarchive), it moves specific rows by row_id from big data storage back to normal backend.
+Note: The big data backend must be enabled in your base for this function to work.
 }
 \examples{
 \dontrun{
@@ -149,8 +159,28 @@ banctable_set_token(user="MY_EMAIL_FOR_SEATABLE.com",
                     pwd="MY_SEATABLE_PASSWORD",
                     url="https://cloud.seatable.io/")
 
-# Thereafter:
+# Query a table:
 banc.meta <- banctable_query()
+
+# Archive rows to big data backend (requires a view):
+banctable_move_to_bigdata(
+  table = "banc_meta",
+  base = "banc_meta",
+  view_name = "optic_region_view"
+)
+
+# Alternative: use view_id instead of view_name:
+banctable_move_to_bigdata(
+  table = "banc_meta",
+  view_id = "0000"
+)
+
+# Unarchive specific rows from big data backend:
+banctable_move_to_bigdata(
+  table = "banc_meta",
+  invert = TRUE,
+  row_ids = c("FoDxhChYQSycLm88JZ11RA", "AnotherRowId123")
+)
 }
 }
 \seealso{

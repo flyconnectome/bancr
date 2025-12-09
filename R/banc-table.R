@@ -14,6 +14,12 @@
 #'   \href{https://seatable.github.io/seatable-scripts/python/base/}{\code{Base}}
 #'    API allowing a range of row/column manipulations.
 #'    \code{banctable_update_rows} updates existing rows in a table, returning TRUE on success.
+#'    \code{banctable_append_rows} appends new rows to a table. When \code{bigdata=TRUE}, rows are
+#'    added directly to the big data backend using the \code{/add-archived-rows/} endpoint.
+#'    \code{banctable_move_to_bigdata} moves rows between normal backend and big data backend.
+#'    When \code{invert=FALSE} (archive), it moves all rows from a specified view to big data storage.
+#'    When \code{invert=TRUE} (unarchive), it moves specific rows by row_id from big data storage back to normal backend.
+#'    Note: The big data backend must be enabled in your base for these functions to work.
 #'
 #' @param sql A SQL query string. See examples and
 #'   \href{https://seatable.github.io/seatable-scripts/python/query/}{seatable
@@ -41,11 +47,13 @@
 #' @param append_allowed Logical. Whether rows without row identifiers can be appended.
 #' @param chunksize To split large requests into smaller ones with max this many rows.
 #' @param token_name The name of the token in your .Renviron file, should be \code{BANCTABLE_TOKEN}.
-#' @param where Optional SQL-like where clause to filter rows (default: NULL moves all rows)
-#' @param bigdata logical, if `TRUE` new rows are added to the bigdata archive rather than the 'normal' seatable.
-#' @param invert whether to send the specified rows (`where`) to big data storage (`FALSE`) or from storage to the 'normal' table (`FALSE`.)
+#' @param view_name Character, the name of the view containing rows to archive (required for archive operation). Mutually exclusive with view_id.
+#' @param view_id Character, the ID of the view containing rows to archive (alternative to view_name). Mutually exclusive with view_name.
+#' @param where DEPRECATED. The API no longer supports WHERE clauses. Use view_name or view_id instead.
+#' @param bigdata Logical. If `TRUE`, new rows are added directly to the big data backend using the `/add-archived-rows/` API endpoint. If `FALSE` (default), rows are added to the normal backend. Note: The big data backend must be enabled in your base for this to work.
+#' @param invert Logical. If `FALSE` (default), archives rows from normal backend to big data backend (requires view_name or view_id). If `TRUE`, unarchives rows from big data backend back to normal backend (requires row_ids).
 #' @param table.max the maximum number of rows to read from the seatable at one time, which is capped at 10000L by seatable.
-#' @param row_ids Character, seatable row IDs
+#' @param row_ids Character vector of seatable row IDs. Required for unarchive operation (when invert=TRUE). These are the specific rows to move from big data backend back to normal backend. Use the table_id (not table_name) for unarchive operations.
 #' @param ... Additional arguments passed to the underlying parallel processing functions which might include cl=2 to specify a number of parallel jobs to run.
 #' @param retries if a request to the seatable API fails, the number of times to re-try with a 0.1 second pause.
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
@@ -59,8 +67,40 @@
 #'                     pwd="MY_SEATABLE_PASSWORD",
 #'                     url="https://cloud.seatable.io/")
 #'
-#' # Thereafter:
+#' # Query a table:
 #' banc.meta <- banctable_query()
+#'
+#' # Archive rows to big data backend (requires a view):
+#' banctable_move_to_bigdata(
+#'   table = "banc_meta",
+#'   base = "banc_meta",
+#'   view_name = "optic_region_view"
+#' )
+#'
+#' # Alternative: use view_id instead of view_name:
+#' banctable_move_to_bigdata(
+#'   table = "banc_meta",
+#'   view_id = "0000"
+#' )
+#'
+#' # Unarchive specific rows from big data backend:
+#' banctable_move_to_bigdata(
+#'   table = "banc_meta",
+#'   invert = TRUE,
+#'   row_ids = c("FoDxhChYQSycLm88JZ11RA", "AnotherRowId123")
+#' )
+#'
+#' # Append rows directly to big data backend:
+#' new_data <- data.frame(
+#'   root_id = c("720575940626768442", "720575940636821616"),
+#'   cell_type = c("DNa02", "DNa02")
+#' )
+#' banctable_append_rows(
+#'   df = new_data,
+#'   table = "banc_meta",
+#'   base = "banc_meta",
+#'   bigdata = TRUE
+#' )
 #' }
 #' @export
 #' @rdname banctable_query
@@ -321,9 +361,31 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
                                       url = "https://cloud.seatable.io/",
                                       workspace_id = "57832",
                                       token_name = "BANCTABLE_TOKEN",
-                                      where = "`region` = 'optic'",
+                                      view_name = "archive",
+                                      view_id = NULL,
+                                      where = NULL,
                                       invert = FALSE,
                                       row_ids = NULL){
+
+  # Deprecation warning for 'where' parameter
+  if (!is.null(where)) {
+    warning("The 'where' parameter is deprecated. The SeaTable API now requires 'view_name' or 'view_id' instead of WHERE clauses. Please specify a view containing the rows you want to archive.")
+  }
+
+  # Validation for archive operation
+  if (!invert) {
+    if (is.null(view_name) && is.null(view_id)) {
+      stop("For archive operation, you must provide either 'view_name' or 'view_id'. The API no longer supports WHERE clauses.")
+    }
+    if (!is.null(view_name) && !is.null(view_id)) {
+      stop("Please provide either 'view_name' OR 'view_id', not both.")
+    }
+  }
+
+  # Validation for unarchive operation
+  if (invert && is.null(row_ids)) {
+    stop("For unarchive operation (invert=TRUE), you must provide 'row_ids'.")
+  }
 
   # get base
   ac <- banctable_login(token_name=token_name)
@@ -347,20 +409,25 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
   endpoint <- sprintf("https://%s/api-gateway/api/v2/dtables/%s/%s/", server, base_uuid, movement)
 
   # Prepare the request body
-  body <- list(table_name = table)
   if(invert){
-    if (!is.null(row_ids)) {
-      body$row_ids <- as.list(row_ids)
-    }
+    # For unarchive, use table_id (not table_name)
+    body <- list(table_id = table)
+    body$row_ids <- as.list(row_ids)
   }else{
-    # Add where clause if provided
-    if (!is.null(where)) {
-      body$where <- where
+    # For archive-view, use table_name and view_name/view_id
+    body <- list(table_name = table)
+
+    # Add view_name or view_id (required by API)
+    if (!is.null(view_name)) {
+      body$view_name <- view_name
+    } else if (!is.null(view_id)) {
+      body$view_id <- view_id
     }
   }
 
   # Make the request
   response <- httr2::request(endpoint) %>%
+    httr2::req_options(http_version = 2) %>%  # Force HTTP/1.1 (curl constant: 2) to avoid HTTP/2 framing errors
     httr2::req_headers(
       "Authorization" = sprintf("Bearer %s", token),
       "Accept" = "application/json",
@@ -464,11 +531,63 @@ banctable_append_rows <- function (df,
   pyl = fafbseg:::df2appendpayload(df)
   if(!bigdata){
     res = base$batch_append_rows(table_name = table, rows_data = pyl)
+    ok = isTRUE(all.equal(res[["inserted_row_count"]], nx))
+    return(ok)
   }else{
-    res = base$big_data_insert_rows(table_name = table, rows_data = pyl)
+    # Use REST API for big data backend
+    base_uuid <- base$dtable_uuid
+    token <- base$jwt_token
+    server <- gsub("^https?://", "", base$server_url)
+    server <- gsub("/$", "", server)
+
+    # Construct the endpoint for adding rows to big data backend
+    endpoint <- sprintf("https://%s/api-gateway/api/v2/dtables/%s/add-archived-rows/", server, base_uuid)
+
+    # Convert Python payload to R list for JSON
+    rows_list <- reticulate::py_to_r(pyl)
+
+    # Prepare the request body
+    body <- list(
+      table_name = table,
+      rows = rows_list
+    )
+
+    # Make the request
+    response <- httr2::request(endpoint) %>%
+      httr2::req_options(http_version = 2) %>%  # Force HTTP/1.1 to avoid HTTP/2 framing errors
+      httr2::req_headers(
+        "Authorization" = sprintf("Bearer %s", token),
+        "Accept" = "application/json",
+        "Content-Type" = "application/json"
+      ) %>%
+      httr2::req_body_json(body) %>%
+      httr2::req_error(is_error = function(resp) FALSE) %>%
+      httr2::req_perform()
+
+    # Check for successful response
+    if (httr2::resp_status(response) != 200) {
+      error_msg <- tryCatch({
+        if (httr2::resp_content_type(response) == "application/json") {
+          error_content <- httr2::resp_body_json(response)
+          if (!is.null(error_content$error_message)) {
+            error_content$error_message
+          } else {
+            httr2::resp_body_string(response)
+          }
+        } else {
+          httr2::resp_body_string(response)
+        }
+      }, error = function(e) {
+        "Could not parse error message"
+      })
+      stop("Failed to append rows to big data backend: ", error_msg)
+    }
+
+    # Parse response to check inserted row count
+    result <- httr2::resp_body_json(response)
+    ok <- isTRUE(result$success == TRUE)
+    return(ok)
   }
-  ok = isTRUE(all.equal(res[["inserted_row_count"]], nx))
-  return(ok)
 }
 
 # modified to enable list uploads to multi-select columns

@@ -6,6 +6,8 @@
 \alias{bancr-package}
 \title{bancr: R Client Access to the Brain And Nerve Cord (BANC) Dataset}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Access to the BANC 'righty' EM dataset, focussing on support for BANC autosegmentation. Organised as a wrapper around the fafbseg package.
 }
 \section{Details}{
