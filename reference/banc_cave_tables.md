@@ -1,0 +1,153 @@
+# Read BANC CAVE-tables, good sources of metadata
+
+CAVE tables query functions that track neurons across segmentation
+changes so that annotations and neuron entities can be stably tracked
+together. The Brain And Nerve Cord (BANC) dataset represents the first
+complete connectome including both brain and ventral nerve cord of a
+limbed animal, comprising approximately 160,000 neurons across the
+entire central nervous system.
+
+## Usage
+
+``` r
+banc_cave_tables(datastack_name = NULL, select = NULL)
+
+banc_cave_views(datastack_name = NULL, select = NULL)
+
+banc_edgelist(
+  edgelist_view = c("synapses_v2_backbone_proofread_and_peripheral_nerves_counts",
+    "synapses_v2_backbone_proofread_counts",
+    "synapses_250226_backbone_proofread_and_peripheral_nerves_counts",
+    "synapses_250226_backbone_proofread_counts", "synapses_v1_backbone_proofread_counts"),
+  ...
+)
+
+banc_mitochondria(
+  rootids = NULL,
+  table = "mitochondria_v1",
+  rawcoords = FALSE,
+  ...
+)
+
+banc_nuclei(
+  rootids = NULL,
+  nucleus_ids = NULL,
+  table = c("both", "somas_v1a", "somas_v1b"),
+  rawcoords = FALSE,
+  ...
+)
+
+banc_cell_info(rootids = NULL, rawcoords = FALSE, ...)
+
+banc_proofreading_notes(rootids = NULL, rawcoords = FALSE, ...)
+
+banc_cell_ids(rootids = NULL, ...)
+
+banc_neck_connective_neurons(
+  rootids = NULL,
+  table = c("neck_connective_y92500", "neck_connective_y121000"),
+  ...
+)
+
+banc_peripheral_nerves(rootids = NULL, ...)
+
+banc_backbone_proofread(rootids = NULL, ...)
+
+banc_nt_prediction(
+  rootids = NULL,
+  table = "synapses_250226_nt_prediction_5",
+  simplify = TRUE,
+  rawcoords = TRUE,
+  ...
+)
+
+banc_version()
+```
+
+## Arguments
+
+- datastack_name:
+
+  Defaults to "brain_and_nerve_cord". See
+  https://global.daf-apis.com/info/ for other options.
+
+- select:
+
+  A regex term for the name of the table you want
+
+- edgelist_view:
+
+  Character, name of prepared CAVE view that computes the
+  proofread-neuron edgelist.
+
+- ...:
+
+  Additional arguments passed to
+  `fafbseg::`[`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
+  or `bancr:::get_cave_table_data`.
+
+- rootids:
+
+  Character vector specifying one or more BANC rootids. As a convenience
+  this argument is passed to
+  [`banc_ids`](https://flyconnectome.github.io/bancr/reference/banc_ids.md)
+  allowing you to pass in data.frames, BANC URLs or simple ids.
+
+- table:
+
+  Character, possible alternative tables for the sort of data frame the
+  function returns. One must be chosen.
+
+- rawcoords:
+
+  Logical, whether or not to convert from raw coordinates into
+  nanometers. Default is `FALSE`.
+
+- nucleus_ids:
+
+  Character vector specifying one or more BANC nucleus ids. The nucleus
+  (<https://en.wikipedia.org/wiki/Cell_nucleus>) contains the cell body
+  and provides a stable reference point for neuron identification.
+
+- simplify:
+
+  logical, if `TRUE` then the proportion of presynaptic connections for
+  each transmitter type is returned, for each query neuron.
+
+## Value
+
+A `data.frame` describing a CAVE-table related to the BANC project. In
+the case of `banc_cave_tables`, a vector is returned containing the
+names of all query-able cave tables.
+
+## Details
+
+CAVE tables store rich metadata supporting analysis of distributed
+neural control across the entire central nervous system. For more
+information about CAVE infrastructure, see
+<https://www.caveconnecto.me/CAVEclient/>.
+
+`banc_edgelist` returns a data frame of neuron-neuron connections where
+the pre (presynaptic) neuron is upstream of the post (postsynaptic)
+neuron. This edgelist contains synaptic connectivity data crucial for
+understanding distributed neural control and behaviour-centric neural
+modules across the brain-VNC boundary.
+
+`banc_cell_info` accesses the cell_info CAVE table containing
+non-centralised annotations from the research community for connectome
+neurones. These annotations represent diverse contributions from
+researchers studying specific neural circuits and cell types in the BANC
+dataset.
+
+## See also
+
+`fafbseg::`[`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+all_banc_soma_positions <- banc_nuclei()
+points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
+} # }
+```
