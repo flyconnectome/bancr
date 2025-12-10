@@ -126,7 +126,7 @@ column that can identify each row in the remote table.}
 
 \item{row_ids}{Character vector of seatable row IDs. Required for unarchive operation (when invert=TRUE). These are the specific rows to move from big data backend back to normal backend. Use the table_id (not table_name) for unarchive operations.}
 
-\item{bigdata}{logical, if \code{TRUE} new rows are added to the bigdata archive rather than the 'normal' seatable.}
+\item{bigdata}{Logical. If \code{TRUE}, new rows are added directly to the big data backend using the \verb{/add-archived-rows/} API endpoint. If \code{FALSE} (default), rows are added to the normal backend. Note: The big data backend must be enabled in your base for this to work.}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows
@@ -147,10 +147,12 @@ to the Python
 \href{https://seatable.github.io/seatable-scripts/python/base/}{\code{Base}}
 API allowing a range of row/column manipulations.
 \code{banctable_update_rows} updates existing rows in a table, returning TRUE on success.
+\code{banctable_append_rows} appends new rows to a table. When \code{bigdata=TRUE}, rows are
+added directly to the big data backend using the \code{/add-archived-rows/} endpoint.
 \code{banctable_move_to_bigdata} moves rows between normal backend and big data backend.
 When \code{invert=FALSE} (archive), it moves all rows from a specified view to big data storage.
 When \code{invert=TRUE} (unarchive), it moves specific rows by row_id from big data storage back to normal backend.
-Note: The big data backend must be enabled in your base for this function to work.
+Note: The big data backend must be enabled in your base for these functions to work.
 }
 \examples{
 \dontrun{
@@ -180,6 +182,18 @@ banctable_move_to_bigdata(
   table = "banc_meta",
   invert = TRUE,
   row_ids = c("FoDxhChYQSycLm88JZ11RA", "AnotherRowId123")
+)
+
+# Append rows directly to big data backend:
+new_data <- data.frame(
+  root_id = c("720575940626768442", "720575940636821616"),
+  cell_type = c("DNa02", "DNa02")
+)
+banctable_append_rows(
+  df = new_data,
+  table = "banc_meta",
+  base = "banc_meta",
+  bigdata = TRUE
 )
 }
 }
