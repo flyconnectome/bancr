@@ -12,12 +12,14 @@ to the Python
 [`Base`](https://seatable.github.io/seatable-scripts/python/base/) API
 allowing a range of row/column manipulations. `banctable_update_rows`
 updates existing rows in a table, returning TRUE on success.
-`banctable_move_to_bigdata` moves rows between normal backend and big
-data backend. When `invert=FALSE` (archive), it moves all rows from a
-specified view to big data storage. When `invert=TRUE` (unarchive), it
-moves specific rows by row_id from big data storage back to normal
-backend. Note: The big data backend must be enabled in your base for
-this function to work.
+`banctable_append_rows` appends new rows to a table. When
+`bigdata=TRUE`, rows are added directly to the big data backend using
+the `/add-archived-rows/` endpoint. `banctable_move_to_bigdata` moves
+rows between normal backend and big data backend. When `invert=FALSE`
+(archive), it moves all rows from a specified view to big data storage.
+When `invert=TRUE` (unarchive), it moves specific rows by row_id from
+big data storage back to normal backend. Note: The big data backend must
+be enabled in your base for these functions to work.
 
 ## Usage
 
@@ -201,8 +203,10 @@ banctable_append_rows(
 
 - bigdata:
 
-  logical, if `TRUE` new rows are added to the bigdata archive rather
-  than the 'normal' seatable.
+  Logical. If `TRUE`, new rows are added directly to the big data
+  backend using the `/add-archived-rows/` API endpoint. If `FALSE`
+  (default), rows are added to the normal backend. Note: The big data
+  backend must be enabled in your base for this to work.
 
 ## Value
 
@@ -243,6 +247,18 @@ banctable_move_to_bigdata(
   table = "banc_meta",
   invert = TRUE,
   row_ids = c("FoDxhChYQSycLm88JZ11RA", "AnotherRowId123")
+)
+
+# Append rows directly to big data backend:
+new_data <- data.frame(
+  root_id = c("720575940626768442", "720575940636821616"),
+  cell_type = c("DNa02", "DNa02")
+)
+banctable_append_rows(
+  df = new_data,
+  table = "banc_meta",
+  base = "banc_meta",
+  bigdata = TRUE
 )
 } # }
 ```
