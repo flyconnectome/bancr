@@ -407,7 +407,7 @@ banc_to_JRC2018F <- function(x,
 
   # get the right registrations
   if(region=="brain"){
-    banc_to_template_elastix <- "vnc_240721"
+    banc_to_template_elastix <- "brain_240721"
     if(method=="tpsreg"){
       template_to_banc_trafo <- bancr::jrc2018f_to_banc_tpsreg
       banc_to_template_trafo <- bancr::banc_to_jrc2018f_tpsreg
