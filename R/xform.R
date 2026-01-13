@@ -138,6 +138,8 @@ elastix_xform <- function(points,
 
   # Create a temporary directory
   temp_dir <- tempdir(check = TRUE)
+  temp_dir <- file.path(temp_dir, "elastix_xform")
+  dir.create(temp_dir, showWarnings = FALSE, recursive = TRUE)
 
   # Copy additional files if required
   if (length(copy_files) > 0) {
