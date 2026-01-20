@@ -34,7 +34,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Write BANC chunkedgraph secret
-        if: runner.os == 'Linux'  # or omit if you want it on all OSes
         run: |
           mkdir -p ~/.cloudvolume/secrets
           cat << 'EOF' > ~/.cloudvolume/secrets/chunkedgraph-secret.json
