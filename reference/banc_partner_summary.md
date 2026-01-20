@@ -15,7 +15,7 @@ ventral nerve cord regions.
 banc_partner_summary(
   rootids,
   partners = c("outputs", "inputs"),
-  synapse_table = NULL,
+  synapse_table = c("synapses_v2", "synapses_v1"),
   threshold = 0,
   remove_autapses = TRUE,
   cleft.threshold = 0,
@@ -26,7 +26,7 @@ banc_partner_summary(
 banc_partners(
   rootids,
   partners = c("input", "output"),
-  synapse_table = NULL,
+  synapse_table = c("synapses_v2", "synapses_v1"),
   ...
 )
 ```
