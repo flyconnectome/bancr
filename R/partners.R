@@ -50,7 +50,7 @@
 #' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
-                                 synapse_table = NULL,
+                                 synapse_table = c("synapses_v2","synapses_v1"),
                                  threshold = 0,
                                  remove_autapses = TRUE,
                                  cleft.threshold = 0,
@@ -122,9 +122,10 @@ Have you been granted access to banc production?")
 #' @rdname banc_partner_summary
 banc_partners <- function(rootids,
                           partners=c("input", "output"),
-                          synapse_table = NULL,
+                          synapse_table = c("synapses_v2","synapses_v1"),
                           ...) {
   partners=match.arg(partners)
+  synapse_table=match.arg(synapse_table)
   rootids=banc_ids(rootids)
   fcc=banc_cave_client()
   pyids=fafbseg:::rids2pyint(rootids)
