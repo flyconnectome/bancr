@@ -28,17 +28,33 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      RGL_USE_NULL: "TRUE"   # Force rgl to use null device (no X11/OpenGL needed)
+      RGL_USE_NULL: "TRUE"
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Write BANC chunkedgraph secret
+      # Unix (macOS + Linux) – bash + heredoc
+      - name: Write BANC chunkedgraph secret (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           mkdir -p ~/.cloudvolume/secrets
           cat << 'EOF' > ~/.cloudvolume/secrets/chunkedgraph-secret.json
           ${{ secrets.BANC_CHUNKEDGRAPH_SECRET_JSON }}
           EOF
+
+      # Windows – PowerShell + Set-Content
+      - name: Write BANC chunkedgraph secret (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $secretDir = Join-Path $env:USERPROFILE ".cloudvolume\secrets"
+          New-Item -ItemType Directory -Force -Path $secretDir | Out-Null
+          $secretPath = Join-Path $secretDir "chunkedgraph-secret.json"
+          # Write the secret exactly as stored
+          Set-Content -Path $secretPath -Value @'
+${{ secrets.BANC_CHUNKEDGRAPH_SECRET_JSON }}
+'@ -NoNewline
 
       - uses: r-lib/actions/setup-pandoc@v2
 
