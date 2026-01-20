@@ -50,7 +50,7 @@ options()[grep("^fafbseg.*url", names(options()))]
 } # }
 # \donttest{
 with_banc(fafbseg::flywire_islatest('648518346498254576'))
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/xqin2gFb0EvQ6PkItHUZ5/bin/python' -m pip freeze' had status 1
+#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/dybGv3X8tM86O0NKp-MbY/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #> [1] FALSE
 # }
