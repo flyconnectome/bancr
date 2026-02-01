@@ -58,6 +58,7 @@ banc_partner_summary <- function(rootids,
                                  ...) {
   if(is.null(datastack_name))
     datastack_name = banc_datastack_name()
+  synapse_table=match.arg(synapse_table)
   with_banc(
     fafbseg::flywire_partner_summary(
       rootids,
