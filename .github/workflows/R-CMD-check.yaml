@@ -53,9 +53,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path $secretDir | Out-Null
           $secretPath = Join-Path $secretDir "chunkedgraph-secret.json"
           # Write the secret exactly as stored
-          Set-Content -Path $secretPath -Value @'
-${{ secrets.BANC_CHUNKEDGRAPH_SECRET_JSON }}
-'@ -NoNewline
+          $secret = '${{ secrets.BANC_CHUNKEDGRAPH_SECRET_JSON }}'
+          Set-Content -Path $secretPath -Value $secret -NoNewline
 
       - uses: r-lib/actions/setup-pandoc@v2
 
