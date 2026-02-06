@@ -724,16 +724,47 @@ banc_deannotate_cave_table <- function(annotation_ids = NULL,
 }
 
 # hidden
-# banc.meta <- banctable_query() %>%
+
+# # Get positions from the BANC seatable
+# banc.meta <- banctable_query("SELECT root_id, position, status, l2_nodes from banc_meta") %>%
 # dplyr::filter(grepl("DEBRIS",status),
-#               !is.na(position)
-# positions <- structure(list(X = c(167501L, 166837L, 99722L), Y = c(143868L,
-# 149546L, 239936L), Z = c(5456L, 2485L, 6792L)), row.names = c(NA,
-#                                                               3L), class = "data.frame")
+#               !is.na(position),
+#               l2_nodes<10)
+# positions <- nat::xyzmatrix(banc.meta$position)
+#
+# # Or define them somehow yourself
+# positions <- structure(list(X = c(167501L, 166837L, 99722L),
+#                             Y = c(143868L,149546L, 239936L),
+#                             Z = c(5456L, 2485L, 6792L)),
+#                        row.names = c(NA, 3L),
+#                        class = "data.frame")
+#
+# # Annotate points marked as debris
 # banc_annotate_proofreading_notes(positions = positions,
 #                                  user_id = 355,
 #                                  label = "debris",
-#                                  units = "raw")
+#                                  units = "raw",
+#                                  use_admin_creds = TRUE)
+#
+# # See what is in the table
+# banc.proofreading.notes <- banc_proofreading_notes(rawcoords = TRUE)
+#
+# # Flag for deletion
+# positions.str <- nat::xyzmatrix2str(positions)
+# noted.positions <- nat::xyzmatrix2str(banc.proofreading.notes$pt_position)
+# flagged.positions <- noted.positions %in% positions.str
+# banc.proofreading.notes.delete <- banc.proofreading.notes[flagged.positions,] %>%
+#   dplyr::filter(tag == "debris")
+#
+# # Deannotate the points
+# banc_deannotate_cave_table(annotation_ids = banc.proofreading.notes.delete$id,
+#                           positions = nat::xyzmatrix(banc.proofreading.notes.delete$pt_position),
+#                           user_id = 355,
+#                           units = "raw",
+#                           table = "proofreading_notes",
+#                           use_admin_creds = TRUE)
+
+# Hidden
 banc_annotate_proofreading_notes <- function(positions,
                                               user_id,
                                               label,
@@ -779,12 +810,15 @@ banc_annotate_bound_tag_user_cave_table <- function(positions,
                                      user_id,
                                      datastack_name = NULL,
                                      use_admin_creds = FALSE){
+  if(is.null(datastack_name)){
+    datastack_name <- banc_datastack_name()
+  }
   if (use_admin_creds) {
-    client = banc_service_account(datastack_name)
+    client <- banc_service_account(datastack_name)
+  }else {
+    client <- fafbseg::flywire_cave_client(datastack_name = datastack_name)
   }
-  else {
-    client = fafbseg::flywire_cave_client(datastack_name = datastack_name)
-  }
+  np <- reticulate::import("numpy")
   stage <- client$annotation$stage_annotations(table)
   cat("checking ", nrow(positions),"positions....\n")
   valid_ids <- banc_xyz2id(positions, rawcoords = TRUE)
@@ -830,18 +864,15 @@ banc_annotate_bound_tag_user_cave_table <- function(positions,
     }
   if (is.data.frame(positions)) {
     pause_seconds <- nrow(positions) * 0.1
-  }
-  else {
+  }else {
     pause_seconds <- 1
   }
   cat("checking result ...")
   Sys.sleep(5+pause_seconds)
   annotations <- try({with_banc(get_cave_table_data(table, live = 2))})
   if(is.null(annotations)){
-    annotations.new <- annotations %>% dplyr::filter(.data$id %in%
-                                                       result_ind)
-    cat("annotated", nrow(annotations.new), "entities with:",
-        tag, " for ", column)
+    annotations.new <- annotations %>% dplyr::filter(.data$id %in%result_ind)
+    cat("annotated", nrow(annotations.new), "entities with:",tag, " for ", column)
     annotations.new
   }else{
     warning("could not check annotations were added, in a few mins try: bancr:::with_banc(get_cave_table_data(table, live = 2))")
