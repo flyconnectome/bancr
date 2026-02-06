@@ -29,7 +29,7 @@ viewpoint. It does not return a value.
 ## Details
 
 The function uses
-[`rgl::rgl.viewpoint()`](https://dmurdoch.github.io/rgl/dev/reference/rgl-deprecated.html)
+[`rgl::rgl.viewpoint()`](https://dmurdoch.github.io/rgl/dev/reference/rgl-defunct.html)
 to set a predefined user matrix and zoom level. This matrix defines the
 rotation and translation of the view, while the zoom parameter adjusts
 the scale of the visualization.
@@ -42,7 +42,7 @@ a new rgl device.
 
 ## See also
 
-[`rgl.viewpoint`](https://dmurdoch.github.io/rgl/dev/reference/rgl-deprecated.html)
+[`rgl.viewpoint`](https://dmurdoch.github.io/rgl/dev/reference/rgl-defunct.html)
 for more details on setting viewpoints in rgl.
 
 ## Examples

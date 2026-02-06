@@ -68,7 +68,7 @@ BANC.
 # \donttest{
 # DNa02
 m = banc_read_neuron_meshes("720575941478275714")
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/QXvGuZRz__aJ4JLIkNSTn/bin/python' -m pip freeze' had status 1
+#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/6XNuUcX-KLn2RefNrp90V/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #>   downloading meshes
 #> No module named 'cloudvolume'
