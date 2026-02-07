@@ -856,7 +856,7 @@ banc_annotate_bound_tag_user_cave_table <- function(positions,
           #valid_id = this_id
           user_id = as.integer(user_id)
         ),
-        setNames(list(label), column)
+        setNames(list(tag), column)
       ))
       this_result <- client$annotation$upload_staged_annotations(stage)
       result_ind <- c(result_ind, this_result)
