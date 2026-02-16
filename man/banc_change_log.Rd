@@ -38,7 +38,7 @@ convenient format) available from the zetta API can be obtained with the
 private \code{bancr:::banc_change_log_zetta} function.
 }
 \examples{
-\donttest{
+\dontrun{
 banc_change_log("720575941477428704")
 }
 }

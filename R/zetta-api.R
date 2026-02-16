@@ -12,7 +12,7 @@
 #' @export
 #' @inheritParams fafbseg::flywire_change_log
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' banc_change_log("720575941477428704")
 #' }
 banc_change_log <- function(x, tz="UTC", filtered=TRUE, OmitFailures=TRUE, ...) {

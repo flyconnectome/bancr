@@ -311,7 +311,7 @@ choose_banc <- function(set=TRUE) {
 #' @rdname choose_banc
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' with_banc(fafbseg::flywire_islatest('648518346498254576'))
 #' }
 #' \dontrun{

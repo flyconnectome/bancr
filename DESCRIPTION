@@ -23,7 +23,7 @@ Depends:
     R (>= 3.5.0),
     fafbseg (>= 0.14.1.9200),
     nat.flybrains
-Imports: 
+Imports:
     fancr,
     nat (>= 1.10.4),
     nat.templatebrains,
@@ -36,6 +36,7 @@ Imports:
     jsonlite,
     dplyr,
     magrittr,
+    pbapply,
     utils,
     reticulate,
     nat.ggplot
@@ -62,7 +63,6 @@ Suggests:
     checkmate,
     memoise,
     glue,
-    pbapply,
     stringr,
     ggplot2 (>= 3.5),
     RSQLite,

@@ -46,7 +46,7 @@ Remove points above or below the midsection of the neck connective of BANC.
 Subset points to be in the brain or in the VNC
 }
 \examples{
-\donttest{
+\dontrun{
 # DNa02
 m = banc_read_neuron_meshes("720575941478275714")
 m.brain = banc_decapitate(m)

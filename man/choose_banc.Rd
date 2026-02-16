@@ -38,7 +38,7 @@ multiple data layers. For banc this is the neuroglancer scene returned by
 choose_banc()
 options()[grep("^fafbseg.*url", names(options()))]
 }
-\donttest{
+\dontrun{
 with_banc(fafbseg::flywire_islatest('648518346498254576'))
 }
 \dontrun{

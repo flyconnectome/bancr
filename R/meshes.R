@@ -74,7 +74,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', '
 #' @seealso \code{\link{banc.surf}}
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # DNa02
 #' m = banc_read_neuron_meshes("720575941478275714")
 #' m.brain = banc_decapitate(m)
