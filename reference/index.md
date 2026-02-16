@@ -73,6 +73,8 @@
   : Thin-Plate Spline Registration for Mirroring in BANC Space
 - [`banc_neuron_comparison_plot()`](https://flyconnectome.github.io/bancr/reference/banc_neuron_comparison_plot.md)
   : Compare two neurons from the BANC connectome dataset
+- [`banc_neuron_volume()`](https://flyconnectome.github.io/bancr/reference/banc_neuron_volume.md)
+  : Calculate neuron volume from CAVE L2 cache
 - [`banc_partner_summary()`](https://flyconnectome.github.io/bancr/reference/banc_partner_summary.md)
   [`banc_partners()`](https://flyconnectome.github.io/bancr/reference/banc_partner_summary.md)
   : Summarise the connectivity of BANC neurons

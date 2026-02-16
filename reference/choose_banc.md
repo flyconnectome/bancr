@@ -48,12 +48,9 @@ if (FALSE) { # \dontrun{
 choose_banc()
 options()[grep("^fafbseg.*url", names(options()))]
 } # }
-# \donttest{
+if (FALSE) { # \dontrun{
 with_banc(fafbseg::flywire_islatest('648518346498254576'))
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/xWNGxlKeV4MpBWXFAyoFv/bin/python' -m pip freeze' had status 1
-#> Warning: using default setting
-#> [1] FALSE
-# }
+} # }
 if (FALSE) { # \dontrun{
 with_banc(fafbseg::flywire_latestid('648518346498254576'))
 with_banc(fafbseg::flywire_latestid('648518346494405175'))

@@ -40,7 +40,7 @@ Other banc-ids:
 
 ``` r
 banc_islatest("720575941520182775")
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/xWNGxlKeV4MpBWXFAyoFv/bin/python' -m pip freeze' had status 1
+#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/cVD5SoaVNKWLGqWSCw1c3/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #> [1] FALSE
 ```
