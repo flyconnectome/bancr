@@ -43,7 +43,7 @@ banc_neuron_volume <- function(ids, OmitFailures = TRUE, ...) {
 
   volumes <- pbapply::pbsapply(ids, function(root_id) {
     tryCatch({
-      pyid <- fafbseg:::rids2pyint(root_id)
+      pyid <- reticulate::py_eval(root_id, convert = FALSE)
       l2_ids <- client$chunkedgraph$get_leaves(pyid, stop_layer = 2L)
       l2data <- client$l2cache$get_l2data(l2_ids, attributes = list("size_nm3"))
       # l2data is a Python dict of dicts; convert to R list
