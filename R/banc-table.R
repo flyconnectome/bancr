@@ -622,21 +622,24 @@ banctable2df <- function (df, tidf = NULL) {
   if (!isTRUE(ncol(df) > 0))
     return(df)
   nr = nrow(df)
-  # First pass: convert any columns that are still Python objects (environments)
+  # Helper: detect Python objects (environments in R via reticulate)
+  is_pyobj <- function(x) is.environment(x) || inherits(x, "python.builtin.object")
+  # First pass: convert any columns that are still Python objects
   for (i in seq_along(df)) {
-    if (is.environment(df[[i]])) {
-      df[[i]] <- tryCatch(
-        reticulate::py_to_r(df[[i]]),
-        error = function(e) rep(NA_character_, nr)
-      )
+    if (is_pyobj(df[[i]])) {
+      df[[i]] <- tryCatch({
+        converted <- reticulate::py_to_r(df[[i]])
+        # Verify conversion actually produced a native R object
+        if (is_pyobj(converted)) rep(NA_character_, nr) else converted
+      }, error = function(e) rep(NA_character_, nr))
     }
   }
   listcols = sapply(df, is.list)
   for (i in which(listcols)) {
     # Guard against unconverted Python objects inside list elements
-    if (any(vapply(df[[i]], is.environment, logical(1)))) {
+    if (any(vapply(df[[i]], is_pyobj, logical(1)))) {
       df[[i]] = vapply(df[[i]], function(x) {
-        if (is.null(x) || is.environment(x)) NA_character_
+        if (is.null(x) || is_pyobj(x)) NA_character_
         else tryCatch(as.character(x), error = function(e) NA_character_)
       }, character(1))
       next
@@ -649,7 +652,18 @@ banctable2df <- function (df, tidf = NULL) {
       else df[[i]] = ul
     }
     else if (isTRUE(all(li %in% 0:1))) {
-      df[[i]][!nzchar(df[[i]])] = NA
+      # nzchar on a Python object returns wrong-length boolean; use tryCatch
+      tryCatch({
+        df[[i]][!nzchar(df[[i]])] = NA
+      }, error = function(e) {
+        df[[i]] <<- vapply(df[[i]], function(x) {
+          if (is.null(x) || length(x) == 0) NA_character_
+          else {
+            s <- tryCatch(as.character(x)[1], error = function(e2) NA_character_)
+            if (is.na(s) || !nzchar(s)) NA_character_ else s
+          }
+        }, character(1))
+      })
       df[[i]] = fafbseg:::null2na(df[[i]])
     }
     else df[[i]] = sapply(df[[i]],paste,collapse=",")
@@ -659,6 +673,10 @@ banctable2df <- function (df, tidf = NULL) {
   else {
     if (is.character(tidf))
       tidf = fafbseg::flytable_columns(tidf)
+    # Safety: replace any remaining Python objects before flytable_fix_coltypes
+    for (i in seq_along(df)) {
+      if (is_pyobj(df[[i]])) df[[i]] <- rep(NA_character_, nr)
+    }
     fafbseg:::flytable_fix_coltypes(df, tidf = tidf)
   }
 }
