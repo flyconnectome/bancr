@@ -622,17 +622,16 @@ banctable2df <- function (df, tidf = NULL) {
   if (!isTRUE(ncol(df) > 0))
     return(df)
   nr = nrow(df)
-  # Convert any columns still stored as Python objects to native R.
-  # py_to_r(DataFrame) can leave some columns unconverted; these cause crashes
-  # in downstream flytable_fix_coltypes (e.g. x[is.na(x)] on a Python Series).
+  # Convert any columns still stored as Python objects (numpy arrays) to native R.
+  # py_to_r(DataFrame) can leave columns as numpy.ndarray objects; these cause
+  # crashes in downstream flytable_fix_coltypes (e.g. x[is.na(x)] on a Python
+  # array triggers IndexError from wrong-length boolean index).
   for (i in seq_along(df)) {
     if (is.environment(df[[i]])) {
-      df[[i]] <- tryCatch({
-        # Series$tolist() → Python list → py_to_r → R list/vector
-        as.character(reticulate::py_to_r(df[[i]]$tolist()))
-      }, error = function(e) tryCatch({
-        as.character(reticulate::py_to_r(df[[i]]))
-      }, error = function(e2) rep(NA_character_, nr)))
+      df[[i]] <- tryCatch(
+        df[[i]]$tolist(),  # auto-converts to R via reticulate
+        error = function(e) rep(NA_character_, nr)
+      )
     }
   }
   listcols = sapply(df, is.list)
