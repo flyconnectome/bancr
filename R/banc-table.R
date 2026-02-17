@@ -622,8 +622,25 @@ banctable2df <- function (df, tidf = NULL) {
   if (!isTRUE(ncol(df) > 0))
     return(df)
   nr = nrow(df)
+  # First pass: convert any columns that are still Python objects (environments)
+  for (i in seq_along(df)) {
+    if (is.environment(df[[i]])) {
+      df[[i]] <- tryCatch(
+        reticulate::py_to_r(df[[i]]),
+        error = function(e) rep(NA_character_, nr)
+      )
+    }
+  }
   listcols = sapply(df, is.list)
   for (i in which(listcols)) {
+    # Guard against unconverted Python objects inside list elements
+    if (any(vapply(df[[i]], is.environment, logical(1)))) {
+      df[[i]] = vapply(df[[i]], function(x) {
+        if (is.null(x) || is.environment(x)) NA_character_
+        else tryCatch(as.character(x), error = function(e) NA_character_)
+      }, character(1))
+      next
+    }
     li = lengths(df[[i]])
     if (isTRUE(all(li == 1))) {
       ul = unlist(df[[i]])
