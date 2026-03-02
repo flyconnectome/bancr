@@ -71,6 +71,8 @@
   : Mirror BANC Connectome Points
 - [`banc_mirror_tpsreg`](https://flyconnectome.github.io/bancr/reference/banc_mirror_tpsreg.md)
   : Thin-Plate Spline Registration for Mirroring in BANC Space
+- [`banc_nblast_matches()`](https://flyconnectome.github.io/bancr/reference/banc_nblast_matches.md)
+  : Read NBLAST match results from CAVE
 - [`banc_neuron_comparison_plot()`](https://flyconnectome.github.io/bancr/reference/banc_neuron_comparison_plot.md)
   : Compare two neurons from the BANC connectome dataset
 - [`banc_neuron_volume()`](https://flyconnectome.github.io/bancr/reference/banc_neuron_volume.md)
