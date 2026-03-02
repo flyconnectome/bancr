@@ -273,6 +273,28 @@ banc_backbone_proofread <- function(rootids = NULL, ...){
   with_banc(get_cave_table_data("backbone_proofread", rootids, ...))
 }
 
+#' Read NBLAST match results from CAVE
+#'
+#' @param dataset Character, which cross-species NBLAST comparison to query.
+#' @param ... Additional arguments passed to \code{\link{banc_cave_query}}
+#' @return A data.frame with NBLAST match results (cell_match schema)
+#' @export
+#' @examples
+#' \dontrun{
+#' # Get all maleCNS NBLAST matches
+#' matches <- banc_nblast_matches("malecns")
+#'
+#' # Get validated matches only
+#' validated <- banc_nblast_matches("fafb") %>%
+#'   dplyr::filter(validation == TRUE)
+#' }
+banc_nblast_matches <- function(dataset = c("malecns", "fafb", "hemibrain", "manc", "fanc"),
+                                ...) {
+  dataset <- match.arg(dataset)
+  table_name <- paste0("banc_", dataset, "_nblast")
+  banc_cave_query(table_name, ...)
+}
+
 # hidden
 banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
   banc.cell.info <- banc_cell_info(rawcoords = TRUE, ...)

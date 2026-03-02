@@ -617,6 +617,46 @@ banc_df2updatepayload <- function(x, via_json = TRUE){
   reticulate::py_call(pyfun$pdf2list, pdf)
 }
 
+# hidden
+# Returns column metadata for a seatable table, including the internal
+# column key (useful for debugging API errors that reference keys like "8blF").
+banctable_columns <- function(table,
+                              base = NULL,
+                              workspace_id = "57832",
+                              token_name = "BANCTABLE_TOKEN",
+                              include_key = TRUE) {
+  if (is.character(base) || is.null(base))
+    base <- banctable_base(base_name = base, table = table,
+                           workspace_id = workspace_id, token_name = token_name)
+  # Get base metadata
+  md <- base$get_metadata()
+  tablenames <- sapply(md$tables, '[[', 'name')
+  stopifnot(table %in% tablenames)
+  ti <- md$tables[[which(table == tablenames)]]
+
+  # Extract column info including key
+  ll <- lapply(ti$columns, function(x) {
+    fields <- c("key", "name", "type")
+    if (!include_key) fields <- c("name", "type")
+    vals <- x[fields]
+    vals[sapply(vals, is.null)] <- NA_character_
+    as.data.frame(vals, stringsAsFactors = FALSE, check.names = FALSE)
+  })
+  tidf <- dplyr::bind_rows(ll)
+
+  # Add R type mapping
+  tidf$rtype <- sapply(
+    tidf$type,
+    switch,
+    number = 'numeric',
+    checkbox = 'logical',
+    date = 'POSIXct',
+    mtime = 'POSIXct',
+    'character'
+  )
+  tidf
+}
+
 # hidden, modified to enable working with list columns
 banctable2df <- function (df, tidf = NULL) {
   if (!isTRUE(ncol(df) > 0))
