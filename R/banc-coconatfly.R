@@ -69,10 +69,11 @@ banc_meta <- local({
       banc.meta %>%
         dplyr::rename(
           id = root_id,
-          class = cell_class,
+          class = super_class,
           type = cell_type,
           side = side,
-          subclass = cell_sub_class
+          subclass = cell_class,
+          subsubclass = cell_sub_class
         ) %>%
         dplyr::mutate(id = as.character(id))
     } else {
@@ -118,10 +119,11 @@ banc_meta <- local({
         dplyr::distinct(pt_root_id, .keep_all = TRUE) %>%
         dplyr::select(
           id = pt_root_id,
-          class = cell_class,
+          class = super_class,
           type = cell_type,
           side = side,
-          subclass = cell_sub_class
+          subclass = cell_class,
+          subsubclass = cell_sub_class
         )
 
       rbind(
