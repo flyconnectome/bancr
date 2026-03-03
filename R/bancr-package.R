@@ -2,6 +2,8 @@
 #' @import fafbseg
 #' @import nat.flybrains
 #' @import bit64
+#' @importFrom rlang .data
+#' @importFrom stats setNames
 #' @section Details: There are several online bancr resources in addition to the
 #'   built-in R help documentation. These include:
 #' \itemize{

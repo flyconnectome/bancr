@@ -1022,11 +1022,11 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
       codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
                                                   offset = 850000, ...)
       codex_annotations_part_1 <- codex_annotations_part_1 %>%
-        dplyr::mutate(cell_type = as.character(cell_type))
+        dplyr::mutate(cell_type = as.character(.data$cell_type))
       codex_annotations_part_2 <- codex_annotations_part_2 %>%
-        dplyr::mutate(cell_type = as.character(cell_type))
+        dplyr::mutate(cell_type = as.character(.data$cell_type))
       codex_annotations_part_3 <- codex_annotations_part_3 %>%
-        dplyr::mutate(cell_type = as.character(cell_type))
+        dplyr::mutate(cell_type = as.character(.data$cell_type))
       codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
                                             codex_annotations_part_2,
                                             codex_annotations_part_3) %>%
@@ -1041,11 +1041,11 @@ banc_codex_annotations <- function (rootids = NULL, live = TRUE, ...){
     codex_annotations_part_3 <- banc_cave_query(table_name, live = live,
                                                 offset = 850000, ...)
     codex_annotations_part_1 <- codex_annotations_part_1 %>%
-      dplyr::mutate(cell_type = as.character(cell_type))
+      dplyr::mutate(cell_type = as.character(.data$cell_type))
     codex_annotations_part_2 <- codex_annotations_part_2 %>%
-      dplyr::mutate(cell_type = as.character(cell_type))
+      dplyr::mutate(cell_type = as.character(.data$cell_type))
     codex_annotations_part_3 <- codex_annotations_part_3 %>%
-      dplyr::mutate(cell_type = as.character(cell_type))
+      dplyr::mutate(cell_type = as.character(.data$cell_type))
     codex_annotations <- dplyr::bind_rows(codex_annotations_part_1,
                                           codex_annotations_part_2,
                                           codex_annotations_part_3)

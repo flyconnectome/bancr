@@ -150,7 +150,7 @@ banc_meta <- local({
       if (!is.null(ids)) {
         ids <- extract_ids(unname(unlist(ids)))
         ids <- tryCatch(banc_ids(ids), error = function(e) NULL)
-        meta %>% dplyr::filter(id %in% ids)
+        meta %>% dplyr::filter(.data$id %in% ids)
       } else {
         meta
       }
@@ -184,7 +184,7 @@ coconat_banc_ids <- function(ids=NULL) {
     if(isTRUE(ids=='neurons')) {
       ids <- metadf %>%
         dplyr::filter(is.na(class) | class!='glia') %>%
-        dplyr::pull(id)
+        dplyr::pull(.data$id)
       return(banc_ids(ids, integer64 = F))
     }
     if(isTRUE(substr(ids, 1, 1)=="/"))
@@ -201,7 +201,7 @@ coconat_banc_ids <- function(ids=NULL) {
     }
     ids <- metadf %>%
       dplyr::filter(grepl(value, .data[[field]])) %>%
-      dplyr::pull(id)
+      dplyr::pull(.data$id)
   } else if(length(ids)>0) {
     # check they are valid for current materialisation
     banc_latestid(ids, version = banc_version())
