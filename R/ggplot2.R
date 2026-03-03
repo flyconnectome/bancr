@@ -198,14 +198,12 @@ banc_neuron_comparison_plot <- function(neuron1 = NULL,
 
   # Arrange
   if(region=="both"){
-    ga <- ggpubr::ggarrange(glist[["front"]], glist[["vnc"]], glist[["main"]], glist[["side"]],
-                            heights = c(1, 1, 1, 1), widths = c(1, 1, 1, 1),
-                            ncol = 2, nrow = 2) +
+    ga <- patchwork::wrap_plots(glist[["front"]], glist[["vnc"]], glist[["main"]], glist[["side"]],
+                                ncol = 2, nrow = 2) &
       ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
   }else{
-    ga <- ggpubr::ggarrange(glist[[1]], glist[[2]],
-                            heights = c(1, 1), widths = c(1, 1),
-                            ncol = 1, nrow = 2) +
+    ga <- patchwork::wrap_plots(glist[[1]], glist[[2]],
+                                ncol = 1, nrow = 2) &
       ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
   }
 
