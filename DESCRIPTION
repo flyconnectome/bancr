@@ -43,7 +43,6 @@ Imports:
 Suggests:
     testthat (>= 3.0.0),
     readobj,
-    ggpubr,
     Rvcg,
     Morpho,
     usethis,
