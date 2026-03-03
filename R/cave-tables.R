@@ -275,10 +275,72 @@ banc_backbone_proofread <- function(rootids = NULL, ...){
 
 #' Read NBLAST match results from CAVE
 #'
+#' Query cross-species NBLAST match results stored in CAVE tables. Each table
+#' contains pairwise morphological similarity scores between BANC neurons and
+#' neurons from another connectome dataset, computed using NBLAST
+#' (Costa et al., 2016). Matches are identified by running all BANC neurons
+#' against a target dataset and retaining hits above a score threshold.
+#'
 #' @param dataset Character, which cross-species NBLAST comparison to query.
-#' @param ... Additional arguments passed to \code{\link{banc_cave_query}}
-#' @return A data.frame with NBLAST match results (cell_match schema)
+#'   One of:
+#'   \describe{
+#'     \item{\code{"malecns"}}{CAVE table: \code{banc_malecns_nblast_v2}. Matches
+#'       to the male CNS (Takemura et al., 2024) v0.9 dataset, covering the
+#'       complete male central nervous system (~75K neurons).}
+#'     \item{\code{"fafb"}}{CAVE table: \code{banc_fafb_nblast_v2}. Matches to
+#'       FAFB (Zheng et al., 2018; Dorkenwald et al., 2024) FlyWire v783 dataset,
+#'       a complete female \emph{Drosophila} brain connectome.}
+#'     \item{\code{"hemibrain"}}{CAVE table: \code{banc_hemibrain_nblast_v2}. Matches
+#'       to the hemibrain (Scheffer et al., 2020) v1.2.1 dataset, a dense
+#'       reconstruction of half the \emph{Drosophila} brain.}
+#'     \item{\code{"manc"}}{CAVE table: \code{banc_manc_nblast_v2}. Matches to the
+#'       male adult nerve cord (Takemura et al., 2024) MANC v1.2.1 dataset.}
+#'     \item{\code{"fanc"}}{CAVE table: \code{banc_fanc_nblast_v2}. Matches to
+#'       FANC (Azevedo et al., 2024) v1116, a female adult nerve cord dataset.}
+#'   }
+#' @param ... Additional arguments passed to \code{\link{banc_cave_query}},
+#'   including \code{live} (default \code{TRUE}; set to \code{2} for real-time
+#'   results or \code{FALSE} for the latest materialised version).
+#'
+#' @return A \code{data.frame} following the CAVE \code{cell_match} schema with
+#'   columns:
+#'   \describe{
+#'     \item{\code{id}}{CAVE annotation ID (integer).}
+#'     \item{\code{pt_root_id}}{Current BANC root ID at the time of query
+#'       (automatically updated by CAVE when neurons are edited).}
+#'     \item{\code{pt_supervoxel_id}}{Supervoxel ID anchoring the annotation to
+#'       the segmentation. Stable across root ID changes.}
+#'     \item{\code{pt_position}}{3D position in voxel coordinates
+#'       (resolution 4 x 4 x 45 nm) identifying the BANC neuron.}
+#'     \item{\code{query_root_id}}{BANC root ID at the time the NBLAST was run.
+#'       May differ from \code{pt_root_id} if the neuron has since been edited.}
+#'     \item{\code{match_id}}{Identifier of the matched neuron in the target
+#'       dataset. Format varies: hemibrain/maleCNS use \code{bodyid} (integer as
+#'       string), FAFB uses \code{root_783} (FlyWire root ID), MANC uses
+#'       \code{bodyid}, FANC uses \code{cell_id}. Mirrored matches are prefixed
+#'       with \code{"m"} (e.g. \code{"m12345"}).}
+#'     \item{\code{score}}{NBLAST similarity score (0-1). Higher is more
+#'       similar. Typical thresholds: 0.3-0.4 for strong matches.}
+#'     \item{\code{validation}}{Logical. \code{TRUE} if the match has been
+#'       manually validated by a human annotator, \code{FALSE} otherwise.}
+#'   }
+#'
+#' @details
+#' These tables are populated by the bancpipeline NBLAST workflow
+#' (\code{banc-nblast-compile.R} and \code{banc-nblast-cave.R}). The compile
+#' step runs NBLAST morphological comparisons and writes results to feather
+#' files; the CAVE sync step uploads new results and removes stale entries
+#' (where the BANC neuron's root ID has changed since the NBLAST was run).
+#'
+#' Because CAVE tracks root ID changes via the \code{pt_supervoxel_id} anchor
+#' point, the \code{pt_root_id} column always reflects the current segmentation.
+#' Compare \code{pt_root_id} with \code{query_root_id} to identify entries that
+#' may need re-running (the neuron was edited after the NBLAST).
+#'
 #' @export
+#' @seealso \code{\link{banc_cave_query}} for the underlying CAVE query
+#'   function, \code{\link{banc_cave_tables}} for listing all available CAVE
+#'   tables.
 #' @examples
 #' \dontrun{
 #' # Get all maleCNS NBLAST matches
@@ -287,11 +349,19 @@ banc_backbone_proofread <- function(rootids = NULL, ...){
 #' # Get validated matches only
 #' validated <- banc_nblast_matches("fafb") %>%
 #'   dplyr::filter(validation == TRUE)
+#'
+#' # Find matches for specific BANC neurons
+#' my_matches <- banc_nblast_matches("hemibrain") %>%
+#'   dplyr::filter(pt_root_id %in% my_root_ids)
+#'
+#' # Identify stale entries (neuron edited since NBLAST)
+#' stale <- banc_nblast_matches("manc") %>%
+#'   dplyr::filter(pt_root_id != query_root_id)
 #' }
 banc_nblast_matches <- function(dataset = c("malecns", "fafb", "hemibrain", "manc", "fanc"),
                                 ...) {
   dataset <- match.arg(dataset)
-  table_name <- paste0("banc_", dataset, "_nblast")
+  table_name <- paste0("banc_", dataset, "_nblast_v2")
   banc_cave_query(table_name, ...)
 }
 
