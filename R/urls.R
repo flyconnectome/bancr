@@ -65,18 +65,20 @@ banc_scene <- function(ids=NULL,
 #'
 #' @param url a spelunker neuroglancer URL.
 #' @param banc_ids A vector of neuron IDs from the BANC dataset. Default is NULL.
-#' @param banc_static_ids A vector of neuron IDs from the static v626 BANC release. 
+#' @param banc_static_ids A vector of neuron IDs from the static v626 BANC release.
 #'   This dataset version represents the snapshot for our preprint. Default is NULL.
 #' @param fafb_ids A vector of neuron IDs from the FAFB dataset. Default is NULL.
 #' @param hemibrain_ids A vector of neuron IDs from the hemibrain dataset. Default is NULL.
 #' @param manc_ids A vector of neuron IDs from the MANC dataset. Default is NULL.
+#' @param malecns_ids A vector of neuron IDs from the maleCNS v0.9 dataset. Default is NULL.
 #' @param nuclei_ids A vector of nuclei IDs for the BANC dataset. Default is NULL.
 #' @param open Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.
 #' @param banc.cols Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are cyan-purple.
 #' @param fafb.cols Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are red hues.
-#' @param hemibrain.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.
-#' @param hemibrain.mirrored.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.
+#' @param hemibrain.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for hemibrain neurons. Defaults are purple hues.
+#' @param hemibrain.mirrored.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for mirrored hemibrain neurons. Defaults are yellow hues.
 #' @param manc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.
+#' @param malecns.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for maleCNS neurons. Defaults are green hues.
 #' @param nulcei.col Hex code for the colour in which nuclei will be plotted. Default is pink.
 #' @param shorturl Logical, whether or not to return a shortened URL
 #'
@@ -90,13 +92,15 @@ banc_scene <- function(ids=NULL,
 #' - FAFB: "fafb v783 imported" layer
 #' - Hemibrain: "hemibrain v1.2.1 imported" and "hemibrain v1.2.1 imported, mirrored" layers
 #' - MANC: "manc v1.2.1 imported" layer
+#' - maleCNS: "malecns v0.9 imported" layer
 #' - BANC nuclei: "nuclei (v1)" layer
 #'
 #' Each dataset is assigned a unique color palette to distinguish neurons from different sources:
 #' - BANC: Blue to purple spectrum
 #' - FAFB: Red spectrum
-#' - Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
+#' - Hemibrain: Purple spectrum (original) and Yellow spectrum (mirrored)
 #' - MANC: Orange spectrum
+#' - maleCNS: Green spectrum
 #' - BANC nuclei: Pink
 #'
 #' @note
@@ -129,24 +133,26 @@ bancsee <- function(banc_ids = NULL,
                     fafb_ids = NULL,
                     hemibrain_ids = NULL,
                     manc_ids = NULL,
+                    malecns_ids = NULL,
                     nuclei_ids = NULL,
                     open = FALSE,
                     banc.cols = c("#54BCD1", "#0000FF", "#8A2BE2"),
                     fafb.cols = c("#C41E3A", "#FF3131", "#F88379"),
-                    hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
+                    hemibrain.cols = c("#800080", "#9932CC", "#DA70D6"),
                     hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
                     manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
+                    malecns.cols = c("#00FF00", "#32CD32", "#006400"),
                     nulcei.col = "#FC6882",
                     url=NULL,
                     shorturl=TRUE){
 
   # public
-  url <- sub("#!middleauth+", "?", "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4773219390193664", fixed = T)
+  url <- sub("#!middleauth+", "?", "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4521060610342912", fixed = T)
   parts <- unlist(strsplit(url, "?", fixed = T))
   json <- try(fafbseg::flywire_fetch(parts[2], token = banc_token(),
                                     return = "text", cache = TRUE))
   url.public <- ngl_encode_url(json, baseurl = parts[1])
-  url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+  url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4521060610342912"
   if(is.null(url)){
     url <- url.standard
   }
@@ -162,6 +168,8 @@ bancsee <- function(banc_ids = NULL,
   hemibrain_ids <- hemibrain_ids[!hemibrain_ids%in%c("0","","NA")]
   manc_ids <- manc_ids[!is.na(manc_ids)]
   manc_ids <- manc_ids[!manc_ids%in%c("0","","NA")]
+  malecns_ids <- malecns_ids[!is.na(malecns_ids)]
+  malecns_ids <- malecns_ids[!malecns_ids%in%c("0","","NA")]
   nuclei_ids <- nuclei_ids[!is.na(nuclei_ids)]
   nuclei_ids <- nuclei_ids[!nuclei_ids%in%c("0","","NA")]
 
@@ -196,7 +204,7 @@ bancsee <- function(banc_ids = NULL,
     colourdf2 = data.frame(ids = fafb_ids,
                            col=grDevices::colorRampPalette(fafb.cols)(length(fafb_ids)))
     sc2<-fafbseg::ngl_add_colours(u2, colourdf2, layer = "fafb v783 imported")
-    fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc7)$`fafb v783 imported`
+    fafbseg::ngl_layers(sc1)$`fafb v783 imported` <- fafbseg::ngl_layers(sc2)$`fafb v783 imported`
   }
 
   if(length(hemibrain_ids)){
@@ -218,6 +226,14 @@ bancsee <- function(banc_ids = NULL,
                            col=grDevices::colorRampPalette(manc.cols)(length(manc_ids)))
     sc5<-fafbseg::ngl_add_colours(u5, colourdf5, layer = "manc v1.2.1 imported")
     fafbseg::ngl_layers(sc1)$`manc v1.2.1 imported` <- fafbseg::ngl_layers(sc5)$`manc v1.2.1 imported`
+  }
+
+  if(length(malecns_ids)){
+    u8=banc_scene(url = url, ids = malecns_ids, open=F, layer = "malecns v0.9 imported")
+    colourdf8 = data.frame(ids = malecns_ids,
+                           col=grDevices::colorRampPalette(malecns.cols)(length(malecns_ids)))
+    sc8<-fafbseg::ngl_add_colours(u8, colourdf8, layer = "malecns v0.9 imported")
+    fafbseg::ngl_layers(sc1)$`malecns v0.9 imported` <- fafbseg::ngl_layers(sc8)$`malecns v0.9 imported`
   }
 
   if(length(nuclei_ids)){

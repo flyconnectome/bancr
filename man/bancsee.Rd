@@ -10,13 +10,15 @@ bancsee(
   fafb_ids = NULL,
   hemibrain_ids = NULL,
   manc_ids = NULL,
+  malecns_ids = NULL,
   nuclei_ids = NULL,
   open = FALSE,
   banc.cols = c("#54BCD1", "#0000FF", "#8A2BE2"),
   fafb.cols = c("#C41E3A", "#FF3131", "#F88379"),
-  hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
+  hemibrain.cols = c("#800080", "#9932CC", "#DA70D6"),
   hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
   manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
+  malecns.cols = c("#00FF00", "#32CD32", "#006400"),
   nulcei.col = "#FC6882",
   url = NULL,
   shorturl = TRUE
@@ -34,6 +36,8 @@ This dataset version represents the snapshot for our preprint. Default is NULL.}
 
 \item{manc_ids}{A vector of neuron IDs from the MANC dataset. Default is NULL.}
 
+\item{malecns_ids}{A vector of neuron IDs from the maleCNS v0.9 dataset. Default is NULL.}
+
 \item{nuclei_ids}{A vector of nuclei IDs for the BANC dataset. Default is NULL.}
 
 \item{open}{Logical; if TRUE, the function will open the Neuroglancer scene in a web browser. Default is FALSE.}
@@ -42,11 +46,13 @@ This dataset version represents the snapshot for our preprint. Default is NULL.}
 
 \item{fafb.cols}{Vector of hex codes describing a colour spectrum of colours to be interpolated for BANC neurons. Defaults are red hues.}
 
-\item{hemibrain.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults  green hues.}
+\item{hemibrain.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for hemibrain neurons. Defaults are purple hues.}
 
-\item{hemibrain.mirrored.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for BANC neurons. Defaults are yellow hues.}
+\item{hemibrain.mirrored.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for mirrored hemibrain neurons. Defaults are yellow hues.}
 
 \item{manc.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.}
+
+\item{malecns.cols}{Vector of hex codes describing a colour spectrum of colors to be interpolated for maleCNS neurons. Defaults are green hues.}
 
 \item{nulcei.col}{Hex code for the colour in which nuclei will be plotted. Default is pink.}
 
@@ -70,6 +76,7 @@ The function creates a Neuroglancer scene with multiple layers, each correspondi
 \item FAFB: "fafb v783 imported" layer
 \item Hemibrain: "hemibrain v1.2.1 imported" and "hemibrain v1.2.1 imported, mirrored" layers
 \item MANC: "manc v1.2.1 imported" layer
+\item maleCNS: "malecns v0.9 imported" layer
 \item BANC nuclei: "nuclei (v1)" layer
 }
 
@@ -77,8 +84,9 @@ Each dataset is assigned a unique color palette to distinguish neurons from diff
 \itemize{
 \item BANC: Blue to purple spectrum
 \item FAFB: Red spectrum
-\item Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
+\item Hemibrain: Purple spectrum (original) and Yellow spectrum (mirrored)
 \item MANC: Orange spectrum
+\item maleCNS: Green spectrum
 \item BANC nuclei: Pink
 }
 }

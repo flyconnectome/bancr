@@ -67,6 +67,7 @@ Suggests:
     ggplot2 (>= 3.5),
     RSQLite,
     DBI,
+    duckdb,
     coconat
 Enhances:
     coconatfly

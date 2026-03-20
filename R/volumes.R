@@ -48,10 +48,10 @@ banc_neuron_volume <- function(ids, OmitFailures = TRUE, ...) {
       l2data <- client$l2cache$get_l2data(l2_ids, attributes = list("size_nm3"))
       # l2data is a Python dict of dicts; convert to R list
       l2list <- reticulate::py_to_r(l2data)
-      total <- sum(sapply(l2list, function(x) {
+      total <- sum(vapply(l2list, function(x) {
         v <- x[["size_nm3"]]
-        if (is.null(v) || is.na(v)) 0 else v
-      }))
+        if (is.null(v) || length(v) == 0) 0 else as.numeric(v[1])
+      }, numeric(1)), na.rm = TRUE)
       total
     }, error = function(e) {
       if (OmitFailures) {
