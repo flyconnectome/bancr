@@ -14,13 +14,15 @@ bancsee(
   fafb_ids = NULL,
   hemibrain_ids = NULL,
   manc_ids = NULL,
+  malecns_ids = NULL,
   nuclei_ids = NULL,
   open = FALSE,
   banc.cols = c("#54BCD1", "#0000FF", "#8A2BE2"),
   fafb.cols = c("#C41E3A", "#FF3131", "#F88379"),
-  hemibrain.cols = c("#00FF00", "#32CD32", "#006400"),
+  hemibrain.cols = c("#800080", "#9932CC", "#DA70D6"),
   hemibrain.mirrored.cols = c("#FFFF00", "#FFD700", "#FFA500"),
   manc.cols = c("#FFA07A", "#FF4500", "#FF8C00"),
+  malecns.cols = c("#00FF00", "#32CD32", "#006400"),
   nulcei.col = "#FC6882",
   url = NULL,
   shorturl = TRUE
@@ -50,6 +52,10 @@ bancsee(
 
   A vector of neuron IDs from the MANC dataset. Default is NULL.
 
+- malecns_ids:
+
+  A vector of neuron IDs from the maleCNS v0.9 dataset. Default is NULL.
+
 - nuclei_ids:
 
   A vector of nuclei IDs for the BANC dataset. Default is NULL.
@@ -72,17 +78,22 @@ bancsee(
 - hemibrain.cols:
 
   Vector of hex codes describing a colour spectrum of colors to be
-  interpolated for BANC neurons. Defaults green hues.
+  interpolated for hemibrain neurons. Defaults are purple hues.
 
 - hemibrain.mirrored.cols:
 
   Vector of hex codes describing a colour spectrum of colors to be
-  interpolated for BANC neurons. Defaults are yellow hues.
+  interpolated for mirrored hemibrain neurons. Defaults are yellow hues.
 
 - manc.cols:
 
   Vector of hex codes describing a colour spectrum of colors to be
   interpolated for MANC neurons. Defaults are orange hues.
+
+- malecns.cols:
+
+  Vector of hex codes describing a colour spectrum of colors to be
+  interpolated for maleCNS neurons. Defaults are green hues.
 
 - nulcei.col:
 
@@ -117,6 +128,8 @@ corresponding to a different dataset:
 
 - MANC: "manc v1.2.1 imported" layer
 
+- maleCNS: "malecns v0.9 imported" layer
+
 - BANC nuclei: "nuclei (v1)" layer
 
 Each dataset is assigned a unique color palette to distinguish neurons
@@ -126,9 +139,11 @@ from different sources:
 
 - FAFB: Red spectrum
 
-- Hemibrain: Green spectrum (original) and Yellow spectrum (mirrored)
+- Hemibrain: Purple spectrum (original) and Yellow spectrum (mirrored)
 
 - MANC: Orange spectrum
+
+- maleCNS: Green spectrum
 
 - BANC nuclei: Pink
 

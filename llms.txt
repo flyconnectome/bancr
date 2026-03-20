@@ -759,6 +759,8 @@ Analysing Neuroanatomical Data.* eLife 9 (April).
   : Subset points to be in the brain or in the VNC
 - [`banc_ids()`](https://flyconnectome.github.io/bancr/reference/banc_ids.md)
   : Return a vector of banc root ids from diverse inputs
+- [`banc_influence()`](https://flyconnectome.github.io/bancr/reference/banc_influence.md)
+  : Query BANC all-to-all influence scores
 - [`banc_islatest()`](https://flyconnectome.github.io/bancr/reference/banc_islatest.md)
   : Check if a banc root id is up to date
 - [`banc_latestid()`](https://flyconnectome.github.io/bancr/reference/banc_latestid.md)

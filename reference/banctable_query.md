@@ -33,7 +33,7 @@ banctable_query(
   ac = NULL,
   token_name = "BANCTABLE_TOKEN",
   workspace_id = "57832",
-  retries = 10,
+  retries = 3,
   table.max = 10000L
 )
 
