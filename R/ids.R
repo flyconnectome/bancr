@@ -220,6 +220,20 @@ banc_updateids <- function(x,
                            use.cave = TRUE,
                            serial = FALSE,
                            ...){
+  # Report the materialization version IDs will be updated to
+  tryCatch({
+    fcc <- banc_cave_client()
+    mat_ver <- fcc$materialize$version
+    message(sprintf("Updating IDs to materialization version: %s", mat_ver))
+  }, error = function(e) {
+    dots <- list(...)
+    if ("live" %in% names(dots) && dots$live == 2) {
+      message("Updating IDs to: live (unversioned)")
+    } else {
+      message("Updating IDs (could not determine materialization version)")
+    }
+  })
+
   if(is.data.frame(x)){
 
     # Use CAVE tables to join by supervoxel_id

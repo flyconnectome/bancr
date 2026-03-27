@@ -366,6 +366,91 @@ banc_nblast_matches <- function(dataset = c("malecns", "fafb", "hemibrain", "man
 }
 
 # hidden
+# Search for BANC neurons matching given target dataset IDs by NBLAST score.
+# Uses CAVE NBLAST tables (banc_{dataset}_nblast_v2).
+# Results are cached in a session-level environment to avoid repeated slow CAVE queries.
+#
+# @param match_ids Character vector of IDs in the target dataset to search for
+# @param dataset Target dataset: "fafb", "manc", "hemibrain", "malecns", "fanc"
+# @param top_n Number of top BANC hits to return (default 10)
+# @param min_score Minimum NBLAST score threshold (default 0)
+# @param cache If TRUE (default), cache the CAVE table for the session
+# @param ... Additional arguments passed to banc_nblast_matches()
+# @return Data frame of top BANC matches, one row per BANC neuron, with columns:
+#   banc_id, max_score, best_match_id, n_matches
+banc_nblast_search <- function(match_ids,
+                               dataset = c("fafb", "manc", "hemibrain", "malecns", "fanc"),
+                               top_n = 10L,
+                               min_score = 0,
+                               cache = TRUE,
+                               ...) {
+  dataset <- match.arg(dataset)
+  match_ids <- as.character(match_ids)
+
+  # Session-level cache for CAVE NBLAST tables (slow to query)
+  cache_env <- ".banc_nblast_cache"
+  if (!exists(cache_env, envir = .GlobalEnv)) {
+    assign(cache_env, new.env(parent = emptyenv()), envir = .GlobalEnv)
+  }
+  cache_store <- get(cache_env, envir = .GlobalEnv)
+
+  # Query CAVE for just the rows matching our target IDs (server-side filter)
+  cache_key <- paste0("nblast_search_", dataset, "_", length(match_ids))
+  if (cache && exists(cache_key, envir = cache_store)) {
+    message(sprintf("Using cached %s NBLAST search results", dataset))
+    hits <- get(cache_key, envir = cache_store)
+  } else {
+    table_name <- paste0("banc_", dataset, "_nblast_v2")
+    message(sprintf("Querying CAVE %s for %d target IDs...", table_name, length(match_ids)))
+    # Use Python CAVE client directly (banc_cave_query has serialization issues
+    # with filter_in_dict on string columns)
+    fcc <- banc_cave_client()
+    ids_py <- reticulate::r_to_py(as.list(match_ids))
+    py_env <- reticulate::py
+    py_env$nblast_table <- table_name
+    py_env$nblast_ids <- ids_py
+    py_env$fcc_obj <- fcc
+    reticulate::py_run_string("
+_df = fcc_obj.materialize.query_table(nblast_table, filter_in_dict={'match_id': list(nblast_ids)})
+for c in ['pt_root_id', 'query_root_id', 'pt_supervoxel_id']:
+    if c in _df.columns:
+        _df[c] = _df[c].astype(str)
+_df['match_id'] = _df['match_id'].astype(str)
+")
+    nblast <- as.data.frame(reticulate::py$`_df`)
+    hits <- nblast[nblast$score > min_score, ]
+    if (cache) {
+      assign(cache_key, hits, envir = cache_store)
+      message(sprintf("  Cached %d hits for session", nrow(hits)))
+    }
+  }
+
+  if (nrow(hits) == 0) {
+    message(sprintf("No NBLAST matches found for the given IDs in %s.", dataset))
+    return(data.frame(banc_id = character(), max_score = numeric(),
+                      best_match_id = character(), n_matches = integer()))
+  }
+
+  message(sprintf("  Found %d NBLAST hits across %d BANC neurons",
+                  nrow(hits), length(unique(hits$pt_root_id))))
+
+  # For each BANC neuron, take max score across the requested match IDs
+  top_hits <- hits %>%
+    dplyr::mutate(banc_id = as.character(.data$pt_root_id)) %>%
+    dplyr::group_by(.data$banc_id) %>%
+    dplyr::summarise(
+      max_score = max(.data$score, na.rm = TRUE),
+      best_match_id = .data$match_id[which.max(.data$score)],
+      n_matches = dplyr::n(),
+      .groups = "drop"
+    ) %>%
+    dplyr::arrange(dplyr::desc(.data$max_score)) %>%
+    dplyr::slice_head(n = top_n)
+
+  top_hits
+}
+
+# hidden
 banc_cave_cell_types <- function(cave_id = NULL, invert = FALSE, ...){
   banc.cell.info <- banc_cell_info(rawcoords = TRUE, ...)
   if(!is.null(cave_id)){
