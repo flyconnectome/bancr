@@ -63,6 +63,14 @@ Please ask for help on #annotation_infrastructure https://flywire-forum.slack.co
   }
 }
 
+# Safe position conversion: skips empty/NA values instead of erroring
+safe_raw2nm_position <- function(x) {
+  if (length(x) == 0) return(x)
+  valid <- !is.na(x) & nzchar(x)
+  if (!any(valid)) return(x)
+  x[valid] <- xyzmatrix2str(banc_raw2nm(x[valid]))
+  x
+}
 
 #' @rdname banc_cave_tables
 #' @export
@@ -137,7 +145,7 @@ banc_mitochondria <- function(rootids = NULL,
     res
   else {
     res %>% dplyr::mutate(dplyr::across(dplyr::ends_with("position"),
-                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+                          safe_raw2nm_position))
   }
 }
 
@@ -201,12 +209,13 @@ banc_nuclei <- function(rootids = NULL,
                   nucleus_position = .data$pt_position,
                   root_id = .data$pt_root_id) %>%
     dplyr::filter(.data$valid=="t")
-  if (isFALSE(rawcoords)) {
-    # res <- res %>%
-    #   dplyr::mutate(dplyr::across(dplyr::ends_with("position"), function(x)
-    #   nat::xyzmatrix2str(banc_raw2nm(x))))
-    res$nucleus_position_nm <- apply(banc_raw2nm(res$nucleus_position),1,paste_coords)
-    res$nucleus_position_nm  <- gsub("\\(|\\)","",res$nucleus_position_nm)
+  if (isFALSE(rawcoords) && nrow(res) > 0) {
+    valid_pos <- !is.na(res$nucleus_position) & nzchar(res$nucleus_position)
+    res$nucleus_position_nm <- NA_character_
+    if (any(valid_pos)) {
+      res$nucleus_position_nm[valid_pos] <- gsub("\\(|\\)", "",
+        apply(banc_raw2nm(res$nucleus_position[valid_pos]), 1, paste_coords))
+    }
   }
   res
 }
@@ -229,7 +238,7 @@ banc_cell_info <- function(rootids = NULL, rawcoords = FALSE, ...){
     res
   else {
     res %>% mutate(across(ends_with("position"),
-                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+                          safe_raw2nm_position))
   }
 }
 
@@ -242,7 +251,7 @@ banc_proofreading_notes <- function(rootids = NULL, rawcoords = FALSE, ...){
     res
   else {
     res %>% mutate(across(ends_with("position"),
-                          function(x) xyzmatrix2str(banc_raw2nm(x))))
+                          safe_raw2nm_position))
   }
 }
 
@@ -620,11 +629,9 @@ banc_nt_prediction <- function(rootids = NULL,
       # res[[length(res) + 1]] = pyids2bit64(pyres, as_character = !integer64)
     }
   }
-  if (isTRUE(rawcoords))
-    res
-  else {
-    res %>% dplyr::mutate(across(ends_with("position"),
-                                 function(x) xyzmatrix2str(banc_raw2nm(x))))
+  if (!isTRUE(rawcoords)) {
+    res <- res %>% dplyr::mutate(across(ends_with("position"),
+                                        safe_raw2nm_position))
   }
   res <- res %>%
     dplyr::mutate(pre_pt_supervoxel_id = as.character(.data$pre_pt_supervoxel_id),
