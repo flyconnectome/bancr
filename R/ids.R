@@ -241,8 +241,8 @@ banc_updateids <- function(x,
       if(supervoxel.column%in%colnames(x)){
         cat('joining to CAVE tables ...')
         proofed <- banc_backbone_proofread() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
-        info <- banc_cell_info()  %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
-        nuclei <- banc_nuclei()  %>% dplyr::distinct(pt_root_id = .data$root_id, .data$pt_supervoxel_id)
+        info <- banc_cell_info(rawcoords = TRUE)  %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
+        nuclei <- banc_nuclei(rawcoords = TRUE)  %>% dplyr::distinct(pt_root_id = .data$root_id, .data$pt_supervoxel_id)
         nerves <- banc_peripheral_nerves() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
         seeds <- banc_neck_connective_neurons() %>% dplyr::distinct(.data$pt_root_id, .data$pt_supervoxel_id)
         cave.tables <- proofed %>%
