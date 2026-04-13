@@ -45,7 +45,6 @@ relies on nat \>= 1.10.4
 
 ``` r
 banc_voxdims()
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/t_S2tR1LO2Kg4veDPBew2/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #> Warning: Multiple segmentation layers. Choosing first!
 #>  x  y  z 
@@ -53,12 +52,10 @@ banc_voxdims()
 #> attr(,"units")
 #> [1] "nm"
 banc_raw2nm(c(159144, 22192, 3560))
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/t_S2tR1LO2Kg4veDPBew2/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #>           X     Y      Z
 #> [1,] 636576 88768 160200
 banc_raw2nm('159144 22192 3560')
-#> Warning: running command ''/home/runner/.cache/R/reticulate/uv/cache/archive-v0/t_S2tR1LO2Kg4veDPBew2/bin/python' -m pip freeze' had status 1
 #> Warning: using default setting
 #>           X     Y      Z
 #> [1,] 636576 88768 160200
