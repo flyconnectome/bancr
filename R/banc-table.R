@@ -143,7 +143,7 @@ banctable_query <- function (sql = "SELECT * FROM banc_meta",
         }
       }
       if (!nrow(bc)) {
-        warning(sprintf("All %d retries exhausted at offset %d — returning %d rows so far",
+        warning(sprintf("All %d retries exhausted at offset %d -- returning %d rows so far",
                         retries, offset, nrow(df)))
         if (nrow(df)) return(df) else return(NULL)
       }
