@@ -39,11 +39,30 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_influence_path</span><span class="op">(</span>local_path <span class="op">=</span> <span class="cn">NULL</span>, force_download <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_influence_path</span><span class="op">(</span>local_path <span class="op">=</span> <span class="cn">NULL</span>, force_download <span class="op">=</span> <span class="cn">FALSE</span>, gs_url <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
-  </main></div>
+
+<dl><dt id="arg-local-path">local_path<a class="anchor" aria-label="anchor" href="#arg-local-path"></a></dt>
+<dd><p>Local directory for cached parquet files. Default uses
+<code>tools::R_user_dir("bancr", "cache")</code>.</p></dd>
+
+
+<dt id="arg-force-download">force_download<a class="anchor" aria-label="anchor" href="#arg-force-download"></a></dt>
+<dd><p>If TRUE, re-download even if local files exist.</p></dd>
+
+
+<dt id="arg-gs-url">gs_url<a class="anchor" aria-label="anchor" href="#arg-gs-url"></a></dt>
+<dd><p>GCS path to the influence parquet directory. Defaults to the
+v850 all-to-all influence data.</p></dd>
+
+</dl></div>
+
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

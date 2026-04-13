@@ -25,6 +25,7 @@ bancsee(
   malecns.cols = c("#00FF00", "#32CD32", "#006400"),
   nulcei.col = "#FC6882",
   url = NULL,
+  clean_segments = FALSE,
   shorturl = TRUE
 )
 ```
@@ -103,6 +104,12 @@ bancsee(
 - url:
 
   a spelunker neuroglancer URL.
+
+- clean_segments:
+
+  Logical; if TRUE, clear all pre-existing segments from the base scene
+  before adding new neurons. Default is FALSE (preserves the base scene
+  contents such as region outlines).
 
 - shorturl:
 
