@@ -50,7 +50,7 @@
 #' @rdname banc_partner_summary
 banc_partner_summary <- function(rootids,
                                  partners = c("outputs", "inputs"),
-                                 synapse_table = c("synapses_v2","synapses_v1"),
+                                 synapse_table = c("synapses_v2","synapses_v3","synapses_v1"),
                                  threshold = 0,
                                  remove_autapses = TRUE,
                                  cleft.threshold = 0,
@@ -118,12 +118,20 @@ Have you been granted access to banc production?")
 #' points3d(banc_raw2nm(fpi$post_pt_position), col='cyan')
 #' fpo=banc_partners(banc_latestid("720575941478275714"), partners='out')
 #' points3d(banc_raw2nm(fpo$pre_pt_position), col='red')
+#'
+#' # Compare results between the v2 (default) and v3 synapse tables
+#' id <- banc_latestid("720575941478275714")
+#' fpi_v2 <- banc_partners(id, partners='input', synapse_table="synapses_v2")
+#' fpi_v3 <- banc_partners(id, partners='input', synapse_table="synapses_v3")
+#' nrow(fpi_v2); nrow(fpi_v3)
+#' # partner overlap
+#' length(intersect(fpi_v2$pre_pt_root_id, fpi_v3$pre_pt_root_id))
 #' }
 #' @export
 #' @rdname banc_partner_summary
 banc_partners <- function(rootids,
                           partners=c("input", "output"),
-                          synapse_table = c("synapses_v2","synapses_v1"),
+                          synapse_table = c("synapses_v2","synapses_v3","synapses_v1"),
                           ...) {
   partners=match.arg(partners)
   synapse_table=match.arg(synapse_table)
