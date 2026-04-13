@@ -188,15 +188,30 @@ bancsee <- function(banc_ids = NULL,
       shorturl <- FALSE
     }
     sc1 = fafbseg::ngl_decode_scene(banc_scene(url = url))
-    banc_ngl_segments(sc1) <- NULL
+    for (.li in seq_along(sc1[["layers"]])) {
+      if (!is.null(sc1[["layers"]][[.li]][["segments"]]))
+        sc1[["layers"]][[.li]][["segments"]] <- list()
+    }
   }
 
   if(length(banc_static_ids)){
-    u7=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "BANC static")
-    colourdf7 = data.frame(ids = banc_static_ids,
-                           col=grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
-    sc7<-fafbseg::ngl_add_colours(u7, colourdf7, layer = "BANC static")
-    fafbseg::ngl_layers(sc1)$`BANC static` <- fafbseg::ngl_layers(sc7)$`BANC static`
+    static_layer_name <- "BANC static"
+    static_src <- "precomputed://gs://lee-lab_brain-and-nerve-cord-fly-connectome/neuron_meshes"
+    if (!inherits(sc1, "ngscene")) sc1 <- fafbseg::ngl_decode_scene(sc1)
+    layer_names <- names(fafbseg::ngl_layers(sc1))
+    if (!static_layer_name %in% layer_names) {
+      new_layer <- list(type = "segmentation", source = static_src,
+                        tab = "segments", segments = list(),
+                        name = static_layer_name)
+      sc1[["layers"]] <- c(sc1[["layers"]], list(new_layer))
+    }
+    seg_ids <- fafbseg::ngl_segments(banc_ids(banc_static_ids),
+                                     as_character = TRUE, must_work = FALSE)
+    sel <- which(names(fafbseg::ngl_layers(sc1)) == static_layer_name)
+    sc1[["layers"]][[sel]][["segments"]] <- seg_ids
+    colourdf7 <- data.frame(ids = banc_static_ids,
+                            col = grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
+    sc1 <- fafbseg::ngl_add_colours(sc1, colourdf7, layer = static_layer_name)
   }
 
   if(length(fafb_ids)){
