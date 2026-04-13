@@ -22,6 +22,21 @@
 #' banc_scene(open=T)
 #' banc_scene("720575941545083784", open=T)
 #' }
+# Wrapper for fafbseg::ngl_encode_url that avoids a Linux PATH_MAX crash when
+# `body` is a long JSON string. fafbseg calls tools::file_ext(body) to detect
+# a filename, which on Linux errors with "path too long" when length(body) >
+# PATH_MAX (~4096). Workaround: write JSON to a temp .json file and pass the
+# path so file_ext succeeds without basename() on the long string.
+safe_ngl_encode_url <- function(body, ...) {
+  if (is.character(body) && length(body) == 1L && nchar(body) > 3000L) {
+    tf <- tempfile(fileext = ".json")
+    writeLines(body, tf)
+    on.exit(unlink(tf), add = TRUE)
+    return(fafbseg::ngl_encode_url(tf, ...))
+  }
+  fafbseg::ngl_encode_url(body, ...)
+}
+
 banc_scene <- function(ids=NULL,
                        open=FALSE,
                        layer = NULL,
@@ -46,7 +61,7 @@ banc_scene <- function(ids=NULL,
     else
       stop(badtoken)
   }
-  u=ngl_encode_url(json, baseurl = parts[1])
+  u=safe_ngl_encode_url(json, baseurl = parts[1])
   if(!is.null(ids)){
     banc_ngl_segments(u, layer=layer) <- banc_ids(ids)
   }
@@ -156,7 +171,7 @@ bancsee <- function(banc_ids = NULL,
   parts <- unlist(strsplit(url.public.raw, "?", fixed = T))
   json <- try(fafbseg::flywire_fetch(parts[2], token = banc_token(),
                                     return = "text", cache = TRUE))
-  url.public <- ngl_encode_url(json, baseurl = parts[1])
+  url.public <- safe_ngl_encode_url(json, baseurl = parts[1])
   if(is.null(url)){
     url <- url.standard
   }

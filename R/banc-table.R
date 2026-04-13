@@ -718,7 +718,7 @@ banctable_ngl_update <- function(url,
   json <- fafbseg::flywire_fetch(parts[2], token = banc_token(),
                                   return = "text", cache = TRUE)
   sc <- fafbseg::ngl_decode_scene(
-    ngl_encode_url(json, baseurl = parts[1]))
+    safe_ngl_encode_url(json, baseurl = parts[1]))
 
   # Find the target layer and extract selected segments
   layers <- fafbseg::ngl_layers(sc)
