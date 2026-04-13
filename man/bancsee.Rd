@@ -21,6 +21,7 @@ bancsee(
   malecns.cols = c("#00FF00", "#32CD32", "#006400"),
   nulcei.col = "#FC6882",
   url = NULL,
+  clean_segments = FALSE,
   shorturl = TRUE
 )
 }
@@ -57,6 +58,10 @@ This dataset version represents the snapshot for our preprint. Default is NULL.}
 \item{nulcei.col}{Hex code for the colour in which nuclei will be plotted. Default is pink.}
 
 \item{url}{a spelunker neuroglancer URL.}
+
+\item{clean_segments}{Logical; if TRUE, clear all pre-existing segments from the
+base scene before adding new neurons. Default is FALSE (preserves the base scene
+contents such as region outlines).}
 
 \item{shorturl}{Logical, whether or not to return a shortened URL}
 }

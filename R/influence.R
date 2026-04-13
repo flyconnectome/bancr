@@ -125,9 +125,17 @@ banc_influence <- function(upstream_ids = NULL,
 # --- Internal helpers ---
 
 #' Resolve local path to influence parquet files, downloading from GCS if needed
+#'
+#' @param local_path Local directory for cached parquet files. Default uses
+#'   \code{tools::R_user_dir("bancr", "cache")}.
+#' @param force_download If TRUE, re-download even if local files exist.
+#' @param gs_url GCS path to the influence parquet directory. Defaults to the
+#'   v850 all-to-all influence data.
 #' @keywords internal
-banc_influence_path <- function(local_path = NULL, force_download = FALSE) {
-  gs_url <- "gs://brain-and-nerve-cord_exports/brain_and_nerve_cord/influence/all_to_all/"
+banc_influence_path <- function(local_path = NULL, force_download = FALSE,
+                                gs_url = NULL) {
+  if (is.null(gs_url))
+    gs_url <- "gs://brain-and-nerve-cord_exports/processed_data/banc/banc_850/influence/all_to_all/"
 
   if (is.null(local_path)) {
     local_path <- file.path(tools::R_user_dir("bancr", "cache"),
@@ -164,20 +172,26 @@ banc_influence_arrow <- function(parquet_dir, upstream_ids, downstream_ids) {
   check_package_available("arrow")
   ds <- arrow::open_dataset(parquet_dir, format = "parquet")
 
-  # Build filter expression
+  # Arrow %in% can segfault on large datasets; use == for single IDs,
+  # chunk and bind_rows for multiple
+  .arrow_filter_ids <- function(ds, col, ids) {
+    if (length(ids) == 1) {
+      dplyr::filter(ds, .data[[col]] == ids)
+    } else {
+      chunks <- split(ids, ceiling(seq_along(ids) / 50))
+      dplyr::bind_rows(lapply(chunks, function(chunk) {
+        dplyr::filter(ds, .data[[col]] %in% chunk) |> dplyr::collect()
+      }))
+    }
+  }
+
   if (!is.null(upstream_ids) && !is.null(downstream_ids)) {
-    res <- ds |>
-      dplyr::filter(.data$upstream_id %in% upstream_ids,
-                     .data$downstream_id %in% downstream_ids) |>
-      dplyr::collect()
+    res <- .arrow_filter_ids(ds, "upstream_id", upstream_ids) |>
+      dplyr::filter(.data$downstream_id %in% downstream_ids)
   } else if (!is.null(upstream_ids)) {
-    res <- ds |>
-      dplyr::filter(.data$upstream_id %in% upstream_ids) |>
-      dplyr::collect()
+    res <- .arrow_filter_ids(ds, "upstream_id", upstream_ids)
   } else {
-    res <- ds |>
-      dplyr::filter(.data$downstream_id %in% downstream_ids) |>
-      dplyr::collect()
+    res <- .arrow_filter_ids(ds, "downstream_id", downstream_ids)
   }
 
   as.data.frame(res)

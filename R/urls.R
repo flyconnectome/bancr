@@ -25,9 +25,9 @@
 banc_scene <- function(ids=NULL,
                        open=FALSE,
                        layer = NULL,
-                       url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952") {
+                       url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6125922951364608") {
   #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6283844278812672"
-  #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+  #url="https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6125922951364608"
   url=sub("#!middleauth+", "?", url, fixed = T)
   parts=unlist(strsplit(url, "?", fixed = T))
   json=try(fafbseg::flywire_fetch(parts[2], token=banc_token(), return = 'text', cache = TRUE))
@@ -80,6 +80,9 @@ banc_scene <- function(ids=NULL,
 #' @param manc.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for MANC neurons. Defaults are orange hues.
 #' @param malecns.cols Vector of hex codes describing a colour spectrum of colors to be interpolated for maleCNS neurons. Defaults are green hues.
 #' @param nulcei.col Hex code for the colour in which nuclei will be plotted. Default is pink.
+#' @param clean_segments Logical; if TRUE, clear all pre-existing segments from the
+#'   base scene before adding new neurons. Default is FALSE (preserves the base scene
+#'   contents such as region outlines).
 #' @param shorturl Logical, whether or not to return a shortened URL
 #'
 #' @return
@@ -144,15 +147,16 @@ bancsee <- function(banc_ids = NULL,
                     malecns.cols = c("#00FF00", "#32CD32", "#006400"),
                     nulcei.col = "#FC6882",
                     url=NULL,
+                    clean_segments=FALSE,
                     shorturl=TRUE){
 
   # public
-  url <- sub("#!middleauth+", "?", "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4521060610342912", fixed = T)
-  parts <- unlist(strsplit(url, "?", fixed = T))
+  url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6125922951364608"
+  url.public.raw <- sub("#!middleauth+", "?", url.standard, fixed = T)
+  parts <- unlist(strsplit(url.public.raw, "?", fixed = T))
   json <- try(fafbseg::flywire_fetch(parts[2], token = banc_token(),
                                     return = "text", cache = TRUE))
   url.public <- ngl_encode_url(json, baseurl = parts[1])
-  url.standard <- "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/4521060610342912"
   if(is.null(url)){
     url <- url.standard
   }
@@ -187,10 +191,14 @@ bancsee <- function(banc_ids = NULL,
       url <- url.public
       shorturl <- FALSE
     }
-    sc1 = fafbseg::ngl_decode_scene(banc_scene(url = url))
-    for (.li in seq_along(sc1[["layers"]])) {
-      if (!is.null(sc1[["layers"]][[.li]][["segments"]]))
+    sc1 <- fafbseg::ngl_decode_scene(banc_scene(url = url))
+    if (clean_segments) {
+      for (.li in seq_along(sc1[["layers"]])) {
         sc1[["layers"]][[.li]][["segments"]] <- list()
+        sc1[["layers"]][[.li]][["hiddenSegments"]] <- NULL
+        sc1[["layers"]][[.li]][["segmentColors"]] <- NULL
+      }
+      attr(sc1, "url") <- NULL
     }
   }
 
@@ -209,9 +217,10 @@ bancsee <- function(banc_ids = NULL,
                                      as_character = TRUE, must_work = FALSE)
     sel <- which(names(fafbseg::ngl_layers(sc1)) == static_layer_name)
     sc1[["layers"]][[sel]][["segments"]] <- seg_ids
-    colourdf7 <- data.frame(ids = banc_static_ids,
-                            col = grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
-    sc1 <- fafbseg::ngl_add_colours(sc1, colourdf7, layer = static_layer_name)
+    static_cols <- if (length(banc.cols) == length(banc_static_ids)) banc.cols
+                   else grDevices::colorRampPalette(banc.cols)(length(banc_static_ids))
+    col_map <- as.list(stats::setNames(static_cols, as.character(seg_ids)))
+    sc1[["layers"]][[sel]][["segmentColors"]] <- col_map
   }
 
   if(length(fafb_ids)){

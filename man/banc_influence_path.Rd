@@ -4,7 +4,16 @@
 \alias{banc_influence_path}
 \title{Resolve local path to influence parquet files, downloading from GCS if needed}
 \usage{
-banc_influence_path(local_path = NULL, force_download = FALSE)
+banc_influence_path(local_path = NULL, force_download = FALSE, gs_url = NULL)
+}
+\arguments{
+\item{local_path}{Local directory for cached parquet files. Default uses
+\code{tools::R_user_dir("bancr", "cache")}.}
+
+\item{force_download}{If TRUE, re-download even if local files exist.}
+
+\item{gs_url}{GCS path to the influence parquet directory. Defaults to the
+v850 all-to-all influence data.}
 }
 \description{
 Resolve local path to influence parquet files, downloading from GCS if needed

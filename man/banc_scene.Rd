@@ -9,7 +9,7 @@ banc_scene(
   open = FALSE,
   layer = NULL,
   url =
-    "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6431332029693952"
+    "https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6125922951364608"
 )
 }
 \arguments{
