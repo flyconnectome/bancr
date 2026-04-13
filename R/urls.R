@@ -192,11 +192,11 @@ bancsee <- function(banc_ids = NULL,
   }
 
   if(length(banc_static_ids)){
-    u7=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "v626 neurons")
+    u7=banc_scene(url = url, ids = banc_static_ids, open=F, layer = "BANC static")
     colourdf7 = data.frame(ids = banc_static_ids,
                            col=grDevices::colorRampPalette(banc.cols)(length(banc_static_ids)))
-    sc7<-fafbseg::ngl_add_colours(u7, colourdf7, layer = "v626 neurons")
-    fafbseg::ngl_layers(sc1)$`v626 neurons` <- fafbseg::ngl_layers(sc7)$`v626 neurons`
+    sc7<-fafbseg::ngl_add_colours(u7, colourdf7, layer = "BANC static")
+    fafbseg::ngl_layers(sc1)$`BANC static` <- fafbseg::ngl_layers(sc7)$`BANC static`
   }
 
   if(length(fafb_ids)){
@@ -359,12 +359,15 @@ banc_fetch <- function(url, token=banc_token(), ...) {
     sel = which(nls$visible & grepl("^segmentation", nls$type))
   if (length(sel) == 0)
     stop("Could not find a visible segmentation layer!")
-  if (length(sel) > 1) {
-    if(is.null(layer)){
-      sel = 1
-    }else{
-      sel = match(layer,nls$name)
+  if (!is.null(layer)) {
+    layer_idx <- match(layer, nls$name)
+    if (!is.na(layer_idx)) {
+      sel <- layer_idx
+    } else {
+      sel <- sel[1]
     }
+  } else if (length(sel) > 1) {
+    sel <- sel[1]
   }
   if (is.null(value))
     value <- character()
