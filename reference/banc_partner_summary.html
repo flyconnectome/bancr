@@ -57,7 +57,7 @@ connection (including its xyz location).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">banc_partner_summary</span><span class="op">(</span></span>
 <span>  <span class="va">rootids</span>,</span>
 <span>  partners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"outputs"</span>, <span class="st">"inputs"</span><span class="op">)</span>,</span>
-<span>  synapse_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_v2"</span>, <span class="st">"synapses_v1"</span><span class="op">)</span>,</span>
+<span>  synapse_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_v2"</span>, <span class="st">"synapses_v3"</span>, <span class="st">"synapses_v1"</span><span class="op">)</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  remove_autapses <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cleft.threshold <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -68,7 +68,7 @@ connection (including its xyz location).</p>
 <span><span class="fu">banc_partners</span><span class="op">(</span></span>
 <span>  <span class="va">rootids</span>,</span>
 <span>  partners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"input"</span>, <span class="st">"output"</span><span class="op">)</span>,</span>
-<span>  synapse_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_v2"</span>, <span class="st">"synapses_v1"</span><span class="op">)</span>,</span>
+<span>  synapse_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"synapses_v2"</span>, <span class="st">"synapses_v3"</span>, <span class="st">"synapses_v1"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -157,6 +157,14 @@ sensible default is chosen.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/primitives.html" class="external-link">points3d</a></span><span class="op">(</span><span class="fu"><a href="banc_voxdims.html">banc_raw2nm</a></span><span class="op">(</span><span class="va">fpi</span><span class="op">$</span><span class="va">post_pt_position</span><span class="op">)</span>, col<span class="op">=</span><span class="st">'cyan'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fpo</span><span class="op">=</span><span class="fu">banc_partners</span><span class="op">(</span><span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="st">"720575941478275714"</span><span class="op">)</span>, partners<span class="op">=</span><span class="st">'out'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/primitives.html" class="external-link">points3d</a></span><span class="op">(</span><span class="fu"><a href="banc_voxdims.html">banc_raw2nm</a></span><span class="op">(</span><span class="va">fpo</span><span class="op">$</span><span class="va">pre_pt_position</span><span class="op">)</span>, col<span class="op">=</span><span class="st">'red'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare results between the v2 (default) and v3 synapse tables</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="banc_latestid.html">banc_latestid</a></span><span class="op">(</span><span class="st">"720575941478275714"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fpi_v2</span> <span class="op">&lt;-</span> <span class="fu">banc_partners</span><span class="op">(</span><span class="va">id</span>, partners<span class="op">=</span><span class="st">'input'</span>, synapse_table<span class="op">=</span><span class="st">"synapses_v2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fpi_v3</span> <span class="op">&lt;-</span> <span class="fu">banc_partners</span><span class="op">(</span><span class="va">id</span>, partners<span class="op">=</span><span class="st">'input'</span>, synapse_table<span class="op">=</span><span class="st">"synapses_v3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">fpi_v2</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">fpi_v3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># partner overlap</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">fpi_v2</span><span class="op">$</span><span class="va">pre_pt_root_id</span>, <span class="va">fpi_v3</span><span class="op">$</span><span class="va">pre_pt_root_id</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
