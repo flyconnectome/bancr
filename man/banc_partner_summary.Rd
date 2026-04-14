@@ -44,14 +44,17 @@ sensible default is chosen.}
 
 \item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_partner_summary}}}
 
-\item{details}{Logical. If \code{TRUE} and \code{synapse_table="synapses_v3"},
-additionally fetch \code{mean_score} and \code{median_score} from the
-reference tables \code{synapses_v3_mean_score} and
-\code{synapses_v3_median_score} and merge them onto the returned
-data.frame by synapse id. Default \code{FALSE}. Note: the median-score
-join is substantially slower than the mean-score join (on the order of
-10x), so only request \code{details=TRUE} when you need the per-synapse
-scores. Silently ignored for v2/v1.}
+\item{details}{Logical. If \code{TRUE}, attach per-synapse annotations from
+reference tables. For \code{synapse_table="synapses_v3"} this adds
+\code{mean_score} and \code{median_score} columns (from
+\code{synapses_v3_mean_score} and \code{synapses_v3_median_score}). For
+\code{synapse_table="synapses_v2"} this adds
+\code{neurotransmitter_predicted} and \code{neurotransmitter_probability}
+columns (from \code{synapses_v2_nt_prediction_5}; note that only
+synapses with size >= 5 received a prediction, so smaller synapses will
+have \code{NA}). Default \code{FALSE}. For v3, median-score joins are
+substantially slower than mean-score joins (on the order of 10x). No-op
+for v1.}
 }
 \value{
 a data.frame
@@ -112,6 +115,11 @@ length(intersect(fpi_v2$pre_pt_root_id, fpi_v3$pre_pt_root_id))
 fpi_v3d <- banc_partners(id, partners='input', synapse_table="synapses_v3",
                          details=TRUE)
 head(fpi_v3d[, c("id", "mean_score", "median_score")])
+
+# Pull v2 synapses with neurotransmitter predictions attached
+fpi_v2nt <- banc_partners(id, partners='input', synapse_table="synapses_v2",
+                          details=TRUE)
+table(fpi_v2nt$neurotransmitter_predicted, useNA = "ifany")
 }
 }
 \seealso{
