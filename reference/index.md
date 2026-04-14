@@ -95,8 +95,6 @@
   : Re-root BANC neuron skeleton at soma
 - [`banc_rootid()`](https://flyconnectome.github.io/bancr/reference/banc_rootid.md)
   : Find the root identifier of a banc neuron
-- [`banc_scene()`](https://flyconnectome.github.io/bancr/reference/banc_scene.md)
-  : Return a sample Neuroglancer scene URL for BANC dataset
 - [`banc_set_token()`](https://flyconnectome.github.io/bancr/reference/banc_set_token.md)
   : Set the token to be used to authenticate to banc autosegmentation
   resources
@@ -147,3 +145,5 @@
   : Apply Elastix Transform using Navis
 - [`register_banc_coconat()`](https://flyconnectome.github.io/bancr/reference/register_banc_coconat.md)
   : Use BANC data with coconat for connectivity similarity
+- [`safe_ngl_encode_url()`](https://flyconnectome.github.io/bancr/reference/safe_ngl_encode_url.md)
+  : Return a sample Neuroglancer scene URL for BANC dataset
