@@ -109,6 +109,14 @@ Have you been granted access to banc production?")
 #' @description \code{banc_partners} returns details of each unitary synaptic
 #' connection (including its xyz location).
 #'
+#' @param details Logical. If \code{TRUE} and \code{synapse_table="synapses_v3"},
+#'   additionally fetch \code{mean_score} and \code{median_score} from the
+#'   reference tables \code{synapses_v3_mean_score} and
+#'   \code{synapses_v3_median_score} and merge them onto the returned
+#'   data.frame by synapse id. Default \code{FALSE}. Note: the median-score
+#'   join is substantially slower than the mean-score join (on the order of
+#'   10x), so only request \code{details=TRUE} when you need the per-synapse
+#'   scores. Silently ignored for v2/v1.
 #'
 #' @examples
 #' \dontrun{
@@ -126,12 +134,18 @@ Have you been granted access to banc production?")
 #' nrow(fpi_v2); nrow(fpi_v3)
 #' # partner overlap
 #' length(intersect(fpi_v2$pre_pt_root_id, fpi_v3$pre_pt_root_id))
+#'
+#' # Pull v3 synapses with mean and median scores attached (slower)
+#' fpi_v3d <- banc_partners(id, partners='input', synapse_table="synapses_v3",
+#'                          details=TRUE)
+#' head(fpi_v3d[, c("id", "mean_score", "median_score")])
 #' }
 #' @export
 #' @rdname banc_partner_summary
 banc_partners <- function(rootids,
                           partners=c("input", "output"),
                           synapse_table = c("synapses_v2","synapses_v3","synapses_v1"),
+                          details = FALSE,
                           ...) {
   partners=match.arg(partners)
   synapse_table=match.arg(synapse_table)
@@ -152,7 +166,46 @@ banc_partners <- function(rootids,
       res[[col]] <- res[[col]]$astype("str")
     }
   }, error = function(e) NULL)
-  fafbseg:::pandas2df(res)
+  df <- fafbseg:::pandas2df(res)
+
+  if (isTRUE(details) && identical(synapse_table, "synapses_v3") && nrow(df) > 0) {
+    df <- .banc_attach_v3_scores(df, fcc)
+  }
+  df
+}
+
+
+# Fetch per-synapse mean and median scores from the v3 reference tables and
+# merge onto `df` (which must have an `id` column from synapses_v3). CAVE
+# rejects joining both reference tables in one query
+# ("KeyError: 'synapses_v3_median_score'"), so we issue one reference-table
+# query per score and join on target_id == synapse id. The median-score
+# query is substantially slower than the mean-score query.
+.banc_attach_v3_scores <- function(df, fcc) {
+  syn_ids <- unique(df$id)
+  syn_ids_py <- reticulate::r_to_py(as.list(as.character(syn_ids)))
+  for (tbl in c("synapses_v3_mean_score", "synapses_v3_median_score")) {
+    colnm <- sub("^synapses_v3_", "", tbl)
+    out <- tryCatch({
+      ref <- reticulate::py_call(
+        fcc$materialize$query_table,
+        table = tbl,
+        filter_in_dict = reticulate::dict(target_id = syn_ids_py))
+      ref_df <- fafbseg:::pandas2df(ref)
+      if (!nrow(ref_df) || !all(c("target_id", "value") %in% colnames(ref_df)))
+        return(NULL)
+      data.frame(id = ref_df$target_id,
+                 score = ref_df$value,
+                 stringsAsFactors = FALSE)
+    }, error = function(e) {
+      warning(sprintf("Failed to fetch %s: %s", tbl, conditionMessage(e)))
+      NULL
+    })
+    if (is.null(out)) next
+    names(out)[2] <- colnm
+    df <- merge(df, out, by = "id", all.x = TRUE, sort = FALSE)
+  }
+  df
 }
 
 

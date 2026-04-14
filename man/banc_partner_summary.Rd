@@ -20,6 +20,7 @@ banc_partners(
   rootids,
   partners = c("input", "output"),
   synapse_table = c("synapses_v2", "synapses_v3", "synapses_v1"),
+  details = FALSE,
   ...
 )
 }
@@ -42,6 +43,15 @@ to pass in data.frames, BANC URLs or simple ids.}
 sensible default is chosen.}
 
 \item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_partner_summary}}}
+
+\item{details}{Logical. If \code{TRUE} and \code{synapse_table="synapses_v3"},
+additionally fetch \code{mean_score} and \code{median_score} from the
+reference tables \code{synapses_v3_mean_score} and
+\code{synapses_v3_median_score} and merge them onto the returned
+data.frame by synapse id. Default \code{FALSE}. Note: the median-score
+join is substantially slower than the mean-score join (on the order of
+10x), so only request \code{details=TRUE} when you need the per-synapse
+scores. Silently ignored for v2/v1.}
 }
 \value{
 a data.frame
@@ -97,6 +107,11 @@ fpi_v3 <- banc_partners(id, partners='input', synapse_table="synapses_v3")
 nrow(fpi_v2); nrow(fpi_v3)
 # partner overlap
 length(intersect(fpi_v2$pre_pt_root_id, fpi_v3$pre_pt_root_id))
+
+# Pull v3 synapses with mean and median scores attached (slower)
+fpi_v3d <- banc_partners(id, partners='input', synapse_table="synapses_v3",
+                         details=TRUE)
+head(fpi_v3d[, c("id", "mean_score", "median_score")])
 }
 }
 \seealso{
