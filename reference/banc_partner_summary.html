@@ -114,14 +114,17 @@ sensible default is chosen.</p></dd>
 
 
 <dt id="arg-details">details<a class="anchor" aria-label="anchor" href="#arg-details"></a></dt>
-<dd><p>Logical. If <code>TRUE</code> and <code>synapse_table="synapses_v3"</code>,
-additionally fetch <code>mean_score</code> and <code>median_score</code> from the
-reference tables <code>synapses_v3_mean_score</code> and
-<code>synapses_v3_median_score</code> and merge them onto the returned
-data.frame by synapse id. Default <code>FALSE</code>. Note: the median-score
-join is substantially slower than the mean-score join (on the order of
-10x), so only request <code>details=TRUE</code> when you need the per-synapse
-scores. Silently ignored for v2/v1.</p></dd>
+<dd><p>Logical. If <code>TRUE</code>, attach per-synapse annotations from
+reference tables. For <code>synapse_table="synapses_v3"</code> this adds
+<code>mean_score</code> and <code>median_score</code> columns (from
+<code>synapses_v3_mean_score</code> and <code>synapses_v3_median_score</code>). For
+<code>synapse_table="synapses_v2"</code> this adds
+<code>neurotransmitter_predicted</code> and <code>neurotransmitter_probability</code>
+columns (from <code>synapses_v2_nt_prediction_5</code>; note that only
+synapses with size &gt;= 5 received a prediction, so smaller synapses will
+have <code>NA</code>). Default <code>FALSE</code>. For v3, median-score joins are
+substantially slower than mean-score joins (on the order of 10x). No-op
+for v1.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -182,6 +185,11 @@ scores. Silently ignored for v2/v1.</p></dd>
 <span class="r-in"><span><span class="va">fpi_v3d</span> <span class="op">&lt;-</span> <span class="fu">banc_partners</span><span class="op">(</span><span class="va">id</span>, partners<span class="op">=</span><span class="st">'input'</span>, synapse_table<span class="op">=</span><span class="st">"synapses_v3"</span>,</span></span>
 <span class="r-in"><span>                         details<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fpi_v3d</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"mean_score"</span>, <span class="st">"median_score"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Pull v2 synapses with neurotransmitter predictions attached</span></span></span>
+<span class="r-in"><span><span class="va">fpi_v2nt</span> <span class="op">&lt;-</span> <span class="fu">banc_partners</span><span class="op">(</span><span class="va">id</span>, partners<span class="op">=</span><span class="st">'input'</span>, synapse_table<span class="op">=</span><span class="st">"synapses_v2"</span>,</span></span>
+<span class="r-in"><span>                          details<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">fpi_v2nt</span><span class="op">$</span><span class="va">neurotransmitter_predicted</span>, useNA <span class="op">=</span> <span class="st">"ifany"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -75,13 +75,15 @@ banc_partners(
 
 - details:
 
-  Logical. If `TRUE` and `synapse_table="synapses_v3"`, additionally
-  fetch `mean_score` and `median_score` from the reference tables
-  `synapses_v3_mean_score` and `synapses_v3_median_score` and merge them
-  onto the returned data.frame by synapse id. Default `FALSE`. Note: the
-  median-score join is substantially slower than the mean-score join (on
-  the order of 10x), so only request `details=TRUE` when you need the
-  per-synapse scores. Silently ignored for v2/v1.
+  Logical. If `TRUE`, attach per-synapse annotations from reference
+  tables. For `synapse_table="synapses_v3"` this adds `mean_score` and
+  `median_score` columns (from `synapses_v3_mean_score` and
+  `synapses_v3_median_score`). For `synapse_table="synapses_v2"` this
+  adds `neurotransmitter_predicted` and `neurotransmitter_probability`
+  columns (from `synapses_v2_nt_prediction_5`; note that only synapses
+  with size \>= 5 received a prediction, so smaller synapses will have
+  `NA`). Default `FALSE`. For v3, median-score joins are substantially
+  slower than mean-score joins (on the order of 10x). No-op for v1.
 
 ## Value
 
@@ -142,5 +144,10 @@ length(intersect(fpi_v2$pre_pt_root_id, fpi_v3$pre_pt_root_id))
 fpi_v3d <- banc_partners(id, partners='input', synapse_table="synapses_v3",
                          details=TRUE)
 head(fpi_v3d[, c("id", "mean_score", "median_score")])
+
+# Pull v2 synapses with neurotransmitter predictions attached
+fpi_v2nt <- banc_partners(id, partners='input', synapse_table="synapses_v2",
+                          details=TRUE)
+table(fpi_v2nt$neurotransmitter_predicted, useNA = "ifany")
 } # }
 ```
