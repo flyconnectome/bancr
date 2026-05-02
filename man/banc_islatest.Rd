@@ -13,7 +13,7 @@ banc_islatest(x, timestamp = NULL, ...)
 \item{timestamp}{(optional) argument to set an endpoint - edits after this
 time will be ignored (see details).}
 
-\item{...}{Additional arguments passed to \code{\link{flywire_islatest}}}
+\item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_islatest}}}
 }
 \description{
 Check if a banc root id is up to date

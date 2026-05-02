@@ -9,13 +9,13 @@
 #' @param method How to treat the mesh object returned from neuroglancer, i.e. as
 #' a \code{mesh3d} object or a \code{ply} mesh.
 #' @param ... Additional arguments passed to
-#'   \code{fafbseg::\link{read_cloudvolume_meshes}}
+#'   \code{\link[fafbseg]{read_cloudvolume_meshes}}
 #' @inheritParams fafbseg::save_cloudvolume_meshes
 #'
 #' @return A \code{\link[nat]{neuronlist}} containing one or more \code{mesh3d}
-#'   objects. See \code{nat::\link[nat]{read.neurons}} for details.
+#'   objects. See \code{\link[nat]{read.neurons}} for details.
 #' @export
-#' @seealso \code{fafbseg::\link{read_cloudvolume_meshes}}
+#' @seealso \code{\link[fafbseg]{read_cloudvolume_meshes}}
 #' @examples
 #' \dontrun{
 #' neuron.mesh <- banc_read_neuron_meshes("720575941478275714")
@@ -68,7 +68,7 @@ banc_read_nuclei_mesh <- function(ids, lod = 0L, savedir=NULL,  method=c('vf', '
 #'  that separates the head from the neck and ventral nerve cord. For fitting to the
 #'  MANC data set, a cut height of `y.cut=5e05` seems good.
 #' @param invert if \code{TRUE} returns brain points, if \code{FALSE} returns VNC points.
-#' @param ... Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}
+#' @param ... Additional arguments passed to \code{\link[nat]{nlapply}} and then \code{\link[nat]{prune_vertices}}
 #'
 #' @return Remove points above or below the midsection of the neck connective of BANC.
 #' @seealso \code{\link{banc.surf}}
@@ -221,7 +221,7 @@ banc_in_neuropil.mesh3d <- function(x,
 #'
 #' @param x the numeric identifier that specifies the mesh to read, defaults to \code{1} the BANC outline mesh.
 #' @param url the URL that directs \code{bancr} to where BANC meshes are stored.
-#' @param ... additional arguments to \code{\link{GET}}
+#' @param ... additional arguments to \code{\link[httr]{GET}}
 #' @return a mesh3d object for the specified mesh.
 #' @export
 #' @seealso \code{\link{banc_read_neuron_meshes}}

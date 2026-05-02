@@ -30,7 +30,7 @@ If NULL, uses default files.}
 \item{method}{Character string specifying the transformation method.
 Must be either "elastix" or "tpsreg". Default is "elastix".}
 
-\item{...}{Additional arguments passed to \code{nat.templatebrains::\link{mirror_brain}}.}
+\item{...}{Additional arguments passed to \code{\link[nat.templatebrains]{mirror_brain}}.}
 }
 \value{
 The input object with mirrored 3D points.
@@ -77,5 +77,5 @@ plot3d(neuron.mesh.mirror, col = "cyan")
 }
 \seealso{
 \code{\link{banc_to_JRC2018F}} for the underlying transformation function.
-\code{nat.templatebrains::\link{mirror_brain}} for the mirroring operation in JRC2018F space.
+\code{\link[nat.templatebrains]{mirror_brain}} for the mirroring operation in JRC2018F space.
 }

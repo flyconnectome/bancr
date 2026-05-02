@@ -17,7 +17,7 @@ banc_raw2nm(x, vd = banc_voxdims())
 \code{getOption("fafbseg.sampleurl")} as set by
 \code{\link{choose_banc}}.}
 
-\item{x}{3D coordinates in any form compatible with \code{\link{xyzmatrix}}}
+\item{x}{3D coordinates in any form compatible with \code{\link[nat]{xyzmatrix}}}
 
 \item{vd}{The voxel dimensions in nm. Expert use only. Normally found
 automatically.}

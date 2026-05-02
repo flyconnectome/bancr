@@ -6,7 +6,7 @@
 #' @return A vector of root ids (by default character)
 #' @export
 #' @family banc-ids
-#' @seealso \code{\link{flywire_rootid}}
+#' @seealso \code{\link[fafbseg]{flywire_rootid}}
 #' @examples
 #' \dontrun{
 #' banc_rootid("73186243730767724")
@@ -36,12 +36,12 @@ banc_rootid <- function(x,
 
 #' Find the supervoxel identifiers of a banc neuron
 #'
-#' @param ... additional arguments passed to \code{\link{flywire_leaves}}
+#' @param ... additional arguments passed to \code{\link[fafbseg]{flywire_leaves}}
 #' @inheritParams fafbseg::flywire_leaves
 #'
 #' @return A vector of supervoxel ids
 #' @family banc-ids
-#' @seealso \code{\link{flywire_leaves}}
+#' @seealso \code{\link[fafbseg]{flywire_leaves}}
 #' @export
 #'
 #' @examples
@@ -67,7 +67,7 @@ banc_leaves <- function(x, integer64=TRUE, ...) {
 #'
 #' @return A character vector of segment ids, NA when lookup fails.
 #' @family banc-ids
-#' @seealso \code{\link{flywire_xyz2id}}
+#' @seealso \code{\link[fafbseg]{flywire_xyz2id}}
 #' @export
 #' @importFrom nat xyzmatrix
 #' @examples
@@ -178,7 +178,7 @@ banc_supervoxels <- function(x, voxdims=c(4,4,45)) {
 #' Check if a banc root id is up to date
 #'
 #' @inheritParams fafbseg::flywire_islatest
-#' @param ... Additional arguments passed to \code{\link{flywire_islatest}}
+#' @param ... Additional arguments passed to \code{\link[fafbseg]{flywire_islatest}}
 #'
 #' @export
 #' @family banc-ids
@@ -194,7 +194,7 @@ banc_islatest <- function(x, timestamp=NULL, ...) {
 #' @param x a `data.frame` with at least one of: `root_id`, `pt_root_id`, `supervoxel_id` and/or `pt_supervoxel_id`.
 #' Supervoxels will be preferentially used to update the `root_id` column.
 #' Else a vector of `BANC` root IDs.
-#' @param ... Additional arguments passed to \code{\link{flywire_latestid}}
+#' @param ... Additional arguments passed to \code{\link[fafbseg]{flywire_latestid}}
 #' @param root.column when `x` is a `data.frame`, the `root_id` column you wish to update
 #' @param supervoxel.column when `x` is a `data.frame`, the `supervoxel_id` column you wish to use to update `root.column`
 #' @param position.column when `x` is a `data.frame`, the `position` column with xyz values you wish to use to update `supervoxel.column`

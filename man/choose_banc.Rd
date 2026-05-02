@@ -11,7 +11,7 @@ with_banc(expr)
 }
 \arguments{
 \item{set}{Whether or not to permanently set the banc autosegmentation as the
-default for \code{\link{fafbseg}} functions.}
+default for \code{\link[fafbseg]{fafbseg-package}} functions.}
 
 \item{expr}{An expression to evaluate while banc is the default
 autosegmentation}
@@ -26,7 +26,7 @@ Choose or (temporarily) use the banc autosegmentation
 }
 \details{
 \code{bancr} inherits a significant amount of infrastructure from
-the \code{\link{fafbseg}} package. This has the concept of the
+the \code{\link[fafbseg]{fafbseg-package}} package. This has the concept of the
 \emph{active} autosegmentation, which in turn defines one or more R options
 containing URIs pointing to voxel-wise segmentation, mesh etc data. These
 are normally contained within a single neuroglancer URL which points to

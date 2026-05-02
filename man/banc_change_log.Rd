@@ -25,7 +25,7 @@ for more details.}
 \item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_fetch}}}
 }
 \value{
-a \code{data.frame} See \code{fabseg::\link{flywire_change_log}} for
+a \code{data.frame} See \code{\link[fafbseg]{flywire_change_log}} for
 details
 }
 \description{
@@ -33,7 +33,7 @@ Fetch change log information for one or more neurons
 }
 \details{
 As of August 2021 this is a simple wrapper of
-\code{fafbseg::\link{flywire_change_log}}. For now the old (and less
+\code{\link[fafbseg]{flywire_change_log}}. For now the old (and less
 convenient format) available from the zetta API can be obtained with the
 private \code{bancr:::banc_change_log_zetta} function.
 }

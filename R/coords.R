@@ -25,7 +25,7 @@ banc_voxdims_impl <- function(url=choose_banc(set=FALSE)[['fafbseg.sampleurl']])
 }
 # 4  4 45
 
-#' @param x 3D coordinates in any form compatible with \code{\link{xyzmatrix}}
+#' @param x 3D coordinates in any form compatible with \code{\link[nat]{xyzmatrix}}
 #'
 #' @return for \code{banc_raw2nm} and \code{banc_nm2raw} an Nx3 matrix of
 #'   coordinates

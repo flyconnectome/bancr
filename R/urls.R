@@ -22,21 +22,6 @@
 #' banc_scene(open=T)
 #' banc_scene("720575941545083784", open=T)
 #' }
-# Wrapper for fafbseg::ngl_encode_url that avoids a Linux PATH_MAX crash when
-# `body` is a long JSON string. fafbseg calls tools::file_ext(body) to detect
-# a filename, which on Linux errors with "path too long" when length(body) >
-# PATH_MAX (~4096). Workaround: write JSON to a temp .json file and pass the
-# path so file_ext succeeds without basename() on the long string.
-safe_ngl_encode_url <- function(body, ...) {
-  if (is.character(body) && length(body) == 1L && nchar(body) > 3000L) {
-    tf <- tempfile(fileext = ".json")
-    writeLines(body, tf)
-    on.exit(unlink(tf), add = TRUE)
-    return(fafbseg::ngl_encode_url(tf, ...))
-  }
-  fafbseg::ngl_encode_url(body, ...)
-}
-
 banc_scene <- function(ids=NULL,
                        open=FALSE,
                        layer = NULL,
@@ -69,6 +54,21 @@ banc_scene <- function(ids=NULL,
     browseURL(u)
     invisible(u)
   } else (u)
+}
+
+# Wrapper for fafbseg::ngl_encode_url that avoids a Linux PATH_MAX crash when
+# `body` is a long JSON string. fafbseg calls tools::file_ext(body) to detect
+# a filename, which on Linux errors with "path too long" when length(body) >
+# PATH_MAX (~4096). Workaround: write JSON to a temp .json file and pass the
+# path so file_ext succeeds without basename() on the long string.
+safe_ngl_encode_url <- function(body, ...) {
+  if (is.character(body) && length(body) == 1L && nchar(body) > 3000L) {
+    tf <- tempfile(fileext = ".json")
+    writeLines(body, tf)
+    on.exit(unlink(tf), add = TRUE)
+    return(fafbseg::ngl_encode_url(tf, ...))
+  }
+  fafbseg::ngl_encode_url(body, ...)
 }
 
 #' Visualise neurons across multiple Drosophila connectomic datasets in BANC spelunker
@@ -332,14 +332,14 @@ banc_shorturl <- function (x,
 #' Choose or (temporarily) use the banc autosegmentation
 #'
 #' @details \code{bancr} inherits a significant amount of infrastructure from
-#'   the \code{\link{fafbseg}} package. This has the concept of the
+#'   the \code{\link[fafbseg]{fafbseg-package}} package. This has the concept of the
 #'   \emph{active} autosegmentation, which in turn defines one or more R options
 #'   containing URIs pointing to voxel-wise segmentation, mesh etc data. These
 #'   are normally contained within a single neuroglancer URL which points to
 #'   multiple data layers. For banc this is the neuroglancer scene returned by
 #'   \code{\link{banc_scene}}.
 #' @param set Whether or not to permanently set the banc autosegmentation as the
-#'   default for \code{\link{fafbseg}} functions.
+#'   default for \code{\link[fafbseg]{fafbseg-package}} functions.
 
 #'
 #' @return If \code{set=TRUE} a list containing the previous values of the

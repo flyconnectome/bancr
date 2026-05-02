@@ -123,5 +123,5 @@ table(fpi_v2nt$neurotransmitter_predicted, useNA = "ifany")
 }
 }
 \seealso{
-\code{\link{flywire_partner_summary}}, \code{\link{banc_latestid}}
+\code{\link[fafbseg]{flywire_partner_summary}}, \code{\link{banc_latestid}}
 }

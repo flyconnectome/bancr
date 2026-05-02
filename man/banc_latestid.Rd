@@ -37,7 +37,7 @@ dataset.}
 \item{Verbose}{When set to \code{TRUE} prints information about what fraction
 of}
 
-\item{...}{Additional arguments passed to \code{\link{flywire_latestid}}}
+\item{...}{Additional arguments passed to \code{\link[fafbseg]{flywire_latestid}}}
 
 \item{x}{a \code{data.frame} with at least one of: \code{root_id}, \code{pt_root_id}, \code{supervoxel_id} and/or \code{pt_supervoxel_id}.
 Supervoxels will be preferentially used to update the \code{root_id} column.

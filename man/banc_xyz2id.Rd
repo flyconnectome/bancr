@@ -70,7 +70,7 @@ banc_xyz2id(cbind(462572, 370000, 134955),root=TRUE)
 }
 }
 \seealso{
-\code{\link{flywire_xyz2id}}
+\code{\link[fafbseg]{flywire_xyz2id}}
 
 Other banc-ids: 
 \code{\link{banc_cellid_from_segid}()},

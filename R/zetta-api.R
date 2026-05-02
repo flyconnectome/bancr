@@ -1,13 +1,13 @@
 #' Fetch change log information for one or more neurons
 #'
 #' @details As of August 2021 this is a simple wrapper of
-#'   \code{fafbseg::\link{flywire_change_log}}. For now the old (and less
+#'   \code{\link[fafbseg]{flywire_change_log}}. For now the old (and less
 #'   convenient format) available from the zetta API can be obtained with the
 #'   private \code{bancr:::banc_change_log_zetta} function.
 #'
 #' @param x One or more banc ids in any format understandable by
 #'   \code{\link[fafbseg]{ngl_segments}}
-#' @return a \code{data.frame} See \code{fabseg::\link{flywire_change_log}} for
+#' @return a \code{data.frame} See \code{\link[fafbseg]{flywire_change_log}} for
 #'   details
 #' @export
 #' @inheritParams fafbseg::flywire_change_log

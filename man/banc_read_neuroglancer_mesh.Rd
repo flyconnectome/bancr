@@ -18,7 +18,7 @@ banc_read_neuroglancer_mesh(
 
 \item{url}{the URL that directs \code{bancr} to where BANC meshes are stored.}
 
-\item{...}{additional arguments to \code{\link{GET}}}
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 a mesh3d object for the specified mesh.

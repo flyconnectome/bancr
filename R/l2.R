@@ -22,8 +22,8 @@
 #'
 #'   See \code{\link[fafbseg]{read_l2skel}} for additional details of
 #'
-#' @return a \code{\link{neuronlist}} containing one or more
-#'   \code{\link{neuron}} or \code{\link{dotprops}} objects. Note that neurons
+#' @return a \code{\link[nat]{neuronlist}} containing one or more
+#'   \code{\link[nat]{neuron}} or \code{\link[nat]{dotprops}} objects. Note that neurons
 #'   will be calibrated in \code{nm} while dotprops will be calibrated in microns.
 #' @export
 #'

@@ -35,7 +35,7 @@ are edited.}
 format. obj is the default but ply is a simpler and more compact format.}
 
 \item{...}{Additional arguments passed to
-\code{fafbseg::\link{read_cloudvolume_meshes}}}
+\code{\link[fafbseg]{read_cloudvolume_meshes}}}
 
 \item{lod}{The level of detail (highest resolution is 0, default of 2 gives a
 good overall morphology while 3 is also useful and smaller still).}
@@ -45,7 +45,7 @@ a \code{mesh3d} object or a \code{ply} mesh.}
 }
 \value{
 A \code{\link[nat]{neuronlist}} containing one or more \code{mesh3d}
-objects. See \code{nat::\link[nat]{read.neurons}} for details.
+objects. See \code{\link[nat]{read.neurons}} for details.
 }
 \description{
 Read one or more BANC neuron and nuclei meshes
@@ -59,5 +59,5 @@ plot3d(nucleus.mesh, col = "black")
 }
 }
 \seealso{
-\code{fafbseg::\link{read_cloudvolume_meshes}}
+\code{\link[fafbseg]{read_cloudvolume_meshes}}
 }

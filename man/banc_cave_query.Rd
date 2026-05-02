@@ -16,7 +16,7 @@ selects \code{Live live} mode which gives access even to annotations that
 are not part of a materialisation version. See section \bold{Live and Live
 Live queries} for details.}
 
-\item{...}{Additional arguments passed to \code{\link{flywire_cave_query}}
+\item{...}{Additional arguments passed to
 \code{\link[fafbseg]{flywire_cave_query}}}
 }
 \value{

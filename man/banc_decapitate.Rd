@@ -37,7 +37,7 @@ MANC data set, a cut height of \code{y.cut=5e05} seems good.}
 
 \item{invert}{if \code{TRUE} returns brain points, if \code{FALSE} returns VNC points.}
 
-\item{...}{Additional arguments passed to \code{\link{nlapply}} and then \code{\link{prune_vertices}}}
+\item{...}{Additional arguments passed to \code{\link[nat]{nlapply}} and then \code{\link[nat]{prune_vertices}}}
 }
 \value{
 Remove points above or below the midsection of the neck connective of BANC.

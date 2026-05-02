@@ -44,7 +44,7 @@ banc_token_available <- function() {
 
 #' Print information about your BANC setup including tokens and python modules
 #'
-#' @seealso \code{\link{dr_fafbseg}}
+#' @seealso \code{\link[fafbseg]{dr_fafbseg}}
 #' @examples
 #' \dontrun{
 #' dr_banc()

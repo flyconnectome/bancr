@@ -59,7 +59,7 @@
 #' @return a \code{data.frame} of results. There should be 0 rows if no rows
 #'   matched query.
 #'
-#' @seealso \code{fafbseg::\link{flytable_query}}
+#' @seealso \code{\link[fafbseg]{flytable_query}}
 #' @examples
 #' \dontrun{
 #' # Do this once
@@ -755,7 +755,7 @@ banctable_ngl_update <- function(url,
   missing <- setdiff(ids, matched$root_id)
   if (length(missing))
     warning(length(missing), " root IDs not found in SeaTable: ",
-            paste(head(missing, 5), collapse = ", "),
+            paste(utils::head(missing, 5), collapse = ", "),
             if (length(missing) > 5) ", ...")
   message(sprintf("Matched %d / %d root IDs in SeaTable", nrow(matched), length(ids)))
   if (!nrow(matched)) {

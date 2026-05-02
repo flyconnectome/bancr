@@ -77,7 +77,7 @@ banc_version()
 \item{edgelist_view}{Character, name of prepared CAVE view that computes the proofread-neuron edgelist.}
 
 \item{...}{Additional arguments passed to
-\code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.}
+\code{\link[fafbseg]{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.}
 
 \item{rootids}{Character vector specifying one or more BANC rootids. As a
 convenience this argument is passed to \code{\link{banc_ids}} allowing you
@@ -128,5 +128,5 @@ points3d(nat::xyzmatrix(all_banc_soma_positions$pt_position))
 }
 }
 \seealso{
-\code{fafbseg::\link{flywire_cave_query}}
+\code{\link[fafbseg]{flywire_cave_query}}
 }

@@ -15,5 +15,5 @@ dr_banc()
 }
 }
 \seealso{
-\code{\link{dr_fafbseg}}
+\code{\link[fafbseg]{dr_fafbseg}}
 }

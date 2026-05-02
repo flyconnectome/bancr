@@ -20,7 +20,7 @@
 #' @param ... Additional arguments passed to \code{\link[fafbseg]{flywire_partner_summary}}
 #'
 #' @return a data.frame
-#' @seealso \code{\link{flywire_partner_summary}}, \code{\link{banc_latestid}}
+#' @seealso \code{\link[fafbseg]{flywire_partner_summary}}, \code{\link{banc_latestid}}
 #' @export
 #'
 #' @examples

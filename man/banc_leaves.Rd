@@ -12,7 +12,7 @@ banc_leaves(x, integer64 = TRUE, ...)
 \item{integer64}{Whether to return ids as integer64 type (the default, more
 compact but a little fragile) rather than character (when \code{FALSE}).}
 
-\item{...}{additional arguments passed to \code{\link{flywire_leaves}}}
+\item{...}{additional arguments passed to \code{\link[fafbseg]{flywire_leaves}}}
 }
 \value{
 A vector of supervoxel ids
@@ -27,7 +27,7 @@ head(svids)
 }
 }
 \seealso{
-\code{\link{flywire_leaves}}
+\code{\link[fafbseg]{flywire_leaves}}
 
 Other banc-ids: 
 \code{\link{banc_cellid_from_segid}()},

@@ -102,7 +102,3 @@ Bates, A.S., Schlegel, P., Roberts, R.J.V. et al. Complete
 Connectomic Reconstruction of Olfactory Projection Neurons in the Fly
 Brain. \emph{Curr Biol} 30, 3183-3199.e6 (2020).
 }
-\seealso{
-\code{\link[influencer]{adjust_influence}} for grouped adjusted
-influence calculations.
-}

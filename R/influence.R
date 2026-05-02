@@ -49,8 +49,6 @@
 #' }
 #'
 #' @export
-#' @seealso \code{\link[influencer]{adjust_influence}} for grouped adjusted
-#'   influence calculations.
 #'
 #' @references Bates, A.S., Schlegel, P., Roberts, R.J.V. et al. Complete
 #'   Connectomic Reconstruction of Olfactory Projection Neurons in the Fly

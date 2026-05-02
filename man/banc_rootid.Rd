@@ -33,7 +33,7 @@ banc_rootid("73186243730767724")
 }
 }
 \seealso{
-\code{\link{flywire_rootid}}
+\code{\link[fafbseg]{flywire_rootid}}
 
 Other banc-ids: 
 \code{\link{banc_cellid_from_segid}()},

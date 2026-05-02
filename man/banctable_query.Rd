@@ -198,5 +198,5 @@ banctable_append_rows(
 }
 }
 \seealso{
-\code{fafbseg::\link{flytable_query}}
+\code{\link[fafbseg]{flytable_query}}
 }

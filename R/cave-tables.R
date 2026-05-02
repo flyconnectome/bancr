@@ -19,7 +19,7 @@
 #' @param edgelist_view Character, name of prepared CAVE view that computes the proofread-neuron edgelist.
 #' @param simplify logical, if \code{TRUE} then the proportion of presynaptic connections for each transmitter type is returned, for each query neuron.
 #' @param ... Additional arguments passed to
-#'   \code{fafbseg::\link{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
+#'   \code{\link[fafbseg]{flywire_cave_query}} or \code{bancr:::get_cave_table_data}.
 #'
 #' @return A \code{data.frame} describing a CAVE-table related to the BANC project.
 #' In the case of \code{banc_cave_tables}, a vector is returned containing the names of
@@ -30,7 +30,7 @@
 #' control across the entire central nervous system. For more information about
 #' CAVE infrastructure, see \url{https://www.caveconnecto.me/CAVEclient/}.
 #'
-#' @seealso \code{fafbseg::\link{flywire_cave_query}}
+#' @seealso \code{\link[fafbseg]{flywire_cave_query}}
 #'
 #' @export
 #' @examples
