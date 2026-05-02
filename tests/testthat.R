@@ -1,11 +1,12 @@
 library(testthat)
 library(bancr)
 if (identical(Sys.getenv("BANCR_ON_CI"), "true")) {
-  # On CI we use the Python provided by the workflow (RETICULATE_PYTHON)
-  # rather than letting fafbseg install miniconda. With miniconda=FALSE,
-  # simple_python uses the existing interpreter and pip-installs the
-  # required Python packages into it.
-  simple_python("basic", miniconda = FALSE)
+  # The workflow pre-installs the required Python packages and points
+  # reticulate at that interpreter via RETICULATE_PYTHON, so we do not
+  # need fafbseg::simple_python to bootstrap one. (Letting it run forces
+  # reticulate::py_install to spin up a separate virtualenv, which on
+  # Windows picks an unrelated Python from the hosted toolcache and then
+  # fails to build cloud-volume's native wheels.)
   # Token file is written by the GitHub Actions workflow;
   # only call banc_set_token() if it is missing
   secret_path <- file.path(Sys.getenv("HOME"), ".cloudvolume", "secrets", "chunkedgraph-secret.json")
