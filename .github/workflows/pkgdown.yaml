@@ -24,7 +24,6 @@ jobs:
       CHUNKEDGRAPH_SECRET: ${{ secrets.CHUNKEDGRAPH_SECRET }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       FLYTABLE_TOKEN: ${{ secrets.FLYTABLE_TOKEN }}
-      RETICULATE_MINICONDA_PYTHON_VERSION: 3.8
       RGL_USE_NULL: TRUE
     permissions:
       contents: write
@@ -37,6 +36,17 @@ jobs:
         with:
           use-public-rspm: true
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Point reticulate at the system Python and install Python deps
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --prefer-binary cloud-volume "seatable_api!=2.6.3" caveclient
+          echo "RETICULATE_PYTHON=$(python -c 'import sys; print(sys.executable)')" >> "$GITHUB_ENV"
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::., catmaid=natverse/rcatmaid
@@ -46,7 +56,6 @@ jobs:
         run: |
           pak::local_install()
           library(fafbseg)
-          simple_python()
           dr_fafbseg()
         shell: Rscript {0}
 
