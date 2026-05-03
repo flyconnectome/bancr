@@ -8,8 +8,12 @@ banc_lm_scene(
   lm_url,
   layer_name = "LM data",
   shader = NULL,
-  opacity = 0.6,
+  range = c(1, 30),
+  opacity = 0.55,
   blend = c("additive", "default"),
+  volume_rendering = c("on", "max", "off"),
+  volume_rendering_depth_samples = 788L,
+  volume_rendering_gain = NULL,
   ids = NULL,
   url = NULL,
   shorten = TRUE,
@@ -24,15 +28,38 @@ banc_lm_scene(
 \item{layer_name}{display name of the LM layer in Neuroglancer.
 Default \code{"LM data"}.}
 
-\item{shader}{optional Neuroglancer shader string. If \code{NULL} (the
-default), a single-channel grayscale shader with a 4× contrast boost is
-used (Neuroglancer's UI lets viewers tune it further).}
+\item{shader}{optional Neuroglancer shader string. If \code{NULL}
+(default) the layer uses Neuroglancer's built-in \code{emitGrayscale}
+shader, controlled by \code{shaderControls.normalized.range} (set
+via \code{range}).}
 
-\item{opacity}{layer opacity in \code{[0, 1]}; default \code{0.6}.}
+\item{range}{numeric length-2 vector \code{c(low, high)} setting
+\code{shaderControls.normalized.range} — the source-data intensity
+window mapped to 0..1 brightness. Default \code{c(1, 30)}, which
+suits LM volumes that have been Elastix-warped + clipped to BANC
+voxel space (B-spline ringing leaves most of the signal in the bottom
+tenth of the uint8 range). Increase the upper bound for brighter
+source data; tighten it for sparse stains.}
+
+\item{opacity}{layer opacity in \code{[0, 1]}; default \code{0.55}
+(matching the public BANC \code{JRC2018F atlas imported} layer).}
 
 \item{blend}{layer blend mode (\code{"default"}, \code{"additive"}).
-Default \code{"additive"} so the LM signal lights up where it overlaps
+Default \code{"additive"} so LM signal lights up where it overlaps
 the EM rather than occluding it.}
+
+\item{volume_rendering}{one of \code{"on"} (default), \code{"max"} or
+\code{"off"}. Required for the layer to be visible in 3-D
+Neuroglancer views. Cross-section / orthogonal slice views ignore
+this setting.}
+
+\item{volume_rendering_depth_samples}{integer; how many depth
+samples Neuroglancer uses when ray-tracing the volume in 3-D.
+Default \code{788} (the value the public BANC atlas uses).}
+
+\item{volume_rendering_gain}{numeric; 3-D volume rendering gain.
+\code{NULL} (default) leaves it unset, which lets Neuroglancer's UI
+control it interactively.}
 
 \item{ids}{optional vector of BANC root IDs to add to the
 \code{"segmentation proofreading"} layer that ships in the base
