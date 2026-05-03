@@ -21,8 +21,12 @@ banc_lm_scene(
   lm_url,
   layer_name = "LM data",
   shader = NULL,
-  opacity = 0.6,
+  range = c(1, 30),
+  opacity = 0.55,
   blend = c("additive", "default"),
+  volume_rendering = c("on", "max", "off"),
+  volume_rendering_depth_samples = 788L,
+  volume_rendering_gain = NULL,
   ids = NULL,
   url = NULL,
   shorten = TRUE,
@@ -44,19 +48,45 @@ banc_lm_scene(
 
 - shader:
 
-  optional Neuroglancer shader string. If `NULL` (the default), a
-  single-channel grayscale shader with a 4× contrast boost is used
-  (Neuroglancer's UI lets viewers tune it further).
+  optional Neuroglancer shader string. If `NULL` (default) the layer
+  uses Neuroglancer's built-in `emitGrayscale` shader, controlled by
+  `shaderControls.normalized.range` (set via `range`).
+
+- range:
+
+  numeric length-2 vector `c(low, high)` setting
+  `shaderControls.normalized.range` — the source-data intensity window
+  mapped to 0..1 brightness. Default `c(1, 30)`, which suits LM volumes
+  that have been Elastix-warped + clipped to BANC voxel space (B-spline
+  ringing leaves most of the signal in the bottom tenth of the uint8
+  range). Increase the upper bound for brighter source data; tighten it
+  for sparse stains.
 
 - opacity:
 
-  layer opacity in `[0, 1]`; default `0.6`.
+  layer opacity in `[0, 1]`; default `0.55` (matching the public BANC
+  `JRC2018F atlas imported` layer).
 
 - blend:
 
   layer blend mode (`"default"`, `"additive"`). Default `"additive"` so
-  the LM signal lights up where it overlaps the EM rather than occluding
-  it.
+  LM signal lights up where it overlaps the EM rather than occluding it.
+
+- volume_rendering:
+
+  one of `"on"` (default), `"max"` or `"off"`. Required for the layer to
+  be visible in 3-D Neuroglancer views. Cross-section / orthogonal slice
+  views ignore this setting.
+
+- volume_rendering_depth_samples:
+
+  integer; how many depth samples Neuroglancer uses when ray-tracing the
+  volume in 3-D. Default `788` (the value the public BANC atlas uses).
+
+- volume_rendering_gain:
+
+  numeric; 3-D volume rendering gain. `NULL` (default) leaves it unset,
+  which lets Neuroglancer's UI control it interactively.
 
 - ids:
 
