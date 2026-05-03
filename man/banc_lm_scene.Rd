@@ -14,7 +14,7 @@ banc_lm_scene(
   base_url = paste0("https://spelunker.cave-explorer.org/#!middleauth+",
     "https://global.daf-apis.com/nglstate/api/v1/", "6431332029693952"),
   shorten = FALSE,
-  viewer = c("spelunker", "ng.banc.community"),
+  viewer = "banc.ng.community/view",
   open = FALSE
 )
 }
@@ -48,10 +48,16 @@ Pass an alternative scene URL to start from your own layered state.}
 form \code{<base>/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/<id>}.
 Requires a valid token from \code{\link{banc_set_token}}.}
 
-\item{viewer}{one of \code{"spelunker"} (default) or
-\code{"ng.banc.community"}; only affects the prefix of the returned
-URL. The state JSON itself is identical and either viewer can render
-it via \code{#!middleauth+https://...}.}
+\item{viewer}{one of \code{"banc.ng.community/view"} (default; the
+public BANC viewer at \code{https://banc.ng.community/view/}),
+\code{"banc.ng.community"} (the private CAVE-authenticated BANC
+viewer at \code{https://banc.ng.community/}, used by the BANC
+team), \code{"spelunker"} (the upstream
+\code{https://spelunker.cave-explorer.org/} viewer), or any other
+base URL string (must end with \code{/}). Only affects the prefix
+of the returned URL — the state JSON itself is identical and any
+Spelunker-compatible viewer can render it via
+\code{#!middleauth+https://...}.}
 
 \item{open}{logical; if \code{TRUE}, open the result in the system
 browser.}
