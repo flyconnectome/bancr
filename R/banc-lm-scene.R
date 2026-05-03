@@ -31,10 +31,10 @@
 #' \code{nglstate/api/v1/post} endpoint and return a shortened URL of the
 #' form \code{<base>/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/<id>}.
 #' Requires a valid token from \code{\link{banc_set_token}}.
-#' @param viewer one of \code{"banc.ng.community/view"} (default; the
-#' public BANC viewer at \code{https://banc.ng.community/view/}),
-#' \code{"banc.ng.community"} (the private CAVE-authenticated BANC
-#' viewer at \code{https://banc.ng.community/}, used by the BANC
+#' @param viewer one of \code{"ng.banc.community/view"} (default; the
+#' public BANC viewer at \code{https://ng.banc.community/view/}),
+#' \code{"ng.banc.community"} (the private CAVE-authenticated BANC
+#' viewer at \code{https://ng.banc.community/}, used by the BANC
 #' team), \code{"spelunker"} (the upstream
 #' \code{https://spelunker.cave-explorer.org/} viewer), or any other
 #' base URL string (must end with \code{/}). Only affects the prefix
@@ -108,7 +108,7 @@ banc_lm_scene <- function(lm_url,
                             "https://global.daf-apis.com/nglstate/api/v1/",
                             "6431332029693952"),
                           shorten    = FALSE,
-                          viewer     = "banc.ng.community/view",
+                          viewer     = "ng.banc.community/view",
                           open       = FALSE) {
   blend  <- match.arg(blend)
   if (!requireNamespace("jsonlite", quietly = TRUE))
@@ -197,8 +197,8 @@ banc_lm_fetch_state <- function(base_url) {
 
 banc_lm_view_base <- function(base_url, viewer) {
   switch(viewer,
-    `banc.ng.community/view` = "https://banc.ng.community/view/",
-    `banc.ng.community`      = "https://banc.ng.community/",
+    `ng.banc.community/view` = "https://ng.banc.community/view/",
+    `ng.banc.community`      = "https://ng.banc.community/",
     spelunker                = "https://spelunker.cave-explorer.org/",
     {
       # Either a custom base URL, or fall back to whatever was in base_url
@@ -207,7 +207,7 @@ banc_lm_view_base <- function(base_url, viewer) {
         return(viewer)
       }
       base <- sub("#!.*$", "", base_url)
-      if (!nzchar(base)) "https://banc.ng.community/view/" else base
+      if (!nzchar(base)) "https://ng.banc.community/view/" else base
     })
 }
 
