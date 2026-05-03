@@ -31,10 +31,16 @@
 #' \code{nglstate/api/v1/post} endpoint and return a shortened URL of the
 #' form \code{<base>/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/<id>}.
 #' Requires a valid token from \code{\link{banc_set_token}}.
-#' @param viewer one of \code{"spelunker"} (default) or
-#' \code{"ng.banc.community"}; only affects the prefix of the returned
-#' URL. The state JSON itself is identical and either viewer can render
-#' it via \code{#!middleauth+https://...}.
+#' @param viewer one of \code{"banc.ng.community/view"} (default; the
+#' public BANC viewer at \code{https://banc.ng.community/view/}),
+#' \code{"banc.ng.community"} (the private CAVE-authenticated BANC
+#' viewer at \code{https://banc.ng.community/}, used by the BANC
+#' team), \code{"spelunker"} (the upstream
+#' \code{https://spelunker.cave-explorer.org/} viewer), or any other
+#' base URL string (must end with \code{/}). Only affects the prefix
+#' of the returned URL — the state JSON itself is identical and any
+#' Spelunker-compatible viewer can render it via
+#' \code{#!middleauth+https://...}.
 #' @param open logical; if \code{TRUE}, open the result in the system
 #' browser.
 #'
@@ -102,10 +108,9 @@ banc_lm_scene <- function(lm_url,
                             "https://global.daf-apis.com/nglstate/api/v1/",
                             "6431332029693952"),
                           shorten    = FALSE,
-                          viewer     = c("spelunker", "ng.banc.community"),
+                          viewer     = "banc.ng.community/view",
                           open       = FALSE) {
   blend  <- match.arg(blend)
-  viewer <- match.arg(viewer)
   if (!requireNamespace("jsonlite", quietly = TRUE))
     stop("Install the 'jsonlite' package.")
   if (!grepl("^precomputed://", lm_url))
@@ -191,10 +196,19 @@ banc_lm_fetch_state <- function(base_url) {
 }
 
 banc_lm_view_base <- function(base_url, viewer) {
-  if (viewer == "ng.banc.community")
-    return("https://ng.banc.community/view/")
-  base <- sub("#!.*$", "", base_url)
-  if (!nzchar(base)) "https://spelunker.cave-explorer.org/" else base
+  switch(viewer,
+    `banc.ng.community/view` = "https://banc.ng.community/view/",
+    `banc.ng.community`      = "https://banc.ng.community/",
+    spelunker                = "https://spelunker.cave-explorer.org/",
+    {
+      # Either a custom base URL, or fall back to whatever was in base_url
+      if (grepl("^https?://", viewer)) {
+        if (!endsWith(viewer, "/")) viewer <- paste0(viewer, "/")
+        return(viewer)
+      }
+      base <- sub("#!.*$", "", base_url)
+      if (!nzchar(base)) "https://banc.ng.community/view/" else base
+    })
 }
 
 banc_lm_long_url <- function(state, base_url, viewer) {
