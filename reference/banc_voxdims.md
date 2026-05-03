@@ -45,18 +45,15 @@ relies on nat \>= 1.10.4
 
 ``` r
 banc_voxdims()
-#> Warning: using default setting
 #> Warning: Multiple segmentation layers. Choosing first!
 #>  x  y  z 
 #>  4  4 45 
 #> attr(,"units")
 #> [1] "nm"
 banc_raw2nm(c(159144, 22192, 3560))
-#> Warning: using default setting
 #>           X     Y      Z
 #> [1,] 636576 88768 160200
 banc_raw2nm('159144 22192 3560')
-#> Warning: using default setting
 #>           X     Y      Z
 #> [1,] 636576 88768 160200
 if (FALSE) { # \dontrun{

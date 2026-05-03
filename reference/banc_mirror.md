@@ -53,7 +53,7 @@ banc_mirror(
 - ...:
 
   Additional arguments passed to
-  [`nat.templatebrains::mirror_brain`](https://natverse.org/nat.templatebrains/reference/mirror_brain.html).
+  [`mirror_brain`](https://natverse.org/nat.templatebrains/reference/mirror_brain.html).
 
 ## Value
 
@@ -71,7 +71,7 @@ system transformations.
 
 [`banc_to_JRC2018F`](https://flyconnectome.github.io/bancr/reference/banc_to_JRC2018F.md)
 for the underlying transformation function.
-[`nat.templatebrains::mirror_brain`](https://natverse.org/nat.templatebrains/reference/mirror_brain.html)
+[`mirror_brain`](https://natverse.org/nat.templatebrains/reference/mirror_brain.html)
 for the mirroring operation in JRC2018F space.
 
 ## Examples

@@ -63,7 +63,7 @@ banc_segid_from_cellid(
 - integer64:
 
   Whether to return ids as
-  [`bit64::integer64`](https://rdrr.io/pkg/bit64/man/bit64-package.html)
+  [`bit64::integer64`](https://bit64.r-lib.org/reference/bit64-package.html)
   or character vectors. Default value of NA leaves the ids unmodified.
 
 ## Value
@@ -71,7 +71,7 @@ banc_segid_from_cellid(
 Either a vector of ids or a data.frame depending on `rval`. For cell ids
 the vector will be an integer for root ids (segment ids), a character
 vector or an
-[`bit64::integer64`](https://rdrr.io/pkg/bit64/man/bit64-package.html)
+[`bit64::integer64`](https://bit64.r-lib.org/reference/bit64-package.html)
 vector depending on the `integer64` argument.
 
 ## Details

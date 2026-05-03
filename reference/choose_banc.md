@@ -16,7 +16,7 @@ with_banc(expr)
 
   Whether or not to permanently set the banc autosegmentation as the
   default for
-  [`fafbseg`](https://rdrr.io/pkg/fafbseg/man/fafbseg-package.html)
+  [`fafbseg-package`](https://rdrr.io/pkg/fafbseg/man/fafbseg-package.html)
   functions.
 
 - expr:
@@ -33,12 +33,13 @@ list containing the option values.
 ## Details
 
 `bancr` inherits a significant amount of infrastructure from the
-[`fafbseg`](https://rdrr.io/pkg/fafbseg/man/fafbseg-package.html)
+[`fafbseg-package`](https://rdrr.io/pkg/fafbseg/man/fafbseg-package.html)
 package. This has the concept of the *active* autosegmentation, which in
 turn defines one or more R options containing URIs pointing to
 voxel-wise segmentation, mesh etc data. These are normally contained
 within a single neuroglancer URL which points to multiple data layers.
-For banc this is the neuroglancer scene returned by `banc_scene`.
+For banc this is the neuroglancer scene returned by
+[`banc_scene`](https://flyconnectome.github.io/bancr/reference/banc_scene.md).
 
 ## Examples
 

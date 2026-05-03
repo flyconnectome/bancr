@@ -53,6 +53,7 @@ Here’s how to get started with analyzing descending neurons (DNs) that
 connect brain to nerve cord in the fly connectome:
 
 ``` r
+
 library(bancr)
 library(ggplot2)
 library(dplyr)
@@ -126,13 +127,13 @@ groups.
 The BANC annotation system employs a hierarchical classification
 structure:
 
-| Level              | Description                 | Examples                                                                 | Count |
-|--------------------|-----------------------------|--------------------------------------------------------------------------|-------|
-| **flow**           | CNS-wide perspective        | `afferent`, `efferent`, `intrinsic`                                      | 3     |
-| **super_class**    | Coarse functional division  | `ascending`, `descending`, `motor`, `sensory`                            | 13    |
-| **cell_class**     | Anatomical/functional types | `olfactory_receptor_neuron`, `antennal_lobe_projection_neuron`           | 106   |
-| **cell_sub_class** | Specific neural subtypes    | `antenna_olfactory_receptor_neuron`, `multiglomerular_projection_neuron` | 176   |
-| **cell_type**      | Individual neuron names     | `ORN_DM6`, `ORN_VA1v`, `DNge110`                                         | X     |
+| Level | Description | Examples | Count |
+|----|----|----|----|
+| **flow** | CNS-wide perspective | `afferent`, `efferent`, `intrinsic` | 3 |
+| **super_class** | Coarse functional division | `ascending`, `descending`, `motor`, `sensory` | 13 |
+| **cell_class** | Anatomical/functional types | `olfactory_receptor_neuron`, `antennal_lobe_projection_neuron` | 106 |
+| **cell_sub_class** | Specific neural subtypes | `antenna_olfactory_receptor_neuron`, `multiglomerular_projection_neuron` | 176 |
+| **cell_type** | Individual neuron names | `ORN_DM6`, `ORN_VA1v`, `DNge110` | X |
 
 ### Key Annotation Categories
 
@@ -209,6 +210,7 @@ as the whole BANC edgelist. BANC view names and SQL formulas are given
 You can install the development version of `bancr` from github:
 
 ``` r
+
 remotes::install_github('flyconnectome/bancr')
 ```
 
@@ -221,6 +223,7 @@ streamlined by running the following command in R (which will also set
 you up for Pythonic access via cloudvolume).
 
 ``` r
+
 # set up token - will open your browser to generate a new token
 banc_set_token()
 
@@ -232,6 +235,7 @@ banc_set_token()
 To check that everything is set up properly, try:
 
 ``` r
+
 # diagnose issues
 dr_banc()
 
@@ -254,6 +258,7 @@ If you get an error related to not finding cloud-volume or the
 cloud-volume version, the solution may be to update cloud-volume, as so:
 
 ``` r
+
 fafbseg::simple_python('none', pkgs='cloud-volume~=8.32.1')
 fafbseg::simple_python('none', pkgs='caveclient~=8.0.0')
 ```
@@ -272,12 +277,14 @@ You can just repeat the install instructions, but this ensures that all
 dependencies are updated:
 
 ``` r
+
 remotes::install_github('flyconnectome/bancr')
 ```
 
 If you need to update a specific Python library dependent, you can do:
 
 ``` r
+
 fafbseg::simple_python(pkgs='fafbseg')
 ```
 
@@ -289,6 +296,7 @@ First we need to load the package, and direct ourselves to the *BANC*
 data set.
 
 ``` r
+
 library(bancr)
 # choose_banc()
 ```
@@ -301,6 +309,7 @@ bodies and dendrites in the ventral nerve cord, and their axons in the
 brain.
 
 ``` r
+
 banc.neck.connective.neurons <- banc_neck_connective_neurons()
 head(banc.neck.connective.neurons)
 ```
@@ -339,6 +348,7 @@ column in these CAVE tables automatically update.
 Great. Next, we want to read the mesh objects of our neurons.
 
 ``` r
+
 an1.left.mesh <- banc_read_neuron_meshes(an1.left)
 an1.right.mesh <- banc_read_neuron_meshes(an1.right)
 ```
@@ -355,6 +365,7 @@ can install this using
 See above.
 
 ``` r
+
 an1.left.skel <- banc_read_l2skel(an1.left)
 an1.right.skel <- banc_read_l2skel(an1.right)
 ```
@@ -362,6 +373,7 @@ an1.right.skel <- banc_read_l2skel(an1.right)
 We can also get `mesh3d` objects for our nuclei.
 
 ``` r
+
 an1.left.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[1])
 an1.right.nucleus <- banc_read_nuclei_mesh(banc.nuclei.an1.ids[2])
 ```
@@ -374,6 +386,7 @@ First, we can plot the *BANC* volume mesh which shows all the brain
 tissue.
 
 ``` r
+
 nopen3d()
 banc_view()
 plot3d(banc.surf, col = "lightgrey", alpha = 0.1)
@@ -382,12 +395,14 @@ plot3d(banc.surf, col = "lightgrey", alpha = 0.1)
 We can also see the synaptic neuropil inside of it.
 
 ``` r
+
 plot3d(banc_neuropil.surf, col = "lightgrey", alpha = 0.25)
 ```
 
 And now our neurons, their skeletons and their nuclei.
 
 ``` r
+
 # Plot neuron meshes
 plot3d(an1.left.mesh, col = "coral", alpha = 0.75)
 plot3d(an1.right.mesh, col = "chartreuse", alpha = 0.75)
@@ -408,6 +423,7 @@ banc_an1
 We can also make a 2D image of multiple views using `ggplot2`.
 
 ``` r
+
 # Simplify meshes to  make plotting faster
 banc_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_neuropil.surf), percent = 0.1)
 banc_brain_neuropil <- Rvcg::vcgQEdecim(as.mesh3d(banc_brain_neuropil.surf), percent = 0.1)
@@ -446,6 +462,7 @@ moment, this works less well in the VNC than the brain.
 banc_neuropil_mirrored
 
 ``` r
+
 an1.left.skel.m <- banc_mirror(an1.left.skel, method = "tpsreg")
 an1.right.skel.m <- banc_mirror(an1.right.skel, , method = "tpsreg")
 ```
@@ -454,6 +471,7 @@ And now plot the mirrored skeletons, and the non-mirrored meshes for
 comparison:
 
 ``` r
+
 # Set up 3D plot
 nopen3d()
 banc_view()
@@ -475,6 +493,7 @@ banc_ans_mirrored
 We can also change the view to see, for example, the brain more clearly.
 
 ``` r
+
 banc_front_view()
 ```
 
@@ -485,6 +504,7 @@ banc_ans_mirrored_brain
 Or the ventral nerve cord.
 
 ``` r
+
 banc_vnc_view()
 ```
 
@@ -513,6 +533,7 @@ Firstly, let’s just take the brain part of the ANs we have, as
 `JRC2018F` only include the brain.
 
 ``` r
+
 # Show only the portion in the brain
 an1.mesh.simp <- neuronlist(an1.left.mesh.simp, an1.right.mesh.simp)
 an1.mesh.simp.brain  <- banc_decapitate(an1.mesh.simp, invert = TRUE)
@@ -538,6 +559,7 @@ the comparable *FAFB-FlyWire* neurons to fetch.
 We need to load a new R package first.
 
 ``` r
+
 if (!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github('natverse/nat.jrcbrains')
 
@@ -550,6 +572,7 @@ library(nat.jrcbrains)
 And then get known *FAFB-FlyWire* neurons.
 
 ``` r
+
 ## if you previously ran choose_banc()
 ## now run: 
 # choose_segmentation("flywire31")
@@ -579,6 +602,7 @@ We can do the same with the *Hemibrain*.
 We need to load a new R package first.
 
 ``` r
+
 if (!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github('flyconnectome/hemibrainr')
 
@@ -588,6 +612,7 @@ library(hemibrainr)
 And now we can get the equivalent *Hemibrain* neuron.
 
 ``` r
+
 # Read hemibrain neuron
 hb.an1 <- "706176085"
 
@@ -621,6 +646,7 @@ directly](https://github.com/SuperElastix/elastix/releases), you need
 instead to compile ITK then Elastix yourself.
 
 ``` r
+
 # Transform with Elastix
 an1.mesh.simp.brain.jrc2018f.elastix <- banc_to_JRC2018F(an1.mesh.simp.brain,
                                                   method = "elastix",
@@ -636,6 +662,7 @@ plot3d(an1.mesh.simp.brain.jrc2018f.elastix, col = "green", alpha = 0.75, add = 
 ### Get neurons connectivity
 
 ``` r
+
 an.upstream <- banc_partner_summary(an1.ids, partners = "input")
 an.downstream <- banc_partner_summary(an1.ids, partners = "output")
 
@@ -673,6 +700,7 @@ paper [(Bates et al. 2020)](https://elifesciences.org/articles/53350)
 and the R package as follows:
 
 ``` r
+
 citation(package = "bancr")
 ```
 
@@ -798,6 +826,8 @@ Analysing Neuroanatomical Data.* eLife 9 (April).
   : Re-root BANC neuron skeleton at soma
 - [`banc_rootid()`](https://flyconnectome.github.io/bancr/reference/banc_rootid.md)
   : Find the root identifier of a banc neuron
+- [`banc_scene()`](https://flyconnectome.github.io/bancr/reference/banc_scene.md)
+  : Return a sample Neuroglancer scene URL for BANC dataset
 - [`banc_set_token()`](https://flyconnectome.github.io/bancr/reference/banc_set_token.md)
   : Set the token to be used to authenticate to banc autosegmentation
   resources
@@ -848,6 +878,4 @@ Analysing Neuroanatomical Data.* eLife 9 (April).
   : Apply Elastix Transform using Navis
 - [`register_banc_coconat()`](https://flyconnectome.github.io/bancr/reference/register_banc_coconat.md)
   : Use BANC data with coconat for connectivity similarity
-- [`safe_ngl_encode_url()`](https://flyconnectome.github.io/bancr/reference/safe_ngl_encode_url.md)
-  : Return a sample Neuroglancer scene URL for BANC dataset
 

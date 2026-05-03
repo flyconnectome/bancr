@@ -28,7 +28,8 @@ banc_read_neuroglancer_mesh(
 
 - ...:
 
-  additional arguments to `GET`
+  additional arguments to
+  [`GET`](https://httr.r-lib.org/reference/GET.html)
 
 ## Value
 

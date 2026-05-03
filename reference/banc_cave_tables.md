@@ -83,7 +83,7 @@ banc_version()
 - ...:
 
   Additional arguments passed to
-  `fafbseg::`[`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
+  [`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
   or `bancr:::get_cave_table_data`.
 
 - rootids:
@@ -141,7 +141,7 @@ dataset.
 
 ## See also
 
-`fafbseg::`[`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
+[`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
 
 ## Examples
 

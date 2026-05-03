@@ -62,6 +62,7 @@ for additional details of
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 # one time install of necessary python packages
 fafbseg::simple_python(pkgs="fafbseg")

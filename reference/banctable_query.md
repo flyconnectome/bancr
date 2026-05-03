@@ -215,7 +215,7 @@ query.
 
 ## See also
 
-`fafbseg::`[`flytable_query`](https://rdrr.io/pkg/fafbseg/man/flytable-queries.html)
+[`flytable_query`](https://rdrr.io/pkg/fafbseg/man/flytable-queries.html)
 
 ## Examples
 

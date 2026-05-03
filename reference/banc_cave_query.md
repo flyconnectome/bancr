@@ -27,7 +27,6 @@ banc_cave_query(table, live = TRUE, ...)
 
   Additional arguments passed to
   [`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
-  [`flywire_cave_query`](https://rdrr.io/pkg/fafbseg/man/flywire_cave_query.html)
 
 ## Value
 

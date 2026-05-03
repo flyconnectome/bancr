@@ -40,6 +40,5 @@ Other banc-ids:
 
 ``` r
 banc_islatest("720575941520182775")
-#> Warning: using default setting
 #> [1] FALSE
 ```

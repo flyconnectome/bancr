@@ -163,7 +163,7 @@ behavior occurs.
 
 ## See also
 
-`banc_scene`
+[`banc_scene`](https://flyconnectome.github.io/bancr/reference/banc_scene.md)
 
 ## Examples
 

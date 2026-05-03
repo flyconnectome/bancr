@@ -44,7 +44,7 @@ banc_read_nuclei_mesh(
 - ...:
 
   Additional arguments passed to
-  `fafbseg::`[`read_cloudvolume_meshes`](https://rdrr.io/pkg/fafbseg/man/read_cloudvolume_meshes.html)
+  [`read_cloudvolume_meshes`](https://rdrr.io/pkg/fafbseg/man/read_cloudvolume_meshes.html)
 
 - lod:
 
@@ -60,12 +60,12 @@ banc_read_nuclei_mesh(
 
 A [`neuronlist`](https://rdrr.io/pkg/nat/man/neuronlist.html) containing
 one or more `mesh3d` objects. See
-`nat::`[`read.neurons`](https://rdrr.io/pkg/nat/man/read.neurons.html)
-for details.
+[`read.neurons`](https://rdrr.io/pkg/nat/man/read.neurons.html) for
+details.
 
 ## See also
 
-`fafbseg::`[`read_cloudvolume_meshes`](https://rdrr.io/pkg/fafbseg/man/read_cloudvolume_meshes.html)
+[`read_cloudvolume_meshes`](https://rdrr.io/pkg/fafbseg/man/read_cloudvolume_meshes.html)
 
 ## Examples
 

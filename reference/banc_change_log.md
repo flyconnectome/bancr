@@ -43,13 +43,13 @@ banc_change_log(x, tz = "UTC", filtered = TRUE, OmitFailures = TRUE, ...)
 ## Value
 
 a `data.frame` See
-`fabseg::`[`flywire_change_log`](https://rdrr.io/pkg/fafbseg/man/flywire_change_log.html)
+[`flywire_change_log`](https://rdrr.io/pkg/fafbseg/man/flywire_change_log.html)
 for details
 
 ## Details
 
 As of August 2021 this is a simple wrapper of
-`fafbseg::`[`flywire_change_log`](https://rdrr.io/pkg/fafbseg/man/flywire_change_log.html).
+[`flywire_change_log`](https://rdrr.io/pkg/fafbseg/man/flywire_change_log.html).
 For now the old (and less convenient format) available from the zetta
 API can be obtained with the private `bancr:::banc_change_log_zetta`
 function.
