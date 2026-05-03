@@ -796,6 +796,9 @@ Analysing Neuroanatomical Data.* eLife 9 (April).
   : Find the latest id for a banc root id
 - [`banc_leaves()`](https://flyconnectome.github.io/bancr/reference/banc_leaves.md)
   : Find the supervoxel identifiers of a banc neuron
+- [`banc_lm_scene()`](https://flyconnectome.github.io/bancr/reference/banc_lm_scene.md)
+  : Build a Spelunker / ng.banc.community scene with a custom LM image
+  layer
 - [`banc_meta()`](https://flyconnectome.github.io/bancr/reference/banc_meta.md)
   : Query cached BANC meta data
 - [`banc_meta_create_cache()`](https://flyconnectome.github.io/bancr/reference/banc_meta_create_cache.md)

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bancr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,18 @@
       <small>Source: <a href="https://github.com/flyconnectome/bancr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="bancr-030">bancr 0.3.0<a class="anchor" aria-label="anchor" href="#bancr-030"></a></h2>
+<ul><li>new <code><a href="../reference/banc_lm_scene.html">banc_lm_scene()</a></code> for overlaying precomputed light-microscopy image layers on top of a public BANC Neuroglancer scene, with optional shortened-URL POST to <code>nglstate/api/v1/post</code>.</li>
+<li>new <code><a href="../reference/banc_influence.html">banc_influence()</a></code> family (<code>banc_influence_arrow</code>, <code>banc_influence_duckdb</code>, <code>banc_influence_path</code>) for connectome influence scoring against parquet snapshots in GCS.</li>
+<li>read from BANC <code>synapses_v3</code>; with <code>details = TRUE</code>, <code>banc_synapses()</code> now returns neurotransmitter prediction scores.</li>
+<li>
+<code><a href="../reference/bancsee.html">bancsee()</a></code> gains a <code>clean_segments</code> option and surfaces NBLAST scores alongside synapse data; assorted scene-building fixes.</li>
+<li>read NBLAST match CAVE tables via <code><a href="../reference/banc_nblast_matches.html">banc_nblast_matches()</a></code>.</li>
+<li>fix a Linux PATH_MAX crash in the Neuroglancer URL encoder when the scene JSON is long.</li>
+<li>internal: rework CI to use system Python via <code>actions/setup-python</code> (the reticulate miniconda env no longer ships pip), and clean up <code>R CMD check</code> Rd cross-reference / <code>\usage</code> warnings.</li>
+</ul><p><strong>Full Changelog</strong>: <a href="https://github.com/flyconnectome/bancr/compare/v0.2.1" class="external-link uri">https://github.com/flyconnectome/bancr/compare/v0.2.1</a>…v0.3.0</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="bancr-021">bancr 0.2.1<a class="anchor" aria-label="anchor" href="#bancr-021"></a></h2>
 <ul><li>fixes for <code><a href="../reference/register_banc_coconat.html">bancr::register_banc_coconat()</a></code> so that coconatfly can use new banc dataset.</li>
