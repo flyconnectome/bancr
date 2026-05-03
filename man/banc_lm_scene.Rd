@@ -2,7 +2,7 @@
 % Please edit documentation in R/banc-lm-scene.R
 \name{banc_lm_scene}
 \alias{banc_lm_scene}
-\title{Build a Spelunker / ng.banc.community scene with a custom LM image layer}
+\title{Build a BANC Neuroglancer scene with a custom LM image layer}
 \usage{
 banc_lm_scene(
   lm_url,
@@ -11,10 +11,8 @@ banc_lm_scene(
   opacity = 0.6,
   blend = c("additive", "default"),
   ids = NULL,
-  base_url = paste0("https://spelunker.cave-explorer.org/#!middleauth+",
-    "https://global.daf-apis.com/nglstate/api/v1/", "6431332029693952"),
-  shorten = FALSE,
-  viewer = "ng.banc.community/view",
+  url = NULL,
+  shorten = TRUE,
   open = FALSE
 )
 }
@@ -37,98 +35,86 @@ Default \code{"additive"} so the LM signal lights up where it overlaps
 the EM rather than occluding it.}
 
 \item{ids}{optional vector of BANC root IDs to add to the
-\code{"segmentation proofreading"} layer that ships in the base state.}
+\code{"segmentation proofreading"} layer that ships in the base
+scene.}
 
-\item{base_url}{Spelunker base URL with a starting state to extend.
-Defaults to the public BANC scene used by \code{\link{banc_scene}}.
-Pass an alternative scene URL to start from your own layered state.}
+\item{url}{Spelunker base URL with a starting state to extend.
+Defaults to the public BANC scene used by \code{\link{banc_scene}}.}
 
-\item{shorten}{logical; if \code{TRUE}, POST the state to the
-\code{nglstate/api/v1/post} endpoint and return a shortened URL of the
-form \code{<base>/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/<id>}.
-Requires a valid token from \code{\link{banc_set_token}}.}
-
-\item{viewer}{one of \code{"ng.banc.community/view"} (default; the
-public BANC viewer at \code{https://ng.banc.community/view/}),
-\code{"ng.banc.community"} (the private CAVE-authenticated BANC
-viewer at \code{https://ng.banc.community/}, used by the BANC
-team), \code{"spelunker"} (the upstream
-\code{https://spelunker.cave-explorer.org/} viewer), or any other
-base URL string (must end with \code{/}). Only affects the prefix
-of the returned URL — the state JSON itself is identical and any
-Spelunker-compatible viewer can render it via
-\code{#!middleauth+https://...}.}
+\item{shorten}{logical; if \code{TRUE} (default), POST the state via
+the internal \code{banc_shorturl()} and return a shortened URL. If
+\code{FALSE}, return the long fragment-encoded URL with the state
+JSON inlined.}
 
 \item{open}{logical; if \code{TRUE}, open the result in the system
-browser.}
+browser via \code{\link[utils]{browseURL}}.}
 }
 \value{
-A character of length 1: a long fragment URL by default, or a
-shortened \code{nglstate/api/v1/<id>} URL when \code{shorten = TRUE}.
+A character of length 1: a shortened
+\code{spelunker.cave-explorer.org/#!middleauth+...nglstate/api/v1/<id>}
+URL by default, or a long fragment URL when \code{shorten = FALSE}.
 }
 \description{
-Construct a Neuroglancer JSON state that overlays a
+Construct a Neuroglancer scene that overlays a
 light-microscopy precomputed image layer (e.g. the output of
 \code{neuronbridger::nrrd_to_precomputed} applied to a registered
-confocal stack) on top of a public BANC scene that already contains the
-BANC EM image, segmentation proofreading, region outlines and JRC2018F
-atlas layers, and either return a long fragment-encoded URL, or — if a
-Spelunker / CAVE token is available — POST the state to the
-\code{nglstate/api/v1/post} endpoint and return the shortened
-\code{...nglstate/api/v1/<id>} URL.
+confocal stack) on top of the canonical public BANC scene from
+\code{\link{banc_scene}} (BANC EM, segmentation proofreading, region
+outlines, JRC2018F atlas, FAFB / hemibrain / MANC imported meshes,
+synapse cloud, nuclei) and either return a long fragment-encoded URL
+or, when \code{shorten = TRUE}, POST the state to the BANC state
+server and return a shortened
+\code{spelunker.cave-explorer.org/#!middleauth+...nglstate/api/v1/<id>}
+URL — the same URL form
+\code{\link{bancsee}} produces.
 }
-\details{
-The state is assembled by:
-\enumerate{
-\item fetching the JSON for \code{base_url} (so the result inherits
-all standard public layers — BANC EM, segmentation proofreading,
-region outlines, JRC2018F atlas, FAFB / hemibrain / MANC imported
-meshes, synapse cloud, nuclei);
-\item appending an \code{image} layer pointing at \code{lm_url} with
-the supplied \code{shader}, \code{opacity} and \code{blend}; and
-\item optionally adding \code{ids} as visible segments in the
-proofreading layer.
-}
-If the base-state fetch fails (e.g. no token / offline), a minimal stub
-state with just BANC EM + segmentation + LM is used instead.
+\section{Viewers (\code{ng.banc.community/view/} / \code{ng.banc.community/})}{
 
-The companion converter \code{neuronbridger::nrrd_to_precomputed()}
-takes any 3-D \code{.nrrd} (or in-memory array) and writes the
-Neuroglancer "precomputed" format that this layer URL expects. See
-\code{vignette("lm_layer_neuroglancer", package = "neuronbridger")}
-for the full IS2 → JRC2018F → BANC pipeline.
+The BANC team also serves a public viewer at
+\href{https://ng.banc.community/view/}{ng.banc.community/view/} and a
+private one at
+\href{https://ng.banc.community/}{ng.banc.community/}. \strong{These
+viewers do not POST states dynamically} — they load named states from
+\code{ngstate.banc.community/view/<state-name>}, which redirects to
+static JSON files committed under
+\href{https://github.com/jasper-tms/the-BANC-fly-connectome/tree/main/neuroglancer_states/view}{the-BANC-fly-connectome/neuroglancer_states/view/}.
+To publish a state to \code{ng.banc.community/view/}, save the
+state JSON returned by this function (set \code{shorten = FALSE} and
+decode the fragment, or use \code{fafbseg::ngl_decode_scene}) and PR
+it into the BANC repo. For ad-hoc / dev sharing, the
+\code{shorten = TRUE} URL is the practical pattern.
 }
+
 \section{Bucket policy}{
 
 Lee-lab maintains a curated mirror of registered LM volumes at
 \code{gs://lee-lab_brain-and-nerve-cord-fly-connectome/light_level/},
 but that bucket is \strong{not public-write}. To produce a sharable
-URL of your own you'll need either (a) write access to that bucket
-(ask the lee-lab folks), or (b) your own public-read GCS / S3 / static
-HTTP host. Once the precomputed directory is reachable over HTTPS,
-pass its URL as \code{lm_url}.
+URL of your own you'll need either (a) write access from the
+lee-lab maintainers, or (b) your own public-read GCS / S3 / static
+HTTP host. Once the precomputed directory is reachable, pass its
+URL as \code{lm_url}.
 }
 
 \examples{
 \dontrun{
-# Convert + serve a registered LM volume:
+# Convert + serve a registered LM volume (the upstream
+# vignettes do this in detail):
 neuronbridger::nrrd_to_precomputed(
-  "CapaR_in_BANC.nrrd",
+  "CapaR_in_JRC2018U_HR.nrrd",
   output     = "/tmp/CapaR_pc",
-  resolution = c(380, 380, 380)
+  resolution = c(519, 519, 1000)   # JRC2018U_HR voxel size in nm
 )
 system("gsutil -m cp -r /tmp/CapaR_pc gs://your-bucket/lm/CapaR/")
 
 u <- banc_lm_scene(
   "gs://your-bucket/lm/CapaR",
   layer_name = "Kondo 2020 - CapaR",
-  viewer     = "ng.banc.community",
-  shorten    = TRUE,
   open       = TRUE
 )
 }
 }
 \seealso{
-\code{\link{banc_scene}},
+\code{\link{banc_scene}}, \code{\link{bancsee}},
 \code{neuronbridger::nrrd_to_precomputed}
 }
