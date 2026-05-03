@@ -18,13 +18,32 @@
 #' \code{precomputed://} is added automatically if missing.
 #' @param layer_name display name of the LM layer in Neuroglancer.
 #' Default \code{"LM data"}.
-#' @param shader optional Neuroglancer shader string. If \code{NULL} (the
-#' default), a single-channel grayscale shader with a 4× contrast boost is
-#' used (Neuroglancer's UI lets viewers tune it further).
-#' @param opacity layer opacity in \code{[0, 1]}; default \code{0.6}.
+#' @param shader optional Neuroglancer shader string. If \code{NULL}
+#' (default) the layer uses Neuroglancer's built-in \code{emitGrayscale}
+#' shader, controlled by \code{shaderControls.normalized.range} (set
+#' via \code{range}).
+#' @param range numeric length-2 vector \code{c(low, high)} setting
+#' \code{shaderControls.normalized.range} — the source-data intensity
+#' window mapped to 0..1 brightness. Default \code{c(1, 30)}, which
+#' suits LM volumes that have been Elastix-warped + clipped to BANC
+#' voxel space (B-spline ringing leaves most of the signal in the bottom
+#' tenth of the uint8 range). Increase the upper bound for brighter
+#' source data; tighten it for sparse stains.
+#' @param opacity layer opacity in \code{[0, 1]}; default \code{0.55}
+#' (matching the public BANC \code{JRC2018F atlas imported} layer).
 #' @param blend layer blend mode (\code{"default"}, \code{"additive"}).
-#' Default \code{"additive"} so the LM signal lights up where it overlaps
+#' Default \code{"additive"} so LM signal lights up where it overlaps
 #' the EM rather than occluding it.
+#' @param volume_rendering one of \code{"on"} (default), \code{"max"} or
+#' \code{"off"}. Required for the layer to be visible in 3-D
+#' Neuroglancer views. Cross-section / orthogonal slice views ignore
+#' this setting.
+#' @param volume_rendering_depth_samples integer; how many depth
+#' samples Neuroglancer uses when ray-tracing the volume in 3-D.
+#' Default \code{788} (the value the public BANC atlas uses).
+#' @param volume_rendering_gain numeric; 3-D volume rendering gain.
+#' \code{NULL} (default) leaves it unset, which lets Neuroglancer's UI
+#' control it interactively.
 #' @param ids optional vector of BANC root IDs to add to the
 #' \code{"segmentation proofreading"} layer that ships in the base
 #' scene.
@@ -86,19 +105,24 @@
 #'   \code{neuronbridger::nrrd_to_precomputed}
 #' @export
 banc_lm_scene <- function(lm_url,
-                          layer_name = "LM data",
-                          shader     = NULL,
-                          opacity    = 0.6,
-                          blend      = c("additive", "default"),
-                          ids        = NULL,
-                          url        = NULL,
-                          shorten    = TRUE,
-                          open       = FALSE) {
-  blend <- match.arg(blend)
+                          layer_name                       = "LM data",
+                          shader                           = NULL,
+                          range                            = c(1, 30),
+                          opacity                          = 0.55,
+                          blend                            = c("additive", "default"),
+                          volume_rendering                 = c("on", "max", "off"),
+                          volume_rendering_depth_samples   = 788L,
+                          volume_rendering_gain            = NULL,
+                          ids                              = NULL,
+                          url                              = NULL,
+                          shorten                          = TRUE,
+                          open                             = FALSE) {
+  blend            <- match.arg(blend)
+  volume_rendering <- match.arg(volume_rendering)
+  if (length(range) != 2L || !is.numeric(range))
+    stop("`range` must be a length-2 numeric vector c(low, high).")
   if (!grepl("^precomputed://", lm_url))
     lm_url <- paste0("precomputed://", lm_url)
-  if (is.null(shader))
-    shader <- "void main() { emitGrayscale(toNormalized(getDataValue()) * 4.0); }"
 
   # Start from the canonical public BANC scene as an ngscene object,
   # then append our LM image layer using fafbseg's helpers — the same
@@ -108,10 +132,17 @@ banc_lm_scene <- function(lm_url,
   lm_layer <- list(type    = "image",
                    source  = lm_url,
                    name    = layer_name,
-                   shader  = shader,
+                   tab     = "rendering",
                    opacity = opacity,
                    blend   = blend,
-                   tab     = "rendering")
+                   shaderControls = list(
+                     normalized = list(range = list(range[[1]], range[[2]]))
+                   ),
+                   volumeRendering              = volume_rendering,
+                   volumeRenderingDepthSamples  = volume_rendering_depth_samples)
+  if (!is.null(shader))   lm_layer$shader              <- shader
+  if (!is.null(volume_rendering_gain))
+                          lm_layer$volumeRenderingGain <- volume_rendering_gain
   scene[["layers"]] <- c(scene[["layers"]], list(lm_layer))
 
   # Optionally light up some BANC seg IDs as visible segments
