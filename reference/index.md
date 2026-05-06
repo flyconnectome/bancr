@@ -65,6 +65,9 @@
   : Find the latest id for a banc root id
 - [`banc_leaves()`](https://flyconnectome.github.io/bancr/reference/banc_leaves.md)
   : Find the supervoxel identifiers of a banc neuron
+- [`banc_lm_links`](https://flyconnectome.github.io/bancr/reference/banc_lm_links.md)
+  : Pre-minted Spelunker viewer URLs for the BANC light-microscopy
+  receptor library
 - [`banc_lm_scene()`](https://flyconnectome.github.io/bancr/reference/banc_lm_scene.md)
   : Build a BANC Neuroglancer scene with a custom LM image layer
 - [`banc_meta()`](https://flyconnectome.github.io/bancr/reference/banc_meta.md)
