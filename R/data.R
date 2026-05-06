@@ -249,6 +249,9 @@
 #'   render settings); \code{banc_lm_links} is the canned snapshot
 #'   for sharing or scripting.
 #'
+#'   Example layer (Capability receptor; sample \code{no1}):
+#'   \href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6652292970315776}{open in Spelunker}.
+#'
 #' @format A \code{tibble} with one row per LM layer and columns:
 #' \describe{
 #'   \item{\code{source}}{Upstream dataset citation (e.g.

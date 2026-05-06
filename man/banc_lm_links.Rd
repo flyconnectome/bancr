@@ -47,6 +47,9 @@ For ad-hoc / interactive use, prefer
 \code{\link{banc_lm_scene}} (mints a fresh URL with custom
 render settings); \code{banc_lm_links} is the canned snapshot
 for sharing or scripting.
+
+Example layer (Capability receptor; sample \code{no1}):
+\href{https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6652292970315776}{open in Spelunker}.
 }
 \examples{
 \dontrun{
