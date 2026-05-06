@@ -5,5 +5,7 @@
 docs
 inst/doc
 data-raw/*
+!data-raw/make_banc_lm_links.R
+!data-raw/banc_lm_links.csv
 data/banc_data.sqlite
 /.claude
