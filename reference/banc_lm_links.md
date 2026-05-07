@@ -16,6 +16,9 @@ live registry browser) +
 (mints a fresh URL with custom render settings); `banc_lm_links` is the
 canned snapshot for sharing or scripting.
 
+Example layer (Capability receptor; sample `no1`): [open in
+Spelunker](https://spelunker.cave-explorer.org/#!middleauth+https://global.daf-apis.com/nglstate/api/v1/6652292970315776).
+
 ## Usage
 
 ``` r
