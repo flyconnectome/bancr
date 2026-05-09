@@ -72,7 +72,8 @@ cat("registry has", nrow(vols), "volumes\n")
 
 # Map registry dataset id to a human-readable citation source.
 DATASET_SOURCE <- list(
-  kondo_et_al_2020 = "Kondo et al. 2020"
+  kondo_et_al_2020 = "Kondo et al. 2020",
+  deng_et_al_2019  = "Deng et al. 2019"
 )
 src_for <- function(dataset) {
   s <- DATASET_SOURCE[[dataset]]
