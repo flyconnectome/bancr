@@ -162,6 +162,14 @@ banc_nuclei <- function(rootids = NULL,
   if(table=="both"){
     ba <- banc_nuclei(table="somas_v1a", nucleus_ids=nucleus_ids,rawcoords=rawcoords,...)
     bb <- banc_nuclei(table="somas_v1b", nucleus_ids=nucleus_ids,rawcoords=rawcoords,...)
+    # somas_v1b is a corrections table for somas_v1a: rows in B
+    # supersede rows in A with the same nucleus_id (B carries the
+    # corrected nucleus_id -> position mapping; A's position for those
+    # nuclei is wrong). Drop the superseded rows from A before binding
+    # so we don't return both the stale and the corrected position for
+    # the same nucleus.
+    if (nrow(bb) > 0 && nrow(ba) > 0)
+      ba <- ba[!ba$nucleus_id %in% bb$nucleus_id, , drop = FALSE]
     return(plyr::rbind.fill(bb,ba))
   }
   if (!is.null(rootids) & !is.null(nucleus_ids))
