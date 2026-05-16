@@ -63,7 +63,7 @@ franken_meta(
   tables = c("fafb", "manc"),
   sql = NULL,
   base = "cns_meta",
-  source = c("legacy", "split"),
+  source = c("split", "legacy"),
   ...
 )
 
@@ -138,11 +138,11 @@ Any combination of \code{"fafb"}, \code{"manc"}, \code{"hemibrain"}, \code{"male
 Defaults to \code{c("fafb", "manc")} — the FAFB+MANC union, which is the
 closest equivalent to the historical \code{franken_meta} table.}
 
-\item{source}{Optional shortcut. \code{"legacy"} (current default) reads
-the single \code{franken_meta} table; \code{"split"} reads the per-source
-\code{tables} and unions them. The default will flip to \code{"split"} once
-the per-source tables are populated and verified — track the
-2026-05-15 franken_meta migration in bancpipeline.}
+\item{source}{Optional shortcut. \code{"split"} (default, post-migration)
+reads the per-source \code{tables} and unions them; \code{"legacy"} reads
+the original single \code{franken_meta} table (retained as a backup
+until the split is fully verified — it is no longer the source of
+truth as of the 2026-05-15 migration).}
 
 \item{bigdata}{Logical. If \code{TRUE}, new rows are added directly to the big data backend using the \verb{/add-archived-rows/} API endpoint. If \code{FALSE} (default), rows are added to the normal backend. Note: The big data backend must be enabled in your base for this to work.}
 }

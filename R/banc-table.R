@@ -446,7 +446,7 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
       "Accept" = "application/json",
       "Content-Type" = "application/json"
     ) %>%
-    httr2::req_body_json(body) %>%
+    httr2::req_body_json(body, na = "null") %>%  # NA → JSON null; SeaTable rejects the default "NA" string in number columns
     httr2::req_error(is_error = function(resp) FALSE) %>%  # This allows us to handle errors manually
     httr2::req_perform()
 
@@ -529,11 +529,11 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 #'   query the (still-extant) legacy `franken_meta` table directly, e.g.
 #'   `franken_meta(sql = "SELECT * FROM franken_meta")`.
 #' @param base SeaTable base name. Defaults to `"cns_meta"`.
-#' @param source Optional shortcut. `"legacy"` (current default) reads
-#'   the single `franken_meta` table; `"split"` reads the per-source
-#'   `tables` and unions them. The default will flip to `"split"` once
-#'   the per-source tables are populated and verified — track the
-#'   2026-05-15 franken_meta migration in bancpipeline.
+#' @param source Optional shortcut. `"split"` (default, post-migration)
+#'   reads the per-source `tables` and unions them; `"legacy"` reads
+#'   the original single `franken_meta` table (retained as a backup
+#'   until the split is fully verified — it is no longer the source of
+#'   truth as of the 2026-05-15 migration).
 #' @param ... Passed to `banctable_query()`.
 #'
 #' @return A data frame with one row per neuron across the chosen
@@ -561,7 +561,7 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 franken_meta <- function(tables = c("fafb", "manc"),
                          sql = NULL,
                          base = "cns_meta",
-                         source = c("legacy", "split"),
+                         source = c("split", "legacy"),
                          ...){
   source <- match.arg(source)
   if (!is.null(sql) && nzchar(sql)) {
@@ -656,7 +656,7 @@ banctable_append_rows <- function (df,
         "Accept" = "application/json",
         "Content-Type" = "application/json"
       ) %>%
-      httr2::req_body_json(body) %>%
+      httr2::req_body_json(body, na = "null") %>%  # NA → JSON null; SeaTable rejects the default "NA" string in number columns
       httr2::req_error(is_error = function(resp) FALSE) %>%
       httr2::req_perform()
 
@@ -778,10 +778,31 @@ banctable_add_column <- function(table,
                            workspace_id = workspace_id,
                            token_name = token_name)
   }
+  # base$insert_column expects a ColumnTypes enum, not a raw string.
+  # ColumnTypes is a Python Enum; calling it like a constructor with the
+  # string value resolves to the matching member (e.g.
+  # `ColumnTypes("text")` returns `ColumnTypes.TEXT`). Import with
+  # `convert = FALSE` so reticulate doesn't auto-coerce the enum back
+  # to its `.value` string when it crosses the R↔Python boundary —
+  # that auto-coercion is what previously sent insert_column a raw
+  # string and triggered the SeaTable SDK's "'str' has no attribute
+  # 'value'" error.
+  col_constants <- reticulate::import("seatable_api.constants",
+                                       delay_load = FALSE,
+                                       convert = FALSE)
+  type_str <- as.character(column_type)
+  enum_val <- tryCatch(
+    col_constants$ColumnTypes(type_str),
+    error = function(e)
+      stop("Unknown SeaTable column_type '", type_str,
+           "'. Common types: text, long-text, number, date, checkbox, ",
+           "single-select, multiple-select. Original error: ",
+           conditionMessage(e))
+  )
   kwargs <- list(
     table_name = table,
     column_name = column_name,
-    column_type = column_type
+    column_type = enum_val
   )
   if (!is.null(column_data)) kwargs$column_data <- column_data
   if (!is.null(column_key)) kwargs$column_key <- column_key
