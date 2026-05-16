@@ -21,6 +21,17 @@ When `invert=TRUE` (unarchive), it moves specific rows by row_id from
 big data storage back to normal backend. Note: The big data backend must
 be enabled in your base for these functions to work.
 
+The cns_meta base holds the BANC project's reformulated views of each
+external connectome's meta-data — FAFB-FlyWire, MANC, Hemibrain and
+maleCNS. Each source dataset's per-neuron records have been re-keyed
+into BANC's annotation scheme (the same `flow` / `super_class` /
+`cell_class` / `cell_sub_class` / `cell_type` / `hemilineage` / `region`
+/ `nerve` / `neuromere` / function / body_part / neurochemistry
+vocabularies banc_meta uses), so each row can be compared directly
+against the corresponding BANC neuron. Source-specific identifiers and
+labels are retained alongside the BANC-shaped columns (e.g.
+`FAFB_cell_type`, `MANC_class`).
+
 ## Usage
 
 ``` r
@@ -73,7 +84,13 @@ banctable_move_to_bigdata(
   row_ids = NULL
 )
 
-franken_meta(sql = "SELECT * FROM franken_meta", base = "cns_meta", ...)
+franken_meta(
+  tables = c("fafb", "manc"),
+  sql = NULL,
+  base = "cns_meta",
+  source = c("split", "legacy"),
+  ...
+)
 
 banctable_append_rows(
   df,
@@ -91,8 +108,10 @@ banctable_append_rows(
 
 - sql:
 
-  A SQL query string. See examples and [seatable
-  docs](https://seatable.github.io/seatable-scripts/python/query/).
+  Optional. If supplied, bypasses the table-union logic and passes the
+  SQL verbatim to `banctable_query()`. Mainly used to query the
+  (still-extant) legacy `franken_meta` table directly, e.g.
+  `franken_meta(sql = "SELECT * FROM franken_meta")`.
 
 - limit:
 
@@ -102,7 +121,7 @@ banctable_append_rows(
 
 - base:
 
-  Character vector specifying the `base`
+  SeaTable base name. Defaults to `"cns_meta"`.
 
 - python:
 
@@ -168,9 +187,7 @@ banctable_append_rows(
 
 - ...:
 
-  Additional arguments passed to the underlying parallel processing
-  functions which might include cl=2 to specify a number of parallel
-  jobs to run.
+  Passed to `banctable_query()`.
 
 - view_name:
 
@@ -201,6 +218,21 @@ banctable_append_rows(
   backend back to normal backend. Use the table_id (not table_name) for
   unarchive operations.
 
+- tables:
+
+  Character vector of source tables to read and append. Any combination
+  of `"fafb"`, `"manc"`, `"hemibrain"`, `"malecns"`. Defaults to
+  `c("fafb", "manc")` — the FAFB+MANC union, which is the closest
+  equivalent to the historical `franken_meta` table.
+
+- source:
+
+  Optional shortcut. `"split"` (default, post-migration) reads the
+  per-source `tables` and unions them; `"legacy"` reads the original
+  single `franken_meta` table (retained as a backup until the split is
+  fully verified — it is no longer the source of truth as of the
+  2026-05-15 migration).
+
 - bigdata:
 
   Logical. If `TRUE`, new rows are added directly to the big data
@@ -212,6 +244,19 @@ banctable_append_rows(
 
 a `data.frame` of results. There should be 0 rows if no rows matched
 query.
+
+A data frame with one row per neuron across the chosen source tables.
+Columns are the union of the requested tables' schemas; rows from a
+table missing a given column carry `NA` for that column.
+
+## Details
+
+The historical single-table `franken_meta` is being phased out in favour
+of four separable per-source tables: `fafb`, `manc`, `hemibrain`,
+`malecns`. The new tables don't all carry exactly the same column set
+(FAFB\_\* columns only in `fafb`, MANC\_\* only in `manc`, and so on) —
+[`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
+is used to take the column-union when reading more than one.
 
 ## See also
 
@@ -260,5 +305,18 @@ banctable_append_rows(
   base = "banc_meta",
   bigdata = TRUE
 )
+} # }
+if (FALSE) { # \dontrun{
+# Default: FAFB + MANC union (closest equivalent to old franken_meta)
+fk <- franken_meta()
+
+# Only the FAFB rows
+fafb <- franken_meta(tables = "fafb")
+
+# All four source tables, column-unioned
+all <- franken_meta(tables = c("fafb", "manc", "hemibrain", "malecns"))
+
+# Legacy single-table read (still available until decommission)
+legacy <- franken_meta(source = "legacy")
 } # }
 ```
