@@ -500,14 +500,97 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 # response = requests.post(url, headers=headers, json=body)
 # print(response.text)
 
+#' Read project meta-data tables from the cns_meta SeaTable base
+#'
+#' The cns_meta base holds the BANC project's reformulated views of
+#' each external connectome's meta-data — FAFB-FlyWire, MANC, Hemibrain
+#' and maleCNS. Each source dataset's per-neuron records have been
+#' re-keyed into BANC's annotation scheme (the same `flow` /
+#' `super_class` / `cell_class` / `cell_sub_class` / `cell_type` /
+#' `hemilineage` / `region` / `nerve` / `neuromere` / function /
+#' body_part / neurochemistry vocabularies banc_meta uses), so each
+#' row can be compared directly against the corresponding BANC neuron.
+#' Source-specific identifiers and labels are retained alongside the
+#' BANC-shaped columns (e.g. `FAFB_cell_type`, `MANC_class`).
+#'
+#' The historical single-table `franken_meta` is being phased out in
+#' favour of four separable per-source tables: `fafb`, `manc`,
+#' `hemibrain`, `malecns`. The new tables don't all carry exactly the
+#' same column set (FAFB_* columns only in `fafb`, MANC_* only in
+#' `manc`, and so on) — `dplyr::bind_rows()` is used to take the
+#' column-union when reading more than one.
+#'
+#' @param tables Character vector of source tables to read and append.
+#'   Any combination of `"fafb"`, `"manc"`, `"hemibrain"`, `"malecns"`.
+#'   Defaults to `c("fafb", "manc")` — the FAFB+MANC union, which is the
+#'   closest equivalent to the historical `franken_meta` table.
+#' @param sql Optional. If supplied, bypasses the table-union logic and
+#'   passes the SQL verbatim to `banctable_query()`. Mainly used to
+#'   query the (still-extant) legacy `franken_meta` table directly, e.g.
+#'   `franken_meta(sql = "SELECT * FROM franken_meta")`.
+#' @param base SeaTable base name. Defaults to `"cns_meta"`.
+#' @param source Optional shortcut. `"legacy"` (current default) reads
+#'   the single `franken_meta` table; `"split"` reads the per-source
+#'   `tables` and unions them. The default will flip to `"split"` once
+#'   the per-source tables are populated and verified — track the
+#'   2026-05-15 franken_meta migration in bancpipeline.
+#' @param ... Passed to `banctable_query()`.
+#'
+#' @return A data frame with one row per neuron across the chosen
+#'   source tables. Columns are the union of the requested tables'
+#'   schemas; rows from a table missing a given column carry `NA` for
+#'   that column.
+#'
+#' @examples
+#' \dontrun{
+#' # Default: FAFB + MANC union (closest equivalent to old franken_meta)
+#' fk <- franken_meta()
+#'
+#' # Only the FAFB rows
+#' fafb <- franken_meta(tables = "fafb")
+#'
+#' # All four source tables, column-unioned
+#' all <- franken_meta(tables = c("fafb", "manc", "hemibrain", "malecns"))
+#'
+#' # Legacy single-table read (still available until decommission)
+#' legacy <- franken_meta(source = "legacy")
+#' }
+#'
 #' @export
 #' @rdname banctable_query
-franken_meta <- function(sql = "SELECT * FROM franken_meta",
-                         base = "cns_meta", ...){
-  # df <- banctable_query(sql=sql, base=base, ...) %>%
-  #   dplyr::select(-dplyr::starts_with(c("FAFB_", "MANC_")))
-  df <- banctable_query(sql=sql, base=base, ...)
-  df
+franken_meta <- function(tables = c("fafb", "manc"),
+                         sql = NULL,
+                         base = "cns_meta",
+                         source = c("legacy", "split"),
+                         ...){
+  source <- match.arg(source)
+  if (!is.null(sql) && nzchar(sql)) {
+    # Caller supplied explicit SQL → straight passthrough.
+    return(banctable_query(sql = sql, base = base, ...))
+  }
+  if (source == "legacy") {
+    return(banctable_query(sql = "SELECT * FROM franken_meta",
+                           base = base, ...))
+  }
+  valid_tables <- c("fafb", "manc", "hemibrain", "malecns")
+  bad <- setdiff(tables, valid_tables)
+  if (length(bad)) {
+    stop("Unknown source table(s): ", paste(bad, collapse = ", "),
+         "\n  Valid: ", paste(valid_tables, collapse = ", "))
+  }
+  if (!length(tables)) {
+    stop("`tables` cannot be empty. Pass one or more of: ",
+         paste(valid_tables, collapse = ", "))
+  }
+  parts <- lapply(tables, function(t) {
+    banctable_query(sql = sprintf("SELECT * FROM %s", t),
+                    base = base, ...)
+  })
+  if (length(parts) == 1L) return(parts[[1]])
+  # bind_rows takes the column-union across tables; FAFB_*, MANC_*,
+  # hemibrain-specific and malecns-specific columns survive only on
+  # the rows that came from the table that owns them.
+  dplyr::bind_rows(parts)
 }
 
 #' @export
@@ -668,6 +751,102 @@ banctable_columns <- function(table,
     'character'
   )
   tidf
+}
+
+# hidden
+# Insert a new column into a SeaTable table. Wraps the seatable_api
+# `base.insert_column(table_name, column_name, column_type, ...)` call
+# so R-side migration / schema scripts can extend a base without
+# touching the SeaTable UI.
+#
+# `column_type` accepts SeaTable's vocabulary: most commonly "text",
+# "long-text", "number", "date", "checkbox", "single-select",
+# "multiple-select". See https://api.seatable.io/reference/insert-column-2
+# for the full list.
+#
+# Returns the SeaTable response (column dict) invisibly on success.
+banctable_add_column <- function(table,
+                                 column_name,
+                                 column_type = "text",
+                                 base = NULL,
+                                 column_data = NULL,
+                                 column_key = NULL,
+                                 workspace_id = "57832",
+                                 token_name = "BANCTABLE_TOKEN") {
+  if (is.character(base) || is.null(base)) {
+    base <- banctable_base(base_name = base, table = table,
+                           workspace_id = workspace_id,
+                           token_name = token_name)
+  }
+  kwargs <- list(
+    table_name = table,
+    column_name = column_name,
+    column_type = column_type
+  )
+  if (!is.null(column_data)) kwargs$column_data <- column_data
+  if (!is.null(column_key)) kwargs$column_key <- column_key
+  res <- do.call(base$insert_column, kwargs)
+  invisible(res)
+}
+
+# hidden
+# Batch-add multiple columns to a SeaTable table. `columns` is a
+# data.frame with `name` and `type` columns (matching the form
+# returned by banctable_columns()). Existing columns are skipped.
+# Returns the data.frame of columns that were actually added.
+banctable_add_columns <- function(table,
+                                  columns,
+                                  base = NULL,
+                                  workspace_id = "57832",
+                                  token_name = "BANCTABLE_TOKEN",
+                                  progress = TRUE) {
+  stopifnot(all(c("name", "type") %in% colnames(columns)))
+  if (is.character(base) || is.null(base)) {
+    base <- banctable_base(base_name = base, table = table,
+                           workspace_id = workspace_id,
+                           token_name = token_name)
+  }
+  existing <- banctable_columns(table = table, base = base,
+                                workspace_id = workspace_id,
+                                token_name = token_name,
+                                include_key = FALSE)$name
+  todo <- columns[!columns$name %in% existing, , drop = FALSE]
+  if (nrow(todo) == 0L) {
+    message("[banctable_add_columns] all columns already present")
+    return(invisible(todo))
+  }
+  message(sprintf("[banctable_add_columns] adding %d column(s) to '%s'",
+                  nrow(todo), table))
+  for (i in seq_len(nrow(todo))) {
+    if (isTRUE(progress)) {
+      message(sprintf("  + %-42s [%s]",
+                      todo$name[i], todo$type[i]))
+    }
+    banctable_add_column(table = table,
+                         column_name = todo$name[i],
+                         column_type = todo$type[i],
+                         base = base)
+  }
+  invisible(todo)
+}
+
+# hidden
+# Delete a column from a SeaTable table by column key. Use with
+# extreme caution — this is a destructive schema operation. The
+# column key (not name) is required; pass `banctable_columns(table,
+# include_key = TRUE)` to look it up.
+banctable_delete_column <- function(table,
+                                    column_key,
+                                    base = NULL,
+                                    workspace_id = "57832",
+                                    token_name = "BANCTABLE_TOKEN") {
+  if (is.character(base) || is.null(base)) {
+    base <- banctable_base(base_name = base, table = table,
+                           workspace_id = workspace_id,
+                           token_name = token_name)
+  }
+  res <- base$delete_column(table_name = table, column_key = column_key)
+  invisible(res)
 }
 
 # hidden

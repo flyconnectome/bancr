@@ -59,7 +59,13 @@ banctable_move_to_bigdata(
   row_ids = NULL
 )
 
-franken_meta(sql = "SELECT * FROM franken_meta", base = "cns_meta", ...)
+franken_meta(
+  tables = c("fafb", "manc"),
+  sql = NULL,
+  base = "cns_meta",
+  source = c("legacy", "split"),
+  ...
+)
 
 banctable_append_rows(
   df,
@@ -73,15 +79,16 @@ banctable_append_rows(
 )
 }
 \arguments{
-\item{sql}{A SQL query string. See examples and
-\href{https://seatable.github.io/seatable-scripts/python/query/}{seatable
-docs}.}
+\item{sql}{Optional. If supplied, bypasses the table-union logic and
+passes the SQL verbatim to \code{banctable_query()}. Mainly used to
+query the (still-extant) legacy \code{franken_meta} table directly, e.g.
+\code{franken_meta(sql = "SELECT * FROM franken_meta")}.}
 
 \item{limit}{An optional limit, which only applies if you do not specify a
 limit directly in the \code{sql} query. By default seatable limits SQL
 queries to 100 rows. We increase the limit to 100000 rows by default.}
 
-\item{base}{Character vector specifying the \code{base}}
+\item{base}{SeaTable base name. Defaults to \code{"cns_meta"}.}
 
 \item{python}{Logical. Whether to return a Python pandas DataFrame. The default of FALSE returns an R data.frame}
 
@@ -114,7 +121,7 @@ column that can identify each row in the remote table.}
 
 \item{chunksize}{To split large requests into smaller ones with max this many rows.}
 
-\item{...}{Additional arguments passed to the underlying parallel processing functions which might include cl=2 to specify a number of parallel jobs to run.}
+\item{...}{Passed to \code{banctable_query()}.}
 
 \item{view_name}{Character, the name of the view containing rows to archive (required for archive operation). Mutually exclusive with view_id.}
 
@@ -126,11 +133,27 @@ column that can identify each row in the remote table.}
 
 \item{row_ids}{Character vector of seatable row IDs. Required for unarchive operation (when invert=TRUE). These are the specific rows to move from big data backend back to normal backend. Use the table_id (not table_name) for unarchive operations.}
 
+\item{tables}{Character vector of source tables to read and append.
+Any combination of \code{"fafb"}, \code{"manc"}, \code{"hemibrain"}, \code{"malecns"}.
+Defaults to \code{c("fafb", "manc")} — the FAFB+MANC union, which is the
+closest equivalent to the historical \code{franken_meta} table.}
+
+\item{source}{Optional shortcut. \code{"legacy"} (current default) reads
+the single \code{franken_meta} table; \code{"split"} reads the per-source
+\code{tables} and unions them. The default will flip to \code{"split"} once
+the per-source tables are populated and verified — track the
+2026-05-15 franken_meta migration in bancpipeline.}
+
 \item{bigdata}{Logical. If \code{TRUE}, new rows are added directly to the big data backend using the \verb{/add-archived-rows/} API endpoint. If \code{FALSE} (default), rows are added to the normal backend. Note: The big data backend must be enabled in your base for this to work.}
 }
 \value{
 a \code{data.frame} of results. There should be 0 rows if no rows
 matched query.
+
+A data frame with one row per neuron across the chosen
+source tables. Columns are the union of the requested tables'
+schemas; rows from a table missing a given column carry \code{NA} for
+that column.
 }
 \description{
 These functions use the logic and wrap some code
@@ -153,6 +176,25 @@ added directly to the big data backend using the \code{/add-archived-rows/} endp
 When \code{invert=FALSE} (archive), it moves all rows from a specified view to big data storage.
 When \code{invert=TRUE} (unarchive), it moves specific rows by row_id from big data storage back to normal backend.
 Note: The big data backend must be enabled in your base for these functions to work.
+
+The cns_meta base holds the BANC project's reformulated views of
+each external connectome's meta-data — FAFB-FlyWire, MANC, Hemibrain
+and maleCNS. Each source dataset's per-neuron records have been
+re-keyed into BANC's annotation scheme (the same \code{flow} /
+\code{super_class} / \code{cell_class} / \code{cell_sub_class} / \code{cell_type} /
+\code{hemilineage} / \code{region} / \code{nerve} / \code{neuromere} / function /
+body_part / neurochemistry vocabularies banc_meta uses), so each
+row can be compared directly against the corresponding BANC neuron.
+Source-specific identifiers and labels are retained alongside the
+BANC-shaped columns (e.g. \code{FAFB_cell_type}, \code{MANC_class}).
+}
+\details{
+The historical single-table \code{franken_meta} is being phased out in
+favour of four separable per-source tables: \code{fafb}, \code{manc},
+\code{hemibrain}, \code{malecns}. The new tables don't all carry exactly the
+same column set (FAFB_* columns only in \code{fafb}, MANC_* only in
+\code{manc}, and so on) — \code{dplyr::bind_rows()} is used to take the
+column-union when reading more than one.
 }
 \examples{
 \dontrun{
@@ -196,6 +238,20 @@ banctable_append_rows(
   bigdata = TRUE
 )
 }
+\dontrun{
+# Default: FAFB + MANC union (closest equivalent to old franken_meta)
+fk <- franken_meta()
+
+# Only the FAFB rows
+fafb <- franken_meta(tables = "fafb")
+
+# All four source tables, column-unioned
+all <- franken_meta(tables = c("fafb", "manc", "hemibrain", "malecns"))
+
+# Legacy single-table read (still available until decommission)
+legacy <- franken_meta(source = "legacy")
+}
+
 }
 \seealso{
 \code{\link[fafbseg]{flytable_query}}
