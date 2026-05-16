@@ -694,7 +694,7 @@ banc_df2updatepayload <- function(x, via_json = TRUE){
     listcols <- intersect(othercols, listcols)
     updates <- list()
     for(i in 1:nrow(x)){
-      updates[[i]] <- list(row_id = x[i, "row_id"], row = as.list(x[i,othercols]))
+      updates[[i]] <- list(row_id = x[i, "row_id"], row = as.list(x[i,othercols, drop = FALSE]))
       for(col in listcols){
         if(length((x[i,][[col]][[1]]))==1){
           updates[[i]]$row[[col]] <- x[i,][[col]]
