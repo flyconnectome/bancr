@@ -127,15 +127,56 @@ banc_edgelist <- function(edgelist_view = c("synapses_v2_backbone_proofread_and_
 ### mitochondria ###
 
 #' @rdname banc_cave_tables
+#' @param chunk_size Integer page size for full-table pulls (used only when
+#'   `rootids = NULL`). The mitochondria_v1 table has millions of rows and a
+#'   single materialised response trips reticulate's string parser
+#'   (`Error: basic_string`); paginating by `limit`/`offset` keeps each
+#'   response small enough to cross the R/Python boundary. Default 200000.
 #' @export
 banc_mitochondria <- function(rootids = NULL,
                               table = "mitochondria_v1",
-                              rawcoords = FALSE, ...){
+                              rawcoords = FALSE,
+                              chunk_size = 200000L, ...){
   cavec <- fafbseg:::check_cave()
   client <- try(cavec$CAVEclient(datastack_name=banc_datastack_name()))
   if(is.null(rootids)){
-    res <- with_banc(get_cave_table_data(table, fetch_all_rows = TRUE, ...))
-    if(nrow(res)==500000|nrow(res)==1000000){
+    # Paginated full-table pull. CAVE's live_query/materialize.query_table
+    # supports limit + offset; we stream chunks into R and bind. Avoids the
+    # basic_string crash that hits get_cave_table_data(fetch_all_rows=TRUE)
+    # on multi-million-row tables.
+    chunk_size <- as.integer(chunk_size)
+    if (!is.finite(chunk_size) || chunk_size < 1L) chunk_size <- 200000L
+    chunks  <- list()
+    offset  <- 0L
+    total   <- 0L
+    repeat {
+      chunk <- tryCatch(
+        client$materialize$query_table(
+          table   = table,
+          limit   = as.integer(chunk_size),
+          offset  = as.integer(offset)
+        ),
+        error = function(e) {
+          message(sprintf("[banc_mitochondria] offset=%d error: %s",
+                          offset, conditionMessage(e)))
+          NULL
+        }
+      )
+      if (is.null(chunk)) break
+      n <- nrow(chunk)
+      if (is.null(n) || n == 0L) break
+      chunks[[length(chunks) + 1L]] <- chunk
+      total <- total + n
+      message(sprintf("[banc_mitochondria] offset=%d got %d rows (running total %d)",
+                      offset, n, total))
+      if (n < chunk_size) break
+      offset <- offset + chunk_size
+    }
+    if (length(chunks) == 0L) {
+      stop("banc_mitochondria: chunked pull returned 0 rows")
+    }
+    res <- if (length(chunks) == 1L) chunks[[1L]] else do.call(rbind, chunks)
+    if (nrow(res)==500000|nrow(res)==1000000){
       warning("dataframe is exactly ", nrow(res), " rows, which is suspicious")
     }
   }else{
