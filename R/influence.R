@@ -128,12 +128,14 @@ banc_influence <- function(upstream_ids = NULL,
 #'   \code{tools::R_user_dir("bancr", "cache")}.
 #' @param force_download If TRUE, re-download even if local files exist.
 #' @param gs_url GCS path to the influence parquet directory. Defaults to the
-#'   v850 all-to-all influence data.
+#'   v888 all-to-all influence data in the lee-lab BANC bucket (the
+#'   `brain-and-nerve-cord_exports/.../banc_850/...` source used in earlier
+#'   bancr versions is no longer maintained, see 2026-04 bucket migration).
 #' @keywords internal
 banc_influence_path <- function(local_path = NULL, force_download = FALSE,
                                 gs_url = NULL) {
   if (is.null(gs_url))
-    gs_url <- "gs://brain-and-nerve-cord_exports/processed_data/banc/banc_850/influence/all_to_all/"
+    gs_url <- "gs://lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/influence/all_to_all/"
 
   if (is.null(local_path)) {
     local_path <- file.path(tools::R_user_dir("bancr", "cache"),
