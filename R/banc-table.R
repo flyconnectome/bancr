@@ -539,7 +539,11 @@ banctable_move_to_bigdata <- function(table = "banc_meta",
 #' @return A data frame with one row per neuron across the chosen
 #'   source tables. Columns are the union of the requested tables'
 #'   schemas; rows from a table missing a given column carry `NA` for
-#'   that column.
+#'   that column. When more than one source table is read, a unified
+#'   `neuron_id` column is added: each row carries the ID from its
+#'   originating table's per-source ID column (`fafb_id`, `manc_id`,
+#'   `hemibrain_121_id`, or `malecns_09_id`), coalesced into the single
+#'   `neuron_id`. The original per-source ID columns are preserved.
 #'
 #' @examples
 #' \dontrun{
@@ -590,7 +594,19 @@ franken_meta <- function(tables = c("fafb", "manc"),
   # bind_rows takes the column-union across tables; FAFB_*, MANC_*,
   # hemibrain-specific and malecns-specific columns survive only on
   # the rows that came from the table that owns them.
-  dplyr::bind_rows(parts)
+  combined <- dplyr::bind_rows(parts)
+  # Each source table has its own per-row ID column. Coalesce them into
+  # a single `neuron_id` so callers can key rows uniformly across sources.
+  id_cols <- c("fafb_id", "manc_id", "hemibrain_121_id", "malecns_09_id")
+  present <- intersect(id_cols, names(combined))
+  if (length(present)) {
+    combined$neuron_id <- do.call(
+      dplyr::coalesce,
+      lapply(present, function(co) as.character(combined[[co]]))
+    )
+    combined <- dplyr::relocate(combined, "neuron_id")
+  }
+  combined
 }
 
 #' @export
